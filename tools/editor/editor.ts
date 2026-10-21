@@ -4,11 +4,17 @@
 import '@fontsource-variable/inter';
 import '../../src/styles.css';
 import './editor.css';
-import { compoundHasData, emptyCompound, emptyProduct, emptyRange, hasIntrinsicKinetics, isDraft, SCHEMA_VERSION, slug } from '../../src/schema';
+import {
+  compoundHasData, emptyCompound, emptyProduct, emptyRange, formatRange, isConfirmedUnknown, isDraft, isFlagged, isReviewed, NA_NOTE, SCHEMA_VERSION, slug,
+} from '../../src/schema';
+import {
+  confirmSection, flagSection, isCompound, markNotApplicable, markReviewed, NA_SECTIONS, nextIncomplete, SECTION_LABEL, sectionIssues, sectionsOf,
+  unknownParts, verifyBlockers, type Entry, type Section,
+} from '../../src/review';
 import { validateLibrary, type Issue, type ValidationResult } from '../../src/validate';
 import {
-  DOSE_BASES, DOSE_UNITS, FORMULATIONS, INPUT_TYPES, PROVENANCE_TAGS,
-  type Compound, type CompoundSection, type Formulation, type InputType, type Library, type Product, type ProductSection, type Provenance,
+  COMPOUND_SECTIONS, DOSE_BASES, DOSE_UNITS, FORMULATIONS, INPUT_TYPES, PRODUCT_SECTIONS, PROVENANCE_TAGS, QT_TIERS,
+  type Compound, type CompoundSection, type Formulation, type InputType, type Library, type Product, type ProductSection, type Provenance, type QtTier,
 } from '../../src/types';
 import { compoundSection, nullableNumber, phenotypeInputs, rangeInputs, type SectionName } from '../../src/ui/compoundForm';
 import { append, badge, field, h, select, textInput, toast } from '../../src/ui/dom';
@@ -17,8 +23,8 @@ import { productId, type Candidate, type CandidatesFile } from '../init-lib';
 import { applyInputRule } from '../product-rules';
 
 type Status = 'not-started' | 'draft' | 'verified';
-type Flag = 'draft-values' | 'unknown-kinetics' | 'auto-assumptions';
-type View = 'queue' | 'priority';
+type Flag = 'draft-values' | 'unknown-kinetics' | 'auto-assumptions' | 'unreviewed-sections' | 'flagged' | 'confirmed-unknown';
+type View = 'queue' | 'review' | 'qt' | 'priority';
 
 const st = {
   lib: null as Library | null,
@@ -37,6 +43,10 @@ const st = {
   refreshers: [] as (() => void)[],
   prioritySort: { key: 'reason' as 'reason' | 'name' | 'candidate', dir: 1 },
   scrollTo: null as string | null,
+  /** Section the keyboard shortcuts act on in the entry view. */
+  focus: null as { id: string; section: Section } | null,
+  review: { index: 0, key: '', byType: false, category: '', section: '' as Section | '', tag: '', flaggedOnly: false, priorityOnly: false, history: [] as string[] },
+  qt: { key: 'tier' as 'name' | 'category' | 'tier' | 'weight', dir: 1, tier: '' as QtTier | '', category: '', preview: [{ id: '', mg: 10 }, { id: '', mg: 10 }, { id: '', mg: 10 }] },
 };
 
 const root = document.getElementById('editor')!;
@@ -96,6 +106,25 @@ function flagsOf(cand: Candidate): Set<Flag> {
   if ([...cs, ...ps].some(isDraft)) out.add('draft-values');
   if (cs.some((c) => c.kinetics.mode === 'unknown')) out.add('unknown-kinetics');
   if ([...cs, ...ps].some(hasAutoNote)) out.add('auto-assumptions');
+  const entries: Entry[] = [...cs, ...ps];
+  if (entries.some((e) => sectionsOf(e).some((s) => !isReviewed(e, s)))) out.add('unreviewed-sections');
+  if (entries.some((e) => sectionsOf(e).some((s) => isFlagged(e, s)))) out.add('flagged');
+  if (entries.some((e) => sectionsOf(e).some((s) => isConfirmedUnknown(e, s)))) out.add('confirmed-unknown');
+  return out;
+}
+
+/** Sidebar filters (status chips, flag chips, search) — also scope review mode. */
+function matchesFilters(c: Candidate): boolean {
+  const q = st.query.toLowerCase();
+  return (st.filter.size === 0 || st.filter.has(statusOf(c))) &&
+    (st.flags.size === 0 || [...st.flags].every((f) => flagsOf(c).has(f))) &&
+    (!q || c.name.toLowerCase().includes(q) || c.aliases.some((a) => a.toLowerCase().includes(q)) || c.parentCompound.includes(q));
+}
+
+/** Candidate each compound is reviewed under (first in queue order whose tree contains it). */
+function ownerMap(): Map<string, Candidate> {
+  const out = new Map<string, Candidate>();
+  for (const cand of candidates()) for (const n of tree(cand.parentCompound)) if (!out.has(n.c.id)) out.set(n.c.id, cand);
   return out;
 }
 
@@ -173,12 +202,12 @@ function renderTop() {
   top.replaceChildren();
   append(top, [
     h('div', { class: 'wordmark' }, 'Clear', h('span', null, 'Date'), h('small', null, ' data editor')),
-    p ? h('span', { class: 'ed-progress' }, `Compounds ${p.compoundsVerified}/${p.compounds} verified · Products ${p.productsVerified}/${p.products} verified`) : null,
+    p ? h('span', { class: 'ed-progress' }, `Sections ${p.sectionsReviewed}/${p.sections} reviewed · Compounds ${p.compoundsVerified}/${p.compounds} verified · Products ${p.productsVerified}/${p.products} verified`) : null,
     st.lib
       ? h('div', { class: 'segmented ed-views' },
-          ...(['queue', 'priority'] as View[]).map((vw) =>
-            h('button', { type: 'button', class: `seg ${st.view === vw ? 'on' : ''}`, onclick: () => { st.view = vw; renderTop(); renderSide(); renderMain(); } },
-              vw === 'queue' ? 'Queue' : 'Priority review')))
+          ...(Object.keys(VIEW_LABEL) as View[]).map((vw) =>
+            h('button', { type: 'button', class: `seg ${st.view === vw ? 'on' : ''}`, onclick: () => { st.view = vw; renderTop(); renderSide(); renderMain(); main.scrollTo(0, 0); } },
+              VIEW_LABEL[vw])))
       : null,
     h('span', { class: 'spacer' }),
     v ? h('span', { class: `ed-vstat ${v.errors.length ? 'bad' : 'ok'}` }, v.errors.length ? `${v.errors.length} error(s)` : '✓ valid', v.warnings.length ? ` · ${v.warnings.length} warning(s)` : '') : null,
@@ -190,18 +219,19 @@ function renderTop() {
 // ---------- sidebar (queue) ----------
 
 const STATUS_LABEL: Record<Status, string> = { 'not-started': 'not started', draft: 'draft', verified: 'verified' };
-const FLAG_LABEL: Record<Flag, string> = { 'draft-values': 'has draft values', 'unknown-kinetics': 'unknown kinetics', 'auto-assumptions': 'auto-assumptions' };
+const FLAG_LABEL: Record<Flag, string> = {
+  'draft-values': 'has draft values', 'unknown-kinetics': 'unknown kinetics', 'auto-assumptions': 'auto-assumptions',
+  'unreviewed-sections': 'unreviewed sections', flagged: 'flagged', 'confirmed-unknown': 'confirmed unknown',
+};
+const VIEW_LABEL: Record<View, string> = { queue: 'Queue', review: 'Review mode', qt: 'QT calibration', priority: 'Priority review' };
 
 function renderSide() {
   if (!st.queue || !st.lib) return;
   const q = st.query.toLowerCase();
   const list = candidates();
   const statuses = new Map(list.map((c) => [c.order, statusOf(c)]));
-  const flags = st.flags.size ? new Map(list.map((c) => [c.order, flagsOf(c)])) : null;
-  const visible = (c: Candidate) =>
-    (st.filter.size === 0 || st.filter.has(statuses.get(c.order)!)) &&
-    (!flags || [...st.flags].every((f) => flags.get(c.order)!.has(f))) &&
-    (!q || c.name.toLowerCase().includes(q) || c.aliases.some((a) => a.toLowerCase().includes(q)) || c.parentCompound.includes(q));
+  const visible = matchesFilters;
+  const catProgress = new Map((st.validation?.progress.categories ?? []).map((c) => [c.id, c]));
   const search = h('input', { type: 'search', placeholder: 'Search the queue…', value: st.query });
   search.addEventListener('input', () => {
     st.query = search.value;
@@ -227,6 +257,9 @@ function renderSide() {
       return h('div', { class: 'ed-cat' },
         h('button', { type: 'button', class: 'ed-cat-head', style: `--c:${categoryColor(cat.id)}`, onclick: () => { st.collapsedCats.has(cat.id) ? st.collapsedCats.delete(cat.id) : st.collapsedCats.add(cat.id); renderSide(); } },
           h('span', { class: 'caret' }, collapsed ? '▸' : '▾'), h('span', { class: 'dot' }), cat.name, h('span', { class: 'count' }, `${done}/${cs.length}`)),
+        catProgress.has(cat.id)
+          ? h('div', { class: 'ed-cat-progress' }, `${catProgress.get(cat.id)!.sectionsReviewed} / ${catProgress.get(cat.id)!.sections} sections reviewed · ${catProgress.get(cat.id)!.drugsVerified} / ${catProgress.get(cat.id)!.drugs} drugs verified`)
+          : null,
         collapsed ? null : shown.map((c) => {
           const ps = productsOf(c);
           const isActive = st.view === 'queue' && active?.order === c.order;
@@ -302,14 +335,158 @@ function provChip(e: ProvOwner & { id: string }, section: string): HTMLElement {
   return sel;
 }
 
-/** A human edit: provenance becomes "reviewer". */
-function touched(e: ProvOwner & { id: string }, section: string | undefined) {
-  if (section && e.provenance[section] !== 'reviewer') {
-    e.provenance[section] = 'reviewer';
+/** A human edit: provenance becomes "reviewer" and the section's review date is stamped. */
+function touched(e: Entry, section: string | undefined) {
+  if (section) {
+    markReviewed(e, section as Section, today());
     chipRefreshers.get(`${e.id}:${section}`)?.();
   }
   changed();
 }
+
+// ---------- section review (Confirm / Confirm as unknown / N/A / Flag) ----------
+
+/** Renders URLs in a source note as links opening in a new tab. */
+function linkify(text: string): (Node | string)[] {
+  return text.split(/(https?:\/\/[^\s)\]]+)/g).map((part, i) =>
+    i % 2 ? h('a', { href: part, target: '_blank', rel: 'noopener noreferrer' }, part) : part);
+}
+
+function reviewState(e: Entry, s: Section): { cls: string; text: string } {
+  const note = (e.sourceNotes as Record<string, string>)[s] ?? '';
+  const date = (e.reviewedDates as Record<string, string>)[s];
+  if (isReviewed(e, s)) {
+    const what = isConfirmedUnknown(e, s) ? 'confirmed unknown' : note.includes(NA_NOTE) ? 'N/A' : 'reviewed';
+    return { cls: 'done', text: `✓ ${what}${date ? ` ${date}` : ''}` };
+  }
+  return isFlagged(e, s) ? { cls: 'flag', text: '⚑ flagged' } : { cls: 'open', text: 'unreviewed' };
+}
+
+/** Runs a review action, then re-renders and moves on. */
+function act(e: Entry, s: Section, fn: () => string | null, advance: boolean) {
+  const refused = fn();
+  if (refused) return toast(refused, 4000);
+  st.validation = validateLibrary(lib());
+  changed();
+  if (st.view === 'review') return renderReview();
+  st.focus = { id: e.id, section: s };
+  renderMain();
+  if (advance) nextIncompleteOnPage();
+  else focusSection(e.id, s);
+}
+
+const confirmAction = (e: Entry, s: Section, asUnknown = false) => act(e, s, () => confirmSection(e, s, today(), asUnknown), true);
+const naAction = (e: Entry, s: Section) => act(e, s, () => markNotApplicable(e, s, today()), true);
+function flagAction(e: Entry, s: Section) {
+  const reason = prompt(`Flag ${SECTION_LABEL[s]} of ${e.name} for follow-up — reason:`);
+  if (reason === null) return;
+  act(e, s, () => (flagSection(e, s, reason), null), false);
+}
+
+/** Confirm (or Confirm as unknown, when values are unknown) — the Enter shortcut. */
+function confirmDefault(e: Entry, s: Section) {
+  confirmAction(e, s, unknownParts(e, s).length > 0);
+}
+
+function reviewBar(e: Entry, s: Section): HTMLElement {
+  const bar = h('div', { class: 'rv-bar' });
+  const refresh = () => {
+    const errs = sectionIssues(st.validation?.errors ?? [], e, s);
+    const unknown = unknownParts(e, s);
+    const state = reviewState(e, s);
+    const blocked = errs.length ? `Fix: ${errs.map((x) => x.message).join('; ')}` : '';
+    bar.replaceChildren();
+    append(bar, [
+      h('span', { class: `rv-state rv-${state.cls}` }, SECTION_LABEL[s], ' · ', state.text),
+      h('span', { class: 'spacer' }),
+      unknown.length
+        ? h('button', { class: 'btn btn-sm btn-primary', type: 'button', disabled: errs.length > 0, title: blocked || `Keeps unknown: ${unknown.join(', ')} (Enter)`, onclick: () => confirmAction(e, s, true) }, 'Confirm as unknown')
+        : h('button', { class: 'btn btn-sm btn-primary', type: 'button', disabled: errs.length > 0, title: blocked || 'Keep these values (Enter)', onclick: () => confirmAction(e, s) }, 'Confirm'),
+      NA_SECTIONS.includes(s) ? h('button', { class: 'btn btn-sm btn-ghost', type: 'button', title: 'Not applicable: set to none / empty', onclick: () => naAction(e, s) }, 'N/A') : null,
+      h('button', { class: 'btn btn-sm btn-ghost', type: 'button', title: 'Keep unreviewed and note why', onclick: () => flagAction(e, s) }, 'Flag'),
+    ]);
+  };
+  refresh();
+  st.refreshers.push(refresh);
+  return bar;
+}
+
+/** Highlight a section in the entry view and make it the target of Enter / N. */
+function focusSection(id: string, s: Section) {
+  st.focus = { id, section: s };
+  main.querySelectorAll('.rv-focus').forEach((x) => x.classList.remove('rv-focus'));
+  const el = document.getElementById(`sec-${id}-${s}`);
+  if (!el) return;
+  const det = el.closest('details');
+  if (det) det.open = true;
+  el.classList.add('rv-focus');
+  el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+}
+
+/** Entries on the current candidate page, in display order. */
+function pageEntries(): Entry[] {
+  const cand = candidates()[st.current];
+  const own = ownerMap();
+  const cs = tree(cand.parentCompound).map((n) => n.c).filter((c) => !(c.verified && own.get(c.id) && own.get(c.id)!.order !== cand.order) || st.expanded.has(c.id));
+  return [...cs, ...productsOf(cand)];
+}
+
+/** "Next incomplete": next unreviewed or invalid section on this page; returns false when there is none. */
+function nextIncompleteOnPage(): boolean {
+  const errors = st.validation?.errors ?? [];
+  const entries = pageEntries();
+  const at = st.focus ? entries.findIndex((e) => e.id === st.focus!.id) : -1;
+  for (let k = Math.max(at, 0); k < entries.length; k++) {
+    const e = entries[k];
+    const s = nextIncomplete(e, errors, k === at ? st.focus!.section : null);
+    if (s) {
+      focusSection(e.id, s);
+      return true;
+    }
+  }
+  return false;
+}
+
+/** N: next incomplete section of this entry, then the next entries, then the next candidate in the filter. */
+function nextIncompleteGlobal() {
+  if (nextIncompleteOnPage()) return;
+  const list = candidates();
+  const errors = st.validation?.errors ?? [];
+  for (let k = 1; k <= list.length; k++) {
+    const i = (st.current + k) % list.length;
+    const cand = list[i];
+    if (!matchesFilters(cand)) continue;
+    const entries: Entry[] = [...tree(cand.parentCompound).map((n) => n.c), ...productsOf(cand)];
+    if (entries.some((e) => nextIncomplete(e, errors, null))) {
+      st.focus = null;
+      go(i);
+      nextIncompleteOnPage();
+      return;
+    }
+  }
+  toast('No incomplete sections left in this filter.');
+}
+
+const isTyping = (t: EventTarget | null) => t instanceof HTMLElement && (t.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'A', 'SUMMARY'].includes(t.tagName));
+
+window.addEventListener('keydown', (ev) => {
+  if (!st.lib) return;
+  const ctrl = ev.ctrlKey || ev.metaKey;
+  if (ev.key === 'Enter' && (ctrl || !isTyping(ev.target))) {
+    if (st.view === 'review') {
+      const it = reviewItems()[st.review.index];
+      if (it) { ev.preventDefault(); confirmDefault(it.e, it.s); }
+    } else if (st.view === 'queue' && st.focus) {
+      const e = entryById(st.focus.id);
+      if (e) { ev.preventDefault(); confirmDefault(e, st.focus.section); }
+    }
+  } else if (!ctrl && !ev.altKey && ev.key.toLowerCase() === 'n' && !isTyping(ev.target) && st.view === 'queue') {
+    ev.preventDefault();
+    nextIncompleteGlobal();
+  }
+});
+
+const entryById = (id: string): Entry | undefined => compound(id) ?? lib().products.find((p) => p.id === id);
 
 // ---------- main panel ----------
 
@@ -359,17 +536,13 @@ function issuesBox(id: string) {
   return box;
 }
 
-function verifyToggle(entry: Compound | Product, extraCheck: () => string | null) {
+function verifyToggle(entry: Compound | Product) {
   const cb = h('input', { type: 'checkbox', checked: entry.verified });
   const why = h('span', { class: 'field-hint' });
   const refresh = () => {
-    const blockers: string[] = [];
-    if (issuesFor(entry.id).errors.length) blockers.push('fix validation errors');
-    if (!entry.source.trim()) blockers.push('add a source');
-    const extra = extraCheck();
-    if (extra) blockers.push(extra);
+    const blockers = verifyBlockers(entry, st.validation?.errors ?? []);
     cb.disabled = !entry.verified && blockers.length > 0;
-    why.textContent = entry.verified ? `Verified ${entry.verifiedDate}` : blockers.length ? `To verify: ${blockers.join(', ')}.` : 'Ready to mark verified.';
+    why.textContent = entry.verified ? `Verified ${entry.verifiedDate}` : blockers.length ? `To verify: ${blockers.join('; ')}.` : 'Every section reviewed — ready to verify.';
   };
   cb.addEventListener('change', () => {
     entry.verified = cb.checked;
@@ -379,7 +552,7 @@ function verifyToggle(entry: Compound | Product, extraCheck: () => string | null
   });
   refresh();
   st.refreshers.push(refresh);
-  return h('div', { class: 'ed-verify' }, h('label', { class: 'check' }, cb, h('b', null, 'Mark verified')), why);
+  return h('div', { class: 'ed-verify' }, h('label', { class: 'check' }, cb, h('b', null, 'Verify entry')), why);
 }
 
 function sourceField(entry: Compound | Product) {
@@ -499,17 +672,30 @@ function compoundCard(node: { c: Compound; depth: number; via: string | null }, 
   if (notes?.length) card.append(h('div', { class: 'ed-note' }, ...notes.map((n) => h('div', null, 'ℹ ', n))));
   card.append(
     ...SECTIONS.filter(([s]) => s !== 'relevance' || c.isMetabolite).map(([s, label, provKeys]) =>
-      h('details', { class: 'ed-sec', open: s === 'kinetics' || s === 'basics' || s === 'metabolism' || s === 'relevance' },
-        h('summary', null, label, h('span', { class: 'prov-chips' }, ...provKeys.map((k) => provChip(c, k)))),
+      sectionDetails(c, label, provKeys, s === 'kinetics' || s === 'basics' || s === 'metabolism' || s === 'relevance',
         s === 'metabolism' ? metabolismSection(c) : compoundSection(c, s, { sourceNotes: true, onChange: (sec) => touched(c, sec) }))),
     sourceField(c),
     issuesBox(c.id),
-    verifyToggle(c, () =>
-      c.kinetics.mode === 'unknown' ? 'set the kinetic mode'
-      : c.kinetics.mode === 'intrinsic' && !hasIntrinsicKinetics(c) ? 'enter a typical half-life'
-      : null),
+    verifyToggle(c),
   );
   return card;
+}
+
+/** A collapsible section: fields, provenance chips, and a review bar per provenance section. */
+function sectionDetails(e: Entry, label: string, sections: Section[], open: boolean, body: Node): HTMLElement {
+  const dots = sections.map((s) => h('span', { class: `rv-dot rv-${reviewState(e, s).cls}`, title: `${SECTION_LABEL[s]}: ${reviewState(e, s).text}` }));
+  const det = h('details', { class: 'ed-sec', open: open || sections.some((s) => st.focus?.id === e.id && st.focus.section === s) },
+    h('summary', null, ...dots, label, h('span', { class: 'prov-chips' }, ...sections.map((k) => provChip(e, k)))),
+    body,
+    ...sections.map((s) => {
+      const bar = reviewBar(e, s);
+      bar.id = `sec-${e.id}-${s}`;
+      return bar;
+    }));
+  det.addEventListener('focusin', () => {
+    st.focus = { id: e.id, section: sections.find((s) => !isReviewed(e, s)) ?? sections[0] };
+  });
+  return det;
 }
 
 function removeMetabolite(c: Compound, fromId: string) {
@@ -585,7 +771,6 @@ function inputEditor(p: Product, edit: () => void): HTMLElement {
 }
 
 function productCard(p: Product): HTMLElement {
-  const sec = (s: ProductSection) => () => touched(p, s);
   const cats = lib().categories;
   const secondary = h('div', { class: 'chips ed-secondary' }, ...cats.filter((c) => c.id !== p.category).map((c) =>
     h('button', {
@@ -596,8 +781,7 @@ function productCard(p: Product): HTMLElement {
         changed();
       },
     }, c.name.split(/[ ,&]/)[0])));
-  const block = (label: string, key: ProductSection, ...body: (Node | null)[]) =>
-    h('details', { class: 'ed-sec', open: true }, h('summary', null, label, h('span', { class: 'prov-chips' }, provChip(p, key))), h('div', { class: 'form-section' }, ...body.filter((x): x is Node => x !== null)));
+  const block = (key: ProductSection) => sectionDetails(p, SECTION_LABEL[key], [key], true, productSectionBody(p, key));
   const isCombo = p.components.length > 1;
   return h('section', { class: 'ed-card glass', id: `card-${p.id}` },
     h('div', { class: 'ed-card-head' },
@@ -621,19 +805,33 @@ function productCard(p: Product): HTMLElement {
         field('Category', select(p.category, cats.map((c) => [c.id, c.name] as [string, string]), (v) => { p.category = v; changed(); renderMain(); })),
         field('Candidate', textInput(p.candidateId, (v) => { p.candidateId = v.trim(); changed(); }), 'Groups this product in the queue.')),
       field('Also list under', secondary)),
-    block('Class', 'class', field('Class', textInput(p.class, (v) => { p.class = v; sec('class')(); }, { placeholder: 'e.g. opioid partial agonist' }))),
-    block('Aliases', 'aliases', field('Aliases', textInput(p.aliases.join(', '), (v) => { p.aliases = v.split(',').map((s) => s.trim()).filter(Boolean); sec('aliases')(); }))),
-    block('Components', 'components', componentsEditor(p, sec('components')), sourceNoteField(p, 'components')),
-    block('Input model (release)', 'input', inputEditor(p, sec('input')), sourceNoteField(p, 'input')),
-    block('Typical dose', 'typicalDose',
-      h('div', { class: 'row' },
-        field('Amount', nullableNumber(p.typicalDose.amount, (v) => { p.typicalDose.amount = v; sec('typicalDose')(); }, { min: '0' })),
-        field('Unit', select(p.typicalDose.unit, DOSE_UNITS, (v) => { p.typicalDose.unit = v; sec('typicalDose')(); })),
-        field('Basis', select(p.typicalDose.basis, DOSE_BASES, (v) => { p.typicalDose.basis = v; sec('typicalDose')(); }))),
-      h('div', { class: 'field-hint' }, 'Display and dose-form placeholder only (label §2 / SmPC 4.2). Unknown for illicit or recreational substances.')),
+    ...PRODUCT_SECTIONS.map(block),
     sourceField(p),
     issuesBox(p.id),
-    verifyToggle(p, () => null));
+    verifyToggle(p));
+}
+
+function productSectionBody(p: Product, key: ProductSection): HTMLElement {
+  const sec = () => touched(p, key);
+  const body = (...xs: (Node | null)[]) => h('div', { class: 'form-section' }, ...xs.filter((x): x is Node => x !== null));
+  switch (key) {
+    case 'class':
+      return body(field('Class', textInput(p.class, (v) => { p.class = v; sec(); }, { placeholder: 'e.g. opioid partial agonist' })), sourceNoteField(p, 'class'));
+    case 'aliases':
+      return body(field('Aliases', textInput(p.aliases.join(', '), (v) => { p.aliases = v.split(',').map((s) => s.trim()).filter(Boolean); sec(); })), sourceNoteField(p, 'aliases'));
+    case 'components':
+      return body(componentsEditor(p, sec), sourceNoteField(p, 'components'));
+    case 'input':
+      return body(inputEditor(p, sec), sourceNoteField(p, 'input'));
+    case 'typicalDose':
+      return body(
+        h('div', { class: 'row' },
+          field('Amount', nullableNumber(p.typicalDose.amount, (v) => { p.typicalDose.amount = v; sec(); }, { min: '0' })),
+          field('Unit', select(p.typicalDose.unit, DOSE_UNITS, (v) => { p.typicalDose.unit = v; sec(); })),
+          field('Basis', select(p.typicalDose.basis, DOSE_BASES, (v) => { p.typicalDose.basis = v; sec(); }))),
+        h('div', { class: 'field-hint' }, 'Display and dose-form placeholder only (label §2 / SmPC 4.2). Unknown for illicit or recreational substances.'),
+        sourceNoteField(p, 'typicalDose'));
+  }
 }
 
 function renderMain() {
@@ -641,6 +839,8 @@ function renderMain() {
   chipRefreshers.clear();
   if (!st.lib || !st.queue) return;
   if (st.view === 'priority') return renderPriority();
+  if (st.view === 'review') return renderReview();
+  if (st.view === 'qt') return renderQt();
   const list = candidates();
   const cand = list[st.current];
   const status = statusOf(cand);
@@ -653,6 +853,7 @@ function renderMain() {
       h('button', { class: 'btn btn-ghost', type: 'button', onclick: () => step(-1) }, '← Previous'),
       h('button', { class: 'btn btn-ghost', type: 'button', onclick: () => step(1), title: 'Leave this one for later' }, 'Skip'),
       h('button', { class: 'btn btn-primary', type: 'button', onclick: () => step(1) }, 'Next →'),
+      h('button', { class: 'btn btn-ghost', type: 'button', onclick: nextIncompleteGlobal, title: 'Next unreviewed or invalid section (N). Enter confirms the highlighted section.' }, 'Next incomplete (N)'),
       h('span', { class: 'spacer' }),
       h('span', { class: 'field-hint' }, `#${cand.order} of ${list.length}`)),
     h('div', { class: 'ed-cand-head' },
@@ -685,6 +886,263 @@ function renderMain() {
       changed();
       renderMain();
     } }, '+ Add route')),
+  );
+}
+
+// ---------- review mode ----------
+
+interface ReviewItem { key: string; e: Entry; s: Section; cand: Candidate }
+
+const SECTION_ORDER: Section[] = [...COMPOUND_SECTIONS, ...PRODUCT_SECTIONS];
+
+/** Unreviewed sections in the current filter (sidebar filters + review-mode filters), each entry once. */
+function reviewItems(): ReviewItem[] {
+  const f = st.review;
+  const prio = f.priorityOnly ? new Set(priorityRows().map((r) => r.id)) : null;
+  const seen = new Set<string>();
+  const out: ReviewItem[] = [];
+  for (const cand of candidates()) {
+    if (!matchesFilters(cand) || (f.category && cand.category !== f.category)) continue;
+    const entries: Entry[] = [...tree(cand.parentCompound).map((n) => n.c), ...productsOf(cand)];
+    for (const e of entries) {
+      if (seen.has(e.id)) continue;
+      seen.add(e.id);
+      if (prio && !prio.has(e.id)) continue;
+      for (const s of sectionsOf(e)) {
+        if (isReviewed(e, s) || (f.section && s !== f.section)) continue;
+        if (f.tag && ((e.provenance as Record<string, string | null>)[s] ?? 'untagged') !== f.tag) continue;
+        if (f.flaggedOnly && !isFlagged(e, s)) continue;
+        out.push({ key: `${e.id}:${s}`, e, s, cand });
+      }
+    }
+  }
+  if (f.byType) {
+    const rank = new Map(out.map((it, i) => [it.key, i]));
+    out.sort((a, b) => SECTION_ORDER.indexOf(a.s) - SECTION_ORDER.indexOf(b.s) || rank.get(a.key)! - rank.get(b.key)!);
+  }
+  return out;
+}
+
+const sectionNameFor: Partial<Record<Section, SectionName>> = {
+  halfLife: 'kinetics', relevance: 'relevance', molecularWeight: 'basics', cyp2d6: 'cyp2d6', qt: 'qt', receptors: 'receptors',
+  lingeringEffects: 'lingering', nonlinearKinetics: 'lingering',
+};
+
+function reviewBody(it: ReviewItem): HTMLElement {
+  const { e, s } = it;
+  if (!isCompound(e)) return productSectionBody(e, s as ProductSection);
+  if (s === 'metabolism') return metabolismSection(e);
+  return compoundSection(e, sectionNameFor[s]!, { sourceNotes: true, onChange: (sec) => touched(e, sec) });
+}
+
+/** Related data that helps judge a section. */
+function reviewContext(it: ReviewItem): (Node | null)[] {
+  const { e, s } = it;
+  const hl = (c: Compound) => (c.kinetics.mode === 'intrinsic' ? formatRange(c.kinetics.halfLifeHours) : c.kinetics.mode);
+  if (!isCompound(e)) {
+    const c = compound(e.components[0]?.compound ?? '');
+    return [c ? h('div', null, h('b', null, `${c.name} half-life: `), hl(c)) : null];
+  }
+  const out: (Node | null)[] = [];
+  if (e.isMetabolite && (s === 'halfLife' || s === 'metabolism' || s === 'relevance'))
+    for (const f of e.formedFrom) {
+      const p = compound(f.compound);
+      if (p) out.push(h('div', null, h('b', null, `Parent ${p.name}: `), `half-life ${hl(p)} · fraction to ${e.name}: ${f.fraction ?? 'unknown'}`));
+    }
+  if (s === 'relevance' || s === 'halfLife') {
+    const kids = childrenOf(e.id);
+    if (kids.length) out.push(h('div', null, h('b', null, 'Metabolites: '), kids.map((k) => k.name).join(', ')));
+  }
+  if (s === 'qt' || s === 'cyp2d6')
+    out.push(
+      h('div', null, h('b', null, 'Half-life: '), hl(e), e.molecularWeight ? ` · MW ${e.molecularWeight}` : ''),
+      h('div', null, h('b', null, 'CYP2D6: '), `substrate ${e.cyp2d6.substrate}, inhibitor ${e.cyp2d6.inhibitor}`),
+      e.receptors.length ? h('div', null, h('b', null, 'Receptors: '), e.receptors.map((r) => `${r.target} (${r.action})`).join(', ')) : null);
+  return out;
+}
+
+function renderReview() {
+  st.refreshers = [];
+  chipRefreshers.clear();
+  const r = st.review;
+  const items = reviewItems();
+  let idx = items.findIndex((it) => it.key === r.key);
+  if (idx < 0) idx = Math.min(r.index, items.length - 1);
+  r.index = Math.max(idx, 0);
+  const it = items[r.index];
+  r.key = it?.key ?? '';
+  const rerender = () => { r.key = ''; r.index = 0; r.history = []; renderReview(); };
+  const opt = <T extends string>(value: T, options: [T | '', string][], set: (v: T | '') => void) =>
+    select(value, options as [string, string][], (v) => { set(v as T | ''); rerender(); });
+  const check = (label: string, on: boolean, set: (v: boolean) => void) =>
+    h('label', { class: 'check' }, h('input', { type: 'checkbox', checked: on, onchange: (ev: Event) => { set((ev.target as HTMLInputElement).checked); rerender(); } }), label);
+  const controls = h('div', { class: 'row rv-filters' },
+    field('Category', opt(r.category, [['', 'All categories'], ...st.queue!.categories.map((c) => [c.id, c.name] as [string, string])], (v) => (r.category = v))),
+    field('Section', opt(r.section, [['', 'All sections'], ...SECTION_ORDER.map((s) => [s, SECTION_LABEL[s]] as [Section, string])], (v) => (r.section = v))),
+    field('Provenance', opt(r.tag, [['', 'Any'], ...PROVENANCE_TAGS.filter((t) => t !== 'reviewer').map((t) => [t, t] as [string, string]), ['untagged', 'untagged']], (v) => (r.tag = v))),
+    h('div', { class: 'rv-checks' },
+      check('Flagged only', r.flaggedOnly, (v) => (r.flaggedOnly = v)),
+      check('Priority list only', r.priorityOnly, (v) => (r.priorityOnly = v)),
+      check('Step by section type', r.byType, (v) => (r.byType = v))));
+  const scope = st.filter.size || st.flags.size || st.query ? ' (sidebar filters apply)' : '';
+  if (!it) {
+    main.replaceChildren(
+      h('div', { class: 'ed-cand-head' }, h('h1', null, 'Review mode')), controls,
+      h('div', { class: 'ed-empty glass' }, h('h2', null, 'Nothing to review'), h('p', null, `No unreviewed sections in this filter${scope}.`)));
+    return;
+  }
+  const { e, s, cand } = it;
+  const cat = st.queue!.categories.find((c) => c.id === cand.category);
+  const note = (e.sourceNotes as Record<string, string>)[s] ?? '';
+  const issues = sectionIssues([...(st.validation?.errors ?? []), ...(st.validation?.warnings ?? [])], e, s);
+  const unknown = unknownParts(e, s);
+  const errs = sectionIssues(st.validation?.errors ?? [], e, s);
+  const move = (to: number) => {
+    if (to > r.index) r.history.push(r.key);
+    r.index = to;
+    r.key = '';
+    renderReview();
+  };
+  const ctx = reviewContext(it).filter(Boolean);
+  main.replaceChildren(
+    h('div', { class: 'ed-nav' },
+      h('button', { class: 'btn btn-ghost', type: 'button', disabled: !r.history.length && r.index === 0, onclick: () => {
+        const back = r.history.pop();
+        const i = back ? items.findIndex((x) => x.key === back) : -1;
+        if (i >= 0) { r.key = back!; r.index = i; renderReview(); } else move(Math.max(0, r.index - 1));
+      } }, '← Back'),
+      h('button', { class: 'btn btn-ghost', type: 'button', disabled: r.index >= items.length - 1, onclick: () => move(r.index + 1) }, 'Skip'),
+      h('span', { class: 'spacer' }),
+      h('span', { class: 'rv-count' }, `Section ${r.index + 1} of ${items.length} in this filter${scope}`)),
+    h('div', { class: 'ed-cand-head' }, h('h1', null, 'Review mode')),
+    controls,
+    h('section', { class: 'ed-card glass rv-card' },
+      h('div', { class: 'ed-card-head' },
+        h('span', { class: 'ed-card-title' }, e.name), h('code', null, e.id),
+        badge(isCompound(e) ? (e.isMetabolite ? 'metabolite' : 'parent compound') : 'product', 'muted'),
+        h('span', { class: 'cat-tag', style: `--c:${categoryColor(cand.category)}` }, cat?.name ?? cand.category),
+        h('span', { class: 'field-hint' }, `in ${cand.name} #${cand.order}`),
+        h('span', { class: 'spacer' }),
+        h('button', { class: 'btn btn-ghost btn-sm', type: 'button', onclick: () => {
+          st.view = 'queue';
+          st.scrollTo = e.id;
+          if (isCompound(e)) st.expanded.add(e.id);
+          st.focus = { id: e.id, section: s };
+          renderTop();
+          go(candidates().indexOf(cand));
+          focusSection(e.id, s);
+        } }, 'Open entry')),
+      h('div', { class: 'rv-section-head' }, h('b', null, SECTION_LABEL[s]), provChip(e, s), h('span', { class: `rv-state rv-${reviewState(e, s).cls}` }, reviewState(e, s).text)),
+      note ? h('div', { class: 'rv-note' }, h('b', null, 'Source note: '), ...linkify(note)) : h('div', { class: 'field-hint' }, 'No source note.'),
+      ctx.length ? h('div', { class: 'ed-refs rv-context' }, ...ctx) : null,
+      reviewBody(it),
+      issues.length ? h('div', { class: 'ed-issues' }, ...issues.map((i) => h('div', { class: `warning ${errs.includes(i) ? 'danger' : 'warn'}` }, errs.includes(i) ? '⛔ ' : '⚠ ', i.message))) : null,
+      h('div', { class: 'rv-actions' },
+        unknown.length ? h('span', { class: 'field-hint' }, `Unknown: ${unknown.join(', ')}`) : null,
+        h('span', { class: 'spacer' }),
+        h('button', { class: 'btn btn-ghost', type: 'button', onclick: () => flagAction(e, s) }, 'Flag'),
+        NA_SECTIONS.includes(s) ? h('button', { class: 'btn btn-ghost', type: 'button', onclick: () => naAction(e, s) }, 'N/A') : null,
+        h('button', { class: 'btn btn-primary', type: 'button', disabled: errs.length > 0, title: 'Enter', onclick: () => confirmDefault(e, s) },
+          unknown.length ? 'Confirm as unknown' : 'Confirm'))),
+    h('p', { class: 'field-hint' }, 'Editing a field marks the section reviewed. Enter (outside a text field) or Ctrl+Enter confirms; Skip leaves it for later.'),
+  );
+}
+
+// ---------- QT calibration ----------
+
+const TIER_RANK: Record<QtTier, number> = { known: 0, possible: 1, conditional: 2, unassessed: 3, none: 4 };
+const DEFAULT_QT_NOTE = 'Weight 1.0 = a reference-strength QT effect (e.g. a known-risk drug at its usual therapeutic exposure) when the body holds the reference amount. Contributions scale linearly: weight × amount ÷ reference amount.';
+
+function renderQt() {
+  st.refreshers = [];
+  chipRefreshers.clear();
+  const q = st.qt;
+  const own = ownerMap();
+  const catName = new Map(st.queue!.categories.map((c) => [c.id, c.name]));
+  const catOf = (c: Compound) => own.get(c.id)?.category ?? '';
+  const rows = lib().compounds
+    .filter((c) => c.qt.tier !== 'none' && (!q.tier || c.qt.tier === q.tier) && (!q.category || catOf(c) === q.category))
+    .sort((a, b) => {
+      const v = q.key === 'name' ? a.name.localeCompare(b.name)
+        : q.key === 'category' ? (catName.get(catOf(a)) ?? '').localeCompare(catName.get(catOf(b)) ?? '') || a.name.localeCompare(b.name)
+        : q.key === 'weight' ? (b.qt.weight ?? -1) - (a.qt.weight ?? -1)
+        : TIER_RANK[a.qt.tier] - TIER_RANK[b.qt.tier] || a.name.localeCompare(b.name);
+      return v * q.dir;
+    });
+  const th = (key: typeof q.key, label: string) =>
+    h('th', { class: 'sortable', onclick: () => { q.dir = q.key === key ? -q.dir : 1; q.key = key; renderQt(); } }, label, q.key === key ? (q.dir > 0 ? ' ▴' : ' ▾') : '');
+  const noteBox = h('textarea', { rows: 2, placeholder: DEFAULT_QT_NOTE }, lib().qtCalibrationNote ?? '');
+  noteBox.addEventListener('input', () => {
+    const v = noteBox.value.trim();
+    if (v) lib().qtCalibrationNote = noteBox.value;
+    else delete lib().qtCalibrationNote;
+    changed();
+  });
+
+  const preview = h('div', { class: 'qt-preview' });
+  const calibrated = lib().compounds.filter((c) => c.qt.tier !== 'none' && c.qt.weight && c.qt.referenceAmountMg).sort((a, b) => a.name.localeCompare(b.name));
+  const renderPreview = () => {
+    const parts = q.preview.map((p) => {
+      const c = calibrated.find((x) => x.id === p.id);
+      return { c, mg: p.mg, load: c ? (c.qt.weight! * p.mg) / c.qt.referenceAmountMg! : 0 };
+    });
+    const max = Math.max(1, ...parts.map((x) => x.load));
+    preview.replaceChildren(
+      ...q.preview.map((p, i) => h('div', { class: 'row qt-prev-row' },
+        select(p.id, [['', '— compound —'], ...calibrated.map((c) => [c.id, `${c.name} (w ${c.qt.weight}, ref ${c.qt.referenceAmountMg} mg)`] as [string, string])], (v) => { p.id = v; renderPreview(); }),
+        h('input', { type: 'number', min: '0', step: 'any', value: String(p.mg), oninput: (ev: Event) => { p.mg = Number((ev.target as HTMLInputElement).value) || 0; renderPreview(); } }),
+        h('span', { class: 'field-hint' }, 'mg in body'),
+        h('span', { class: 'qt-bar' }, h('span', { style: `width:${(100 * parts[i].load) / max}%` })),
+        h('span', { class: 'qt-load' }, parts[i].c ? parts[i].load.toFixed(2) : '—'))),
+      h('div', { class: 'field-hint' }, `Summed relative load: ${parts.reduce((a, x) => a + x.load, 0).toFixed(2)}`));
+  };
+  renderPreview();
+
+  main.replaceChildren(
+    h('div', { class: 'ed-cand-head' }, h('h1', null, 'QT calibration'), h('span', { class: 'field-hint' }, `${rows.length} compounds`)),
+    field('Scale (saved in drugs.json as qtCalibrationNote)', noteBox),
+    h('details', { class: 'ed-sec', open: true }, h('summary', null, 'Preview: relative contributions on the shared scale'), preview),
+    h('div', { class: 'row rv-filters' },
+      field('Tier', select(q.tier, [['', 'All tiers'], ...QT_TIERS.filter((t) => t !== 'none').map((t) => [t, t] as [string, string])], (v) => { q.tier = v as QtTier | ''; renderQt(); })),
+      field('Category', select(q.category, [['', 'All categories'], ...st.queue!.categories.map((c) => [c.id, c.name] as [string, string])], (v) => { q.category = v; renderQt(); }))),
+    h('table', { class: 'ed-priority qt-table' },
+      h('thead', null, h('tr', null, th('name', 'Compound'), th('category', 'Category'), th('tier', 'Tier'), h('th', null, 'Provenance'), th('weight', 'Weight'),
+        h('th', null, 'Reference (mg)'), h('th', null, 'Terminal half-life'), h('th', null, 'QT source note'), h('th', null, 'Review'))),
+      h('tbody', null, ...rows.map((c) => {
+        const status = h('span');
+        const cell = h('td');
+        const refresh = () => {
+          const unknown = unknownParts(c, 'qt');
+          const errs = sectionIssues(st.validation?.errors ?? [], c, 'qt');
+          const rs = reviewState(c, 'qt');
+          status.className = `rv-state rv-${rs.cls}`;
+          status.textContent = rs.text;
+          cell.replaceChildren(status, ' ', h('button', {
+            class: 'btn btn-sm btn-primary', type: 'button', disabled: errs.length > 0, title: errs.map((x) => x.message).join('; ') || (unknown.length ? `Keeps unknown: ${unknown.join(', ')}` : ''),
+            onclick: () => {
+              const refused = confirmSection(c, 'qt', today(), unknown.length > 0);
+              if (refused) return toast(refused, 4000);
+              chipRefreshers.get(`${c.id}:qt`)?.();
+              changed();
+              refresh();
+            },
+          }, unknown.length ? 'Confirm as unknown' : 'Confirm'));
+        };
+        refresh();
+        st.refreshers.push(refresh);
+        const edit = () => { touched(c, 'qt'); refresh(); };
+        const note = c.sourceNotes.qt ?? '';
+        return h('tr', null,
+          h('td', null, c.name, ' ', h('code', null, c.id)),
+          h('td', null, catName.get(catOf(c)) ?? '—'),
+          h('td', null, select(c.qt.tier, QT_TIERS.map((t) => [t, t] as [string, string]), (v) => { c.qt.tier = v as QtTier; edit(); })),
+          h('td', null, provChip(c, 'qt')),
+          h('td', null, nullableNumber(c.qt.weight, (v) => { c.qt.weight = v; edit(); }, { min: '0', step: '0.1' })),
+          h('td', null, nullableNumber(c.qt.referenceAmountMg, (v) => { c.qt.referenceAmountMg = v; edit(); }, { min: '0' })),
+          h('td', null, c.kinetics.mode === 'intrinsic' ? formatRange(c.kinetics.halfLifeHours) : c.kinetics.mode),
+          h('td', { class: 'qt-note' }, note ? h('details', null, h('summary', null, note.length > 70 ? `${note.slice(0, 70)}…` : note), h('div', null, ...linkify(note))) : '—'),
+          cell);
+      }))),
   );
 }
 
