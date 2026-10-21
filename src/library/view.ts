@@ -5,7 +5,7 @@
 import './library.css';
 import { QT_COLORS } from '../chart';
 import { REPO_URL } from '../config';
-import type { LibraryIndex } from '../model';
+import { requiredLabel, type LibraryIndex } from '../model';
 import { RANGE_TYPE_LABEL, isRangeOnly, rangeBounds } from '../schema';
 import type { ProductSearch } from '../search';
 import type { Compound, Product, Range, Settings } from '../types';
@@ -41,7 +41,7 @@ const STATUS_TEXT: Record<DrugStatus, string> = {
   'no-data': 'No data yet',
 };
 const STATUS_SHORT: Record<DrugStatus, string> = { verified: 'Verified', 'verified-incomplete': 'Verified — incomplete', draft: 'Draft', 'no-data': 'No data yet' };
-const STATUS_FILTERS: [StatusFilter, string][] = [['verified', 'Verified'], ['draft', 'Draft'], ['incomplete', 'Incomplete data'], ['no-data', 'No data yet']];
+const STATUS_FILTERS: [StatusFilter, string][] = [['verified', 'Verified'], ['draft', 'Draft'], ['incomplete', 'Incomplete data'], ['not-modelled', 'Not modelled'], ['no-data', 'No data yet']];
 
 const RELEVANCE_TEXT = { active: 'active', inactive: 'inactive', unknown: 'relevance unknown' } as const;
 const TRI = (v: string) => (v === 'yes' ? 'yes' : v === 'no' ? 'no' : 'unassessed');
@@ -284,7 +284,7 @@ export function createLibraryView(ctx: LibraryCtx): LibraryView {
         stat(stats.drugs, 'drugs'), stat(stats.compounds, 'compounds'), stat(stats.products, 'products')),
       h('div', { class: 'lib-stats' },
         stat(stats.verified, 'verified', 'verified'), stat(stats.draft, 'draft', 'draft'),
-        stat(stats.incomplete, 'incomplete data'), stat(stats.noData, 'no data yet', 'no-data')),
+        stat(stats.incomplete, 'incomplete data'), stat(stats.notModelled, 'not modelled'), stat(stats.noData, 'no data yet', 'no-data')),
       h('p', { class: 'lib-muted' },
         'Choose a drug on the left or search by name, brand or alias. Each entry shows what the app uses: kinetics, metabolites, safety flags and the cited sources. ',
         h('a', { href: 'help.html#library-view', target: '_blank', rel: 'noopener' }, 'How the library works')));
@@ -313,11 +313,24 @@ export function createLibraryView(ctx: LibraryCtx): LibraryView {
 
   function kineticsBlock(c: Compound, isSelf: boolean) {
     const k = c.kinetics;
-    const mode = k.mode === 'intrinsic' ? 'own half-life' : k.mode === 'formation-limited' ? 'formation-limited — tracks its parent’s half-life' : 'unknown — no half-life yet';
+    const mode = k.mode === 'intrinsic' ? 'own half-life'
+      : k.mode === 'formation-limited' ? 'formation-limited — tracks its parent’s half-life'
+      : k.mode === 'zero-order' ? 'zero-order — fixed elimination rate per kg'
+      : k.mode === 'not-modelled' ? 'not modelled — exposure only'
+      : 'unknown — no half-life yet';
+    const rate = k.zeroOrderRateMgPerKgPerHour;
+    const rateText = (v: number | null) => (v === null ? '?' : `${+v.toPrecision(3)}`);
     return h('div', { class: 'lib-card' },
       h('div', { class: 'lib-card-head' }, isSelf ? h('strong', null, c.name) : link(c.id, c.name), muted(` · ${mode}`),
-        c.isMetabolite ? h('span', { class: `lib-rel rel-${c.clinicalRelevance}` }, RELEVANCE_TEXT[c.clinicalRelevance]) : null),
+        c.isMetabolite ? h('span', { class: `lib-rel rel-${c.clinicalRelevance}` }, RELEVANCE_TEXT[c.clinicalRelevance]) : null,
+        c.endogenous ? h('span', { class: 'lib-chip-endo', title: 'Also produced by the body. With unknown kinetics only the excess over baseline would matter, which isn’t modelled.' }, 'endogenous') : null),
       k.mode === 'intrinsic' ? rangeView('Half-life', k.halfLifeHours) : null,
+      k.mode === 'zero-order'
+        ? kv('Elimination rate', rate && rate.typical !== null
+            ? `${rateText(rate.typical)} mg/kg/h${rate.min !== null || rate.max !== null ? ` (${rateText(rate.min)}–${rateText(rate.max)})` : ''} · × body weight`
+            : muted('unknown — products containing it have no data yet'))
+        : null,
+      k.mode === 'not-modelled' ? kv('Why not modelled', k.notModelledReason || muted('no reason recorded')) : null,
       k.earlyPhase ? rangeView('Early phase', k.earlyPhase.halfLifeHours,
         `Clears ${k.earlyPhase.fraction === null ? 'an unknown share' : `${Math.round(k.earlyPhase.fraction * 100)}%`} of each dose before the terminal phase.`) : null,
       k.steadyState ? rangeView('At steady state', k.steadyState.halfLifeHours,
@@ -338,9 +351,10 @@ export function createLibraryView(ctx: LibraryCtx): LibraryView {
       const a = pos.get(e.from)!;
       const b = pos.get(e.to)!;
       const x1 = a.x + W, y1 = a.y + H / 2, x2 = b.x, y2 = b.y + H / 2, mx = (x1 + x2) / 2;
-      const [frac, mult] = e.label.split(' · ');
+      const [frac, ...rest] = e.label.split(' · ');
+      const mult = rest.join(' · ');
       svg.append(
-        s('path', { d: `M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`, class: 'lib-edge' }),
+        s('path', { d: `M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`, class: e.conditional ? 'lib-edge conditional' : 'lib-edge' }),
         s('text', { x: x2 - 8, y: y2 - (mult ? 17 : 5), class: 'lib-edge-label', 'text-anchor': 'end' }, frac),
         mult ? s('text', { x: x2 - 8, y: y2 - 5, class: 'lib-edge-label', 'text-anchor': 'end' }, mult) : '');
     }
@@ -473,8 +487,11 @@ export function createLibraryView(ctx: LibraryCtx): LibraryView {
     const i = p.input;
     const input = i.type === 'bolus' ? 'immediate (bolus)'
       : i.type === 'first-order-release' ? (i.releaseHalfLifeHours?.typical ? `first-order release, release half-life ${hoursText(i.releaseHalfLifeHours.typical)}` : 'first-order release, release half-life unknown — simulated as immediate')
+      : p.doseUnit === 'session' ? `exposure session, ${i.defaultDurationHours ? `default ${i.defaultDurationHours} h` : 'duration entered per session (1 h default)'}`
       : `zero-order (patch or infusion), ${i.defaultDurationHours ? `default wear ${i.defaultDurationHours} h` : 'no default wear time (24 h assumed)'}`;
     const td = p.typicalDose;
+    const name = (id: string) => idx.compounds.get(id)?.name ?? id;
+    const prodrugs = p.components.filter((c) => c.administeredAs || c.massFactor != null);
     return h('div', { class: 'lib-card' },
       h('div', { class: 'lib-card-head' }, h('strong', null, p.name), p === d.primary ? h('span', { class: 'lib-pill' }, 'used for “at a glance”') : null),
       kv('Route', p.route),
@@ -482,6 +499,10 @@ export function createLibraryView(ctx: LibraryCtx): LibraryView {
       kv('Dose unit', p.doseUnit),
       kv('Input', input),
       kv('Typical dose', td.amount ? `${td.amount} ${td.unit}${td.basis ? ` (${td.basis})` : ''}` : muted('not set')),
+      ...prodrugs.map((c) => kv('Prodrug', h('span', null,
+        'administered as ', link(c.administeredAs ?? c.compound, name(c.administeredAs ?? c.compound)),
+        ', modelled as ', link(c.compound, name(c.compound)),
+        muted(c.massFactor != null ? ` · × ${c.massFactor} (molar mass ratio)` : ' · mass factor unknown')))),
       p.components.length > 1 || p.components.some((c) => c.saltFactor !== null || c.bioavailability !== null)
         ? kv('Components', h('ul', { class: 'lib-comp' }, p.components.map((c) => h('li', null,
           link(c.compound, idx.compounds.get(c.compound)?.name ?? c.compound),
@@ -500,7 +521,7 @@ export function createLibraryView(ctx: LibraryCtx): LibraryView {
       section('Where it comes from',
         kv('Formed from', c.formedFrom.length
           ? h('span', null, c.formedFrom.map((f, i) => [i ? ', ' : '', link(f.compound, idx.compounds.get(f.compound)?.name ?? f.compound),
-            muted(` (fraction ${f.fraction ?? 'unknown'})`)]).flat())
+            muted(` (fraction ${f.fraction ?? 'unknown'}${f.condition ? `, only with ${requiredLabel(idx, f.condition.requiresCompound)}` : ''})`)]).flat())
           : muted('unknown')),
         kv('Part of', e.partOf.length ? h('span', null, e.partOf.map((d, i) => [i ? ', ' : '', link(d.id, d.name)]).flat()) : muted('no drug in the library')),
         h('p', { class: 'lib-muted lib-small' }, c.clinicalRelevance === 'inactive'

@@ -105,6 +105,17 @@ describe('library entries and status', () => {
     expect(drug(model, 'partial').state).toMatchObject({ status: 'draft', incomplete: true });
   });
 
+  it('a not-modelled drug has data (never "no data yet"), its own filter and an exposure-only glance', () => {
+    const lib = fixture();
+    lib.compounds.push(compound('n2o', null, { kinetics: { mode: 'not-modelled', halfLifeHours: null, earlyPhase: null, steadyState: null, notModelledReason: 'exhaled within minutes' } }));
+    lib.products.push(product('n2o_inhaled', 'N2o (Inhaled)', 'n2o', 'Inhaled', 'ad', { doseUnit: 'session' }));
+    const { model, search, idx } = setup(lib);
+    expect(drug(model, 'n2o').state).toMatchObject({ status: 'draft', noData: false, incomplete: false, notModelled: true });
+    expect(libraryStats(lib)).toMatchObject({ noData: 1, notModelled: 1 });
+    expect(filterEntries(model, search, q({ statuses: new Set(['not-modelled']) })).map((e) => e.id)).toEqual(['n2o']);
+    expect(atAGlance(idx, drug(model, 'n2o'), emptySession().settings).text).toMatch(/^Not modelled — exhaled within minutes\./);
+  });
+
   it('a drug is only verified when its whole metabolite tree is', () => {
     const lib = fixture();
     lib.compounds.find((c) => c.id === 'morphine')!.verified = false;

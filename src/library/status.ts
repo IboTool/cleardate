@@ -1,6 +1,6 @@
 // Live data-status figures and wording, shared by the Library view, the PDF export and the help page.
 
-import { productHasData, missingKinetics, buildIndex, type LibraryIndex } from '../model';
+import { productHasData, productNotModelled, missingKinetics, buildIndex, type LibraryIndex } from '../model';
 import { drugIdOf, verifiedDrugs } from '../validate';
 import type { Library, Product } from '../types';
 
@@ -23,6 +23,7 @@ export interface LibraryStats {
   draft: number;
   incomplete: number;
   noData: number;
+  notModelled: number;
   /** Latest verifiedDate (YYYY-MM-DD), or null if nothing is verified yet. */
   lastVerified: string | null;
 }
@@ -43,6 +44,8 @@ export interface DrugState {
   /** Primary product is Incomplete (some relevant compound has no kinetics). */
   incomplete: boolean;
   noData: boolean;
+  /** Primary product is deliberately not modelled (exposure only, v2.2 §3): has data, never a clear date. */
+  notModelled: boolean;
 }
 
 export function drugStates(idx: LibraryIndex, unknownAsFL: boolean): Map<string, DrugState> {
@@ -53,10 +56,11 @@ export function drugStates(idx: LibraryIndex, unknownAsFL: boolean): Map<string,
   const out = new Map<string, DrugState>();
   for (const [id, ps] of byDrug) {
     const p = primaryProduct(ps);
-    const noData = !productHasData(idx, p);
-    const incomplete = !noData && missingKinetics(idx, p, unknownAsFL).length > 0;
+    const notModelled = productNotModelled(idx, p);
+    const noData = !notModelled && !productHasData(idx, p);
+    const incomplete = !noData && !notModelled && missingKinetics(idx, p, unknownAsFL).length > 0;
     const v = verified.get(id) ?? false;
-    out.set(id, { verified: v, noData, incomplete, status: v ? (incomplete || noData ? 'verified-incomplete' : 'verified') : noData ? 'no-data' : 'draft' });
+    out.set(id, { verified: v, noData, incomplete, notModelled, status: v ? (incomplete || noData ? 'verified-incomplete' : 'verified') : noData ? 'no-data' : 'draft' });
   }
   return out;
 }
@@ -76,6 +80,7 @@ export function libraryStats(lib: Library, idx: LibraryIndex = buildIndex(lib), 
     draft: states.filter((s) => s.status === 'draft').length,
     incomplete: states.filter((s) => s.incomplete).length,
     noData: states.filter((s) => s.noData).length,
+    notModelled: states.filter((s) => s.notModelled).length,
     lastVerified: dates.at(-1) ?? null,
   };
 }

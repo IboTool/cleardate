@@ -1,5 +1,5 @@
-// Schema v2.1 for public/drugs.json and for the in-browser session (docs/ClearDate_Spec_v2.md and
-// the v2.1 addendum). Unknown numbers are `null`, never 0. Safety enums have an explicit "unassessed" value.
+// Schema v2.2 for public/drugs.json and for the in-browser session (docs/ClearDate_Spec_v2.md and
+// the v2.1 / v2.2 deltas). Unknown numbers are `null`, never 0. Safety enums have an explicit "unassessed" value.
 
 export const QT_TIERS = ['unassessed', 'none', 'conditional', 'possible', 'known'] as const;
 export const INHIBITOR_STRENGTHS = ['unassessed', 'none', 'weak', 'moderate', 'strong'] as const;
@@ -15,9 +15,10 @@ export const RECEPTOR_ACTIONS = [
 ] as const;
 export const PHENOTYPES = ['poor', 'intermediate', 'normal', 'ultrarapid'] as const;
 export const RANGE_TYPES = ['observed-range', 'mean-2sd', 'cohort-means', 'cv', 'single-value'] as const;
-export const KINETIC_MODES = ['intrinsic', 'formation-limited', 'unknown'] as const;
+export const KINETIC_MODES = ['intrinsic', 'formation-limited', 'zero-order', 'not-modelled', 'unknown'] as const;
 export const PROVENANCE_TAGS = ['checked', 'recall', 'estimate', 'gap', 'reviewer'] as const;
-export const DOSE_UNITS = ['mg', 'µg', 'µg/h', 'mg/h'] as const;
+/** "standard drinks" and "g" are alcohol units; "session" is an exposure session with a duration (no mass). */
+export const DOSE_UNITS = ['mg', 'µg', 'g', 'standard drinks', 'µg/h', 'mg/h', 'session'] as const;
 export const FORMULATIONS = ['IR', 'ER', 'SR', 'XL', 'XR', 'CR', 'depot', 'patch'] as const;
 export const INPUT_TYPES = ['bolus', 'first-order-release', 'zero-order'] as const;
 export const DOSE_BASES = ['maintenance', 'single-use', 'per-injection', 'rate'] as const;
@@ -25,7 +26,8 @@ export const CLINICAL_RELEVANCE = ['active', 'inactive', 'unknown'] as const;
 export const COMPOUND_SECTIONS = [
   'halfLife', 'metabolism', 'relevance', 'molecularWeight', 'cyp2d6', 'qt', 'receptors', 'lingeringEffects', 'nonlinearKinetics',
 ] as const;
-export const PRODUCT_SECTIONS = ['class', 'aliases', 'components', 'input', 'typicalDose'] as const;
+/** `conversion` applies to prodrug products only (a component with administeredAs or massFactor). */
+export const PRODUCT_SECTIONS = ['class', 'aliases', 'components', 'conversion', 'input', 'typicalDose'] as const;
 
 export type QtTier = (typeof QT_TIERS)[number];
 export type InhibitorStrength = (typeof INHIBITOR_STRENGTHS)[number];
@@ -73,6 +75,8 @@ export interface FormedFrom {
   fraction: number | null;
   /** Per-phenotype multiplier on the fraction (e.g. codeine → morphine). 0 = not formed. */
   cyp2d6Multiplier: PhenotypeMap | null;
+  /** Formed only while this compound is also in the body (e.g. cocaine → cocaethylene needs ethanol). */
+  condition?: { requiresCompound: string } | null;
 }
 
 export interface Receptor {
@@ -88,6 +92,10 @@ export interface Kinetics {
   earlyPhase: { fraction: number | null; halfLifeHours: Range | null } | null;
   /** Half-life that applies once dosing has run continuously for afterDays. */
   steadyState: { afterDays: number | null; halfLifeHours: Range | null } | null;
+  /** mode "zero-order": constant elimination rate per kg body weight (alcohol). */
+  zeroOrderRateMgPerKgPerHour?: Range | null;
+  /** mode "not-modelled": shown to users instead of a clear date. */
+  notModelledReason?: string;
 }
 
 export type ProvenanceMap<K extends string> = Partial<Record<K, Provenance | null>>;
@@ -102,6 +110,8 @@ export interface Compound {
   formedFrom: FormedFrom[];
   /** Parents and directly dosed compounds always count as active, whatever this says. */
   clinicalRelevance: ClinicalRelevance;
+  /** Also produced by the body: only the excess over baseline is simulated; unknown kinetics don't block once relevance is reviewed. */
+  endogenous?: boolean;
   molecularWeight: number | null;
   kinetics: Kinetics;
   cyp2d6: {
@@ -134,6 +144,10 @@ export interface Component {
   saltFactor: number | null;
   /** Fraction reaching the body by this route (0–1). null = not applied. */
   bioavailability: number | null;
+  /** Prodrug: the compound actually taken (display only); `compound` is what is modelled. */
+  administeredAs?: string | null;
+  /** Mass of the modelled compound per unit mass administered (molar conversion), 0 < x ≤ 2. */
+  massFactor?: number | null;
 }
 
 export interface ProductInput {
@@ -170,7 +184,7 @@ export interface Product {
 }
 
 export interface Library {
-  schemaVersion: 2.1;
+  schemaVersion: 2.2;
   /** The scale QT weights are calibrated on (editor's QT calibration view). */
   qtCalibrationNote?: string;
   categories: Category[];
@@ -196,7 +210,7 @@ export interface DoseEntry {
   kind: 'single' | 'regimen';
   time?: string; // single doses; for patches the application time
   regimen?: Regimen;
-  /** Zero-order input (patch / infusion): hours from application to removal. */
+  /** Zero-order input (patch / infusion) or an exposure session: hours from start to end. */
   durationHours?: number;
 }
 
@@ -250,6 +264,8 @@ export interface Settings {
   assumedCv: number;
   /** Simulate `unknown` compounds as formation-limited (labelled as an assumption). */
   unknownAsFormationLimited: boolean;
+  /** Grams of ethanol in one standard drink (14 g US; 10 g UK/AU; 8 g UK unit). */
+  standardDrinkGrams: number;
   clinicName: string;
   demoData: boolean;
 }

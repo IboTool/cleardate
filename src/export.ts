@@ -3,8 +3,8 @@
 import * as echarts from './echarts';
 import type { jsPDF as JsPDF } from 'jspdf';
 import { buildChartOption } from './chart';
-import { ageFrom, fmtDate, fmtDateTime, fmtEvery } from './format';
-import { clearStatusText, combinationText, describeIbogaineDose, expandDose, IBOGAINE_KIND_LABEL, isRateUnit, parseLocal, type LibraryIndex, type ProductResult, type Scenario } from './model';
+import { ageFrom, fmtDate, fmtDateTime, fmtDoseAmount, fmtEvery } from './format';
+import { clearStatusText, combinationText, describeIbogaineDose, expandDose, HOUR, IBOGAINE_KIND_LABEL, isRateUnit, isSessionUnit, parseLocal, type LibraryIndex, type ProductResult, type Scenario } from './model';
 import { libraryStats, verifiedCountText } from './library/status';
 import { isDraft } from './schema';
 import type { Session } from './types';
@@ -66,14 +66,18 @@ function doseRows(session: Session, idx: LibraryIndex): string[][] {
     const flag = p ? (p.userEntered ? ' [user-entered]' : isDraft(p) ? ' [draft]' : !p.verified ? ' [unverified]' : '') : '';
     const events = expandDose(d, p?.input.defaultDurationHours);
     const patch = isRateUnit(d.unit);
+    const sess = isSessionUnit(d.unit);
     const n = events.length;
     const when = d.kind === 'single'
       ? d.time
-        ? patch && events[0]?.end ? `applied ${fmtDateTime(events[0].time, s)}, removed ${fmtDateTime(events[0].end, s)}` : fmtDateTime(new Date(d.time).getTime(), s)
+        ? events[0]?.end
+          ? `${patch ? 'applied' : 'started'} ${fmtDateTime(events[0].time, s)}, ${patch ? 'removed' : 'ended'} ${fmtDateTime(events[0].end, s)}`
+          : fmtDateTime(new Date(d.time).getTime(), s)
         : '—'
-      : `${fmtEvery(d.regimen!.every, d.regimen!.unit)}, ${fmtDateTime(new Date(d.regimen!.start).getTime(), s)} → ${fmtDateTime(new Date(d.regimen!.end).getTime(), s)} (${n} ${patch ? 'applications' : 'doses'})`;
+      : `${fmtEvery(d.regimen!.every, d.regimen!.unit)}, ${fmtDateTime(new Date(d.regimen!.start).getTime(), s)} → ${fmtDateTime(new Date(d.regimen!.end).getTime(), s)} (${n} ${patch ? 'applications' : sess ? 'sessions' : 'doses'})`;
     const combo = p ? combinationText(idx, p, d.amount, d.unit) : null;
-    return [`${p?.name ?? d.productId}${flag}`, combo ?? `${d.amount} ${d.unit}`, when];
+    const amount = sess ? `session${events[0]?.end ? ` (${+((events[0].end - events[0].time) / HOUR).toPrecision(3)} h)` : ''}` : combo ?? fmtDoseAmount(d.amount, d.unit);
+    return [`${p?.name ?? d.productId}${flag}`, amount, when];
   });
 }
 
@@ -83,7 +87,9 @@ function clearRows(scn: Scenario, session: Session): string[][] {
   return scn.products.filter((r) => !r.isIbogaine).map((r) => [
     `${r.name}${r.product.userEntered ? ' [user-entered]' : r.status === 'incomplete' && verifiedEntry(r) ? ' [verified - incomplete data]' : ''}`,
     clearStatusText(r, fmt),
-    r.status === 'incomplete' ? (r.clearAtMax !== null ? `not before ${fmt(r.clearAtMax)}` : '—') : r.clearAtMax === null ? 'beyond window' : fmt(r.clearAtMax),
+    r.status === 'not-modelled' || r.status === 'needs-weight' ? '—'
+      : r.status === 'incomplete' ? (r.clearAtMax !== null ? `not before ${fmt(r.clearAtMax)}` : '—')
+      : r.clearAtMax === null ? 'beyond window' : fmt(r.clearAtMax),
   ]);
 }
 
@@ -95,6 +101,8 @@ export function assumptionLines(scn: Scenario): { product: string; lines: string
   for (const r of scn.products) {
     const lines: string[] = [];
     const sentence = (a: string) => a.charAt(0).toUpperCase() + a.slice(1) + '.';
+    if (r.status === 'not-modelled') lines.push(`Not modelled — ${r.notModelledReason}. Exposures are shown as markers; no clear date.`);
+    if (r.status === 'needs-weight') lines.push('Needs body weight — alcohol elimination scales with weight, so it was not simulated.');
     if (r.status === 'incomplete') lines.push(`Incomplete clear date — missing kinetics for: ${r.missing.join(', ')} (date shown is a lower bound).`);
     if (r.status === 'incomplete' && verifiedEntry(r)) lines.push('Verified — incomplete data: every section was reviewed, but the kinetics above are confirmed unknown.');
     for (const a of r.assumptions) lines.push(sentence(a));

@@ -32,6 +32,11 @@ export function fmtAmount(v: number, unit: string): string {
   return `${s} ${unit}`;
 }
 
+/** A dose amount as entered: "1 standard drink", "2.5 standard drinks", "10 mg". */
+export function fmtDoseAmount(v: number, unit: string): string {
+  return unit === 'standard drinks' && v === 1 ? '1 standard drink' : `${v} ${unit}`;
+}
+
 export function fmtDuration(hours: number): string {
   if (hours < 48) return `${+hours.toFixed(1)} h`;
   return `${+(hours / 24).toFixed(1)} d`;

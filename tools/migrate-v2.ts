@@ -26,8 +26,8 @@ if (skipped) {
   process.exit(0);
 }
 
-// Fields that only arrive with migrate-v2.1 aren't errors at this stage.
-const V21_ONLY = /schemaVersion must be 2\.1|clinicalRelevance "undefined"|reviewedDates missing/;
+// Fields that only arrive with migrate-v2.1 / v2.2 aren't errors at this stage.
+const V21_ONLY = /schemaVersion must be 2\.\d|clinicalRelevance "undefined"|reviewedDates missing/;
 const all = validateLibrary(lib);
 const v = { ...all, errors: all.errors.filter((e) => !V21_ONLY.test(e.message)) };
 console.log(`Compounds ${lib.compounds.length}; products ${report.counts['products in']} → ${lib.products.length}.`);

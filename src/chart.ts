@@ -5,7 +5,7 @@ import * as echarts from './echarts';
 import type { EChartsOption, CustomSeriesRenderItemAPI, CustomSeriesRenderItemParams, SeriesOption } from 'echarts';
 import { fmtAmount, fmtAxis, fmtDateTime } from './format';
 import { valueAt } from './pk';
-import { DAY, IBOGAINE_KIND_LABEL, isRateUnit, pmNotQuantified, strongestAt, toMg, type CompoundCurve, type CypInterval, type ProductResult, type QtLane, type Scenario } from './model';
+import { DAY, HOUR, IBOGAINE_KIND_LABEL, isIntervalUnit, pmNotQuantified, strongestAt, toMg, type CompoundCurve, type CypInterval, type ProductResult, type QtLane, type Scenario } from './model';
 import type { QtTier, Session, Settings } from './types';
 
 export type Theme = 'dark' | 'light';
@@ -91,9 +91,16 @@ export function curveColor(r: ProductResult, c: CompoundCurve) {
   return c.depth === 0 ? r.color : lighten(r.color, Math.min(0.6, c.depth * 0.18));
 }
 
-/** mg of the most recent discrete dose, or 0 for patches / no doses (percent mode then falls back to mg). */
-const latestDoseMg = (r: ProductResult) => (r.latest && !isRateUnit(r.latest.unit) ? toMg(r.latest.amount, r.latest.unit) : 0);
-const percentMode = (r: ProductResult, s: Session) => s.settings.units === 'percent' && latestDoseMg(r) > 0;
+/** mg of the most recent discrete dose, or 0 for patches / sessions / no doses (percent mode then falls back to mg). */
+const latestDoseMg = (r: ProductResult, s: Session) =>
+  (r.latest && !isIntervalUnit(r.latest.unit) ? toMg(r.latest.amount, r.latest.unit, s.settings.standardDrinkGrams) : 0);
+const percentMode = (r: ProductResult, s: Session) => s.settings.units === 'percent' && latestDoseMg(r, s) > 0;
+
+/** Products drawn as exposure markers instead of curves: not modelled, or alcohol without body weight. */
+export const isExposureOnly = (r: ProductResult) => r.status === 'not-modelled' || r.status === 'needs-weight';
+
+/** Short status shown next to exposure markers. */
+export const exposureLabel = (r: ProductResult) => `${r.name} — ${r.status === 'needs-weight' ? 'needs body weight' : 'not modelled'}`;
 
 export function unitLabel(r: ProductResult, c: CompoundCurve, s: Session): string {
   if (c.normalized) return '% of own peak';
@@ -104,7 +111,7 @@ export function unitLabel(r: ProductResult, c: CompoundCurve, s: Session): strin
 /** Convert simulated amounts to display units. Normalized curves are % of their own peak. */
 export function toDisplay(r: ProductResult, c: CompoundCurve, eq: number, s: Session): number {
   if (c.normalized) return c.peak > 0 ? (eq / c.peak) * 100 : 0;
-  if (percentMode(r, s)) return (eq / latestDoseMg(r)) * 100;
+  if (percentMode(r, s)) return (eq / latestDoseMg(r, s)) * 100;
   return eq * (c.mgFactor ?? 1);
 }
 
@@ -405,6 +412,38 @@ export function buildChartOption(scn: Scenario, session: Session, o: ChartOpts):
       },
     } as SeriesOption);
 
+  // Exposure markers for products without a curve: a tick per dose, a bar across each session / application.
+  const exposures = scn.products.filter(isExposureOnly).flatMap((r, row) => r.doses.map((d, i) => ({ r, d, row, first: i === 0 })));
+  if (exposures.length)
+    series.push({
+      type: 'custom',
+      id: 'exposures',
+      xAxisIndex: 0,
+      yAxisIndex: 0,
+      silent: true,
+      clip: true,
+      z: 11,
+      animation: false,
+      data: exposures.map((x) => [x.d.time, x.d.end ?? x.d.time]),
+      encode: { x: [0, 1] },
+      renderItem: (p: CustomSeriesRenderItemParams, api: CustomSeriesRenderItemAPI) => {
+        const { r, d, row, first } = exposures[p.dataIndex];
+        const cs = p.coordSys as unknown as { y: number; height: number };
+        const a = api.coord([d.time, log ? logFloor : 0])[0];
+        const z = d.end !== undefined ? api.coord([d.end, log ? logFloor : 0])[0] : a;
+        const y = cs.y + cs.height - 40 - row * 16;
+        const op = dim(r.key) ? 0.2 : 1;
+        const children: unknown[] = d.end !== undefined
+          ? [{ type: 'rect', shape: { x: a, y: y - 4, width: Math.max(3, z - a), height: 8, r: 2 }, style: { fill: hexToRgba(r.color, 0.8 * op), stroke: r.color, lineWidth: 1, opacity: op } }]
+          : [
+              { type: 'line', shape: { x1: a, y1: y - 7, x2: a, y2: y + 7 }, style: { stroke: r.color, lineWidth: 2.5, opacity: op } },
+              { type: 'circle', shape: { cx: a, cy: y - 7, r: 2.5 }, style: { fill: r.color, opacity: op } },
+            ];
+        if (first) children.push({ type: 'text', x: Math.max(a, z) + 6, y: y - 6, style: { text: exposureLabel(r), fill: r.color, font: '10px Inter Variable, Inter, system-ui, sans-serif', opacity: op } });
+        return { type: 'group', children } as never;
+      },
+    } as SeriesOption);
+
   // ---- tracks ----
   const titles: unknown[] = [];
   tracks.forEach((t, i) => {
@@ -631,9 +670,13 @@ function tooltipHtml(scn: Scenario, session: Session, t: number | undefined): st
       const indent = c.depth > 0 ? `padding-left:${c.depth * 10}px;opacity:${c.inactive ? '.55' : '.85'}` : 'font-weight:600';
       const unit = unitLabel(r, c, session);
       const shown = c.normalized ? `${v.toFixed(0)}% of peak` : fmtAmount(v, unit === '% of dose' ? '%' : unit);
+      const prodrug = c.depth === 0 ? r.prodrug?.find((x) => x.modelledAs === c.compound.name) : undefined;
       const tags = [
+        prodrug ? `administered as ${prodrug.administeredAs}, modelled as ${prodrug.modelledAs}` : '',
         c.inactive ? 'inactive — not in clear date' : '',
         c.normalized ? 'amount unknown — timing only' : c.formationLimited ? 'formation-limited' : '',
+        c.notes.some((n) => /formed because .* was also taken/.test(n)) ? c.notes.find((n) => /formed because/.test(n))!.replace(/^[^:]*: /, '') : '',
+        c.compound.endogenous ? 'endogenous — excess over baseline only' : '',
       ].filter(Boolean);
       const pmCaveat = r.pmUnquantified?.includes(c.compound.name)
         ? ` <span style="color:#ffb74d;font-weight:400">· poor-metaboliser effect ${pmNotQuantified([c.compound.name])}</span>`
@@ -652,6 +695,16 @@ function tooltipHtml(scn: Scenario, session: Session, t: number | undefined): st
       rows.push(`<div style="opacity:.6;font-size:11px;max-width:340px;white-space:normal;margin:1px 0 4px 14px">${[...r.excluded, ...r.notes].join('; ')}</div>`);
     if (r.status === 'incomplete' && present)
       rows.push(`<div style="opacity:.75;font-size:11px;margin:0 0 4px 14px;color:#ffb74d">Incomplete — no kinetics for ${r.missing.join(', ')}</div>`);
+    if (isExposureOnly(r)) {
+      // During an exposure (or within an hour of a tick) and while its lingering band lasts.
+      const exposed = r.doses.some((d) => t >= d.time - HOUR && t <= (d.end ?? d.time + HOUR));
+      const lingeringHere = scn.lingering.some((b) => b.productKey === r.key && t >= b.start && t <= b.end);
+      if (exposed || lingeringHere)
+        rows.push(
+          `<div style="display:flex;gap:6px;font-weight:600"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${r.color};margin-top:4px"></span>${r.name}${exposed ? ' <span style="opacity:.6;font-weight:400">· exposure</span>' : ''}</div>` +
+            `<div style="opacity:.75;font-size:11px;max-width:340px;white-space:normal;margin:0 0 4px 14px">${r.status === 'needs-weight' ? 'Needs body weight — alcohol elimination scales with weight' : `Not modelled — ${r.notModelledReason}`}</div>`,
+        );
+    }
   }
   const cyp = strongestAt(scn.cyp, t);
   const cypStrength = (iv: CypInterval) => (iv.strengthUnassessed ? `${CYP_UNASSESSED_LABEL} (counted as at least weak)` : iv.strength);

@@ -3,7 +3,7 @@
 import { emptyCompound, emptyProduct, SCHEMA_VERSION, slug } from '../src/schema';
 import type { Category, Library, Product } from '../src/types';
 import { assignRelevance } from './migrate-v21-lib';
-import { applyProductRules, applyV21ProductRules } from './product-rules';
+import { applyProductRules, applyV21ProductRules, applyV22ProductRules } from './product-rules';
 
 export interface Candidate {
   id: string;
@@ -64,6 +64,7 @@ export function buildInitialLibrary(src: CandidatesFile): Library {
   const lib: Library = { schemaVersion: SCHEMA_VERSION, categories: src.categories.map((c) => ({ ...c })), compounds, products };
   applyProductRules(lib, { annotate: false });
   applyV21ProductRules(lib, { annotate: false });
+  applyV22ProductRules(lib, { annotate: false });
   assignRelevance(lib);
   return lib;
 }

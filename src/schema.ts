@@ -7,7 +7,7 @@ import {
   type RangeType,
 } from './types';
 
-export const SCHEMA_VERSION = 2.1 as const;
+export const SCHEMA_VERSION = 2.2 as const;
 
 export const RANGE_TYPE_LABEL: Record<RangeType, string> = {
   'observed-range': 'observed range',
@@ -171,9 +171,18 @@ export function compoundHasData(c: Compound): boolean {
   );
 }
 
-/** A compound the simulator can run on its own (formation-limited needs a parent, so not here). */
+/** A compound the simulator can run on its own (formation-limited needs a parent, so not here). Zero-order counts once it has a rate. */
 export const hasIntrinsicKinetics = (c: Compound | undefined): boolean =>
-  !!c && c.kinetics.mode === 'intrinsic' && hasTypical(c.kinetics.halfLifeHours);
+  !!c && ((c.kinetics.mode === 'intrinsic' && hasTypical(c.kinetics.halfLifeHours)) || hasZeroOrderRate(c));
+
+export const hasZeroOrderRate = (c: Compound | undefined): boolean =>
+  !!c && c.kinetics.mode === 'zero-order' && hasTypical(c.kinetics.zeroOrderRateMgPerKgPerHour);
+
+export const isNotModelled = (c: Compound | undefined): boolean => !!c && c.kinetics.mode === 'not-modelled';
+
+/** A prodrug product: some component is administered as another compound or mass-converted. */
+export const isProdrugProduct = (p: Pick<Product, 'components'>): boolean =>
+  (p.components ?? []).some((c) => !!c.administeredAs || c.massFactor != null);
 
 // ---------- clinical relevance ----------
 
@@ -200,7 +209,9 @@ export const FLAG_PREFIX = 'REVIEWER FLAG:';
 export const compoundSections = (c: Pick<Compound, 'isMetabolite'>): CompoundSection[] =>
   COMPOUND_SECTIONS.filter((s) => s !== 'relevance' || c.isMetabolite);
 
-export const productSections = (): ProductSection[] => [...PRODUCT_SECTIONS];
+/** Sections a product is reviewed by; `conversion` applies to prodrug products only. */
+export const productSections = (p: Pick<Product, 'components'>): ProductSection[] =>
+  PRODUCT_SECTIONS.filter((s) => s !== 'conversion' || isProdrugProduct(p));
 
 type Reviewable = { provenance?: Record<string, string | null | undefined>; sourceNotes?: Record<string, string | undefined> };
 
@@ -220,7 +231,7 @@ export function unreviewedSections(e: Reviewable, sections: readonly string[]): 
 const RANGE_KEYS = ['typical', 'min', 'max', 'rangeType', 'cv'];
 const PHEN_KEYS = ['poor', 'intermediate', 'normal', 'ultrarapid'];
 const COMPOUND_KEYS = [
-  'id', 'name', 'aliases', 'isMetabolite', 'formedFrom', 'clinicalRelevance', 'molecularWeight', 'kinetics', 'cyp2d6', 'qt',
+  'id', 'name', 'aliases', 'isMetabolite', 'formedFrom', 'clinicalRelevance', 'endogenous', 'molecularWeight', 'kinetics', 'cyp2d6', 'qt',
   'receptors', 'receptorsAssessed', 'lingeringEffects', 'nonlinearKinetics', 'provenance', 'sourceNotes', 'reviewedDates',
   'source', 'verified', 'verifiedDate',
 ];
@@ -254,15 +265,17 @@ function canonicalCompound(c: Compound): Compound {
   return ordered(
     {
       ...rest,
-      formedFrom: (c.formedFrom ?? []).map((f) => ordered({ ...f, cyp2d6Multiplier: phen(f.cyp2d6Multiplier) }, ['compound', 'fraction', 'cyp2d6Multiplier'])),
+      formedFrom: (c.formedFrom ?? []).map((f) =>
+        ordered({ ...f, cyp2d6Multiplier: phen(f.cyp2d6Multiplier), condition: sub(f.condition, ['requiresCompound']) }, ['compound', 'fraction', 'cyp2d6Multiplier', 'condition'])),
       kinetics: k && ordered(
         {
           ...k,
           halfLifeHours: range(k.halfLifeHours),
           earlyPhase: k.earlyPhase && ordered({ ...k.earlyPhase, halfLifeHours: range(k.earlyPhase.halfLifeHours) }, ['fraction', 'halfLifeHours']),
           steadyState: k.steadyState && ordered({ ...k.steadyState, halfLifeHours: range(k.steadyState.halfLifeHours) }, ['afterDays', 'halfLifeHours']),
+          zeroOrderRateMgPerKgPerHour: range(k.zeroOrderRateMgPerKgPerHour),
         },
-        ['mode', 'halfLifeHours', 'earlyPhase', 'steadyState'],
+        ['mode', 'halfLifeHours', 'zeroOrderRateMgPerKgPerHour', 'notModelledReason', 'earlyPhase', 'steadyState'],
       ),
       cyp2d6: cyp && ordered({ ...cyp, halfLifeMultiplier: phen(cyp.halfLifeMultiplier) }, ['substrate', 'halfLifeMultiplier', 'inhibitor', 'inhibitionType']),
       qt: sub(c.qt, ['tier', 'weight', 'referenceAmountMg']),
@@ -282,7 +295,7 @@ function canonicalProduct(p: Product): Product {
   return ordered(
     {
       ...rest,
-      components: (p.components ?? []).map((c) => sub(c, ['compound', 'ratio', 'saltFactor', 'bioavailability'])),
+      components: (p.components ?? []).map((c) => sub(c, ['compound', 'ratio', 'saltFactor', 'bioavailability', 'administeredAs', 'massFactor'])),
       input: p.input && ordered({ ...p.input, releaseHalfLifeHours: range(p.input.releaseHalfLifeHours) }, ['type', 'releaseHalfLifeHours', 'defaultDurationHours']),
       typicalDose: sub(p.typicalDose, ['amount', 'unit', 'basis']),
       provenance: ordered(p.provenance ?? {}, PRODUCT_SECTION_KEYS),

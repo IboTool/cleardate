@@ -581,6 +581,20 @@ function edgeMultiplier(f: Compound['formedFrom'][number], onChange: () => void)
   return h('div', { class: 'sub' }, h('label', { class: 'check' }, on, 'Formation depends on CYP2D6 (multiplier on the fraction by phenotype)'), row);
 }
 
+/** Conditional formation: the link only applies while another compound (e.g. ethanol) is present. */
+function edgeCondition(f: Compound['formedFrom'][number], others: Compound[], onChange: () => void): HTMLElement {
+  const sel = h('select', null,
+    h('option', { value: '' }, 'Always formed'),
+    ...others.map((o) => h('option', { value: o.id, selected: f.condition?.requiresCompound === o.id }, `Only while ${o.name} is present`)));
+  sel.addEventListener('change', () => {
+    if (sel.value) f.condition = { requiresCompound: sel.value };
+    else delete f.condition;
+    onChange();
+  });
+  return h('div', { class: 'sub' }, field('Condition', sel,
+    'Conditional links are skipped unless the required compound is in the body while the parent is (e.g. cocaine → cocaethylene with alcohol). They never hold up a clear date.'));
+}
+
 function metabolismSection(c: Compound): HTMLElement {
   const edit = () => touched(c, 'metabolism');
   const others = lib().compounds.filter((x) => x.id !== c.id).sort((a, b) => a.name.localeCompare(b.name));
@@ -626,7 +640,8 @@ function metabolismSection(c: Compound): HTMLElement {
                 edit();
                 renderMain();
               } }, '✕')),
-            edgeMultiplier(f, edit)))
+            edgeMultiplier(f, edit),
+            edgeCondition(f, others, edit)))
       : h('div', { class: 'field-hint' }, 'Not formed from any tracked compound.'),
     linkSel,
     h('div', { class: `field-hint ${outSum > 1 + 1e-9 ? 'bad' : ''}` },
@@ -741,6 +756,45 @@ function componentsEditor(p: Product, edit: () => void): HTMLElement {
   return wrap;
 }
 
+/** Prodrug conversion per component: administered compound and molar mass factor (spec v2.2 §1). */
+function conversionEditor(p: Product, edit: () => void): HTMLElement {
+  const wrap = h('div', { class: 'ed-components' });
+  const compounds = [...lib().compounds].sort((a, b) => a.name.localeCompare(b.name));
+  const render = () => {
+    wrap.replaceChildren(
+      ...p.components.map((c) => {
+        const modelled = compound(c.compound);
+        const given = c.administeredAs ? compound(c.administeredAs) : undefined;
+        const mwM = modelled?.molecularWeight ?? null;
+        const mwA = given?.molecularWeight ?? null;
+        const helper = mwM && mwA
+          ? h('button', { class: 'btn btn-ghost btn-sm', type: 'button', title: `${mwM} / ${mwA} g/mol`, onclick: () => {
+            c.massFactor = +(mwM / mwA).toFixed(4);
+            edit();
+            render();
+          } }, `Use molar masses (${(mwM / mwA).toFixed(4)})`)
+          : h('span', { class: 'field-hint' }, c.administeredAs ? 'Set both molecular weights to compute the factor.' : '');
+        return h('div', { class: 'row ed-component' },
+          field(`Administered as (modelled: ${modelled?.name ?? c.compound})`, select(c.administeredAs ?? '', [['', '— (not a prodrug)'], ...compounds.filter((x) => x.id !== c.compound).map((x) => [x.id, x.name] as [string, string])], (v) => {
+            if (v) c.administeredAs = v;
+            else delete c.administeredAs;
+            edit();
+            render();
+          })),
+          field('Mass factor', nullableNumber(c.massFactor ?? null, (v) => {
+            if (v === null) delete c.massFactor;
+            else c.massFactor = v;
+            edit();
+          }, { min: '0', max: '2', step: '0.0001' })),
+          helper);
+      }),
+      h('div', { class: 'field-hint' }, 'Prodrugs converted almost completely to another compound (psilocybin → psilocin). The dose is entered as the administered compound; the modelled compound receives D × ratio × salt factor × mass factor × bioavailability. Mass factor = modelled molar mass ÷ administered molar mass (complete conversion).'),
+    );
+  };
+  render();
+  return wrap;
+}
+
 function inputEditor(p: Product, edit: () => void): HTMLElement {
   const body = h('div', { class: 'sub' });
   const render = () => {
@@ -821,6 +875,8 @@ function productSectionBody(p: Product, key: ProductSection): HTMLElement {
       return body(field('Aliases', textInput(p.aliases.join(', '), (v) => { p.aliases = v.split(',').map((s) => s.trim()).filter(Boolean); sec(); })), sourceNoteField(p, 'aliases'));
     case 'components':
       return body(componentsEditor(p, sec), sourceNoteField(p, 'components'));
+    case 'conversion':
+      return body(conversionEditor(p, sec), sourceNoteField(p, 'conversion'));
     case 'input':
       return body(inputEditor(p, sec), sourceNoteField(p, 'input'));
     case 'typicalDose':

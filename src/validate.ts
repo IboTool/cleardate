@@ -53,6 +53,8 @@ export interface Progress {
   incomplete: { total: number; unknownRelevanceOnly: number; active: number };
   /** Products whose dosed compound can't be simulated at all. */
   noData: number;
+  /** Products whose primary compound is deliberately not modelled (exposure markers + lingering band). */
+  notModelled: number;
   /** Verified (fully reviewed) products that are still Incomplete or have no data: literature gaps. */
   verifiedIncomplete: string[];
   /** Partially specified kinetics handled by the conservative rule (spec v2.1 §3). */
@@ -199,9 +201,12 @@ function checkCompound(c: Obj, errors: Issue[], warnings: Issue[]) {
       }
       k.num(f.fraction, `formedFrom ${f.compound}: fraction`, { min: 0, max: 1, minExclusive: true });
       k.phenotypes(f.cyp2d6Multiplier, `formedFrom ${f.compound}: cyp2d6Multiplier`, true);
+      if (f.condition != null && (!isObj(f.condition) || typeof f.condition.requiresCompound !== 'string' || !f.condition.requiresCompound))
+        k.err(`formedFrom ${f.compound}: condition must be { requiresCompound: "<compound id>" } or null`);
     }
   if (!oneOf(CLINICAL_RELEVANCE, c.clinicalRelevance))
     k.err(`clinicalRelevance "${String(c.clinicalRelevance)}" not one of ${CLINICAL_RELEVANCE.join(', ')}`);
+  if (c.endogenous !== undefined && typeof c.endogenous !== 'boolean') k.err('endogenous must be true/false (or absent)');
   k.num(c.molecularWeight, 'molecularWeight', { min: 0, minExclusive: true });
 
   const kin = c.kinetics;
@@ -235,6 +240,16 @@ function checkCompound(c: Obj, errors: Issue[], warnings: Issue[]) {
     }
     if (kin.mode !== 'intrinsic' && (kin.earlyPhase != null || kin.steadyState != null))
       k.warn(`earlyPhase/steadyState are ignored when mode is "${String(kin.mode)}"`);
+    if (kin.mode === 'zero-order') {
+      if (kin.zeroOrderRateMgPerKgPerHour == null)
+        k.err('zero-order kinetics need kinetics.zeroOrderRateMgPerKgPerHour (a Range; all null = no data yet)');
+      else k.range(kin.zeroOrderRateMgPerKgPerHour, 'kinetics.zeroOrderRateMgPerKgPerHour');
+    } else if (hasRangeValue(kin.zeroOrderRateMgPerKgPerHour)) k.warn(`zeroOrderRateMgPerKgPerHour is ignored when mode is "${String(kin.mode)}"`);
+    if (kin.mode === 'not-modelled') {
+      if (typeof kin.notModelledReason !== 'string' || !kin.notModelledReason.trim()) k.err('not-modelled kinetics need kinetics.notModelledReason (shown to users)');
+    } else if (kin.notModelledReason !== undefined && kin.notModelledReason !== '') k.warn(`notModelledReason is ignored when mode is "${String(kin.mode)}"`);
+    if ((kin.mode === 'zero-order' || kin.mode === 'not-modelled') && hasRangeValue(kin.halfLifeHours))
+      k.warn(`kinetics.halfLifeHours is ignored when mode is "${String(kin.mode)}"`);
   }
 
   const cyp = c.cyp2d6;
@@ -290,6 +305,8 @@ function checkCompound(c: Obj, errors: Issue[], warnings: Issue[]) {
     if (c.isMetabolite && c.clinicalRelevance === 'unknown') k.err('a metabolite cannot be verified with clinicalRelevance "unknown"');
     if (isObj(kin) && kin.mode === 'unknown' && !isConfirmedUnknown(e, 'halfLife'))
       k.err('verified with kinetics.mode "unknown" requires the halfLife section to be "Confirmed unknown" by the reviewer');
+    if (isObj(kin) && kin.mode === 'zero-order' && !hasRangeValue(kin.zeroOrderRateMgPerKgPerHour) && !isConfirmedUnknown(e, 'halfLife'))
+      k.err('verified zero-order kinetics without a rate require the halfLife section to be "Confirmed unknown" by the reviewer');
   }
 }
 
@@ -319,6 +336,10 @@ function checkProduct(p: Obj, errors: Issue[], warnings: Issue[]) {
       if (!isNum(c.ratio) || c.ratio <= 0) k.err(`component ${c.compound}: ratio must be > 0`);
       k.num(c.saltFactor, `component ${c.compound}: saltFactor`, { min: 0, max: 1.5, minExclusive: true });
       k.num(c.bioavailability, `component ${c.compound}: bioavailability`, { min: 0, max: 1, minExclusive: true });
+      if (c.administeredAs !== undefined && c.administeredAs !== null && (typeof c.administeredAs !== 'string' || !c.administeredAs))
+        k.err(`component ${c.compound}: administeredAs must be a compound id or null`);
+      if (c.administeredAs === c.compound) k.warn(`component ${c.compound}: administeredAs is the modelled compound itself`);
+      if (c.massFactor !== undefined) k.num(c.massFactor, `component ${c.compound}: massFactor`, { min: 0, max: 2, minExclusive: true });
     }
   const inp = p.input;
   if (!isObj(inp)) k.err('input missing');
@@ -327,8 +348,9 @@ function checkProduct(p: Obj, errors: Issue[], warnings: Issue[]) {
     k.range(inp.releaseHalfLifeHours, 'input.releaseHalfLifeHours');
     k.num(inp.defaultDurationHours, 'input.defaultDurationHours', { min: 0, minExclusive: true });
     const rate = p.doseUnit === 'µg/h' || p.doseUnit === 'mg/h';
-    if (inp.type === 'zero-order' && !rate) k.err('zero-order input needs a rate doseUnit (µg/h or mg/h)');
+    if (inp.type === 'zero-order' && !rate && p.doseUnit !== 'session') k.err('zero-order input needs a rate doseUnit (µg/h or mg/h) or exposure sessions');
     if (inp.type !== 'zero-order' && rate) k.err(`doseUnit ${String(p.doseUnit)} is a rate but input is not zero-order`);
+    if (inp.type !== 'zero-order' && p.doseUnit === 'session') k.err('exposure sessions (doseUnit "session") need zero-order input (the session duration)');
     if (inp.type === 'bolus' && inp.releaseHalfLifeHours != null) k.warn('releaseHalfLifeHours is ignored for bolus input');
   }
   const td = p.typicalDose;
@@ -345,7 +367,7 @@ function checkProduct(p: Obj, errors: Issue[], warnings: Issue[]) {
   if (p.verified === true && isObj(p.provenance)) {
     if (!(typeof p.source === 'string' && p.source.trim())) k.err('verified requires a non-empty source');
     if (!(typeof p.verifiedDate === 'string' && DATE_RE.test(p.verifiedDate))) k.err('verified requires verifiedDate (YYYY-MM-DD)');
-    const open = unreviewedSections(p as unknown as Product, productSections());
+    const open = unreviewedSections(p as unknown as Product, productSections(p as unknown as Product));
     if (open.length) k.err(`verified, but these sections are not reviewed: ${open.join(', ')}`);
   }
   for (const old of ['parentCompound', 'typicalDoseMg', 'apparentHalfLifeHours'])
@@ -377,8 +399,9 @@ export function validateLibrary(lib: Partial<Library>, opts: ValidateOptions = {
     errors.push({
       id: '(file)',
       message: `schemaVersion must be ${SCHEMA_VERSION}` + (
-        version === undefined ? ' — this looks like a v1 file; run npm run migrate-v2, then npm run migrate-v2.1'
-          : version === 2 ? ' — this is a v2 file; run npm run migrate-v2.1' : ''),
+        version === undefined ? ' — this looks like a v1 file; run npm run migrate-v2, then npm run migrate-v2.1 and npm run migrate-v2.2'
+          : version === 2 ? ' — this is a v2 file; run npm run migrate-v2.1, then npm run migrate-v2.2'
+            : version === 2.1 ? ' — this is a v2.1 file; run npm run migrate-v2.2' : ''),
     });
   if ((lib as Obj).qtCalibrationNote !== undefined && typeof (lib as Obj).qtCalibrationNote !== 'string')
     errors.push({ id: '(file)', message: 'qtCalibrationNote must be a string' });
@@ -421,8 +444,11 @@ export function validateLibrary(lib: Partial<Library>, opts: ValidateOptions = {
     const known = new Set([...compounds, ...(opts.externalCompounds ?? [])].map((c) => c.id));
     const catIds = new Set(categories.map((c) => c.id));
     for (const c of compounds)
-      for (const f of c.formedFrom)
+      for (const f of c.formedFrom) {
         if (!known.has(f.compound)) errors.push({ id: c.id, message: `formedFrom references unknown compound "${f.compound}"` });
+        const req = f.condition?.requiresCompound;
+        if (typeof req === 'string' && req && !known.has(req)) errors.push({ id: c.id, message: `formedFrom ${f.compound}: condition requires unknown compound "${req}"` });
+      }
     for (const c of compounds) {
       if (c.isMetabolite && c.formedFrom.length === 0) warnings.push({ id: c.id, message: 'isMetabolite is true but formedFrom is empty' });
       if (!c.isMetabolite && c.formedFrom.length > 0) warnings.push({ id: c.id, message: 'has formedFrom links but isMetabolite is false' });
@@ -436,8 +462,18 @@ export function validateLibrary(lib: Partial<Library>, opts: ValidateOptions = {
           id: c.id,
           message: `clinicalRelevance is "${c.clinicalRelevance}" but ${c.isMetabolite ? 'it is dosed directly by a product' : 'it is a parent compound'} — always treated as active`,
         });
+    const allById = new Map([...(opts.externalCompounds ?? []), ...compounds].map((c) => [c.id, c]));
     for (const p of products) {
-      for (const c of p.components) if (!known.has(c.compound)) errors.push({ id: p.id, message: `component "${c.compound}" does not exist` });
+      for (const c of p.components) {
+        if (!known.has(c.compound)) errors.push({ id: p.id, message: `component "${c.compound}" does not exist` });
+        if (typeof c.administeredAs === 'string' && c.administeredAs && !known.has(c.administeredAs))
+          errors.push({ id: p.id, message: `component ${c.compound}: administeredAs "${c.administeredAs}" does not exist` });
+      }
+      const mode = allById.get(primaryCompound(p))?.kinetics?.mode;
+      if (p.doseUnit === 'session' && mode !== 'not-modelled')
+        errors.push({ id: p.id, message: 'exposure sessions (doseUnit "session") are only for products whose primary compound is not-modelled' });
+      if ((p.doseUnit === 'standard drinks' || p.doseUnit === 'g') && mode !== 'zero-order')
+        warnings.push({ id: p.id, message: `doseUnit "${p.doseUnit}" is meant for alcohol (zero-order) products` });
       if (catIds.size && !catIds.has(p.category)) errors.push({ id: p.id, message: `category "${p.category}" does not exist` });
       for (const s of p.secondaryCategories)
         if (catIds.size && !catIds.has(s)) errors.push({ id: p.id, message: `secondary category "${s}" does not exist` });
@@ -476,11 +512,12 @@ function emptyProgress(nc: number, np: number): Progress {
   return {
     compounds: nc, compoundsVerified: 0, compoundsStarted: 0, products: np, productsVerified: 0, categories: [],
     provenance: { checked: 0, recall: 0, estimate: 0, gap: 0, reviewer: 0, untagged: 0 },
-    modes: { intrinsic: 0, 'formation-limited': 0, unknown: 0 },
+    modes: { intrinsic: 0, 'formation-limited': 0, 'zero-order': 0, 'not-modelled': 0, unknown: 0 },
     sections: 0, sectionsReviewed: 0, sectionsFlagged: 0, sectionsConfirmedUnknown: 0,
     metaboliteRelevance: { active: 0, inactive: 0, unknown: 0 },
     incomplete: { total: 0, unknownRelevanceOnly: 0, active: 0 },
     noData: 0,
+    notModelled: 0,
     verifiedIncomplete: [],
     partial: { earlyPhaseIgnored: [], steadyStateOnsetUnknown: [], steadyStateIgnored: [] },
   };
@@ -515,13 +552,13 @@ function computeProgress(categories: Library['categories'], compounds: Compound[
     tally(c.provenance, COMPOUND_SECTIONS);
     if (c.kinetics && c.kinetics.mode in p.modes) p.modes[c.kinetics.mode]++;
   }
-  for (const x of products) tally(x.provenance, PRODUCT_SECTIONS);
+  for (const x of products) tally(x.provenance, productSections(x));
 
   // Review sections.
   const secs = (e: Compound | Product, list: string[]) => ({ total: list.length, reviewed: list.filter((s) => isReviewed(e, s)).length });
   const compoundSecs = (c: Compound) => secs(c, compoundSections(c));
-  const productSecs = (x: Product) => secs(x, productSections());
-  for (const e of [...compounds.map((c) => [c, compoundSections(c)] as const), ...products.map((x) => [x, productSections()] as const)]) {
+  const productSecs = (x: Product) => secs(x, productSections(x));
+  for (const e of [...compounds.map((c) => [c, compoundSections(c)] as const), ...products.map((x) => [x, productSections(x)] as const)]) {
     const [entry, list] = e;
     p.sections += list.length;
     for (const s of list) {
@@ -535,10 +572,18 @@ function computeProgress(categories: Library['categories'], compounds: Compound[
   for (const c of compounds)
     if (c.isMetabolite && c.clinicalRelevance in p.metaboliteRelevance) p.metaboliteRelevance[c.clinicalRelevance]++;
   const dosed = dosedCompoundIds(products);
-  const childrenOf = (id: string) => children.get(id) ?? [];
+  // Without a scenario, conditional metabolites (formed only with e.g. alcohol) are not formed (v2.2 §5).
+  const unconditional = new Map<string, string[]>();
+  for (const c of compounds)
+    for (const f of c.formedFrom) if (!f.condition) unconditional.set(f.compound, [...(unconditional.get(f.compound) ?? []), c.id]);
+  const childrenOf = (id: string) => unconditional.get(id) ?? [];
   for (const x of products) {
     const plan = safe(() => planProductTree(byId, childrenOf, x.components.map((c) => c.compound), dosed, false), null);
     if (!plan) continue;
+    if (plan.notModelled.includes(primaryCompound(x))) {
+      p.notModelled++;
+      continue;
+    }
     const primaryMissing = plan.missing.some((m) => m.id === primaryCompound(x));
     if (primaryMissing) p.noData++;
     else if (plan.missing.length) {

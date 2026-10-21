@@ -6,7 +6,7 @@
 // A shared metabolite formed from two products appears once per product, in that product's colour.
 
 import { clearFraction, clearTime, expandRegimen, intervalsAbove, simulate, valueAt, type SimCompound, type SimInfusion, type SimRelease } from './pk';
-import { dosedCompoundIds, effectiveRelevance, hasIntrinsicKinetics, isReviewed, primaryCompound, rangeBounds, type Bounds } from './schema';
+import { dosedCompoundIds, effectiveRelevance, hasIntrinsicKinetics, isNotModelled, isReviewed, primaryCompound, rangeBounds, type Bounds } from './schema';
 import { fmtDateTime, fmtEvery } from './format';
 import { planProductTree } from './tree';
 import { findCycle } from './validate';
@@ -26,6 +26,8 @@ export interface Edge {
   /** null = unknown (simulated as 1, downstream curves normalized). */
   fraction: number | null;
   multiplier: PhenotypeMap | null;
+  /** Formed only while this compound is also in the body (v2.2 §5); null = always. */
+  condition: string | null;
 }
 
 export interface LibraryIndex {
@@ -91,7 +93,7 @@ export function buildIndex(lib: Library): LibraryIndex {
     for (const f of c.formedFrom) {
       if (!compounds.has(f.compound)) continue;
       const list = children.get(f.compound) ?? [];
-      list.push({ id: c.id, fraction: f.fraction, multiplier: f.cyp2d6Multiplier ?? null });
+      list.push({ id: c.id, fraction: f.fraction, multiplier: f.cyp2d6Multiplier ?? null, condition: f.condition?.requiresCompound ?? null });
       children.set(f.compound, list);
     }
   for (const [src, edges] of children) {
@@ -119,22 +121,29 @@ export function productTree(idx: LibraryIndex, roots: string[]): { id: string; d
 
 export const componentIds = (p: Product) => p.components.map((c) => c.compound);
 
+/** Metabolites formed outside any scenario: conditional links (formed only with e.g. alcohol) are left out. */
+export const staticChildren = (idx: LibraryIndex, id: string) => (idx.children.get(id) ?? []).filter((e) => !e.condition).map((e) => e.id);
+
 /** The primary component can be simulated (as v1's "has data"). */
 export const productHasData = (idx: LibraryIndex, p: Product) => hasIntrinsicKinetics(idx.compounds.get(primaryCompound(p)));
+
+/** The primary component is deliberately not modelled (exposure markers + lingering band; v2.2 §3). */
+export const productNotModelled = (idx: LibraryIndex, p: Product) => isNotModelled(idx.compounds.get(primaryCompound(p)));
 
 /**
  * Compounds reachable from the product that can't be simulated and hold up its clear date:
  * active or unknown-relevance compounds with `unknown` kinetics (unless the setting treats them as
- * formation-limited), or a component without a half-life. Inactive ones never count (spec v2.1 §1).
+ * formation-limited), or a component without a half-life. Inactive ones never count (spec v2.1 §1),
+ * nor do reviewed endogenous ones or conditional metabolites (v2.2 §4–5).
  */
 export function missingKinetics(idx: LibraryIndex, p: Product, unknownAsFL: boolean): string[] {
-  const childrenOf = (id: string) => (idx.children.get(id) ?? []).map((e) => e.id);
-  return planProductTree(idx.compounds, childrenOf, componentIds(p), idx.dosed, unknownAsFL).missing.map((m) => m.id);
+  return planProductTree(idx.compounds, (id) => staticChildren(idx, id), componentIds(p), idx.dosed, unknownAsFL).missing.map((m) => m.id);
 }
 
-export type DataStatus = 'no-data' | 'incomplete' | 'ok';
+export type DataStatus = 'no-data' | 'incomplete' | 'ok' | 'not-modelled';
 
 export function productDataStatus(idx: LibraryIndex, p: Product, unknownAsFL: boolean): DataStatus {
+  if (productNotModelled(idx, p)) return 'not-modelled';
   if (!productHasData(idx, p)) return 'no-data';
   return missingKinetics(idx, p, unknownAsFL).length ? 'incomplete' : 'ok';
 }
@@ -150,17 +159,27 @@ export function toLocalInput(ms: number): string {
 }
 
 export const isRateUnit = (u: DoseUnit) => u === 'µg/h' || u === 'mg/h';
+/** An exposure session: a start time and a duration, no mass (v2.2 §3). */
+export const isSessionUnit = (u: DoseUnit) => u === 'session';
+/** Entered with a duration: patch / infusion rates and exposure sessions. */
+export const isIntervalUnit = (u: DoseUnit) => isRateUnit(u) || isSessionUnit(u);
+export const isAlcoholUnit = (u: DoseUnit) => u === 'standard drinks' || u === 'g';
+export const DEFAULT_DRINK_GRAMS = 14;
 
-/** Convert an amount between dose units of the same kind (mass ↔ mass, rate ↔ rate). null if incompatible. */
-export function convertUnit(v: number, from: DoseUnit, to: DoseUnit): number | null {
-  if (from === to) return v;
-  if (isRateUnit(from) !== isRateUnit(to)) return null;
-  const mg = from.startsWith('µg') ? v / 1000 : v;
-  return to.startsWith('µg') ? mg * 1000 : mg;
+/** mg (or mg/h) from an amount in `unit`. A standard drink is `gPerDrink` grams of ethanol. */
+export function toMg(v: number, unit: DoseUnit, gPerDrink = DEFAULT_DRINK_GRAMS): number {
+  if (unit === 'µg' || unit === 'µg/h') return v / 1000;
+  if (unit === 'g') return v * 1000;
+  if (unit === 'standard drinks') return v * gPerDrink * 1000;
+  return v;
 }
 
-/** mg (or mg/h) from an amount in `unit`. */
-export const toMg = (v: number, unit: DoseUnit) => (unit.startsWith('µg') ? v / 1000 : v);
+/** Convert an amount between dose units of the same kind (mass ↔ mass, rate ↔ rate). null if incompatible. */
+export function convertUnit(v: number, from: DoseUnit, to: DoseUnit, gPerDrink = DEFAULT_DRINK_GRAMS): number | null {
+  if (from === to) return v;
+  if (isSessionUnit(from) || isSessionUnit(to) || isRateUnit(from) !== isRateUnit(to)) return null;
+  return toMg(v, from, gPerDrink) / toMg(1, to, gPerDrink);
+}
 
 export interface DoseEvent {
   /** Epoch ms. */
@@ -174,9 +193,9 @@ export interface DoseEvent {
 
 /** Expand a dose entry (single or regimen) into individual doses / applications, epoch ms. */
 export function expandDose(d: DoseEntry, defaultDurationHours?: number | null): DoseEvent[] {
-  const rate = isRateUnit(d.unit);
-  const dur = (d.durationHours ?? defaultDurationHours ?? 24) * HOUR;
-  const ev = (time: number): DoseEvent => (rate ? { time, amount: d.amount, unit: d.unit, end: time + dur } : { time, amount: d.amount, unit: d.unit });
+  const interval = isIntervalUnit(d.unit);
+  const dur = (d.durationHours ?? defaultDurationHours ?? (isSessionUnit(d.unit) ? 1 : 24)) * HOUR;
+  const ev = (time: number): DoseEvent => (interval ? { time, amount: d.amount, unit: d.unit, end: time + dur } : { time, amount: d.amount, unit: d.unit });
   if (!(d.amount > 0)) return [];
   if (d.kind === 'single') {
     const t = parseLocal(d.time);
@@ -286,7 +305,8 @@ export interface CompoundCurve {
   formationLimited: boolean;
 }
 
-export type ClearStatus = 'clear' | 'assumptions' | 'incomplete';
+/** "not-modelled": exposure markers only, never a clear date; "needs-weight": zero-order (alcohol) without body weight. */
+export type ClearStatus = 'clear' | 'assumptions' | 'incomplete' | 'not-modelled' | 'needs-weight';
 
 export interface ProductResult {
   key: string;
@@ -319,6 +339,10 @@ export interface ProductResult {
   pmAdjusted?: boolean;
   /** Projected as a poor metaboliser, but these CYP2D6 substrates have no "poor" half-life multiplier. */
   pmUnquantified?: string[];
+  /** Status "not-modelled": the reason shown instead of a clear date. */
+  notModelledReason?: string;
+  /** Prodrug components: "administered as X, modelled as Y" (compound names). */
+  prodrug?: { administeredAs: string; modelledAs: string }[];
 }
 
 export interface CypInterval {
@@ -470,6 +494,45 @@ interface Ctx {
   minEndMs: number;
   maxEndMs: number;
   settings: Settings;
+  /** Patient weight (kg); 0 = missing. Only zero-order elimination uses it. */
+  weightKg: number;
+  /** Compound id → intervals (epoch ms) it is in the body, for conditional metabolite links. */
+  presence: Map<string, [number, number][]>;
+  /** Required compounds whose presence is assumed (dosed but not simulable), with the reason. */
+  presenceAssumed: Map<string, string>;
+}
+
+const condKey = (from: string, to: string) => `${from}>${to}`;
+/** "alcohol" for ethanol, else the compound name. */
+export const requiredLabel = (idx: LibraryIndex, id: string) => (id === 'ethanol' ? 'alcohol' : idx.compounds.get(id)?.name ?? id);
+export const ENDOGENOUS_LABEL = 'endogenous — excess over baseline not modelled';
+
+/** Prodrug components of a product, by compound name. */
+export function prodrugParts(idx: LibraryIndex, p: Product): { administeredAs: string; modelledAs: string; massFactor: number | null }[] {
+  const name = (id: string) => idx.compounds.get(id)?.name ?? id;
+  return p.components
+    .filter((c) => c.administeredAs || c.massFactor != null)
+    .map((c) => ({ administeredAs: name(c.administeredAs ?? c.compound), modelledAs: name(c.compound), massFactor: c.massFactor ?? null }));
+}
+
+/** A product that isn't simulated: not modelled, or alcohol without body weight. Doses still show as markers. */
+function unsimulatedResult(idx: LibraryIndex, req: SimRequest, status: 'not-modelled' | 'needs-weight', notes: string[]): ProductResult {
+  const c = idx.compounds.get(primaryCompound(req.product));
+  const used = c ? [c] : [];
+  const parts = prodrugParts(idx, req.product);
+  return {
+    key: req.key, product: req.product, name: req.name, isIbogaine: req.isIbogaine, color: req.color, doses: req.doses,
+    latest: [...req.doses].sort((a, b) => b.time - a.time)[0] ?? null,
+    curves: [], clearAt: null, clearAtMax: null, clearAtMin: null, status, missing: [], assumptions: [], excluded: [], notes,
+    administered: false,
+    unassessed: {
+      qt: used.filter((x) => x.qt.tier === 'unassessed').map((x) => x.name),
+      cyp2d6: used.filter((x) => x.cyp2d6.substrate === 'unassessed' || x.cyp2d6.inhibitor === 'unassessed').map((x) => x.name),
+      receptors: used.filter((x) => !x.receptorsAssessed).map((x) => x.name),
+    },
+    ...(status === 'not-modelled' ? { notModelledReason: c?.kinetics.notModelledReason ?? '' } : {}),
+    ...(parts.length ? { prodrug: parts.map(({ administeredAs, modelledAs }) => ({ administeredAs, modelledAs })) } : {}),
+  };
 }
 
 const pct = (v: number) => `${Math.round(v * 100)}%`;
@@ -480,18 +543,27 @@ interface Params {
   early: { fraction: number; hl: Bounds } | null;
 }
 
-function simulateProduct(idx: LibraryIndex, req: SimRequest, ctx: Ctx, warnings: Warning[]): ProductResult {
+/**
+ * `conditional`: active conditional links (parent>child → windows, epoch ms). null on the first pass,
+ * which leaves conditional links out, then re-runs with those whose parent overlaps the required compound.
+ */
+function simulateProduct(idx: LibraryIndex, req: SimRequest, ctx: Ctx, warnings: Warning[], conditional: Map<string, [number, number][]> | null = null): ProductResult {
   const { product } = req;
   const s = ctx.settings;
+  const warnStart = warnings.length;
   const roots = componentIds(product);
   // A branch with a zero formation multiplier in every run is not formed at all: it leaves the tree (and the clear status).
   const runPhens = [...new Set(RUNS.map((r) => phenotypeFor(req.phenotype, r)))];
   const notFormed = (e: Edge) => !!e.multiplier && runPhens.every((p) => e.multiplier![p] === 0);
-  const childrenOf = (id: string) => (idx.children.get(id) ?? []).filter((e) => !notFormed(e)).map((e) => e.id);
+  const edgeOn = (from: string, e: Edge) => !e.condition || !!conditional?.has(condKey(from, e.id));
+  const childrenOf = (id: string) => (idx.children.get(id) ?? []).filter((e) => !notFormed(e) && edgeOn(id, e)).map((e) => e.id);
   const plan = planProductTree(idx.compounds, childrenOf, roots, idx.dosed, s.unknownAsFormationLimited);
   const { tree, topo, parents, included } = plan;
   const rootOf = new Map(tree.map((n) => [n.id, n]));
   const name = (id: string) => idx.compounds.get(id)?.name ?? id;
+  const zeroOrder = new Set([...included].filter(([, k]) => k === 'zero-order').map(([id]) => id));
+  if (zeroOrder.size && !(ctx.weightKg > 0))
+    return unsimulatedResult(idx, req, 'needs-weight', [...zeroOrder].map((id) => `${name(id)}: zero-order elimination scales with body weight — enter the patient's weight`));
   const productAssumptions = new Set<string>();
   const curveAssumptions = new Map<string, Set<string>>();
   const assume = (id: string | null, text: string) => {
@@ -519,6 +591,23 @@ function simulateProduct(idx: LibraryIndex, req: SimRequest, ctx: Ctx, warnings:
 
   const missing = plan.missing.map((m) => (m.via ? `${name(m.id)} (formed only via ${name(m.via)}, whose kinetics are unknown)` : name(m.id)));
   for (const id of plan.excluded) excludeInactive(id, true);
+  for (const id of plan.endogenous) excludedNotes.push(`${name(id)}: ${ENDOGENOUS_LABEL} (kinetics unknown) — excluded from clear date`);
+  for (const id of plan.notModelled) excludedNotes.push(`${name(id)}: not modelled — ${idx.compounds.get(id)?.kinetics.notModelledReason ?? ''}`);
+  for (const id of included.keys()) if (idx.compounds.get(id)?.endogenous) note(id, `${name(id)}: ${ENDOGENOUS_LABEL}`);
+  const parts = prodrugParts(idx, product);
+  for (const pt of parts) {
+    assume(null, `${pt.administeredAs}: prodrug — modelled as ${pt.modelledAs}`);
+    if (pt.massFactor === null) assume(null, `${pt.administeredAs} → ${pt.modelledAs}: mass factor unknown — assumed 1`);
+  }
+  // Conditional metabolites formed in this scenario.
+  for (const [key] of conditional ?? []) {
+    const [from, to] = key.split('>');
+    const reqId = (idx.children.get(from) ?? []).find((e) => e.id === to)?.condition;
+    if (!reqId || !included.has(from)) continue;
+    note(to, `${name(to)}: formed because ${requiredLabel(idx, reqId)} was also taken`);
+    const why = ctx.presenceAssumed.get(reqId);
+    if (why) assume(to, `${requiredLabel(idx, reqId)} amount couldn't be simulated (${why}) — assumed present from the first dose`);
+  }
   const inactive = new Set([...included.keys()].filter((id) => effectiveRelevance(idx.compounds.get(id)!, idx.dosed) === 'inactive'));
 
   // Formation-limited tracking and normalized (timing-only) curves.
@@ -587,6 +676,15 @@ function simulateProduct(idx: LibraryIndex, req: SimRequest, ctx: Ctx, warnings:
     labelBounds(terminal, `${c.name} half-life`, id);
     params.set(id, { single, steady: steady ?? single });
   }
+  // Zero-order (alcohol): mg/kg/h × weight. The fastest rate gives the band's early edge, the slowest its late edge.
+  const zeroRate = new Map<string, Bounds>();
+  for (const id of zeroOrder) {
+    const c = idx.compounds.get(id)!;
+    const b = rangeBounds(c.kinetics.zeroOrderRateMgPerKgPerHour, s.assumedCv)!;
+    zeroRate.set(id, b);
+    labelBounds(b, `${c.name} elimination rate`, id);
+    note(id, `${c.name}: zero-order elimination at ${+b.typical.toPrecision(3)} mg/kg/h × ${+ctx.weightKg.toFixed(1)} kg — clear when none is left; the clear date uses the slowest rate`);
+  }
 
   const h = (ms: number) => (ms - ctx.t0) / HOUR;
   const notFormedIn = new Map<string, Set<Phenotype>>();
@@ -598,20 +696,25 @@ function simulateProduct(idx: LibraryIndex, req: SimRequest, ctx: Ctx, warnings:
       const c = idx.compounds.get(id)!;
       let terminal: number;
       let early: SimCompound['earlyPhase'] = null;
-      if (included.get(id) === 'intrinsic') {
+      let zeroOrderRate: number | undefined;
+      if (included.get(id) === 'zero-order') {
+        const b = zeroRate.get(id)!;
+        zeroOrderRate = (run === 'min' ? b.max : run === 'max' ? b.min : b.typical) * ctx.weightKg;
+        terminal = Infinity;
+      } else if (included.get(id) === 'intrinsic') {
         const pr = params.get(id)![variant];
         const m = hlMultiplier(c, req.phenotype, run);
         for (const p of m.assumedFor) assume(id, `${c.name}: CYP2D6 half-life multiplier for ${p} metabolisers unknown — assumed ×1`);
         terminal = pr.terminal[run] * m.value;
         if (pr.early) early = { fraction: pr.early.fraction, halfLifeHours: pr.early.hl[run] * m.value };
       } else {
-        // Formation-limited: one-tenth of the fastest feeding parent's effective half-life.
-        const ps = (parents.get(id) ?? []).filter((p) => hl.has(p)).map((p) => hl.get(p)!);
-        terminal = Math.min(...ps) / 10;
+        // Formation-limited: one-tenth of the fastest feeding parent's effective half-life (6 min under a zero-order parent).
+        const ps = (parents.get(id) ?? []).filter((p) => hl.has(p) && Number.isFinite(hl.get(p))).map((p) => hl.get(p)!);
+        terminal = ps.length ? Math.min(...ps) / 10 : 0.1;
       }
       hl.set(id, terminal);
       // Effective formation fractions (unknown → 1) with the CYP2D6 formation multiplier (0 = not formed).
-      const edges = (idx.children.get(id) ?? []).filter((e) => included.has(e.id));
+      const edges = (idx.children.get(id) ?? []).filter((e) => included.has(e.id) && edgeOn(id, e));
       const eff = edges.map((e) => {
         let mult = 1;
         if (e.multiplier) {
@@ -620,7 +723,8 @@ function simulateProduct(idx: LibraryIndex, req: SimRequest, ctx: Ctx, warnings:
           if (r.assumed) assume(e.id, `${name(e.id)}: CYP2D6 formation multiplier from ${c.name} for ${phen} metabolisers unknown — assumed ×1`);
           if (mult === 0) notFormedIn.set(e.id, (notFormedIn.get(e.id) ?? new Set<Phenotype>()).add(phen));
         }
-        return { id: e.id, known: e.fraction !== null, fraction: (e.fraction ?? 1) * mult };
+        const windows = e.condition ? conditional?.get(condKey(id, e.id))?.map(([a, b]) => [h(a), h(b)] as [number, number]) : undefined;
+        return { id: e.id, known: e.fraction !== null, fraction: (e.fraction ?? 1) * mult, ...(windows ? { windows } : {}) };
       });
       const knownSum = eff.filter((e) => e.known).reduce((a, e) => a + e.fraction, 0);
       if (knownSum > 1 + 1e-9) {
@@ -628,21 +732,25 @@ function simulateProduct(idx: LibraryIndex, req: SimRequest, ctx: Ctx, warnings:
         if (run === 'typical' && variant === 'single')
           warnings.push({ level: 'warn', text: `${req.name}: CYP2D6-adjusted fractions formed from ${c.name} exceed 1; scaled down proportionally.` });
       }
-      list.push({ id, halfLifeHours: terminal, earlyPhase: early, children: eff.map((e) => ({ id: e.id, fraction: e.fraction })), quasiSteady: included.get(id) === 'formation-limited' });
+      list.push({
+        id, halfLifeHours: Number.isFinite(terminal) ? terminal : 1, earlyPhase: early, zeroOrderRate,
+        children: eff.map((e) => ({ id: e.id, fraction: e.fraction, ...(e.windows ? { windows: e.windows } : {}) })),
+        quasiSteady: included.get(id) === 'formation-limited',
+      });
     }
 
-    // Inputs: each component gets dose × ratio × saltFactor × bioavailability, via a release pool if any.
+    // Inputs: each component gets dose × ratio × saltFactor × massFactor × bioavailability, via a release pool if any.
     const releases: SimRelease[] = [];
     const bolus: { time: number; compoundId: string; amount: number }[] = [];
     const infusions: SimInfusion[] = [];
     const relHl = releaseB ? releaseB[run] : null;
     for (const comp of product.components) {
       if (!included.has(comp.compound)) continue;
-      const factor = comp.ratio * (comp.saltFactor ?? 1) * (comp.bioavailability ?? 1);
+      const factor = comp.ratio * (comp.saltFactor ?? 1) * (comp.massFactor ?? 1) * (comp.bioavailability ?? 1);
       const target = relHl ? `rel:${comp.compound}` : comp.compound;
       if (relHl) releases.push({ id: target, halfLifeHours: relHl, target: comp.compound });
       for (const d of req.doses) {
-        const mg = toMg(d.amount, d.unit) * factor;
+        const mg = toMg(d.amount, d.unit, s.standardDrinkGrams) * factor;
         if (d.end !== undefined) infusions.push({ start: h(d.time), end: h(d.end), target, rate: mg });
         else bolus.push({ time: h(d.time), compoundId: target, amount: mg });
       }
@@ -659,11 +767,13 @@ function simulateProduct(idx: LibraryIndex, req: SimRequest, ctx: Ctx, warnings:
   const frac = clearFraction(s.clearHalfLives);
   type Sim = ReturnType<typeof simulate>;
   const toRun = (sim: Sim, id: string): Run => ({ times: sim.times.map((x) => ctx.t0 + x * HOUR), amounts: sim.amounts[id] });
+  /** Zero-order compounds are clear when none is left; the rest at a fraction of their peak. */
+  const thresholdOf = (id: string, peak: number) => (zeroOrder.has(id) ? peak * 1e-9 : peak * frac);
   const clearOf = (sim: Sim, id: string): number | null => {
     const pk = sim.peaks[id];
     if (!(pk > 0)) return null;
     const r = toRun(sim, id);
-    const v = clearTime(r.times, r.amounts, pk * frac);
+    const v = clearTime(r.times, r.amounts, thresholdOf(id, pk));
     return v === -Infinity ? r.times[0] : v;
   };
   /** Latest clear time over the compounds that count (active / unknown relevance, formed in this run). null = beyond the window. */
@@ -715,8 +825,9 @@ function simulateProduct(idx: LibraryIndex, req: SimRequest, ctx: Ctx, warnings:
       depth: node.depth,
       runs: { min: toRun(sims.min, id), typical: toRun(sims.typical, id), max: toRun(sims.max, id) },
       peak,
-      threshold: peak * frac,
-      clearAt: formed.typical ? clearOf(sims.typical, id) : null,
+      threshold: thresholdOf(id, peak),
+      // Zero-order: the clear date uses the slowest rate (the max run).
+      clearAt: zeroOrder.has(id) ? (formed.max ? clearOf(sims.max, id) : null) : formed.typical ? clearOf(sims.typical, id) : null,
       clearAtMax: formed.max ? clearOf(sims.max, id) : null,
       clearAtMin: formed.min ? clearOf(sims.min, id) : null,
       formed,
@@ -739,6 +850,25 @@ function simulateProduct(idx: LibraryIndex, req: SimRequest, ctx: Ctx, warnings:
       excludeInactive(c.compound.id, false);
       c.assumptions = [...(curveAssumptions.get(c.compound.id) ?? [])];
     }
+
+  // Conditional links: re-run with those whose parent is in the body while the required compound is.
+  if (conditional === null) {
+    const active = new Map<string, [number, number][]>();
+    for (const id of order)
+      for (const e of idx.children.get(id) ?? []) {
+        const windows = e.condition ? ctx.presence.get(e.condition) : undefined;
+        if (!windows?.length || notFormed(e)) continue;
+        const parent = curves.find((c) => c.compound.id === id);
+        if (!parent) continue;
+        const run = parent.formed.max ? parent.runs.max : parent.runs.typical;
+        const present = intervalsAbove(run.times, run.amounts, parent.threshold);
+        if (present.some(([a, b]) => windows.some(([c, d]) => a < d && c < b))) active.set(condKey(id, e.id), windows);
+      }
+    if (active.size) {
+      warnings.length = warnStart;
+      return simulateProduct(idx, req, ctx, warnings, active);
+    }
+  }
 
   const latest = [...req.doses].sort((a, b) => b.time - a.time)[0] ?? null;
   const usedCompounds = curves.map((c) => c.compound);
@@ -765,6 +895,7 @@ function simulateProduct(idx: LibraryIndex, req: SimRequest, ctx: Ctx, warnings:
       cyp2d6: usedCompounds.filter((c) => c.cyp2d6.substrate === 'unassessed' || c.cyp2d6.inhibitor === 'unassessed').map((c) => c.name),
       receptors: usedCompounds.filter((c) => !c.receptorsAssessed).map((c) => c.name),
     },
+    ...(parts.length ? { prodrug: parts.map(({ administeredAs, modelledAs }) => ({ administeredAs, modelledAs })) } : {}),
   };
 }
 
@@ -794,10 +925,29 @@ export function findIbogaineProduct(idx: LibraryIndex): Product {
 }
 
 /** A dose entry's events in the product's unit; null if the stored unit can't be converted. */
-function eventsFor(d: DoseEntry, p: Product): DoseEvent[] | null {
-  const amount = convertUnit(d.amount, d.unit, p.doseUnit);
+function eventsFor(d: DoseEntry, p: Product, gPerDrink: number): DoseEvent[] | null {
+  const amount = convertUnit(d.amount, d.unit, p.doseUnit, gPerDrink);
   if (amount === null) return null;
   return expandDose({ ...d, amount, unit: p.doseUnit }, p.input.defaultDurationHours);
+}
+
+/** Compounds a product reaches without conditional links. */
+function staticReach(idx: LibraryIndex, roots: string[]): Set<string> {
+  const out = new Set(roots);
+  const queue = [...roots];
+  while (queue.length) for (const ch of staticChildren(idx, queue.shift()!)) if (!out.has(ch)) { out.add(ch); queue.push(ch); }
+  return out;
+}
+
+/** Merge overlapping [start, end] intervals. */
+function mergeIntervals(iv: [number, number][]): [number, number][] {
+  const out: [number, number][] = [];
+  for (const [a, b] of [...iv].sort((x, y) => x[0] - y[0])) {
+    const last = out[out.length - 1];
+    if (last && a <= last[1]) last[1] = Math.max(last[1], b);
+    else out.push([a, b]);
+  }
+  return out;
 }
 
 export function computeScenario(idx: LibraryIndex, session: Session, now: number): Scenario {
@@ -816,7 +966,7 @@ export function computeScenario(idx: LibraryIndex, session: Session, now: number
       warnings.push({ level: 'warn', text: `A dose refers to an unknown product (${d.productId}); it is ignored.` });
       continue;
     }
-    const ev = eventsFor(d, p);
+    const ev = eventsFor(d, p, s.standardDrinkGrams);
     if (!ev) {
       warnings.push({ level: 'warn', text: `${p.name}: a dose entered in ${d.unit} can't be converted to ${p.doseUnit}; it is ignored. Edit the dose.` });
       continue;
@@ -832,22 +982,54 @@ export function computeScenario(idx: LibraryIndex, session: Session, now: number
   const lastDose = Math.max(...allDoseTimes, now);
   const axisStart = allDoseTimes.length ? Math.min(...allDoseTimes) : Math.min(now, ibogaineAt ?? now) - DAY;
   const axisEnd = (ibTimes.length ? Math.max(...ibTimes) : lastDose) + 14 * DAY;
-  const ctx: Ctx = { t0: earliest, minEndMs: axisEnd, maxEndMs: Math.max(axisEnd, lastDose + 730 * DAY), settings: s };
+  const ctx: Ctx = {
+    t0: earliest, minEndMs: axisEnd, maxEndMs: Math.max(axisEnd, lastDose + 730 * DAY), settings: s,
+    weightKg: session.patient.weightKg > 0 ? session.patient.weightKg : 0, presence: new Map(), presenceAssumed: new Map(),
+  };
+
+  // Products that dose a compound some conditional link requires (alcohol) run first, so their presence is known.
+  const required = new Set([...idx.children.values()].flat().map((e) => e.condition).filter((x): x is string => !!x));
+  const reach = (p: Product) => staticReach(idx, componentIds(p));
+  const provides = (p: Product) => [...reach(p)].filter((id) => required.has(id));
+  const entries = [...byProduct].filter(([, doses]) => doses.length);
+  entries.sort(([a], [b]) => Number(provides(idx.products.get(b)!).length > 0) - Number(provides(idx.products.get(a)!).length > 0));
+  const addPresence = (r: ProductResult) => {
+    for (const c of r.curves) {
+      if (!required.has(c.compound.id)) continue;
+      const run = c.formed.max ? c.runs.max : c.runs.typical;
+      ctx.presence.set(c.compound.id, mergeIntervals([...(ctx.presence.get(c.compound.id) ?? []), ...intervalsAbove(run.times, run.amounts, c.threshold)]));
+    }
+  };
+  const assumePresence = (p: Product, doses: DoseEvent[], why: string) => {
+    const first = Math.min(...doses.map((d) => d.time));
+    for (const id of provides(p)) {
+      ctx.presence.set(id, mergeIntervals([...(ctx.presence.get(id) ?? []), [first, ctx.maxEndMs]]));
+      ctx.presenceAssumed.set(id, why);
+    }
+  };
 
   const products: ProductResult[] = [];
-  for (const [pid, doses] of byProduct) {
+  for (const [pid, doses] of entries) {
     const p = idx.products.get(pid)!;
-    if (!doses.length) continue;
-    if (!productHasData(idx, p)) {
-      warnings.push({ level: 'warn', text: `${p.name}: no half-life data yet for ${idx.compounds.get(primaryCompound(p))?.name ?? primaryCompound(p)} — not plotted.` });
+    const req: SimRequest = { key: pid, product: p, name: displayName(p), isIbogaine: false, color: colors.get(pid)!, doses, phenotype: session.patient.phenotype, repeated: repeated(p, doses) };
+    if (productNotModelled(idx, p)) {
+      products.push(unsimulatedResult(idx, req, 'not-modelled', []));
       continue;
     }
-    products.push(simulateProduct(
-      idx,
-      { key: pid, product: p, name: displayName(p), isIbogaine: false, color: colors.get(pid)!, doses, phenotype: session.patient.phenotype, repeated: repeated(p, doses) },
-      ctx, warnings,
-    ));
+    if (!productHasData(idx, p)) {
+      const c = idx.compounds.get(primaryCompound(p));
+      const what = c?.kinetics.mode === 'zero-order' ? 'elimination-rate' : 'half-life';
+      warnings.push({ level: 'warn', text: `${p.name}: no ${what} data yet for ${c?.name ?? primaryCompound(p)} — not plotted.` });
+      assumePresence(p, doses, `no ${what} data`);
+      continue;
+    }
+    const r = simulateProduct(idx, req, ctx, warnings);
+    if (r.status === 'needs-weight') assumePresence(p, doses, 'no body weight');
+    addPresence(r);
+    products.push(r);
   }
+  const entryOrder = [...byProduct.keys()];
+  products.sort((a, b) => entryOrder.indexOf(a.key) - entryOrder.indexOf(b.key));
 
   // CYP2D6 inhibition windows from patient drugs.
   const recoveryTail = s.clearHalfLives * s.cypRecoveryHalfLifeHours * HOUR;
@@ -932,12 +1114,19 @@ export function computeScenario(idx: LibraryIndex, session: Session, now: number
 
   // Lingering effects after clearance.
   const lingering: LingeringBand[] = [];
-  for (const r of products)
+  for (const r of products) {
     for (const c of r.curves) {
       const le = c.compound.lingeringEffects;
       if (le.durationDays && le.durationDays > 0 && c.clearAt !== null)
         lingering.push({ start: c.clearAt, end: c.clearAt + le.durationDays * DAY, compound: c.compound.name, productKey: r.key, note: le.note });
     }
+    // Not modelled: the lingering band starts at the end of each exposure (v2.2 §3).
+    const c = r.status === 'not-modelled' ? idx.compounds.get(primaryCompound(r.product)) : undefined;
+    const days = c?.lingeringEffects.durationDays;
+    if (c && days && days > 0)
+      for (const [start, end] of mergeIntervals(r.doses.map((d) => [d.end ?? d.time, (d.end ?? d.time) + days * DAY])))
+        lingering.push({ start, end, compound: c.name, productKey: r.key, note: c.lingeringEffects.note });
+  }
 
   // Receptor overlap at the ibogaine date: targets hit by compounds from ≥ 2 different products.
   const overlaps: ReceptorOverlap[] = [];
@@ -974,7 +1163,15 @@ export function computeScenario(idx: LibraryIndex, session: Session, now: number
   const firstDose = ibEvents.length ? `the first ibogaine dose (${IBOGAINE_KIND_LABEL[ibEvents[0].kind].toLowerCase()})` : '';
   for (const r of products) {
     if (r.isIbogaine) continue;
-    if (r.status === 'incomplete') {
+    if (r.status === 'not-modelled') {
+      const le = idx.compounds.get(primaryCompound(r.product))?.lingeringEffects;
+      warnings.push({
+        level: 'info',
+        text: `${r.name}: not modelled — ${r.notModelledReason}. ${le?.durationDays ? 'See the lingering-effects band.' : 'Lingering-effect duration unknown — clinical assessment needed.'}`,
+      });
+    } else if (r.status === 'needs-weight') {
+      warnings.push({ level: 'warn', text: `${r.name}: needs body weight — alcohol elimination scales with weight. Enter the patient's weight to get a clear date.` });
+    } else if (r.status === 'incomplete') {
       const overlapping = ibogaineAt !== null && (r.clearAt === null || r.clearAt > ibogaineAt);
       warnings.push({
         level: 'warn',
@@ -1004,6 +1201,8 @@ export function combinationText(idx: LibraryIndex, p: Product, amount: number, u
 
 /** "Clear by …", "Clear by … — with assumptions", or "Incomplete — missing kinetics for: X · not before …". */
 export function clearStatusText(r: ProductResult, fmt: (t: number) => string, which: 'typical' | 'max' = 'typical'): string {
+  if (r.status === 'not-modelled') return `Not modelled — ${r.notModelledReason}`;
+  if (r.status === 'needs-weight') return 'Needs body weight';
   const at = which === 'max' ? r.clearAtMax : r.clearAt;
   if (r.status === 'incomplete')
     return `Incomplete — missing kinetics for: ${r.missing.join(', ')}${at !== null ? ` · not before ${fmt(at)}` : ''}`;

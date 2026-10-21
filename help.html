@@ -286,6 +286,13 @@
                 <figcaption>A depot injection.</figcaption>
               </figure>
             </div>
+            <h4 id="alcohol">Alcohol</h4>
+            <p>Alcohol is entered in <strong>standard drinks</strong> or <strong>grams of ethanol</strong>; switch with the <em>Unit</em> menu next to the amount. The grams of ethanol are shown under the amount. A standard drink is 14 g by default. Countries define it differently (14 g in the US, 10 g in Australia, 8 g for a UK unit), so set yours in <a href="#settings">Settings → Clearance</a>. The regimen defaults to once a day.</p>
+            <p>The body removes alcohol at a roughly fixed rate per kg of body weight rather than by half-lives, so ClearDate needs the patient's <strong>weight</strong>. Without it the form shows <em>Needs body weight</em>, and the product isn't simulated: its doses appear as markers on the chart and the status reads “Needs body weight”. With a weight, the curve falls in a straight line and reaches zero; the slowest published rate sets the clear date.</p>
+            <h4 id="prodrugs">Prodrugs</h4>
+            <p>Some products are given as one compound and act as another: psilocybin becomes psilocin, clorazepate becomes nordiazepam, GBL becomes GHB. You enter the amount of what was taken. The form shows “Administered as psilocybin, modelled as psilocin (× 0.719)”: the amount is converted by the ratio of their molar masses and only the active compound is plotted. The status carries “prodrug — modelled as …” as an assumption.</p>
+            <h4 id="sessions">Exposures that aren't modelled</h4>
+            <p>A few exposures aren't simulated at all because a curve would mislead. Nitrous oxide, for example, is exhaled within minutes, but it inactivates vitamin B12 for days. These products carry a <span class="badge badge-muted">not modelled</span> badge in the search. They are entered as a <strong>session</strong> with a start and end time and no amount, or as <em>Repeated sessions</em> with how long each lasts. They are drawn as bars on the chart, never as a curve, and they have no clear date. Their status is “Not modelled”, with the reason. Any lingering effect still appears on the lingering-effects track, starting from the end of each session.</p>
             <h4>Editing and deleting</h4>
             <p>Entered doses are listed under <em>Entered doses</em>, grouped by category, with each product's status underneath. Use ✎ to edit a dose and 🗑 to delete it. Hover over a status for the full list of assumptions.</p>
             <figure class="shot narrow" data-img="dose-list.webp">
@@ -333,6 +340,7 @@
               <li><strong>Bands</strong>: the shaded area around a line runs from the fastest to the slowest clearance in the published range. The line is the typical value.</li>
               <li><strong>Today</strong> is a dotted line; the <strong>first ibogaine dose</strong> is a bold gold line, with later doses as thin dashed gold lines.</li>
               <li><strong>Clear ticks</strong> along the bottom mark each product's clear date: “✓ name”, “✓ name*” for “with assumptions”, and a hollow, dashed “≥ name (incomplete)” for a lower bound.</li>
+              <li><strong>Exposure markers</strong> appear just above the clear ticks for products without a curve: a bar across each session, or a short tick at each dose. They're labelled “name — not modelled” or “name — needs body weight”. They show <em>when</em> the exposure happened; they say nothing about amounts.</li>
             </ul>
             <figure class="shot" data-img="chart-main.webp">
               <div class="shot-frame"><img src="help/img/chart-main.webp" alt="The main chart: curves for each drug with shaded range bands, a dotted Today line, the gold Ibogaine line and a dashed booster line, and clear ticks with drug names along the bottom." /></div>
@@ -398,6 +406,8 @@
                   <tr><td>Clear by &lt;date&gt;</td><td>Every relevant compound is below the threshold by that date, using library values only.</td><td>Still read the range: the PDF also gives the slowest date in the range.</td></tr>
                   <tr><td>Clear by &lt;date&gt; — with assumptions</td><td>The date relies on something the tool had to assume: an assumed spread around a single published value, the midpoint of a published range, an assumed phenotype effect, a steady-state switch, a conservative choice for partial data, or a metabolite treated as inactive before review.</td><td>Hover over the status, or read the PDF's “Assumptions and missing data”, and decide whether each one is acceptable for this patient.</td></tr>
                   <tr><td>Incomplete — missing kinetics for: … · not before &lt;date&gt;</td><td>At least one active or not-yet-classified compound in the drug has no published kinetics in the library. The date is a lower bound: clearance can't happen earlier, but it may be later.</td><td>Treat the date as the earliest possible. Check the missing compound in the literature or with a laboratory test before relying on it.</td></tr>
+                  <tr><td>Not modelled — &lt;reason&gt;</td><td>The exposure is deliberately not simulated (for example nitrous oxide). Sessions are drawn as markers, and any lingering effect is shown, but there is no clear date.</td><td>Read the reason and the lingering-effects note, and judge the timing clinically.</td></tr>
+                  <tr><td>Needs body weight</td><td>Alcohol's elimination rate scales with weight, and none is entered.</td><td>Enter the weight in the Patient tab.</td></tr>
                   <tr><td>No data yet</td><td>The drug itself has no half-life in the library. It can't be selected, and isn't plotted.</td><td>Use other sources, or <a href="#custom">enter it as a custom drug</a> with a cited half-life, and <a href="#feedback">request it</a>.</td></tr>
                   <tr><td>Verified — incomplete data</td><td>A badge: the entry has been fully reviewed, and the missing kinetics are confirmed as unpublished rather than not yet looked up.</td><td>As for Incomplete. Waiting for a library update won't help.</td></tr>
                 </tbody>
@@ -492,6 +502,7 @@
               <li><strong>CYP2D6 recovery half-life (h)</strong>: default 51 h. How fast CYP2D6 is resynthesised after mechanism-based inhibition. Marked “verify”: check it against current literature.</li>
               <li><strong>Assumed spread when only one value is known (CV %)</strong>: default 30%. Used where the library has a single half-life or a missing bound. Labelled “assumed spread” wherever it is used.</li>
               <li><strong>Treat unknown metabolites as formation-limited</strong>: off by default. Off, a product with a metabolite of unknown kinetics is “Incomplete”. On, that metabolite is assumed to clear as fast as it is formed, and the product is “with assumptions” instead.</li>
+              <li><strong>Standard drink (g of ethanol)</strong>: default 14 g, the US definition; 10 g in Australia, 8 g for a UK unit. Used for alcohol entered in standard drinks (see <a href="#alcohol">Alcohol</a>).</li>
             </ul>
             <h4>Display</h4>
             <ul>
@@ -508,7 +519,7 @@
             </ul>
             <div class="shot-row">
               <figure class="shot narrow" data-img="settings-clearance.webp">
-                <div class="shot-frame"><img src="help/img/settings-clearance.webp" alt="The Clearance settings: clear threshold 5.5 half-lives with about 2.21% remaining, CYP2D6 recovery half-life 51 hours with a verify badge, assumed spread 30%, and the unknown-metabolites option." /></div>
+                <div class="shot-frame"><img src="help/img/settings-clearance.webp" alt="The Clearance settings: clear threshold 5.5 half-lives with about 2.21% remaining, CYP2D6 recovery half-life 51 hours with a verify badge, assumed spread 30%, the unknown-metabolites option, and the standard drink size, 14 g." /></div>
                 <figcaption>Clearance settings.</figcaption>
               </figure>
               <figure class="shot narrow" data-img="settings-display.webp">
@@ -599,6 +610,7 @@
             <li><strong>Two-phase drugs</strong> clear part of each dose quickly and the rest slowly. Both phases are modelled when the library has them.</li>
             <li><strong>Steady state</strong>: some drugs clear more slowly (or quickly) after weeks of regular dosing. Once a regimen has run long enough, the steady-state half-life is used, and the tooltip and PDF say so.</li>
             <li><strong>Patches, infusions and depots</strong> release the drug into the body gradually. ClearDate models the release as its own step before elimination, so the drug keeps entering the body for a while after a patch is removed or long after a depot injection.</li>
+            <li><strong>Alcohol</strong> is removed at a fixed rate (mg per kg per hour) rather than a fixed fraction, so its curve falls in a straight line and reaches zero. The fastest published rate gives the lower edge of the band and the slowest gives the upper edge and the clear date.</li>
           </ul>
 
           <h3>CYP2D6 phenotype</h3>
@@ -606,6 +618,10 @@
 
           <h3>Clinical relevance of metabolites</h3>
           <p>Every metabolite in the library is classed as <em>active</em>, <em>inactive</em> or <em>unknown</em>. Drugs taken and active metabolites always count towards the clear date. Unknown ones count too, so an unclassified metabolite with unpublished kinetics makes the product “Incomplete” rather than silently ignored. Inactive metabolites never hold up the clear date; when that classification hasn't been reviewed yet, the status becomes “with assumptions”.</p>
+
+          <h3>Endogenous and conditional metabolites</h3>
+          <p>Some metabolites are also made by the body, such as indole-3-acetic acid from DMT. Only the excess over the body's own level would matter, and that isn't modelled. Once a reviewer has confirmed the metabolite's relevance, it is marked <em>endogenous — excess over baseline not modelled</em> and doesn't make the product “Incomplete”.</p>
+          <p>A few metabolites form only when another drug is present at the same time. Cocaethylene, for example, forms only when cocaine and alcohol are in the body together, and ethylphenidate only from methylphenidate with alcohol. ClearDate includes such a metabolite only when the two overlap, and notes “formed because alcohol was also taken”. In the Drug Library these links are drawn dashed and labelled “with alcohol”. If the alcohol amount can't be simulated (for example without a body weight), the alcohol is assumed to be present from the first drink, and this is listed as an assumption.</p>
 
           <h3>The conservative rule</h3>
           <p>When data is only partly published, ClearDate uses whichever option gives the later clear date, and labels it. For example, a fast early phase without a known size is ignored, so the whole dose follows the slower half-life. When it isn't known how long a drug takes to reach steady state, a repeated regimen is simulated both ways and the later date counts.</p>
@@ -660,7 +676,7 @@
             <ol class="callout-list">
               <li>Search by name, brand or alias, using the same search as the Doses panel.</li>
               <li>Filter by category. You can select more than one.</li>
-              <li>Filter by status: Verified, Draft, Incomplete data, No data yet.</li>
+              <li>Filter by status: Verified, Draft, Incomplete data, Not modelled, No data yet.</li>
               <li>Also list metabolites, which have entries of their own.</li>
               <li>Status dot: green for verified (a green ring for verified with incomplete data), amber for draft, an empty circle for no data yet.</li>
               <li>Live counts from the library.</li>
@@ -685,6 +701,7 @@
               <li>A metabolite. Select it to open its own entry. Blue outline: active; grey: inactive; dashed amber: relevance unknown.</li>
               <li>The fraction formed, and any CYP2D6 phenotype multipliers, on each link.</li>
             </ol>
+            <p>A dashed amber link labelled “with alcohol” is <a href="#model">conditional</a>: that metabolite only forms when alcohol is also present. A green <em>endogenous</em> chip marks a metabolite the body also makes. Products of prodrugs show “administered as … modelled as …” with the molar-mass factor, alcohol shows its elimination rate per kg, and not-modelled drugs show the reason instead of a half-life.</p>
           </figure>
           <figure class="shot" data-img="library-sources.webp">
             <div class="shot-frame"><img src="help/img/library-sources.webp" alt="The sources of one entry: each section with its cited sources as links and a small coloured provenance dot, an open Show evidence notes panel with the raw notes, and a legend explaining the dots." /></div>

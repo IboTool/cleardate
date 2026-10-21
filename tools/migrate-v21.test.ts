@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { emptyCompound, emptyProduct, serializeLibrary } from '../src/schema';
+import { emptyCompound, emptyProduct, SCHEMA_VERSION, serializeLibrary } from '../src/schema';
 import type { Compound, Library, Product } from '../src/types';
 import { validateLibrary } from '../src/validate';
 import { buildInitialLibrary } from './init-lib';
@@ -50,7 +50,7 @@ describe('migrate-v2.1', () => {
   it('produces a valid 2.1 library', () => {
     expect(skipped).toBe(false);
     expect(lib.schemaVersion).toBe(2.1);
-    expect(validateLibrary(lib).errors).toEqual([]);
+    expect(validateLibrary(lib).errors.filter((e) => !/^schemaVersion must be 2\.2/.test(e.message))).toEqual([]);
   });
 
   it('adds clinicalRelevance: active for parents and dosed metabolites, unknown otherwise', () => {
@@ -130,11 +130,11 @@ describe('migrate-v2.1', () => {
   });
 });
 
-describe('init-data emits 2.1', () => {
+describe('init-data emits the current schema', () => {
   const lib: Library = buildInitialLibrary(JSON.parse(readFileSync(new URL('./candidates.json', import.meta.url), 'utf8')));
 
-  it('is a valid 2.1 library with relevance assigned and the 2.1 removals applied', () => {
-    expect(lib.schemaVersion).toBe(2.1);
+  it('is a valid library with relevance assigned and the 2.1 removals applied', () => {
+    expect(lib.schemaVersion).toBe(SCHEMA_VERSION);
     expect(validateLibrary(lib).errors).toEqual([]);
     expect(lib.products.some((p) => p.id === 'baclofen_intrathecal')).toBe(false);
     expect(lib.products.some((p) => p.id === 'baclofen_oral')).toBe(true);
