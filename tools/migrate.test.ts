@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { serializeLibrary } from '../src/schema';
 import { validateLibrary } from '../src/validate';
 import { migrateLibrary, parseProductSource, parseTag } from './migrate-lib';
+import { migrateLibraryV21 } from './migrate-v21-lib';
 import { replacementsFor } from './product-rules';
 
 const hl = (typical: number, min = typical, max = typical) => ({ typical, min, max });
@@ -74,11 +75,12 @@ describe('migrate-v2', () => {
   const c = (id: string) => lib.compounds.find((x) => x.id === id)!;
   const p = (id: string) => lib.products.find((x) => x.id === id);
 
-  it('produces a valid v2 library (apart from what migrate-v2.1 adds)', () => {
+  it('produces a v2 library that is valid once migrate-v2.1 has run', () => {
     expect(skipped).toBe(false);
     expect(lib.schemaVersion).toBe(2);
-    const v21 = /schemaVersion must be 2\.1|clinicalRelevance "undefined"|reviewedDates missing/;
-    expect(validateLibrary(lib).errors.filter((e) => !v21.test(e.message))).toEqual([]);
+    const next = migrateLibraryV21(JSON.parse(serializeLibrary(lib)), { expectedInhibitorResets: null });
+    expect(next.lib.schemaVersion).toBe(2.1);
+    expect(validateLibrary(next.lib).errors).toEqual([]);
   });
 
   it('migrates compound kinetics, nulls and provenance', () => {

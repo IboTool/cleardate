@@ -1,7 +1,7 @@
-// Product rules shared by `npm run migrate-v2` and `npm run init-data` (spec v2, "Shared product rules"):
-// input-model inference from the route, release-form splits, depot splits, the
-// buprenorphine/naloxone combination product and route clean-ups. Both tools run these on
-// freshly built v2 products, so a fresh init-data yields the same product set as a migration.
+// Product rules shared by `npm run migrate-v2`, `npm run migrate-v2.1` and `npm run init-data` (spec v2,
+// "Shared product rules"; v2.1 §5): input-model inference from the route, release-form splits, depot
+// splits, the buprenorphine/naloxone combination product, route clean-ups and the 2.1 removals. The
+// tools run these on freshly built products, so a fresh init-data yields the same product set as the migrations.
 
 import { clone, primaryCompound } from '../src/schema';
 import type { Formulation, Library, Product, ProductInput } from '../src/types';
@@ -210,10 +210,33 @@ export function applyProductRules(lib: Library, opts: RuleOptions): ProductChang
   return changes;
 }
 
-/** Old (v1) product id → its v2 replacements, for migrating saved patient sessions. */
+/** Products removed in schema 2.1 because the model can't represent them (spec v2.1 §5). */
+export const REMOVED_V21: Record<string, { replacement: string; note: string }> = {
+  baclofen_intrathecal: {
+    replacement: 'baclofen_oral',
+    note: 'Intrathecal baclofen not modelled (pump/CSF kinetics). Abrupt intrathecal withdrawal is a separate clinical risk.',
+  },
+};
+
+/** Schema 2.1 product rules (removals). Mutates the library; with `annotate`, notes go on the replacement. */
+export function applyV21ProductRules(lib: Library, opts: RuleOptions): ProductChange[] {
+  const changes: ProductChange[] = [];
+  for (const [id, r] of Object.entries(REMOVED_V21)) {
+    if (!lib.products.some((p) => p.id === id)) continue;
+    lib.products = lib.products.filter((p) => p.id !== id);
+    const repl = lib.products.find((p) => p.id === r.replacement);
+    if (repl && opts.annotate && !(repl.sourceNotes.input ?? '').includes(r.note))
+      repl.sourceNotes = { ...repl.sourceNotes, input: repl.sourceNotes.input ? `${repl.sourceNotes.input} ${r.note}` : r.note };
+    changes.push({ kind: 'removed', oldId: id, newIds: repl ? [repl.id] : [] });
+  }
+  return changes;
+}
+
+/** Old (v1 / v2) product id → its replacements, for migrating saved patient sessions. */
 export function replacementsFor(oldId: string, lib: Library): string[] {
   const ids = new Set(lib.products.map((p) => p.id));
   const known = [
+    ...(REMOVED_V21[oldId] ? [REMOVED_V21[oldId].replacement] : []),
     ...(DEPOT_SPLITS[oldId]?.map((d) => d.id) ?? []),
     ...(RENAMES[oldId] ? [RENAMES[oldId].id] : []),
     ...(oldId === COMBINATION_REPLACES ? [COMBINATION_ID] : []),

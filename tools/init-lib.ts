@@ -2,7 +2,8 @@
 
 import { emptyCompound, emptyProduct, SCHEMA_VERSION, slug } from '../src/schema';
 import type { Category, Library, Product } from '../src/types';
-import { applyProductRules } from './product-rules';
+import { assignRelevance } from './migrate-v21-lib';
+import { applyProductRules, applyV21ProductRules } from './product-rules';
 
 export interface Candidate {
   id: string;
@@ -38,7 +39,7 @@ export function productId(parentCompound: string, route: string) {
   return `${parentCompound}_${slug(route)}`;
 }
 
-/** An empty v2 library: every compound and product from the queue, all values unknown. */
+/** An empty v2.1 library: every compound and product from the queue, all values unknown. */
 export function buildInitialLibrary(src: CandidatesFile): Library {
   const compounds = src.compounds.map((c) => ({
     ...emptyCompound(c.id, c.name),
@@ -62,5 +63,7 @@ export function buildInitialLibrary(src: CandidatesFile): Library {
   }
   const lib: Library = { schemaVersion: SCHEMA_VERSION, categories: src.categories.map((c) => ({ ...c })), compounds, products };
   applyProductRules(lib, { annotate: false });
+  applyV21ProductRules(lib, { annotate: false });
+  assignRelevance(lib);
   return lib;
 }

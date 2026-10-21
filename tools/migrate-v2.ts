@@ -26,7 +26,10 @@ if (skipped) {
   process.exit(0);
 }
 
-const v = validateLibrary(lib);
+// Fields that only arrive with migrate-v2.1 aren't errors at this stage.
+const V21_ONLY = /schemaVersion must be 2\.1|clinicalRelevance "undefined"|reviewedDates missing/;
+const all = validateLibrary(lib);
+const v = { ...all, errors: all.errors.filter((e) => !V21_ONLY.test(e.message)) };
 console.log(`Compounds ${lib.compounds.length}; products ${report.counts['products in']} → ${lib.products.length}.`);
 console.log(`Formation-limited (auto): ${report.formationLimited.length}. Product changes: ${report.productChanges.length}.`);
 console.log(`Validation after migration: ${v.errors.length} error(s), ${v.warnings.length} warning(s).`);
@@ -47,4 +50,5 @@ renameSync(tmp, file);
 const reportPath = resolve(root, 'docs/migration_v2_report.md');
 writeFileSync(reportPath, renderReport(report), 'utf8');
 console.log(`Wrote ${file} (v1 backup: ${backup}) and ${reportPath}.`);
+console.log('Next: npm run migrate-v2.1');
 process.exit(v.errors.length ? 1 : 0);

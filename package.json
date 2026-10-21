@@ -13,6 +13,7 @@
     "init-data": "tsx tools/init-data.ts",
     "validate": "tsx tools/validate-drugs.ts",
     "migrate-v2": "tsx tools/migrate-v2.ts",
+    "migrate-v2.1": "tsx tools/migrate-v2.1.ts",
     "editor": "vite --config tools/editor/vite.config.ts"
   },
   "dependencies": {
