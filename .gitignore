@@ -11,3 +11,5 @@ tools/editor/.backups/
 *.cleardate.json
 patient-*.json
 tools/editor/.no-build/
+
+user_to_do.md
