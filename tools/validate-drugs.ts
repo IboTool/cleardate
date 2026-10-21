@@ -62,7 +62,7 @@ console.log(`  Metabolites by clinical relevance: ${fmt(progress.metaboliteRelev
 const inc = progress.incomplete;
 console.log(
   `  Products "Incomplete": ${inc.total} (blocked only by unknown-relevance metabolites ${inc.unknownRelevanceOnly} · ` +
-    `by an active compound ${inc.active}) · no data yet: ${progress.noData}`,
+    `by an active compound ${inc.active}) · no data yet: ${progress.noData} · not modelled: ${progress.notModelled}`,
 );
 const ids = (l: string[]) => (l.length ? `${l.length} (${l.join(', ')})` : '0');
 console.log(`  Verified, incomplete data: ${ids(progress.verifiedIncomplete)}`);

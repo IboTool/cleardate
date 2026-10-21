@@ -11,6 +11,10 @@
 //   - Each step, pools are updated upstream-first. Inflow during the step (zero-order input or an
 //     upstream pool's elimination) is treated as uniform over the step, which gives the exact
 //     solution for constant inflow:  A' = A·e^(−k·dt) + I·(1 − e^(−k·dt)) / (k·dt).
+//   - A zero-order compound (alcohol) has one pool eliminated at a constant rate R while it holds any
+//     drug: A' = max(0, A + I − R·dt). Steps stop exactly where it empties, so "clear" (amount 0) is exact.
+//   - A conditional metabolite link forms its metabolite only inside its windows; steps never cross a
+//     window edge.
 //   - dt = min(maxDt, shortest active half-life ÷ stepsPerHalfLife), and never crosses a dose
 //     time or an input start/stop. A pool is "active" while it holds a non-negligible amount or
 //     receives inflow. Compounds marked `quasiSteady` (formation-limited conjugates) are left out
@@ -18,14 +22,20 @@
 
 export interface SimCompound {
   id: string;
-  /** Terminal (slow pool) half-life for this run, hours (> 0). */
+  /** Terminal (slow pool) half-life for this run, hours (> 0). Ignored with zeroOrderRate. */
   halfLifeHours: number;
   /** Share of input cleared by a faster early phase. */
   earlyPhase?: { fraction: number; halfLifeHours: number } | null;
-  /** Metabolites formed from this compound, with the fraction of its elimination that forms each. */
-  children: { id: string; fraction: number }[];
+  /**
+   * Metabolites formed from this compound, with the fraction of its elimination that forms each.
+   * With `windows`, the link only forms the metabolite inside those intervals (hours); outside, that
+   * share leaves the body untracked (conditional formation, e.g. cocaine → cocaethylene with alcohol).
+   */
+  children: { id: string; fraction: number; windows?: [number, number][] }[];
   /** Exclude from the step-size rule (eliminated much faster than formed). */
   quasiSteady?: boolean;
+  /** Zero-order elimination: constant amount per hour while any is left (alcohol). Replaces the half-life. */
+  zeroOrderRate?: number;
 }
 
 export interface SimRelease {
@@ -118,11 +128,15 @@ interface Pool {
   hl: number;
   /** Compound index this pool belongs to (−1 for release pools). */
   compound: number;
-  /** Where eliminated amount goes: compound index + fraction. */
-  out: { c: number; f: number }[];
+  /** Where eliminated amount goes: compound index + fraction (+ the windows it is formed in, if conditional). */
+  out: { c: number; f: number; windows?: [number, number][] }[];
   untracked: number;
   quasi: boolean;
+  /** Zero-order elimination rate (amount / h); 0 = first-order. */
+  zero: number;
 }
+
+const inWindows = (w: [number, number][], t: number) => w.some(([a, b]) => t >= a && t < b);
 
 export function simulate(compounds: SimCompound[], doses: SimDose[], opts: SimOptions): SimResult {
   const order = topoOrder(compounds);
@@ -135,24 +149,27 @@ export function simulate(compounds: SimCompound[], doses: SimDose[], opts: SimOp
   const entry = new Map<string, { fast: number; slow: number; f: number }>();
   for (const r of releases) {
     entry.set(r.id, { fast: -1, slow: pools.length, f: 0 });
-    pools.push({ k: Math.LN2 / r.halfLifeHours, hl: r.halfLifeHours, compound: -1, out: [{ c: cIdx.get(r.target)!, f: 1 }], untracked: 0, quasi: false });
+    pools.push({ k: Math.LN2 / r.halfLifeHours, hl: r.halfLifeHours, compound: -1, out: [{ c: cIdx.get(r.target)!, f: 1 }], untracked: 0, quasi: false, zero: 0 });
   }
   const compoundPools: number[][] = [];
   order.forEach((c, i) => {
-    const kids = c.children.filter((ch) => cIdx.has(ch.id)).map((ch) => ({ c: cIdx.get(ch.id)!, f: ch.fraction }));
+    const kids = c.children.filter((ch) => cIdx.has(ch.id)).map((ch) => ({ c: cIdx.get(ch.id)!, f: ch.fraction, ...(ch.windows ? { windows: ch.windows } : {}) }));
     const known = kids.reduce((s, ch) => s + ch.f, 0);
     const untracked = Math.max(0, 1 - known);
-    const ep = c.earlyPhase && c.earlyPhase.fraction > 0 && c.earlyPhase.fraction < 1 && c.earlyPhase.halfLifeHours > 0 ? c.earlyPhase : null;
+    const zero = c.zeroOrderRate && c.zeroOrderRate > 0 ? c.zeroOrderRate : 0;
+    const ep = !zero && c.earlyPhase && c.earlyPhase.fraction > 0 && c.earlyPhase.fraction < 1 && c.earlyPhase.halfLifeHours > 0 ? c.earlyPhase : null;
     const ids: number[] = [];
     let fast = -1;
     if (ep) {
       fast = pools.length;
       ids.push(fast);
-      pools.push({ k: Math.LN2 / ep.halfLifeHours, hl: ep.halfLifeHours, compound: i, out: kids, untracked, quasi: !!c.quasiSteady });
+      pools.push({ k: Math.LN2 / ep.halfLifeHours, hl: ep.halfLifeHours, compound: i, out: kids, untracked, quasi: !!c.quasiSteady, zero: 0 });
     }
     const slow = pools.length;
     ids.push(slow);
-    pools.push({ k: Math.LN2 / c.halfLifeHours, hl: c.halfLifeHours, compound: i, out: kids, untracked, quasi: !!c.quasiSteady });
+    pools.push(zero
+      ? { k: 0, hl: Infinity, compound: i, out: kids, untracked, quasi: false, zero }
+      : { k: Math.LN2 / c.halfLifeHours, hl: c.halfLifeHours, compound: i, out: kids, untracked, quasi: !!c.quasiSteady, zero: 0 });
     entry.set(c.id, { fast, slow, f: ep ? ep.fraction : 0 });
     compoundPools.push(ids);
   });
@@ -171,7 +188,8 @@ export function simulate(compounds: SimCompound[], doses: SimDose[], opts: SimOp
 
   const sorted = doses.filter((d) => entry.has(d.compoundId) && d.amount > 0).sort((a, b) => a.time - b.time);
   const infusions = (opts.infusions ?? []).filter((x) => entry.has(x.target) && x.rate > 0 && x.end > x.start);
-  const boundaries = [...new Set(infusions.flatMap((x) => [x.start, x.end]))].sort((a, b) => a - b);
+  const windowEdges = pools.flatMap((p) => p.out.flatMap((o) => (o.windows ?? []).flat()));
+  const boundaries = [...new Set([...infusions.flatMap((x) => [x.start, x.end]), ...windowEdges])].sort((a, b) => a - b);
   const totalDosed =
     sorted.reduce((s, d) => s + d.amount, 0) +
     infusions.reduce((s, x) => s + x.rate * Math.max(0, Math.min(x.end, opts.maxEnd) - Math.max(x.start, opts.start)), 0);
@@ -228,7 +246,7 @@ export function simulate(compounds: SimCompound[], doses: SimDose[], opts: SimOp
     // Stop once everything is cleared, past the requested window and after the last input.
     if (t >= opts.minEnd && t >= lastInput && di >= sorted.length && !infusing.length) {
       let done = true;
-      for (let p = 0; p < P; p++) if (A[p] > stopFraction * poolPeak[p] && A[p] > activeEps) { done = false; break; }
+      for (let p = 0; p < P; p++) if (A[p] > (pools[p].zero ? 0 : stopFraction * poolPeak[p]) && A[p] > activeEps) { done = false; break; }
       if (done) break;
     }
 
@@ -246,6 +264,8 @@ export function simulate(compounds: SimCompound[], doses: SimDose[], opts: SimOp
       if (active) {
         for (const o of pool.out) for (const q of compoundPools[o.c]) fed[q] = 1;
         if (!pool.quasi && pool.hl / perHl < dt) dt = pool.hl / perHl;
+        // Land exactly where a zero-order pool empties (when nothing flows in).
+        if (pool.zero && A[p] > 0 && !fed[p]) dt = Math.min(dt, Math.max(A[p] / pool.zero, 1e-6));
       }
     }
     if (di < sorted.length) dt = Math.min(dt, sorted[di].time - t);
@@ -257,17 +277,27 @@ export function simulate(compounds: SimCompound[], doses: SimDose[], opts: SimOp
 
     inflow.fill(0);
     for (const x of infusing) deliver(x.target, x.rate * dt, inflow);
+    const mid = t + dt / 2;
     for (let p = 0; p < P; p++) {
       const pool = pools[p];
       const a0 = A[p];
       const I = inflow[p];
       if (a0 <= 0 && I <= 0) continue;
-      const kdt = pool.k * dt;
-      const decay = Math.exp(-kdt);
-      const a1 = a0 * decay + (kdt > 1e-12 ? (I * (1 - decay)) / kdt : I);
+      let a1: number;
+      if (pool.zero) {
+        a1 = a0 + I - pool.zero * dt;
+        if (a1 <= activeEps) a1 = 0;
+      } else {
+        const kdt = pool.k * dt;
+        const decay = Math.exp(-kdt);
+        a1 = a0 * decay + (kdt > 1e-12 ? (I * (1 - decay)) / kdt : I);
+      }
       const e = a0 + I - a1;
       A[p] = a1;
-      for (const o of pool.out) deliver(order[o.c].id, e * o.f, inflow);
+      for (const o of pool.out) {
+        if (o.windows && !inWindows(o.windows, mid)) eliminated += e * o.f;
+        else deliver(order[o.c].id, e * o.f, inflow);
+      }
       eliminated += e * pool.untracked;
     }
     t += dt;

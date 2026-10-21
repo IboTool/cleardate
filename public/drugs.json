@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2.1,
+  "schemaVersion": 2.2,
   "categories": [
     {
       "id": "opioids",
@@ -2419,8 +2419,9 @@
       "clinicalRelevance": "active",
       "molecularWeight": null,
       "kinetics": {
-        "mode": "unknown",
+        "mode": "not-modelled",
         "halfLifeHours": null,
+        "notModelledReason": "Endogenous serotonin precursor; relevance is serotonergic interaction, not washout",
         "earlyPhase": null,
         "steadyState": null
       },
@@ -2446,7 +2447,7 @@
         "note": ""
       },
       "provenance": {
-        "halfLife": "gap",
+        "halfLife": "estimate",
         "metabolism": "gap",
         "relevance": "checked",
         "molecularWeight": "gap",
@@ -2457,7 +2458,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[gap] Both healthy2.2–7.4h and older IV~6h studies used carbidopa; standalone challenge study confirms major carbidopa effect but standalone numeric terminal not recovered. https://pubmed.ncbi.nlm.nih.gov/6187038/ https://pubmed.ncbi.nlm.nih.gov/311987/ https://pubmed.ncbi.nlm.nih.gov/11910264/",
+        "halfLife": "[gap] Both healthy2.2–7.4h and older IV~6h studies used carbidopa; standalone challenge study confirms major carbidopa effect but standalone numeric terminal not recovered. https://pubmed.ncbi.nlm.nih.gov/6187038/ https://pubmed.ncbi.nlm.nih.gov/311987/ https://pubmed.ncbi.nlm.nih.gov/11910264/ [estimate] Supplement B Part 4: kinetics mode set to not-modelled by migration v2.2 — Endogenous serotonin precursor; relevance is serotonergic interaction, not washout.",
         "metabolism": "[gap] 5_htp: queue links preserved. No defensible systemic formation fraction or phenotype formation map established; null is unknown, not zero formation.",
         "relevance": "[checked] Directly administered parent is clinically active; this is not a statement of therapeutic equivalence across formulations.",
         "molecularWeight": "[gap] 5_htp: neutral/free-base PubChem molecular weight not independently confirmed; null retained.",
@@ -7712,14 +7713,14 @@
         },
         "earlyPhase": null,
         "steadyState": {
+          "afterDays": null,
           "halfLifeHours": {
             "typical": 12,
             "min": 4,
             "max": 66,
             "rangeType": "observed-range",
             "cv": null
-          },
-          "afterDays": null
+          }
         }
       },
       "cyp2d6": {
@@ -7856,7 +7857,10 @@
         {
           "compound": "cocaine",
           "fraction": null,
-          "cyp2d6Multiplier": null
+          "cyp2d6Multiplier": null,
+          "condition": {
+            "requiresCompound": "ethanol"
+          }
         }
       ],
       "clinicalRelevance": "active",
@@ -7896,7 +7900,7 @@
       },
       "provenance": {
         "halfLife": "checked",
-        "metabolism": "gap",
+        "metabolism": "estimate",
         "relevance": "checked",
         "molecularWeight": "gap",
         "cyp2d6": "gap",
@@ -7907,7 +7911,7 @@
       },
       "sourceNotes": {
         "halfLife": "[checked] Direct IV single-dose crossover, six healthy male moderate cocaine users; mean 1.68 h. Formation requires concomitant ethanol, not an unconditional fraction of every cocaine dose. https://pubmed.ncbi.nlm.nih.gov/7701044/ Supplement B tree check: existing human PK retained. BE/EME formed profiles must not be equated with inactive status; cocaethylene requires co-exposure to ethanol (conditional formation not represented by static link).",
-        "metabolism": "[gap] cocaethylene: queue links preserved. No defensible systemic formation fraction or phenotype formation map established; null is unknown, not zero formation.",
+        "metabolism": "[gap] cocaethylene: queue links preserved. No defensible systemic formation fraction or phenotype formation map established; null is unknown, not zero formation. [estimate] Supplement B Part 4: formed from cocaine only while ethanol is also present (conditional link added by migration v2.2).",
         "relevance": "[checked] Human direct administration produced subjective and cardiovascular effects; ethanol-dependent formation. https://pubmed.ncbi.nlm.nih.gov/7701044/",
         "molecularWeight": "[gap] cocaethylene: neutral/free-base PubChem molecular weight not independently confirmed; null retained.",
         "cyp2d6": "[gap] cocaethylene: substrate, clinical inhibitor strength, mechanism and phenotype half-life ratios not established. No none/no inference from absence in FDA examples or substrate status.",
@@ -12335,8 +12339,15 @@
       "clinicalRelevance": "active",
       "molecularWeight": null,
       "kinetics": {
-        "mode": "unknown",
+        "mode": "zero-order",
         "halfLifeHours": null,
+        "zeroOrderRateMgPerKgPerHour": {
+          "typical": null,
+          "min": null,
+          "max": null,
+          "rangeType": null,
+          "cv": null
+        },
         "earlyPhase": null,
         "steadyState": null
       },
@@ -12382,7 +12393,7 @@
         "nonlinearKinetics": "checked"
       },
       "sourceNotes": {
-        "halfLife": "[estimate] No exponential half-life assigned. Concentration-dependent saturable elimination is approximately zero-order at customary intoxicating blood levels. Primary Jones 1993 healthy fasting study reports low elimination near 9 mg/dL/h. Typical 10–20 mg/dL/h is recalled contextual range, varies with food, drinking history, dose and concentration; reviewer must verify an individual rate. A constant fractional half-life cannot represent a BAC subtraction rate. https://pubmed.ncbi.nlm.nih.gov/8426147/",
+        "halfLife": "[estimate] No exponential half-life assigned. Concentration-dependent saturable elimination is approximately zero-order at customary intoxicating blood levels. Primary Jones 1993 healthy fasting study reports low elimination near 9 mg/dL/h. Typical 10–20 mg/dL/h is recalled contextual range, varies with food, drinking history, dose and concentration; reviewer must verify an individual rate. A constant fractional half-life cannot represent a BAC subtraction rate. https://pubmed.ncbi.nlm.nih.gov/8426147/ [estimate] Supplement B Part 4: kinetics mode set to zero-order (constant elimination rate, mg/kg/h) by migration v2.2; rate left unknown for the reviewer to fill from the rate context above.",
         "metabolism": "[gap] Incoming links retained; quantitative systemic formation fractions and complete phenotype maps not established. Null means unknown.",
         "relevance": "",
         "molecularWeight": "[gap] Correct neutral-parent PubChem identity/value not confirmed. Direct pages often returned a browser challenge; impurities or stereoisomers are not substitutes.",
@@ -12406,7 +12417,10 @@
         {
           "compound": "methylphenidate",
           "fraction": null,
-          "cyp2d6Multiplier": null
+          "cyp2d6Multiplier": null,
+          "condition": {
+            "requiresCompound": "ethanol"
+          }
         }
       ],
       "clinicalRelevance": "active",
@@ -12440,7 +12454,7 @@
       },
       "provenance": {
         "halfLife": "gap",
-        "metabolism": "gap",
+        "metabolism": "estimate",
         "relevance": "checked",
         "molecularWeight": "gap",
         "cyp2d6": "gap",
@@ -12451,7 +12465,7 @@
       },
       "sourceNotes": {
         "halfLife": "[gap] Supplement B ranked follow-up: Primary human ethanol/MPH study confirms formation; separate EPH terminal numeric table not recovered. MPH half-life or effect duration not substituted; conditional ethanol formation needs model support. https://pubmed.ncbi.nlm.nih.gov/10820132/ https://pubmed.ncbi.nlm.nih.gov/20533759/",
-        "metabolism": "[gap] ethylphenidate: queue links preserved. No defensible systemic formation fraction or phenotype formation map established; null is unknown, not zero formation.",
+        "metabolism": "[gap] ethylphenidate: queue links preserved. No defensible systemic formation fraction or phenotype formation map established; null is unknown, not zero formation. [estimate] Supplement B Part 4: formed from methylphenidate only while ethanol is also present (conditional link added by migration v2.2).",
         "relevance": "[checked] Primary human methylphenidate-plus-ethanol study documents formation and potential dopaminergic contribution; stereoselective mainly l-isomer formation differs from racemic activity. No unconditional formation fraction. https://pubmed.ncbi.nlm.nih.gov/10820132/",
         "molecularWeight": "[gap] ethylphenidate: neutral/free-base PubChem molecular weight not independently confirmed; null retained.",
         "cyp2d6": "[gap] ethylphenidate: substrate, clinical inhibitor strength, mechanism and phenotype half-life ratios not established. No none/no inference from absence in FDA examples or substrate status.",
@@ -12939,14 +12953,14 @@
         },
         "earlyPhase": null,
         "steadyState": {
+          "afterDays": null,
           "halfLifeHours": {
             "typical": null,
             "min": 96,
             "max": 144,
             "rangeType": "observed-range",
             "cv": null
-          },
-          "afterDays": null
+          }
         }
       },
       "cyp2d6": {
@@ -13245,14 +13259,14 @@
         },
         "earlyPhase": null,
         "steadyState": {
+          "afterDays": null,
           "halfLifeHours": {
             "typical": null,
             "min": 15.6,
             "max": 22,
             "rangeType": "cohort-means",
             "cv": null
-          },
-          "afterDays": null
+          }
         }
       },
       "cyp2d6": {
@@ -15078,7 +15092,7 @@
         "halfLifeHours": {
           "typical": null,
           "min": 768,
-          "max": 2964.0,
+          "max": 2964,
           "rangeType": "cohort-means",
           "cv": null
         },
@@ -16209,6 +16223,7 @@
         }
       ],
       "clinicalRelevance": "active",
+      "endogenous": true,
       "molecularWeight": null,
       "kinetics": {
         "mode": "unknown",
@@ -16238,7 +16253,7 @@
         "note": ""
       },
       "provenance": {
-        "halfLife": "gap",
+        "halfLife": "estimate",
         "metabolism": "gap",
         "relevance": "checked",
         "molecularWeight": "gap",
@@ -16249,7 +16264,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[gap] Supplement B: endogenous baseline and CKD-dependent protein-bound solute disposition complicate a one-compartment clearance-to-zero model. Need human incremental DMT-derived IAA kinetics, normal renal function and baseline subtraction. https://pubmed.ncbi.nlm.nih.gov/36434963/",
+        "halfLife": "[gap] Supplement B: endogenous baseline and CKD-dependent protein-bound solute disposition complicate a one-compartment clearance-to-zero model. Need human incremental DMT-derived IAA kinetics, normal renal function and baseline subtraction. https://pubmed.ncbi.nlm.nih.gov/36434963/ [estimate] Supplement B Part 4: marked endogenous by migration v2.2 — also produced by the body; excess over baseline not modelled. Unknown kinetics stop blocking clear dates once relevance is reviewed.",
         "metabolism": "[gap] indole_3_acetic_acid: queue links preserved. No defensible systemic formation fraction or phenotype formation map established; null is unknown, not zero formation.",
         "relevance": "[checked] Supplement B: IAA is endogenous human plasma tryptophan/microbial metabolite, not solely administered DMT-derived. Primary CKD/cell study reports AhR-linked vascular inflammatory activity; normal baseline is not itself toxicity. Retain potential relevance pending excess-above-baseline/renal assessment. https://www.sciencedirect.com/science/article/pii/S1570023222004391 https://pubmed.ncbi.nlm.nih.gov/25145928/",
         "molecularWeight": "[gap] indole_3_acetic_acid: neutral/free-base PubChem molecular weight not independently confirmed; null retained.",
@@ -16793,8 +16808,9 @@
       "clinicalRelevance": "active",
       "molecularWeight": null,
       "kinetics": {
-        "mode": "unknown",
+        "mode": "not-modelled",
         "halfLifeHours": null,
+        "notModelledReason": "Endogenous serotonin precursor; relevance is serotonergic interaction, not washout",
         "earlyPhase": null,
         "steadyState": null
       },
@@ -16820,7 +16836,7 @@
         "note": ""
       },
       "provenance": {
-        "halfLife": "gap",
+        "halfLife": "estimate",
         "metabolism": "gap",
         "relevance": "checked",
         "molecularWeight": "gap",
@@ -16831,7 +16847,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[gap] Loading-study kinetics depend on basal endogenous subtraction. Green1985 explicitly discusses half-time calculations including basal levels. No universal standalone excess-plasma half-life confirmed;2h secondary or15.8h old summaries not adopted. https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/j.1365-2125.1985.tb05070.x",
+        "halfLife": "[gap] Loading-study kinetics depend on basal endogenous subtraction. Green1985 explicitly discusses half-time calculations including basal levels. No universal standalone excess-plasma half-life confirmed;2h secondary or15.8h old summaries not adopted. https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/j.1365-2125.1985.tb05070.x [estimate] Supplement B Part 4: kinetics mode set to not-modelled by migration v2.2 — Endogenous serotonin precursor; relevance is serotonergic interaction, not washout.",
         "metabolism": "[gap] l_tryptophan: queue links preserved. No defensible systemic formation fraction or phenotype formation map established; null is unknown, not zero formation.",
         "relevance": "[checked] Directly administered parent is clinically active; this is not a statement of therapeutic equivalence across formulations.",
         "molecularWeight": "[gap] l_tryptophan: neutral/free-base PubChem molecular weight not independently confirmed; null retained.",
@@ -20527,14 +20543,14 @@
         },
         "earlyPhase": null,
         "steadyState": {
+          "afterDays": null,
           "halfLifeHours": {
             "typical": null,
             "min": 2.4,
             "max": 99.6,
             "rangeType": "observed-range",
             "cv": null
-          },
-          "afterDays": null
+          }
         }
       },
       "cyp2d6": {
@@ -23497,8 +23513,9 @@
       "clinicalRelevance": "active",
       "molecularWeight": null,
       "kinetics": {
-        "mode": "unknown",
+        "mode": "not-modelled",
         "halfLifeHours": null,
+        "notModelledReason": "Exhaled within minutes; clinically relevant effect is prolonged vitamin B12 inactivation — see lingering effects",
         "earlyPhase": null,
         "steadyState": null
       },
@@ -23544,7 +23561,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[estimate] No numerical half-life assigned: pulmonary elimination by exhalation occurs over minutes, but exposure can oxidize cobalamin and impair methionine synthase much longer. A chemical-clearance curve cannot establish functional B12 recovery. See lingeringEffects and Part 4. https://pubmed.ncbi.nlm.nih.gov/8017644/",
+        "halfLife": "[estimate] No numerical half-life assigned: pulmonary elimination by exhalation occurs over minutes, but exposure can oxidize cobalamin and impair methionine synthase much longer. A chemical-clearance curve cannot establish functional B12 recovery. See lingeringEffects and Part 4. https://pubmed.ncbi.nlm.nih.gov/8017644/ [estimate] Supplement B Part 4: kinetics mode set to not-modelled by migration v2.2 — Exhaled within minutes; clinically relevant effect is prolonged vitamin B12 inactivation — see lingering effects.",
         "metabolism": "[gap] nitrous_oxide: queue links preserved. No defensible systemic formation fraction or phenotype formation map established; null is unknown, not zero formation.",
         "relevance": "[checked] Directly administered parent is clinically active; this is not a statement of therapeutic equivalence across formulations.",
         "molecularWeight": "[gap] nitrous_oxide: neutral/free-base PubChem molecular weight not independently confirmed; null retained.",
@@ -26958,14 +26975,14 @@
         },
         "earlyPhase": null,
         "steadyState": {
+          "afterDays": null,
           "halfLifeHours": {
             "typical": 21,
             "min": null,
             "max": null,
             "rangeType": "cv",
             "cv": 0.32
-          },
-          "afterDays": null
+          }
         }
       },
       "cyp2d6": {
@@ -29921,14 +29938,14 @@
         },
         "earlyPhase": null,
         "steadyState": {
+          "afterDays": null,
           "halfLifeHours": {
             "typical": 10,
             "min": null,
             "max": null,
             "rangeType": "single-value",
             "cv": null
-          },
-          "afterDays": null
+          }
         }
       },
       "cyp2d6": {
@@ -33344,13 +33361,15 @@
       "formulation": null,
       "components": [
         {
-          "compound": "1p_lsd",
+          "compound": "lsd",
           "ratio": 1,
           "saltFactor": null,
-          "bioavailability": null
+          "bioavailability": null,
+          "administeredAs": "1p_lsd",
+          "massFactor": 0.8522
         }
       ],
-      "doseUnit": "mg",
+      "doseUnit": "µg",
       "input": {
         "type": "bolus",
         "releaseHalfLifeHours": null,
@@ -33358,21 +33377,23 @@
       },
       "typicalDose": {
         "amount": null,
-        "unit": "mg",
+        "unit": "µg",
         "basis": "maintenance"
       },
       "provenance": {
         "class": "recall",
         "aliases": "checked",
-        "components": "gap",
-        "input": "gap",
+        "components": "estimate",
+        "conversion": "estimate",
+        "input": "estimate",
         "typicalDose": "gap"
       },
       "sourceNotes": {
         "class": "[recall] Psychoactive agent; pharmacological class recalled from product pharmacology. Generic identity does not establish a licensed formulation or usual maintenance dose; recreational/herbal products remain reviewer to set.",
         "aliases": "[checked] Queue identities retained; brand aliases do not establish interchangeable delivery or dose.",
-        "components": "[gap] Membership/ratios preserved. Generic route/salt/absolute bioavailability not established; null is not complete absorption. Generic identity does not establish a licensed formulation or usual maintenance dose; recreational/herbal products remain reviewer to set.",
-        "input": "[gap] Supplement B: current components/input preserved; primary-compound assessment: [checked] Primary 2020 two-volunteer oral/IV study found oral 1P-LSD rapidly converted to LSD (unchanged oral prodrug not detected). Reported LSD elimination is not unchanged 1P-LSD half-life. No numerical parent half-life assigned; active-component mass conversion needs reviewer approval. https://pubmed.ncbi.nlm.nih.gov/32415750/ Existing product context: [gap] Migrated route/formulation/input retained pending the exact product label. No release constant inferred from Tmax, dosing interval or parent elimination. Generic identity does not establish a licensed formulation or usual maintenance dose; recreational/herbal products remain reviewer to set.",
+        "components": "[gap] Membership/ratios preserved. Generic route/salt/absolute bioavailability not established; null is not complete absorption. Generic identity does not establish a licensed formulation or usual maintenance dose; recreational/herbal products remain reviewer to set. [estimate] Supplement B Part 4: component changed from 1p_lsd to lsd (prodrug modelled as its active compound) by migration v2.2.",
+        "conversion": "[estimate] Supplement B Part 4: administered as 1p_lsd, modelled as lsd; massFactor 0.8522 = 323.43 / 379.5 g/mol (LSD / 1P-LSD); rapid conversion, unchanged 1P-LSD not detected.",
+        "input": "[gap] Supplement B: current components/input preserved; primary-compound assessment: [checked] Primary 2020 two-volunteer oral/IV study found oral 1P-LSD rapidly converted to LSD (unchanged oral prodrug not detected). Reported LSD elimination is not unchanged 1P-LSD half-life. No numerical parent half-life assigned; active-component mass conversion needs reviewer approval. https://pubmed.ncbi.nlm.nih.gov/32415750/ Existing product context: [gap] Migrated route/formulation/input retained pending the exact product label. No release constant inferred from Tmax, dosing interval or parent elimination. Generic identity does not establish a licensed formulation or usual maintenance dose; recreational/herbal products remain reviewer to set. [estimate] Supplement B Part 4: dose unit set to µg by migration v2.2.",
         "typicalDose": "[gap] Reviewer to set: no single usual adult maintenance amount established for this generic route/indication. Starting, PRN or maximum doses not substituted. Generic identity does not establish a licensed formulation or usual maintenance dose; recreational/herbal products remain reviewer to set."
       },
       "reviewedDates": {},
@@ -36869,10 +36890,12 @@
       "formulation": null,
       "components": [
         {
-          "compound": "clorazepate",
+          "compound": "nordiazepam",
           "ratio": 1,
           "saltFactor": null,
-          "bioavailability": null
+          "bioavailability": null,
+          "administeredAs": "clorazepate",
+          "massFactor": 0.662
         }
       ],
       "doseUnit": "mg",
@@ -36889,14 +36912,16 @@
       "provenance": {
         "class": "recall",
         "aliases": "checked",
-        "components": "gap",
+        "components": "estimate",
+        "conversion": "estimate",
         "input": "gap",
         "typicalDose": "gap"
       },
       "sourceNotes": {
         "class": "[recall] Short class from standard pharmacology; no dose equivalence or formulation interchangeability implied.",
         "aliases": "[checked] Migrated aliases preserved; candidate identity checked only, not interchangeability of every brand across forms.",
-        "components": "[gap] Identities and ratios preserved. No confirmed generic salt/hydrate factor or route/form-specific absolute bioavailability; null is not 100% absorption.",
+        "components": "[gap] Identities and ratios preserved. No confirmed generic salt/hydrate factor or route/form-specific absolute bioavailability; null is not 100% absorption. [estimate] Supplement B Part 4: component changed from clorazepate to nordiazepam (prodrug modelled as its active compound) by migration v2.2.",
+        "conversion": "[estimate] Supplement B Part 4: administered as clorazepate, modelled as nordiazepam; massFactor 0.662 = 270.71 / 408.92 g/mol (nordiazepam / clorazepate dipotassium); assumes label strengths are stated as clorazepate dipotassium — reviewer to confirm.",
         "input": "[gap] Supplement B: current components/input preserved; primary-compound assessment: [gap] DailyMed clorazepate Clinical Pharmacology: rapid presystemic decarboxylation to nordiazepam; essentially no circulating parent. Reported 40–50 h belongs to nordiazepam, not clorazepate. Parent remains unknown without invented small conversion half-life. Recommend active-component/prodrug mass conversion in Part 4; no graph edits. https://www.dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=6e9edbfc-1950-4893-9d38-e82b119ddb9a Existing product context: [gap] Generic migrated route/formulation retained; no quantified independent release constant established. Absorption not asserted instantaneous.",
         "typicalDose": "[gap] Reviewer to set; no unique usual adult maintenance amount established for route/indication. Starting, PRN and maximum doses not substituted."
       },
@@ -38987,7 +39012,7 @@
           "bioavailability": null
         }
       ],
-      "doseUnit": "mg",
+      "doseUnit": "standard drinks",
       "input": {
         "type": "bolus",
         "releaseHalfLifeHours": null,
@@ -38995,21 +39020,21 @@
       },
       "typicalDose": {
         "amount": null,
-        "unit": "mg",
+        "unit": "standard drinks",
         "basis": "maintenance"
       },
       "provenance": {
         "class": "recall",
         "aliases": "checked",
         "components": "gap",
-        "input": "gap",
+        "input": "estimate",
         "typicalDose": "gap"
       },
       "sourceNotes": {
         "class": "[recall] Short class from standard pharmacology; no dose equivalence or formulation interchangeability implied.",
         "aliases": "[checked] Migrated aliases preserved; candidate identity checked only, not interchangeability of every brand across forms.",
         "components": "[gap] Identities and ratios preserved. No confirmed generic salt/hydrate factor or route/form-specific absolute bioavailability; null is not 100% absorption.",
-        "input": "[gap] Supplement B: current components/input preserved; primary-compound assessment: [estimate] No exponential half-life assigned. Concentration-dependent saturable elimination is approximately zero-order at customary intoxicating blood levels. Primary Jones 1993 healthy fasting study reports low elimination near 9 mg/dL/h. Typical 10–20 mg/dL/h is recalled contextual range, varies with food, drinking history, dose and concentration; reviewer must verify an individual rate. A constant fractional half-life cannot represent a BAC subtraction rate. https://pubmed.ncbi.nlm.nih.gov/8426147/ Existing product context: [gap] Generic migrated route/formulation retained; no quantified independent release constant established. Absorption not asserted instantaneous.",
+        "input": "[gap] Supplement B: current components/input preserved; primary-compound assessment: [estimate] No exponential half-life assigned. Concentration-dependent saturable elimination is approximately zero-order at customary intoxicating blood levels. Primary Jones 1993 healthy fasting study reports low elimination near 9 mg/dL/h. Typical 10–20 mg/dL/h is recalled contextual range, varies with food, drinking history, dose and concentration; reviewer must verify an individual rate. A constant fractional half-life cannot represent a BAC subtraction rate. https://pubmed.ncbi.nlm.nih.gov/8426147/ Existing product context: [gap] Generic migrated route/formulation retained; no quantified independent release constant established. Absorption not asserted instantaneous. [estimate] Supplement B Part 4: dose unit set to standard drinks (size set in Settings) by migration v2.2.",
         "typicalDose": "[gap] Reviewer to set; generic illicit/novel/nonprescription recreational or supplement identity. No prescription regimen generalized to every product."
       },
       "reviewedDates": {},
@@ -39939,10 +39964,12 @@
       "formulation": null,
       "components": [
         {
-          "compound": "gbl",
+          "compound": "ghb",
           "ratio": 1,
           "saltFactor": null,
-          "bioavailability": null
+          "bioavailability": null,
+          "administeredAs": "gbl",
+          "massFactor": 1.2092
         }
       ],
       "doseUnit": "mg",
@@ -39959,14 +39986,16 @@
       "provenance": {
         "class": "recall",
         "aliases": "checked",
-        "components": "gap",
+        "components": "estimate",
+        "conversion": "estimate",
         "input": "gap",
         "typicalDose": "gap"
       },
       "sourceNotes": {
         "class": "[recall] Short class from standard pharmacology; no dose equivalence or formulation interchangeability implied.",
         "aliases": "[checked] Migrated aliases preserved; candidate identity checked only, not interchangeability of every brand across forms.",
-        "components": "[gap] Identities and ratios preserved. No confirmed generic salt/hydrate factor or route/form-specific absolute bioavailability; null is not 100% absorption.",
+        "components": "[gap] Identities and ratios preserved. No confirmed generic salt/hydrate factor or route/form-specific absolute bioavailability; null is not 100% absorption. [estimate] Supplement B Part 4: component changed from gbl to ghb (prodrug modelled as its active compound) by migration v2.2.",
+        "conversion": "[estimate] Supplement B Part 4: administered as gbl, modelled as ghb; massFactor 1.2092 = 104.10 / 86.09 g/mol (GHB / GBL); assumes complete hydrolysis (adds water, so the factor is above 1). GHB’s own kinetics are nonlinear (capacity-limited), which the model does not represent.",
         "input": "[gap] Supplement B: current components/input preserved; primary-compound assessment: [gap] Human two-volunteer GBL ingestion experiment measured GHB kinetics, not a usable unchanged-GBL terminal constant. Rapid GBL-to-GHB conversion needs a prodrug/input representation. Do not assign GHB half-life, rat GBL <1 min, or analytical acid conversion as human parent clearance. https://pubmed.ncbi.nlm.nih.gov/23733593/ Existing product context: [gap] Generic migrated route/formulation retained; no quantified independent release constant established. Absorption not asserted instantaneous.",
         "typicalDose": "[gap] Reviewer to set; generic illicit/novel/nonprescription recreational or supplement identity. No prescription regimen generalized to every product."
       },
@@ -45359,29 +45388,29 @@
           "bioavailability": null
         }
       ],
-      "doseUnit": "mg",
+      "doseUnit": "session",
       "input": {
-        "type": "bolus",
+        "type": "zero-order",
         "releaseHalfLifeHours": null,
         "defaultDurationHours": null
       },
       "typicalDose": {
         "amount": null,
-        "unit": "mg",
+        "unit": "session",
         "basis": "maintenance"
       },
       "provenance": {
         "class": "recall",
         "aliases": "checked",
         "components": "gap",
-        "input": "gap",
+        "input": "estimate",
         "typicalDose": "gap"
       },
       "sourceNotes": {
         "class": "[recall] Psychoactive agent; pharmacological class recalled from product pharmacology. Generic identity does not establish a licensed formulation or usual maintenance dose; recreational/herbal products remain reviewer to set.",
         "aliases": "[checked] Queue identities retained; brand aliases do not establish interchangeable delivery or dose.",
         "components": "[gap] Membership/ratios preserved. Generic route/salt/absolute bioavailability not established; null is not complete absorption. Generic identity does not establish a licensed formulation or usual maintenance dose; recreational/herbal products remain reviewer to set.",
-        "input": "[gap] Supplement B: current components/input preserved; primary-compound assessment: [estimate] No numerical half-life assigned: pulmonary elimination by exhalation occurs over minutes, but exposure can oxidize cobalamin and impair methionine synthase much longer. A chemical-clearance curve cannot establish functional B12 recovery. See lingeringEffects and Part 4. https://pubmed.ncbi.nlm.nih.gov/8017644/ Existing product context: [gap] Migrated route/formulation/input retained pending the exact product label. No release constant inferred from Tmax, dosing interval or parent elimination. Generic identity does not establish a licensed formulation or usual maintenance dose; recreational/herbal products remain reviewer to set.",
+        "input": "[gap] Supplement B: current components/input preserved; primary-compound assessment: [estimate] No numerical half-life assigned: pulmonary elimination by exhalation occurs over minutes, but exposure can oxidize cobalamin and impair methionine synthase much longer. A chemical-clearance curve cannot establish functional B12 recovery. See lingeringEffects and Part 4. https://pubmed.ncbi.nlm.nih.gov/8017644/ Existing product context: [gap] Migrated route/formulation/input retained pending the exact product label. No release constant inferred from Tmax, dosing interval or parent elimination. Generic identity does not establish a licensed formulation or usual maintenance dose; recreational/herbal products remain reviewer to set. [estimate] Supplement B Part 4: entered as exposure sessions with a duration (no mass dose) by migration v2.2.",
         "typicalDose": "[gap] Reviewer to set: no single usual adult maintenance amount established for this generic route/indication. Starting, PRN or maximum doses not substituted. Generic identity does not establish a licensed formulation or usual maintenance dose; recreational/herbal products remain reviewer to set."
       },
       "reviewedDates": {},
@@ -47540,10 +47569,12 @@
       "formulation": null,
       "components": [
         {
-          "compound": "psilocybin",
+          "compound": "psilocin",
           "ratio": 1,
           "saltFactor": null,
-          "bioavailability": null
+          "bioavailability": null,
+          "administeredAs": "psilocybin",
+          "massFactor": 0.7186
         }
       ],
       "doseUnit": "mg",
@@ -47560,14 +47591,16 @@
       "provenance": {
         "class": "recall",
         "aliases": "checked",
-        "components": "gap",
+        "components": "estimate",
+        "conversion": "estimate",
         "input": "gap",
         "typicalDose": "gap"
       },
       "sourceNotes": {
         "class": "[recall] Psychoactive agent; pharmacological class recalled from product pharmacology. Generic identity does not establish a licensed formulation or usual maintenance dose; recreational/herbal products remain reviewer to set.",
         "aliases": "[checked] Queue identities retained; brand aliases do not establish interchangeable delivery or dose.",
-        "components": "[gap] Membership/ratios preserved. Generic route/salt/absolute bioavailability not established; null is not complete absorption. Generic identity does not establish a licensed formulation or usual maintenance dose; recreational/herbal products remain reviewer to set.",
+        "components": "[gap] Membership/ratios preserved. Generic route/salt/absolute bioavailability not established; null is not complete absorption. Generic identity does not establish a licensed formulation or usual maintenance dose; recreational/herbal products remain reviewer to set. [estimate] Supplement B Part 4: component changed from psilocybin to psilocin (prodrug modelled as its active compound) by migration v2.2.",
+        "conversion": "[estimate] Supplement B Part 4: administered as psilocybin, modelled as psilocin; massFactor 0.7186 = 204.27 / 284.25 g/mol (psilocin / psilocybin); rapid, near-complete dephosphorylation.",
         "input": "[gap] Supplement B: current components/input preserved; primary-compound assessment: [checked] Hasler 1997 oral/IV human study documents rapid dephosphorylation to psilocin, including after systemic administration. No psilocybin half-life assigned; psilocin kinetics do not represent unchanged prodrug. Reviewer should consider psilocin component with stoichiometric mass conversion. https://pubmed.ncbi.nlm.nih.gov/9204776/ Existing product context: [gap] Migrated route/formulation/input retained pending the exact product label. No release constant inferred from Tmax, dosing interval or parent elimination. Generic identity does not establish a licensed formulation or usual maintenance dose; recreational/herbal products remain reviewer to set.",
         "typicalDose": "[gap] Reviewer to set: no single usual adult maintenance amount established for this generic route/indication. Starting, PRN or maximum doses not substituted. Generic identity does not establish a licensed formulation or usual maintenance dose; recreational/herbal products remain reviewer to set."
       },

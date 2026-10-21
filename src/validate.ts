@@ -395,9 +395,7 @@ export function validateLibrary(lib: Partial<Library>, opts: ValidateOptions = {
   const errors: Issue[] = [];
   const warnings: Issue[] = [];
   const version = (lib as Obj).schemaVersion;
-  if (!opts.fragment && version === 2.1)
-    warnings.push({ id: '(file)', message: `schemaVersion is 2.1 — run npm run migrate-v2.2` });
-  else if (!opts.fragment && version !== SCHEMA_VERSION)
+  if (!opts.fragment && version !== SCHEMA_VERSION)
     errors.push({
       id: '(file)',
       message: `schemaVersion must be ${SCHEMA_VERSION}` + (

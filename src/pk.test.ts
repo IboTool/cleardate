@@ -387,6 +387,6 @@ describe('validation', () => {
     l.schemaVersion = 2;
     expect(validateLibrary(l as never).errors.some((e) => /v2 file; run npm run migrate-v2\.1, then npm run migrate-v2\.2/.test(e.message))).toBe(true);
     l.schemaVersion = 2.1;
-    expect(validateLibrary(l as never).warnings.some((e) => /run npm run migrate-v2\.2/.test(e.message))).toBe(true);
+    expect(validateLibrary(l as never).errors.some((e) => /v2\.1 file; run npm run migrate-v2\.2/.test(e.message))).toBe(true);
   });
 });
