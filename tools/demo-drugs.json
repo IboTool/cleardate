@@ -1,0 +1,356 @@
+{
+  "categories": [],
+  "compounds": [
+    {
+      "id": "demozepam",
+      "name": "Demozepam",
+      "aliases": [
+        "Demo-Z"
+      ],
+      "isMetabolite": false,
+      "formedFrom": [],
+      "molecularWeight": 300,
+      "halfLifeHours": {
+        "typical": 30,
+        "min": 20,
+        "max": 40
+      },
+      "cyp2d6": {
+        "substrate": false,
+        "halfLifeMultiplier": {
+          "poor": 1,
+          "intermediate": 1,
+          "normal": 1,
+          "ultrarapid": 1
+        },
+        "inhibitor": "none",
+        "inhibitionType": "none"
+      },
+      "qt": {
+        "tier": "none",
+        "weight": 0
+      },
+      "receptors": [
+        {
+          "target": "GABA-A",
+          "action": "positive allosteric modulator"
+        }
+      ],
+      "lingeringEffects": {
+        "durationDays": 30,
+        "note": "Demo: protracted withdrawal-type symptoms may persist after clearance."
+      },
+      "nonlinearKinetics": {
+        "flag": false,
+        "note": ""
+      },
+      "source": "FICTIONAL DEMO DATA — not a real drug. Round numbers for UI testing only.",
+      "sourceNotes": {
+        "halfLife": "",
+        "metabolism": "",
+        "cyp2d6": "",
+        "qt": "",
+        "receptors": ""
+      },
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "nordemozepam",
+      "name": "Nordemozepam",
+      "aliases": [],
+      "isMetabolite": true,
+      "formedFrom": [
+        {
+          "compound": "demozepam",
+          "fraction": 0.6
+        }
+      ],
+      "molecularWeight": 286,
+      "halfLifeHours": {
+        "typical": 80,
+        "min": 50,
+        "max": 120
+      },
+      "cyp2d6": {
+        "substrate": false,
+        "halfLifeMultiplier": {
+          "poor": 1,
+          "intermediate": 1,
+          "normal": 1,
+          "ultrarapid": 1
+        },
+        "inhibitor": "none",
+        "inhibitionType": "none"
+      },
+      "qt": {
+        "tier": "none",
+        "weight": 0
+      },
+      "receptors": [
+        {
+          "target": "GABA-A",
+          "action": "positive allosteric modulator"
+        }
+      ],
+      "lingeringEffects": {
+        "durationDays": 0,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": false,
+        "note": ""
+      },
+      "source": "FICTIONAL DEMO DATA — not a real drug. Round numbers for UI testing only.",
+      "sourceNotes": {
+        "halfLife": "",
+        "metabolism": "",
+        "cyp2d6": "",
+        "qt": "",
+        "receptors": ""
+      },
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "oxydemozepam",
+      "name": "Oxydemozepam",
+      "aliases": [],
+      "isMetabolite": true,
+      "formedFrom": [
+        {
+          "compound": "nordemozepam",
+          "fraction": 0.7
+        }
+      ],
+      "molecularWeight": 302,
+      "halfLifeHours": {
+        "typical": 10,
+        "min": 5,
+        "max": 15
+      },
+      "cyp2d6": {
+        "substrate": false,
+        "halfLifeMultiplier": {
+          "poor": 1,
+          "intermediate": 1,
+          "normal": 1,
+          "ultrarapid": 1
+        },
+        "inhibitor": "none",
+        "inhibitionType": "none"
+      },
+      "qt": {
+        "tier": "none",
+        "weight": 0
+      },
+      "receptors": [
+        {
+          "target": "GABA-A",
+          "action": "positive allosteric modulator"
+        }
+      ],
+      "lingeringEffects": {
+        "durationDays": 0,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": false,
+        "note": ""
+      },
+      "source": "FICTIONAL DEMO DATA — not a real drug. Round numbers for UI testing only.",
+      "sourceNotes": {
+        "halfLife": "",
+        "metabolism": "",
+        "cyp2d6": "",
+        "qt": "",
+        "receptors": ""
+      },
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "sampladone",
+      "name": "Sampladone",
+      "aliases": [
+        "Sample"
+      ],
+      "isMetabolite": false,
+      "formedFrom": [],
+      "molecularWeight": 310,
+      "halfLifeHours": {
+        "typical": 36,
+        "min": 24,
+        "max": 60
+      },
+      "cyp2d6": {
+        "substrate": false,
+        "halfLifeMultiplier": {
+          "poor": 1,
+          "intermediate": 1,
+          "normal": 1,
+          "ultrarapid": 1
+        },
+        "inhibitor": "none",
+        "inhibitionType": "none"
+      },
+      "qt": {
+        "tier": "known",
+        "weight": 1
+      },
+      "receptors": [
+        {
+          "target": "mu-opioid",
+          "action": "agonist"
+        },
+        {
+          "target": "NMDA",
+          "action": "antagonist"
+        },
+        {
+          "target": "SERT",
+          "action": "inhibitor"
+        }
+      ],
+      "lingeringEffects": {
+        "durationDays": 0,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": false,
+        "note": ""
+      },
+      "source": "FICTIONAL DEMO DATA — not a real drug. Round numbers for UI testing only.",
+      "sourceNotes": {
+        "halfLife": "",
+        "metabolism": "",
+        "cyp2d6": "",
+        "qt": "",
+        "receptors": ""
+      },
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "testoline",
+      "name": "Testoline",
+      "aliases": [
+        "Testo"
+      ],
+      "isMetabolite": false,
+      "formedFrom": [],
+      "molecularWeight": 250,
+      "halfLifeHours": {
+        "typical": 20,
+        "min": 15,
+        "max": 30
+      },
+      "cyp2d6": {
+        "substrate": true,
+        "halfLifeMultiplier": {
+          "poor": 2,
+          "intermediate": 1.5,
+          "normal": 1,
+          "ultrarapid": 0.6
+        },
+        "inhibitor": "strong",
+        "inhibitionType": "mechanism-based"
+      },
+      "qt": {
+        "tier": "none",
+        "weight": 0
+      },
+      "receptors": [
+        {
+          "target": "SERT",
+          "action": "inhibitor"
+        }
+      ],
+      "lingeringEffects": {
+        "durationDays": 0,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": true,
+        "note": "Demo: saturates its own CYP2D6 metabolism at higher doses."
+      },
+      "source": "FICTIONAL DEMO DATA — not a real drug. Round numbers for UI testing only.",
+      "sourceNotes": {
+        "halfLife": "",
+        "metabolism": "",
+        "cyp2d6": "",
+        "qt": "",
+        "receptors": ""
+      },
+      "verified": false,
+      "verifiedDate": ""
+    }
+  ],
+  "products": [
+    {
+      "id": "demozepam_oral",
+      "name": "Demozepam (Oral)",
+      "aliases": [
+        "Demo-Z"
+      ],
+      "category": "sedatives",
+      "class": "demo benzodiazepine",
+      "parentCompound": "demozepam",
+      "route": "Oral",
+      "typicalDoseMg": 10,
+      "source": "FICTIONAL DEMO DATA — not a real drug. Round numbers for UI testing only.",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "sampladone_im_depot",
+      "name": "Sampladone (IM depot)",
+      "aliases": [
+        "Sample depot"
+      ],
+      "category": "opioids",
+      "class": "demo opioid agonist",
+      "parentCompound": "sampladone",
+      "route": "IM depot",
+      "apparentHalfLifeHours": {
+        "typical": 400,
+        "min": 300,
+        "max": 600
+      },
+      "typicalDoseMg": 300,
+      "source": "FICTIONAL DEMO DATA — not a real drug. Round numbers for UI testing only.",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "sampladone_oral",
+      "name": "Sampladone (Oral)",
+      "aliases": [
+        "Sample"
+      ],
+      "category": "opioids",
+      "class": "demo opioid agonist",
+      "parentCompound": "sampladone",
+      "route": "Oral",
+      "typicalDoseMg": 60,
+      "source": "FICTIONAL DEMO DATA — not a real drug. Round numbers for UI testing only.",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "testoline_oral",
+      "name": "Testoline (Oral)",
+      "aliases": [
+        "Testo"
+      ],
+      "category": "antidepressants",
+      "class": "demo SSRI",
+      "parentCompound": "testoline",
+      "route": "Oral",
+      "typicalDoseMg": 20,
+      "source": "FICTIONAL DEMO DATA — not a real drug. Round numbers for UI testing only.",
+      "verified": false,
+      "verifiedDate": ""
+    }
+  ]
+}

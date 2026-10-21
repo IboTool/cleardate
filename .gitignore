@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.DS_Store
+*.log
+.env*
+# editor backups of drugs.json
+public/drugs.json.bak*
+tools/editor/.backups/
+# patient files should never be committed
+*.cleardate.json
+patient-*.json
+tools/editor/.no-build/

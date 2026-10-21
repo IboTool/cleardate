@@ -1,0 +1,30 @@
+{
+  "name": "cleardate",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Client-side drug clearance visualiser for ibogaine-clinic intake. Reference use only.",
+  "scripts": {
+    "dev": "vite",
+    "prebuild": "npm run validate",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "init-data": "tsx tools/init-data.ts",
+    "validate": "tsx tools/validate-drugs.ts",
+    "editor": "vite --config tools/editor/vite.config.ts"
+  },
+  "dependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
+    "echarts": "^6.1.0",
+    "fuse.js": "^7.5.0",
+    "jspdf": "^4.2.1"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.5"
+  }
+}

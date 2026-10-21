@@ -1,0 +1,53 @@
+// npm run validate — checks public/drugs.json. Runs as `prebuild`, so a broken file never deploys.
+// Exit code 1 on errors; warnings and progress are informational.
+
+import { readFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { validateLibrary, type Issue } from '../src/validate';
+
+const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const file = resolve(root, process.argv[2] ?? 'public/drugs.json');
+
+let lib: unknown;
+try {
+  lib = JSON.parse(readFileSync(file, 'utf8'));
+} catch (e) {
+  console.error(`ERROR: cannot read ${file}: ${(e as Error).message}`);
+  console.error('If it does not exist yet, run `npm run init-data`.');
+  process.exit(1);
+}
+
+const { errors, warnings, progress } = validateLibrary(lib as never);
+const color = process.stdout.isTTY;
+const red = (s: string) => (color ? `\x1b[31m${s}\x1b[0m` : s);
+const yellow = (s: string) => (color ? `\x1b[33m${s}\x1b[0m` : s);
+const green = (s: string) => (color ? `\x1b[32m${s}\x1b[0m` : s);
+
+const list = (title: string, items: Issue[], paint: (s: string) => string, limit = 200) => {
+  console.log(paint(`\n${title} (${items.length})`));
+  for (const i of items.slice(0, limit)) console.log(`  ${i.id}: ${i.message}`);
+  if (items.length > limit) console.log(`  … and ${items.length - limit} more`);
+};
+
+console.log(`Validating ${file}`);
+list('Errors', errors, red);
+list('Warnings', warnings, yellow, 60);
+
+console.log(green('\nProgress'));
+console.log(
+  `  Compounds: ${progress.compoundsVerified} / ${progress.compounds} verified · ${progress.compoundsStarted} with data · ` +
+    `Products: ${progress.productsVerified} / ${progress.products} verified`,
+);
+const w = Math.max(...progress.categories.map((c) => c.name.length));
+for (const c of progress.categories)
+  console.log(
+    `  ${c.name.padEnd(w)}  ${String(c.productsVerified).padStart(3)} / ${String(c.products).padEnd(3)} verified` +
+      `  (${c.productsStarted} started, ${c.products - c.productsStarted} not started)`,
+  );
+
+if (errors.length) {
+  console.log(red(`\n✗ ${errors.length} error(s). Fix these before building.`));
+  process.exit(1);
+}
+console.log(green(`\n✓ No errors.`));
