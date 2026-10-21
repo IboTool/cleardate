@@ -4,9 +4,18 @@
 import {
   COMPOUND_SECTIONS, PRODUCT_SECTIONS,
   type ClinicalRelevance, type Compound, type CompoundSection, type Library, type PhenotypeMap, type Product, type ProductSection, type Range,
+  type RangeType,
 } from './types';
 
 export const SCHEMA_VERSION = 2.1 as const;
+
+export const RANGE_TYPE_LABEL: Record<RangeType, string> = {
+  'observed-range': 'observed range',
+  'mean-2sd': 'mean ± 2 SD',
+  'cohort-means': 'range of cohort means',
+  cv: 'CV',
+  'single-value': 'single value',
+};
 
 export function slug(s: string): string {
   // Mirrors slug() in tools/build_candidates.py so IDs line up with candidates.json.

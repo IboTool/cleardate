@@ -5,11 +5,29 @@ import type { jsPDF as JsPDF } from 'jspdf';
 import { buildChartOption } from './chart';
 import { ageFrom, fmtDate, fmtDateTime, fmtEvery } from './format';
 import { clearStatusText, combinationText, describeIbogaineDose, expandDose, IBOGAINE_KIND_LABEL, isRateUnit, parseLocal, type LibraryIndex, type ProductResult, type Scenario } from './model';
+import { libraryStats, verifiedCountText } from './library/status';
 import { isDraft } from './schema';
 import type { Session } from './types';
+import { drugIdOf, verifiedDrugs } from './validate';
 
 export const DISCLAIMER =
   'Reference visualisation only. Not medical advice and not for dosing decisions. Pharmacokinetic values are population estimates and may not reflect this patient. Verify all data independently.';
+
+/**
+ * Live data-status line for exports: "Drug data: AI-assisted drafts from cited sources; 3 of 227
+ * drugs verified as of 2026-10-01. Draft entries used in this report: Methadone, Diazepam."
+ */
+export function dataStatusLine(scn: Scenario, idx: LibraryIndex, libraryDate: string | null = __LIBRARY_COMMIT_DATE__ || null): string {
+  const stats = libraryStats(idx.lib, idx);
+  const verified = verifiedDrugs(idx.lib.compounds.filter((c) => !c.userEntered), idx.lib.products.filter((p) => !p.userEntered));
+  const drafts = [...new Set(scn.products
+    .filter((r) => !r.product.userEntered && !verified.get(drugIdOf(r.product)))
+    .map((r) => r.product.name.replace(/\s*\([^)]*\)\s*$/, '')))];
+  const date = stats.lastVerified ?? libraryDate;
+  const used = !drafts.length ? 'none' : drafts.length <= 8 ? drafts.join(', ') : `${drafts.length} drugs`;
+  const head = `Drug data: AI-assisted drafts from cited sources; ${verifiedCountText(stats)}${date ? ` as of ${date}` : ''}.`;
+  return stats.verified === stats.drugs && !drafts.length ? head : `${head} Draft entries used in this report: ${used}.`;
+}
 
 const PHENO: Record<string, string> = {
   poor: 'Poor metaboliser', intermediate: 'Intermediate metaboliser', normal: 'Normal metaboliser',
@@ -114,10 +132,11 @@ export async function exportPdf(scn: Scenario, session: Session, idx: LibraryInd
   const s = session.settings;
   let y = M;
 
+  const dataLine = dataStatusLine(scn, idx);
   const footer = () => {
     doc.setFontSize(7.5);
     doc.setTextColor(110);
-    const lines = doc.splitTextToSize(latin1(DISCLAIMER), W - 2 * M);
+    const lines = [...doc.splitTextToSize(latin1(dataLine), W - 2 * M), ...doc.splitTextToSize(latin1(DISCLAIMER), W - 2 * M)];
     doc.text(lines, M, H - 22 - (lines.length - 1) * 9);
   };
   const newPage = () => {
@@ -126,7 +145,7 @@ export async function exportPdf(scn: Scenario, session: Session, idx: LibraryInd
     y = M;
   };
   const ensure = (needed: number) => {
-    if (y + needed > H - 50) newPage();
+    if (y + needed > H - 62) newPage();
   };
 
   doc.setFont('helvetica', 'bold');

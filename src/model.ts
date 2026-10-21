@@ -270,6 +270,7 @@ export interface CompoundCurve {
   threshold: number;
   clearAt: number | null; // typical run; null = beyond simulated window (or not formed in that run)
   clearAtMax: number | null;
+  clearAtMin: number | null;
   /** Formed at all in each run (a zero CYP2D6 formation multiplier removes the branch). */
   formed: Record<RunName, boolean>;
   /** clinicalRelevance "inactive": plotted (fainter, hidden by default) but never holds up the clear date. */
@@ -299,6 +300,8 @@ export interface ProductResult {
   curves: CompoundCurve[];
   clearAt: number | null;
   clearAtMax: number | null;
+  /** Fastest edge of the band (min run). */
+  clearAtMin: number | null;
   status: ClearStatus;
   /** Compound names with missing kinetics (status "incomplete"). */
   missing: string[];
@@ -715,6 +718,7 @@ function simulateProduct(idx: LibraryIndex, req: SimRequest, ctx: Ctx, warnings:
       threshold: peak * frac,
       clearAt: formed.typical ? clearOf(sims.typical, id) : null,
       clearAtMax: formed.max ? clearOf(sims.max, id) : null,
+      clearAtMin: formed.min ? clearOf(sims.min, id) : null,
       formed,
       mgFactor: node.depth === 0 ? 1 : mwR && mwC ? mwC / mwR : null,
       normalized: normalized.has(id),
@@ -728,6 +732,7 @@ function simulateProduct(idx: LibraryIndex, req: SimRequest, ctx: Ctx, warnings:
   const maxOf = (vals: (number | null)[]) => (vals.some((v) => v === null) ? null : vals.length ? Math.max(...(vals as number[])) : null);
   const clearAt = maxOf(counting.filter((c) => c.formed.typical).map((c) => c.clearAt));
   const clearAtMax = maxOf(counting.filter((c) => c.formed.max).map((c) => c.clearAtMax));
+  const clearAtMin = maxOf(counting.filter((c) => c.formed.min).map((c) => c.clearAtMin));
   // An inactive compound that would have cleared later than the product is an exclusion that changed the date.
   for (const c of curves)
     if (c.inactive && c.formed.max && (clearAtMax === null || c.clearAtMax === null || c.clearAtMax > clearAtMax)) {
@@ -748,6 +753,7 @@ function simulateProduct(idx: LibraryIndex, req: SimRequest, ctx: Ctx, warnings:
     curves,
     clearAt,
     clearAtMax,
+    clearAtMin,
     status: missing.length ? 'incomplete' : productAssumptions.size ? 'assumptions' : 'clear',
     missing,
     assumptions: [...productAssumptions],
@@ -963,7 +969,7 @@ export function computeScenario(idx: LibraryIndex, session: Session, now: number
     warnings.push({ level: 'warn', text: `${c.name}: nonlinear kinetics — not modelled. ${c.nonlinearKinetics.note}`.trim() });
   const unverified = used.filter((e) => !e.verified && !e.userEntered).length;
   const userEntered = used.filter((e) => e.userEntered).length;
-  if (unverified) warnings.push({ level: 'info', text: `${unverified} plotted entr${unverified === 1 ? 'y uses' : 'ies use'} unverified library data.` });
+  if (unverified) warnings.push({ level: 'info', text: `${unverified} plotted entr${unverified === 1 ? 'y uses' : 'ies use'} draft library data (AI-assisted, not yet verified by hand).` });
   if (userEntered) warnings.push({ level: 'info', text: `${userEntered} plotted entr${userEntered === 1 ? 'y is' : 'ies are'} user-entered (not from the shared library).` });
   const firstDose = ibEvents.length ? `the first ibogaine dose (${IBOGAINE_KIND_LABEL[ibEvents[0].kind].toLowerCase()})` : '';
   for (const r of products) {

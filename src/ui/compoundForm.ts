@@ -2,7 +2,7 @@
 // Sections mutate the compound in place and call onChange with the provenance section that was edited.
 // Unknown numbers are null: every numeric field has an "unknown" checkbox.
 
-import { emptyRange, isRangeOnly, rangeTypical } from '../schema';
+import { emptyRange, isRangeOnly, rangeTypical, RANGE_TYPE_LABEL } from '../schema';
 import {
   CLINICAL_RELEVANCE, INHIBITION_TYPES, INHIBITOR_STRENGTHS, KINETIC_MODES, PHENOTYPES, QT_TIERS, RANGE_TYPES, RECEPTOR_ACTIONS, TRI_STATES,
   type ClinicalRelevance, type Compound, type CompoundSection, type PhenotypeMap, type Range, type RangeType,
@@ -74,10 +74,6 @@ export function nullableNumber(
   return el;
 }
 
-const RANGE_LABEL: Record<RangeType, string> = {
-  'observed-range': 'observed range', 'mean-2sd': 'mean ± 2 SD', 'cohort-means': 'range of cohort means', cv: 'CV', 'single-value': 'single value',
-};
-
 /**
  * Range editor: typical / min / max (hours or days), range type and CV. The whole range can be unknown (null).
  * `get`/`set` read and replace the range on its owner.
@@ -95,7 +91,7 @@ export function rangeInputs(get: () => Range | null, set: (r: Range | null) => v
     const num = (k: 'typical' | 'min' | 'max') => nullableNumber(r[k], (v) => { r[k] = v; onChange(); }, { min: '0' }, factor);
     const nums = (['typical', 'min', 'max'] as const).map((k) => ({ k, el: num(k) }));
     const cv = nullableNumber(r.cv, (v) => { r.cv = v; onChange(); }, { min: '0', step: '0.05', placeholder: 'e.g. 0.3' });
-    const rt = select(r.rangeType ?? '', [['', '— range type —'], ...RANGE_TYPES.map((t) => [t, RANGE_LABEL[t]] as [string, string])], (v) => {
+    const rt = select(r.rangeType ?? '', [['', '— range type —'], ...RANGE_TYPES.map((t) => [t, RANGE_TYPE_LABEL[t]] as [string, string])], (v) => {
       r.rangeType = (v || null) as RangeType | null;
       onChange();
     });

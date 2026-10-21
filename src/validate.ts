@@ -556,17 +556,8 @@ function computeProgress(categories: Library['categories'], compounds: Compound[
     else if (k.steadyState && k.steadyState.afterDays == null) p.partial.steadyStateOnsetUnknown.push(c.id);
   }
 
-  // A candidate (drug) is verified when all its products and every compound they reach are verified.
-  const candidateProducts = new Map<string, Product[]>();
-  for (const x of products) {
-    const key = x.candidateId || primaryCompound(x);
-    candidateProducts.set(key, [...(candidateProducts.get(key) ?? []), x]);
-  }
-  const candidateVerified = (key: string) => {
-    const ps = candidateProducts.get(key) ?? [];
-    const tree = reachable(ps.flatMap((x) => x.components.map((c) => c.compound)), children);
-    return ps.length > 0 && ps.every((x) => x.verified) && [...tree].every((id) => byId.get(id)?.verified);
-  };
+  const drugVerified = verifiedDrugs(compounds, products);
+  const candidateVerified = (key: string) => drugVerified.get(key) ?? false;
 
   p.categories = [...categories]
     .sort((a, b) => a.order - b.order)
@@ -594,6 +585,24 @@ function computeProgress(categories: Library['categories'], compounds: Compound[
       };
     });
   return p;
+}
+
+/** The drug (candidate) a product belongs to. */
+export const drugIdOf = (p: Product) => p.candidateId || primaryCompound(p);
+
+/** Drug id → verified: all its products and every compound they reach are verified. */
+export function verifiedDrugs(compounds: Compound[], products: Product[]): Map<string, boolean> {
+  const byId = new Map(compounds.map((c) => [c.id, c]));
+  const children = new Map<string, string[]>();
+  for (const c of compounds) for (const f of c.formedFrom ?? []) children.set(f.compound, [...(children.get(f.compound) ?? []), c.id]);
+  const byDrug = new Map<string, Product[]>();
+  for (const x of products) byDrug.set(drugIdOf(x), [...(byDrug.get(drugIdOf(x)) ?? []), x]);
+  const out = new Map<string, boolean>();
+  for (const [key, ps] of byDrug) {
+    const tree = reachable(ps.flatMap((x) => (x.components ?? []).map((c) => c.compound)), children);
+    out.set(key, ps.every((x) => x.verified) && [...tree].every((id) => byId.get(id)?.verified));
+  }
+  return out;
 }
 
 /** Validate session-only custom drugs against the library they extend. */
