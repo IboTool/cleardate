@@ -512,8 +512,8 @@ None.
 
 ## Not applicable
 
-- `apap_glucuronide_sulfate` APAP glucuronide/sulfate: Pooled glucuronide and sulfate conjugates — not one compound.
-- `kavalactones` Kavalactones: Mixture of six kavalactones — no single structure.
-- `lithium` Lithium: Lithium ion (Li⁺) — a single atom; no structure to draw.
-- `semaglutide` Semaglutide: Peptide (GLP-1 analogue) — not drawn as a small-molecule structure.
-- `tirzepatide` Tirzepatide: Peptide (GIP/GLP-1 dual agonist) — not drawn as a small-molecule structure.
+- `apap_glucuronide_sulfate` APAP glucuronide/sulfate: Pooled glucuronide and sulfate conjugates, not one compound.
+- `kavalactones` Kavalactones: Mixture of six kavalactones.
+- `lithium` Lithium: Lithium ion (Li⁺), a single atom.
+- `semaglutide` Semaglutide: Peptide (GLP-1 analogue).
+- `tirzepatide` Tirzepatide: Peptide (GIP/GLP-1 dual agonist).

@@ -57,13 +57,16 @@ Double-click **`stop-cleardate.bat`** to stop the app and the editor. It kills w
 | Command | What it does |
 |---|---|
 | `npm run dev` | App at http://localhost:5173. In dev, Settings → *Load demo data* adds the fictional compounds in `tools/demo-drugs.json`. |
-| `npm run build` | Runs the validator (`prebuild`), type-checks and writes the static site to `dist/`. The build fails if `drugs.json` has errors. Demo data is never bundled. |
+| `npm run build` | Runs the validator and `structures:render` (`prebuild`), type-checks and writes the static site to `dist/`. The build fails if `drugs.json` has errors. Demo data is never bundled. |
 | `npm run preview` | Serves `dist/` locally. |
 | `npm test` | Unit tests (PK simulation, model and clear status, migration, search, serialisation, sessions). |
-| `npm run init-data` | Creates a schema 2.2 `public/drugs.json` from `tools/candidates.json` with every value unknown (`null` / `unassessed`). Uses the same product rules as the migrations, so it yields the same product set. Refuses to overwrite an existing file; `--force` overwrites, `--out <path>` writes elsewhere. |
+| `npm run init-data` | Creates a schema 2.3 `public/drugs.json` from `tools/candidates.json` with every value unknown (`null` / `unassessed`). Uses the same product rules as the migrations, so it yields the same product set. Refuses to overwrite an existing file; `--force` overwrites, `--out <path>` writes elsewhere. |
 | `npm run migrate-v2` | One-off migration of a v1 `drugs.json` to schema v2 (see below). Does nothing if the file is already v2. |
 | `npm run migrate-v2.1` | One-off migration of a v2 `drugs.json` to schema 2.1 (see below). `--dry-run` reports without writing. Does nothing if the file is already 2.1. |
 | `npm run migrate-v2.2` | One-off migration of a 2.1 `drugs.json` to schema 2.2 (see below). `--dry-run` reports without writing. Idempotent. |
+| `npm run migrate-v2.3` | One-off migration of a 2.2 `drugs.json` to schema 2.3: adds `"identity": null` (chemical identity, filled by `structures:lookup`) to every compound. `--dry-run` reports without writing. Idempotent. |
+| `npm run structures:lookup` | **Dev only, needs the internet.** Looks up every compound's PubChem identity and fills `identity`, the lock file and `docs/structures_report.md` (see *Chemical structures* below). `--id <compoundId>` does one compound, `--dry-run` writes nothing, `--offline` uses only the local cache, `--append-todo` appends the review list to `user_to_do.md`. |
+| `npm run structures:render` | Draws `public/structures/<id>.svg` (dark and light) from the SMILES in `drugs.json` with RDKit. Offline and deterministic; runs in `prebuild`. |
 | `npm run validate` | Checks `public/drugs.json` (or a path given as an argument) and prints errors, warnings and per-category progress. Exits non-zero on errors. |
 | `npm run editor` | Local data editor at http://127.0.0.1:5174. |
 | `npm run screenshots` | Regenerates the help page screenshots in `public/help/img/` (and the callout positions in `callouts.json`) with Playwright, from the fictional patient and fixed date in `tools/help-scenario.json`. Run it after UI or library changes, then check the callout lists in `help.html`. First time only: `npx playwright install chromium`. |
@@ -240,8 +243,32 @@ What the migration does, in short:
 - marks indole-3-acetic acid `endogenous`, and makes cocaine → cocaethylene and methylphenidate → ethylphenidate conditional on ethanol;
 - reports data-status counts before and after.
 
+## Migrating to schema 2.3
+
+`public/drugs.json` is already on 2.3. For another 2.2 file, run `npm run migrate-v2.3`. It adds `"identity": null` to every compound, keeps the 2.2 file as `backups/<name>.v2.2-backup.json`, and refuses to write if the result doesn't validate. Then run `npm run structures:lookup` and `npm run structures:render`.
+
+## Chemical structures
+
+Each compound's `identity` holds its PubChem CID, isomeric SMILES, InChIKey, formula and a confidence:
+
+- `confirmed`: the name (or a salt-stripped form) is an exact PubChem synonym of a single record, the molecular weight agrees within 0.5, the stated stereochemistry matches, and there is no stereoisomer sibling in the library. Safe to skip in review.
+- `probable`: drawn, but labelled "Probable match — pending review" in the Library. These are stereoisomer siblings (citalopram / escitalopram), known vague-metabolite traps and CIDs set by a reviewer.
+- `unconfirmed`: not drawn. No hit, several hits, an abbreviation no alias corroborates (abbreviations collide in PubChem: MDEA also names N-methyldiethanolamine), stereo or racemate conflicts, or a molecular-weight conflict. The candidates are kept for the reviewer.
+- `not-applicable`: mixtures, peptides, pooled conjugates and lithium. No structure.
+
+**Lookup** (`tools/structures/lookup.ts`) runs only on a developer's machine, never in the build or the app. It queries PubChem PUG REST (salts map to their parent), at most about 4 requests a second, with retries, and caches every response in `tools/structures/.cache/` (gitignored). Results go to `drugs.json` (provenance `checked`, or `gap` when unconfirmed; the source note links the PubChem page), `tools/structures/pubchem-lock.json` (CID, InChIKey and retrieval date per compound) and `docs/structures_report.md`. Where a molecular weight was `null` and the compound isn't verified, it's filled from PubChem. Identities a reviewer has confirmed are never changed.
+
+Run it again after adding compounds or when the report flags something. To fix one compound, set its CID in the editor's *Chemical identity* section (or pick one of the candidates), then:
+
+```
+npm run structures:lookup -- --id <compoundId>
+npm run structures:render
+```
+
+**Rendering** (`tools/structures/render.ts`) uses RDKit's WebAssembly build (`@rdkit/rdkit`, dev dependency) to draw a 2D depiction of every `confirmed` or `probable` identity, in the app's dark and light colours, into `public/structures/<id>.svg` and `<id>.light.svg`. It reads only `drugs.json`, so it's offline and reproducible, writes only files that changed and removes orphans. The SVGs are committed.
+
 ## Implementation notes
 
 - Vite + TypeScript, no framework. ECharts (modular import) for the timeline, Fuse.js for fuzzy search, jsPDF for the PDF (loaded only when exporting). Chart images use ECharts' own renderer.
-- Code map: `src/pk.ts` (simulation, tested in `pk.test.ts`), `src/model.ts` (library index, scenario: clear dates, tracks, warnings), `src/chart.ts` (chart option), `src/search.ts` (ranked search: exact → prefix → fuzzy), `src/validate.ts` (shared by the app, the CLI and the editor), `src/tree.ts` (which compounds of a product are simulated, excluded or missing), `src/review.ts` (section review logic for the editor, tested in `review.test.ts`), `src/state.ts` (sessions, including v1 → v2 migration), `src/ui/` (picker, wizard, form pieces), `src/theme.css` (colour tokens and buttons shared by the app and the help page), `help.html` + `src/help/` (the help page, a second Vite entry), `tools/screenshots.ts` + `tools/help-scenario.json` (help screenshots), `tools/` (data tooling and editor; `tools/migrate-v2.ts` and `tools/product-rules.ts` for the v2 migration, `tools/migrate-v2.1.ts` and `tools/migrate-v21-lib.ts` for 2.1).
+- Code map: `src/pk.ts` (simulation, tested in `pk.test.ts`), `src/model.ts` (library index, scenario: clear dates, tracks, warnings), `src/chart.ts` (chart option), `src/search.ts` (ranked search: exact → prefix → fuzzy), `src/validate.ts` (shared by the app, the CLI and the editor), `src/tree.ts` (which compounds of a product are simulated, excluded or missing), `src/review.ts` (section review logic for the editor, tested in `review.test.ts`), `src/state.ts` (sessions, including v1 → v2 migration), `src/ui/` (picker, wizard, form pieces), `src/theme.css` (colour tokens and buttons shared by the app and the help page), `help.html` + `src/help/` (the help page, a second Vite entry), `tools/screenshots.ts` + `tools/help-scenario.json` (help screenshots), `tools/` (data tooling and editor; `tools/migrate-v2.ts` and `tools/product-rules.ts` for the v2 migration, `tools/migrate-v2.1.ts` and `tools/migrate-v21-lib.ts` for 2.1; `tools/structures/` for PubChem lookup and RDKit rendering), `src/library/` (the Library view, structures and lingering-effects panels).
 - A full scenario computes in tens of milliseconds, so it runs on the main thread (no Web Worker).

@@ -48,11 +48,11 @@ const MAX_CANDIDATES = 8;
 
 /** Always not-applicable, with the reason shown in the Library. */
 export const NOT_APPLICABLE: Record<string, string> = {
-  kavalactones: 'Mixture of six kavalactones — no single structure.',
-  semaglutide: 'Peptide (GLP-1 analogue) — not drawn as a small-molecule structure.',
-  tirzepatide: 'Peptide (GIP/GLP-1 dual agonist) — not drawn as a small-molecule structure.',
-  apap_glucuronide_sulfate: 'Pooled glucuronide and sulfate conjugates — not one compound.',
-  lithium: 'Lithium ion (Li⁺) — a single atom; no structure to draw.',
+  kavalactones: 'Mixture of six kavalactones.',
+  semaglutide: 'Peptide (GLP-1 analogue).',
+  tirzepatide: 'Peptide (GIP/GLP-1 dual agonist).',
+  apap_glucuronide_sulfate: 'Pooled glucuronide and sulfate conjugates, not one compound.',
+  lithium: 'Lithium ion (Li⁺), a single atom.',
 };
 /** Notes that describe the compound itself as a mixture or extract (not just the study material). */
 const MIXTURE_NOTE_RE = /\b(?:is|are) an? (?!stereoisomer)(?:\w+ )?(?:mixture|extract)\b|not one molecular species/i;

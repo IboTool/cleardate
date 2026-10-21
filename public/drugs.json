@@ -5229,7 +5229,7 @@
         "formula": null,
         "confidence": "not-applicable",
         "candidates": [],
-        "note": "Pooled glucuronide and sulfate conjugates — not one compound."
+        "note": "Pooled glucuronide and sulfate conjugates, not one compound."
       },
       "kinetics": {
         "mode": "unknown",
@@ -5275,7 +5275,7 @@
         "metabolism": "[gap] apap_glucuronide_sulfate: queue links preserved. No defensible systemic formation fraction or phenotype formation map established; null is unknown, not zero formation.",
         "relevance": "[checked] FDA label describes glucuronide/sulfate/glutathione-derived conjugates as lacking biologic activity. This combined entry covers glucuronide/sulfate, not reactive NAPQI. No contrary toxicity/CYP evidence established here. https://www.accessdata.fda.gov/drugsatfda_docs/label/2018/021123s016s017lbl.pdf",
         "molecularWeight": "[gap] apap_glucuronide_sulfate: neutral/free-base PubChem molecular weight not independently confirmed; null retained.",
-        "identity": "Pooled glucuronide and sulfate conjugates — not one compound.",
+        "identity": "Pooled glucuronide and sulfate conjugates, not one compound.",
         "cyp2d6": "[gap] apap_glucuronide_sulfate: substrate, clinical inhibitor strength, mechanism and phenotype half-life ratios not established. No none/no inference from absence in FDA examples or substrate status.",
         "qt": "[gap] apap_glucuronide_sulfate: live CredibleMeds not accessed; no negative QT assertion. Calibration weight/reference amount reserved for reviewer.",
         "receptors": "[gap] apap_glucuronide_sulfate: no species-specific clinically relevant target/action confirmed in this pass; empty list is an evidence gap.",
@@ -19299,7 +19299,7 @@
         "formula": null,
         "confidence": "not-applicable",
         "candidates": [],
-        "note": "Mixture of six kavalactones — no single structure."
+        "note": "Mixture of six kavalactones."
       },
       "kinetics": {
         "mode": "unknown",
@@ -19345,7 +19345,7 @@
         "metabolism": "[gap] kavalactones: queue links preserved. No defensible systemic formation fraction or phenotype formation map established; null is unknown, not zero formation.",
         "relevance": "[checked] Directly administered parent is clinically active; this is not a statement of therapeutic equivalence across formulations.",
         "molecularWeight": "[gap] kavalactones: neutral/free-base PubChem molecular weight not independently confirmed; null retained.",
-        "identity": "Mixture of six kavalactones — no single structure.",
+        "identity": "Mixture of six kavalactones.",
         "cyp2d6": "[gap] kavalactones: substrate, clinical inhibitor strength, mechanism and phenotype half-life ratios not established. No none/no inference from absence in FDA examples or substrate status.",
         "qt": "[gap] kavalactones: live CredibleMeds not accessed; no negative QT assertion. Calibration weight/reference amount reserved for reviewer.",
         "receptors": "[gap] kavalactones: no species-specific clinically relevant target/action confirmed in this pass; empty list is an evidence gap.",
@@ -20684,7 +20684,7 @@
         "formula": null,
         "confidence": "not-applicable",
         "candidates": [],
-        "note": "Lithium ion (Li⁺) — a single atom; no structure to draw."
+        "note": "Lithium ion (Li⁺), a single atom."
       },
       "kinetics": {
         "mode": "intrinsic",
@@ -20736,7 +20736,7 @@
         "metabolism": "[gap] lithium: queue links preserved. No defensible systemic formation fraction or phenotype formation map established; null is unknown, not zero formation.",
         "relevance": "[checked] Directly administered parent is clinically active; this is not a statement of therapeutic equivalence across formulations.",
         "molecularWeight": "[gap] lithium: neutral/free-base PubChem molecular weight not independently confirmed; null retained.",
-        "identity": "Lithium ion (Li⁺) — a single atom; no structure to draw.",
+        "identity": "Lithium ion (Li⁺), a single atom.",
         "cyp2d6": "[checked] Lithium is not metabolised, renal excretion; this supports no CYP2D6 substrate dependence, not a formal enzyme-inhibition negative. https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=803eab29-0d0a-4df0-b504-bcd85ec01ead&version=11",
         "qt": "[gap] lithium: live CredibleMeds not accessed; no negative QT assertion. Calibration weight/reference amount reserved for reviewer.",
         "receptors": "[gap] lithium: no species-specific clinically relevant target/action confirmed in this pass; empty list is an evidence gap.",
@@ -34815,7 +34815,7 @@
         "formula": null,
         "confidence": "not-applicable",
         "candidates": [],
-        "note": "Peptide (GLP-1 analogue) — not drawn as a small-molecule structure."
+        "note": "Peptide (GLP-1 analogue)."
       },
       "kinetics": {
         "mode": "intrinsic",
@@ -34872,7 +34872,7 @@
         "metabolism": "[gap] semaglutide: queue links preserved. No defensible systemic formation fraction or phenotype formation map established; null is unknown, not zero formation.",
         "relevance": "[checked] Directly administered parent is clinically active; this is not a statement of therapeutic equivalence across formulations.",
         "molecularWeight": "[gap] semaglutide: neutral/free-base PubChem molecular weight not independently confirmed; null retained.",
-        "identity": "Peptide (GLP-1 analogue) — not drawn as a small-molecule structure.",
+        "identity": "Peptide (GLP-1 analogue).",
         "cyp2d6": "[gap] semaglutide: substrate, clinical inhibitor strength, mechanism and phenotype half-life ratios not established. No none/no inference from absence in FDA examples or substrate status.",
         "qt": "[gap] semaglutide: live CredibleMeds not accessed; no negative QT assertion. Calibration weight/reference amount reserved for reviewer.",
         "receptors": "[recall] Main pharmacological target/actions recalled from label pharmacology/IUPHAR; not independently confirmed target affinities. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ee06186f-2aa3-4990-a760-757579d8f77b",
@@ -36462,7 +36462,7 @@
         "formula": null,
         "confidence": "not-applicable",
         "candidates": [],
-        "note": "Peptide (GIP/GLP-1 dual agonist) — not drawn as a small-molecule structure."
+        "note": "Peptide (GIP/GLP-1 dual agonist)."
       },
       "kinetics": {
         "mode": "intrinsic",
@@ -36523,7 +36523,7 @@
         "metabolism": "[gap] tirzepatide: queue links preserved. No defensible systemic formation fraction or phenotype formation map established; null is unknown, not zero formation.",
         "relevance": "[checked] Directly administered parent is clinically active; this is not a statement of therapeutic equivalence across formulations.",
         "molecularWeight": "[gap] tirzepatide: neutral/free-base PubChem molecular weight not independently confirmed; null retained.",
-        "identity": "Peptide (GIP/GLP-1 dual agonist) — not drawn as a small-molecule structure.",
+        "identity": "Peptide (GIP/GLP-1 dual agonist).",
         "cyp2d6": "[checked] Label peptide cleavage/fatty-acid metabolism, low potential for CYP inhibition/induction. Applies labelled SC product, not validation of queued oral route. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d2d7da5d-ad07-4228-955f-cf7e355c8cc0",
         "qt": "[gap] tirzepatide: live CredibleMeds not accessed; no negative QT assertion. Calibration weight/reference amount reserved for reviewer.",
         "receptors": "[recall] Main pharmacological target/actions recalled from label pharmacology/IUPHAR; not independently confirmed target affinities. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0818426a-53eb-4db7-9609-bbae1e7a3964",

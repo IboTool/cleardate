@@ -113,7 +113,7 @@ function report(rows: Row[]): string {
     '',
     '## Molecular weights filled from PubChem',
     '',
-    ...(filled.length ? filled.map((c) => `- \`${c.id}\`: ${c.molecularWeight} g/mol (${c.sourceNotes.molecularWeight.split('.')[0]})`) : ['None.']),
+    ...(filled.length ? filled.map((c) => `- \`${c.id}\`: ${c.molecularWeight} g/mol (${(c.sourceNotes.molecularWeight ?? '').split('.')[0]})`) : ['None.']),
     '',
     '## Molecular weight conflicts (not overwritten)',
     '',
