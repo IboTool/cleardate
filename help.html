@@ -1,0 +1,715 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="robots" content="noindex" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'" />
+    <title>Help — ClearDate</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%230b0d12'/%3E%3Cpath d='M5 10 C 12 10, 14 24, 27 24' stroke='%237c9cff' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E" />
+  </head>
+  <body class="help">
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="help-header">
+      <a class="wordmark" href="./" aria-label="ClearDate — back to the app">Clear<span>Date</span></a>
+      <span class="help-title">Help</span>
+      <span class="spacer"></span>
+      <a class="btn btn-ghost" href="./">← Back to ClearDate</a>
+    </header>
+
+    <div class="help-layout">
+      <nav class="toc glass" aria-label="Contents">
+        <details open>
+          <summary>Contents</summary>
+          <ol>
+            <li><a href="#what">What ClearDate is</a></li>
+            <li><a href="#disclaimer">Important — read before use</a></li>
+            <li><a href="#privacy">Privacy</a></li>
+            <li><a href="#quick-start">Quick start</a></li>
+            <li>
+              <a href="#using">Using ClearDate</a>
+              <ol>
+                <li><a href="#patient">Patient details</a></li>
+                <li><a href="#finding-drugs">Finding drugs</a></li>
+                <li><a href="#entering-doses">Entering doses</a></li>
+                <li><a href="#ibogaine">The ibogaine treatment</a></li>
+                <li><a href="#chart">Reading the chart</a></li>
+                <li><a href="#statuses">Clear statuses</a></li>
+                <li><a href="#cyp2d6">CYP2D6 track</a></li>
+                <li><a href="#qt">QT lanes</a></li>
+                <li><a href="#lingering">Lingering effects and receptor overlap</a></li>
+                <li><a href="#custom">Custom drugs</a></li>
+                <li><a href="#settings">Settings</a></li>
+                <li><a href="#saving">Saving, loading, exporting</a></li>
+              </ol>
+            </li>
+            <li><a href="#model">How the model works</a></li>
+            <li><a href="#library">The drug library and its sources</a></li>
+            <li><a href="#faq">FAQ</a></li>
+            <li><a href="#feedback">Requests and feedback</a></li>
+            <li><a href="#about">About</a></li>
+          </ol>
+        </details>
+      </nav>
+
+      <main id="content" class="help-main">
+        <!-- 1 -->
+        <section id="what">
+          <h1>ClearDate help</h1>
+          <h2>What ClearDate is</h2>
+          <p>ClearDate is a free reference tool for iboga and ibogaine providers. It supports patient intake and treatment planning.</p>
+          <p>You enter a patient's recent medications and substances. ClearDate plots how much of each drug and its metabolites is likely to remain in the body over time, relative to the planned ibogaine date. Underneath the main chart it shows when CYP2D6 is likely to be inhibited, which compounds carry QT liability, and which effects may linger after a drug has cleared.</p>
+          <figure class="shot" data-img="chart-overview.webp">
+            <div class="shot-frame"><img src="help/img/chart-overview.webp" alt="The ClearDate window with a fictional patient loaded: the Doses panel on the left, a legend of drugs grouped by category across the top, clearance curves for methadone, fluoxetine, diazepam, a fentanyl patch and hydroxyzine in the main chart, the gold ibogaine treatment marker, the CYP2D6, QT and lingering-effects tracks underneath, and warnings at the bottom." /></div>
+            <figcaption>The main screen with a fictional patient. Doses are entered on the left; the chart, tracks and warnings are on the right.</figcaption>
+            <ol class="callout-list">
+              <li>Doses, Patient and Settings tabs.</li>
+              <li>Legend: one entry per product, grouped by category, with its clear date or status.</li>
+              <li>Clearance curves: solid for the drug taken, dashed for its metabolites, shaded bands for the fast-to-slow range.</li>
+              <li>The planned ibogaine treatment (gold line).</li>
+              <li>Tracks for CYP2D6 inhibition, QT liability and lingering effects.</li>
+              <li>Warnings about the regimen and about the data used.</li>
+            </ol>
+          </figure>
+        </section>
+
+        <!-- 2 -->
+        <section id="disclaimer">
+          <h2>Important — read before use</h2>
+          <div class="callout-panel danger-panel" role="note">
+            <ul>
+              <li>ClearDate is a <strong>reference and planning aid only</strong>. It is not medical advice, not a medical device, and must not be relied on for clinical decisions or dosing.</li>
+              <li>It does not replace clinical judgment, patient history, ECG monitoring, laboratory testing, drug screening or established clinical protocols.</li>
+              <li>Pharmacokinetic values are <strong>population estimates</strong>. Individual patients can differ substantially: genetics, liver and kidney function, age, body composition, drug interactions, adherence and product variation all matter. Self-reported doses may be inaccurate.</li>
+              <li>The model plots the <strong>estimated amount remaining in the body</strong>, not blood concentration. It does not predict effects, toxicity or QT intervals in milliseconds.</li>
+              <li>A “clear” date means the modelled amount has fallen below a chosen threshold. It does not mean that a drug's effects, withdrawal or receptor changes have resolved.</li>
+              <li>Where data is missing, the tool shows this rather than guessing. “Incomplete” and “with assumptions” statuses must be read, not ignored.</li>
+              <li>Ibogaine carries serious cardiac risk. Nothing in this tool indicates that treatment is safe for a given patient.</li>
+              <li>ClearDate is provided as-is, without warranty of any kind, under the <a href="https://github.com/IboTool/cleardate/blob/main/LICENSE">MIT licence</a>. You are responsible for complying with the laws and regulations that apply where you practise.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 3 -->
+        <section id="privacy">
+          <h2>Privacy</h2>
+          <ul>
+            <li>All patient data stays in your browser. There are no accounts, no server, no analytics, no tracking and no cookies. Nothing you enter is uploaded. The only file the app downloads is its own drug library.</li>
+            <li>Everything you enter is autosaved in this browser only, on this computer. The indicator next to the logo is a reminder.</li>
+            <li>Saved patient files are files on your own computer. Treat them like any other patient record.</li>
+            <li>On a shared computer, use <strong>Settings → Clear all data</strong> at the end of each session. The browser asks you to confirm, and the deletion cannot be undone.</li>
+            <li>The code is <a href="https://github.com/IboTool/cleardate">open source</a>, so these claims can be checked.</li>
+          </ul>
+          <div class="shot-row">
+            <figure class="shot narrow" data-img="saved-indicator.webp">
+              <div class="shot-frame"><img src="help/img/saved-indicator.webp" alt="The ClearDate logo with a small rounded label next to it reading “Stored only in this browser”." /></div>
+              <figcaption>The autosave indicator. It pulses briefly each time a change is saved.</figcaption>
+            </figure>
+            <figure class="shot narrow" data-img="clear-all-data.webp">
+              <div class="shot-frame"><img src="help/img/clear-all-data.webp" alt="The bottom of the Settings tab: the Exports section with a clinic name field, and a red “Clear all data” button." /></div>
+              <figcaption>Settings → Clear all data deletes the patient, doses, custom drugs and settings from this browser.</figcaption>
+              <ol class="callout-list">
+                <li>Clear all data. A browser dialog asks you to confirm before anything is deleted.</li>
+              </ol>
+            </figure>
+          </div>
+        </section>
+
+        <!-- 4 -->
+        <section id="quick-start">
+          <h2>Quick start</h2>
+          <ol class="steps">
+            <li>
+              <strong>Enter the patient's details.</strong> Open the <em>Patient</em> tab and fill in what you have. Only the CYP2D6 phenotype changes the curves; the baseline QTc is shown on the QT track. See <a href="#patient">Patient details</a>.
+            </li>
+            <li>
+              <strong>Add each dose.</strong> In the <em>Doses</em> tab, start typing a drug's name, brand or street name and press Enter on the right product. Enter the amount and the date and time, or switch to <em>Regimen</em> for repeated doses, then press <em>Add dose</em>.
+              <figure class="shot inline" data-img="picker-brand-name.webp">
+                <div class="shot-frame"><img src="help/img/picker-brand-name.webp" alt="The drug search box with “valium” typed in; the results list shows diazepam products with the line “matched ‘Valium’”." /></div>
+                <figcaption>Searching by brand name: “valium” finds the diazepam products.</figcaption>
+                <ol class="callout-list"><li>Which name or alias matched.</li></ol>
+              </figure>
+            </li>
+            <li>
+              <strong>Set the ibogaine treatment.</strong> Press <em>✦ Ibogaine treatment</em>, enter the flood dose and its date and time, add any boosters, and save. The flood time is the date everything else is measured against.
+            </li>
+            <li>
+              <strong>Read the chart and the statuses.</strong> Each product in the legend shows its clear date or status. Hover over the chart for details at any moment. Read every “Incomplete” and “with assumptions” status. See <a href="#statuses">Clear statuses</a>.
+            </li>
+            <li>
+              <strong>Check the CYP2D6 and QT tracks</strong> under the chart, and the warnings below them. A red warning means CYP2D6 is likely inhibited at the treatment time.
+            </li>
+            <li>
+              <strong>Export a record.</strong> <em>PDF</em> creates a report with the chart, the doses, the clear dates, every assumption and the warnings. <em>PNG</em> saves an image of the chart.
+              <figure class="shot inline" data-img="header-controls.webp">
+                <div class="shot-frame"><img src="help/img/header-controls.webp" alt="The buttons at the top right of ClearDate: Ibogaine treatment, Reset view, PNG, PDF, Save file, Load file and Help." /></div>
+                <figcaption>The controls at the top of the app.</figcaption>
+                <ol class="callout-list">
+                  <li>Plan the ibogaine treatment.</li>
+                  <li>Reset the chart's zoom.</li>
+                  <li>Export the chart as an image, or a full PDF report.</li>
+                  <li>Save the patient to a file, or open a saved file.</li>
+                  <li>This help page.</li>
+                </ol>
+              </figure>
+            </li>
+            <li>
+              <strong>Save or clear.</strong> Use <em>Save file</em> to keep a copy of the patient on your computer. On a shared computer, use <em>Settings → Clear all data</em> when you finish.
+            </li>
+          </ol>
+        </section>
+
+        <!-- 5 -->
+        <section id="using">
+          <h2>Using ClearDate</h2>
+
+          <section id="patient">
+            <h3>Patient details</h3>
+            <p>The <em>Patient</em> tab holds:</p>
+            <ul>
+              <li><strong>Name</strong>: used on exports and as the file name of saved patient files.</li>
+              <li><strong>Date of birth</strong>: the age is calculated and shown underneath.</li>
+              <li><strong>Sex</strong>: shown on exports only.</li>
+              <li><strong>Body weight</strong> in kg or lb: used only to show doses in mg/kg. It does not change the curves.</li>
+              <li><strong>CYP2D6 phenotype</strong>: poor, intermediate, normal, ultrarapid or unknown. It scales the half-life of drugs that CYP2D6 clears and how much of some metabolites is formed. <em>Unknown</em> widens the range bands: the fast edge is simulated as an ultrarapid metaboliser and the slow edge as a poor metaboliser.</li>
+              <li><strong>Baseline QTc</strong> in ms and the correction formula (Fridericia or Bazett): shown as a label on the QT track and on exports. It is not used in any calculation.</li>
+              <li><strong>Notes</strong>: free text, kept with the patient and in saved files.</li>
+            </ul>
+            <figure class="shot narrow" data-img="patient-details.webp">
+              <div class="shot-frame"><img src="help/img/patient-details.webp" alt="The Patient tab filled in for “Demo Patient”: date of birth with the age shown below, sex, body weight 72 kg, CYP2D6 phenotype Normal, baseline QTc 420 ms with the Fridericia formula, and a notes box." /></div>
+              <figcaption>The Patient tab for the fictional demo patient.</figcaption>
+              <ol class="callout-list">
+                <li>Age, calculated from the date of birth.</li>
+                <li>Weight is used only for the mg/kg display.</li>
+                <li>CYP2D6 phenotype. “Unknown (widen range)” is the default.</li>
+                <li>Baseline QTc, shown on the QT track.</li>
+              </ol>
+            </figure>
+          </section>
+
+          <section id="finding-drugs">
+            <h3>Finding drugs</h3>
+            <p>Click the search box in the <em>Doses</em> tab and start typing. The search covers names, brand names, abbreviations, street names and drug classes, and tolerates small spelling mistakes. Results show which name matched.</p>
+            <ul>
+              <li>Use the arrow keys and Enter to pick a result, or click it. Escape closes the list.</li>
+              <li>With the box empty, the list shows recently used products, then every product by category. Click a category heading to collapse it.</li>
+              <li>The coloured chips at the top filter by category. You can select more than one.</li>
+              <li>Each drug is listed per route and formulation (for example oral immediate release, oral extended release, patch or depot injection), because these clear differently.</li>
+              <li>If nothing matches, you're offered to add the name as a <a href="#custom">custom drug</a>.</li>
+            </ul>
+            <p>Badges next to a product:</p>
+            <table class="data-table">
+              <thead><tr><th scope="col">Badge</th><th scope="col">Meaning</th></tr></thead>
+              <tbody>
+                <tr><td><span class="badge badge-warn">unverified</span></td><td>Library data that has not been fully reviewed yet.</td></tr>
+                <tr><td><span class="badge badge-warn">draft</span></td><td>The entry still contains values marked as drafts.</td></tr>
+                <tr><td><span class="badge badge-muted">no data yet</span></td><td>The drug is in the library but has no half-life yet. It is listed so you know it's coming, but can't be selected.</td></tr>
+                <tr><td><span class="badge badge-warn">incomplete</span></td><td>The drug can be plotted, but some compound it forms has no kinetics yet. Its clear date will be a lower bound.</td></tr>
+                <tr><td><span class="badge badge-user">user-entered</span></td><td>A custom drug you entered yourself. It is not part of the shared library.</td></tr>
+                <tr><td><span class="badge badge-warn">verified — incomplete data</span></td><td>Fully reviewed, but the kinetics of at least one compound are confirmed as unpublished. The clear date is a lower bound.</td></tr>
+              </tbody>
+            </table>
+            <div class="shot-row">
+              <figure class="shot narrow" data-img="picker-typo.webp">
+                <div class="shot-frame"><img src="help/img/picker-typo.webp" alt="The search box with the misspelling “diazapam”; the results still list the diazepam products." /></div>
+                <figcaption>Small spelling mistakes still find the drug.</figcaption>
+              </figure>
+              <figure class="shot narrow" data-img="picker-browse.webp">
+                <div class="shot-frame"><img src="help/img/picker-browse.webp" alt="The search list opened with an empty search: category filter chips at the top, a “Recently used” group, then products grouped by category, some greyed out with a “no data yet” badge." /></div>
+                <figcaption>Browsing by category.</figcaption>
+                <ol class="callout-list">
+                  <li>Category filter chips.</li>
+                  <li>Category heading: click to collapse or expand.</li>
+                  <li>A product with no data yet is greyed out and can't be selected.</li>
+                </ol>
+              </figure>
+            </div>
+          </section>
+
+          <section id="entering-doses">
+            <h3>Entering doses</h3>
+            <p>After you pick a product, a form opens under the search box. The amount is always in the product's dose unit, shown in the label. If the library has a typical dose, it is shown as a hint in the empty box. With the patient's weight set, the mg/kg equivalent appears in gold under the amount.</p>
+            <ul>
+              <li><strong>Single dose</strong>: one amount at one date and time.</li>
+              <li><strong>Regimen</strong>: the same amount repeated every so many hours or days, from a start to an end date and time. The number of doses is shown under the dates. Enter a taper as several regimens, one per step.</li>
+            </ul>
+            <p>Press Enter in the amount box to move to the date, and Enter in the date to add the dose. A note at the top of the form warns if some compound in the drug has no kinetics yet.</p>
+            <div class="shot-row">
+              <figure class="shot narrow" data-img="dose-entry-single.webp">
+                <div class="shot-frame"><img src="help/img/dose-entry-single.webp" alt="The dose form for oral diazepam: Single dose selected, amount 10 mg with the mg/kg value below, a date and time field, and an Add dose button." /></div>
+                <figcaption>A single dose of oral diazepam.</figcaption>
+                <ol class="callout-list">
+                  <li>Choose a single dose or a regimen.</li>
+                  <li>Amount, in the unit shown in the label.</li>
+                  <li>Date and time the dose was taken.</li>
+                </ol>
+              </figure>
+              <figure class="shot narrow" data-img="dose-entry-regimen.webp">
+                <div class="shot-frame"><img src="help/img/dose-entry-regimen.webp" alt="The dose form for oral methadone with Regimen selected: 60 mg every 1 day, start and end dates, and the number of doses underneath." /></div>
+                <figcaption>A daily methadone regimen.</figcaption>
+                <ol class="callout-list">
+                  <li>Regimen selected.</li>
+                  <li>How often: every so many hours or days.</li>
+                  <li>First and last dose.</li>
+                  <li>The number of doses this produces.</li>
+                </ol>
+              </figure>
+            </div>
+            <h4>Combination products</h4>
+            <p>For a product with more than one ingredient, such as buprenorphine/naloxone, you enter the amount of the first ingredient. The others are calculated from the product's fixed ratio and shown under the amount: 8 mg of buprenorphine/naloxone (4:1) is 8 mg buprenorphine + 2 mg naloxone. Each ingredient is plotted separately.</p>
+            <figure class="shot narrow" data-img="dose-entry-combination.webp">
+              <div class="shot-frame"><img src="help/img/dose-entry-combination.webp" alt="The dose form for sublingual buprenorphine/naloxone with 8 entered; the line underneath reads 8 mg buprenorphine + 2 mg naloxone." /></div>
+              <figcaption>A combination product: the second ingredient is calculated from the ratio.</figcaption>
+              <ol class="callout-list"><li>The amount of each ingredient.</li></ol>
+            </figure>
+            <h4>Patches, infusions and depot injections</h4>
+            <ul>
+              <li><strong>Patches and infusions</strong> are entered as a rate (for example µg/h). A <em>Single patch</em> has an <em>Applied at</em> and a <em>Removed at</em> time. <em>Patch changes</em> repeats a patch every so many hours, each worn for a set number of hours. Release from the patch continues after removal, as described in <a href="#model">How the model works</a>.</li>
+              <li><strong>Depot injections</strong> are entered as the amount per injection, as a single injection or repeated injections. The drug is released slowly from the injection site.</li>
+              <li>If the library doesn't have a release half-life for a modified-release product yet, the form says so and the product is simulated as immediate release.</li>
+            </ul>
+            <div class="shot-row">
+              <figure class="shot narrow" data-img="dose-entry-patch.webp">
+                <div class="shot-frame"><img src="help/img/dose-entry-patch.webp" alt="The dose form for a transdermal fentanyl patch with Patch changes selected: rate 25 µg/h, change every 72 hours, each patch worn for 72 hours, start and end dates, and the number of applications." /></div>
+                <figcaption>Fentanyl patches changed every 72 hours.</figcaption>
+              </figure>
+              <figure class="shot narrow" data-img="dose-entry-depot.webp">
+                <div class="shot-frame"><img src="help/img/dose-entry-depot.webp" alt="The dose form for an extended-release naltrexone injection: Single injection or Repeated injections, the amount per injection and the injection date and time." /></div>
+                <figcaption>A depot injection.</figcaption>
+              </figure>
+            </div>
+            <h4>Editing and deleting</h4>
+            <p>Entered doses are listed under <em>Entered doses</em>, grouped by category, with each product's status underneath. Use ✎ to edit a dose and 🗑 to delete it. Hover over a status for the full list of assumptions.</p>
+            <figure class="shot narrow" data-img="dose-list.webp">
+              <div class="shot-frame"><img src="help/img/dose-list.webp" alt="The Entered doses list: the planned ibogaine at the top, then doses grouped by category, each with its amount, schedule, clear status, and edit and delete buttons." /></div>
+              <figcaption>The list of entered doses.</figcaption>
+              <ol class="callout-list">
+                <li>The planned ibogaine treatment is listed first.</li>
+                <li>Each product's clear status.</li>
+                <li>Edit a dose.</li>
+                <li>Delete a dose.</li>
+              </ol>
+            </figure>
+            <p class="note">If you leave a dose form half-filled and open this help page, the form is still there when you come back.</p>
+          </section>
+
+          <section id="ibogaine">
+            <h3>The ibogaine treatment</h3>
+            <p>Open it with <em>✦ Ibogaine treatment</em> at the top of the app or under the search box.</p>
+            <ul>
+              <li><strong>Flood dose</strong>: amount in mg and date and time. This is the planned treatment date: the bold gold line on the chart and the time every warning is checked against. A new treatment starts 14 days from now.</li>
+              <li><strong>Boosters</strong>: <em>+ Add booster</em> adds one 6 hours after the previous dose. They appear as thin dashed gold lines.</li>
+              <li><strong>mg/kg</strong> is shown in gold under each amount when the patient's weight is set.</li>
+              <li><strong>Projected ibogaine and noribogaine</strong> are plotted forward from the doses once the library has their kinetics. Until then only the date markers are shown, and a note says so. If CYP2D6 is likely inhibited at the treatment time, the projection uses the poor-metaboliser values and is labelled “poor-metaboliser adjusted”.</li>
+              <li><em>Remove treatment</em> deletes it.</li>
+            </ul>
+            <figure class="shot narrow" data-img="ibogaine-form.webp">
+              <div class="shot-frame"><img src="help/img/ibogaine-form.webp" alt="The Ibogaine treatment dialog: an explanation, a flood dose of 1300 mg with its mg/kg value and time, a 200 mg booster 12 hours later, an Add booster button, and Remove treatment and Save buttons." /></div>
+              <figcaption>The ibogaine treatment dialog.</figcaption>
+              <ol class="callout-list">
+                <li>Flood dose in mg.</li>
+                <li>mg/kg, from the patient's weight.</li>
+                <li>Booster time.</li>
+                <li>Add another booster.</li>
+              </ol>
+            </figure>
+          </section>
+
+          <section id="chart">
+            <h3>Reading the chart</h3>
+            <p>Time runs left to right. The vertical axis is the estimated amount remaining in the body, in mg.</p>
+            <ul>
+              <li><strong>Lines</strong>: a solid line for each drug taken; dashed lines for its metabolites, lighter and more finely dashed for each further step in the chain.</li>
+              <li><strong>Bands</strong>: the shaded area around a line runs from the fastest to the slowest clearance in the published range. The line is the typical value.</li>
+              <li><strong>Today</strong> is a dotted line; the <strong>ibogaine treatment</strong> is a bold gold line, with boosters as thin dashed gold lines.</li>
+              <li><strong>Clear ticks</strong> along the bottom mark each product's clear date: “✓ name”, “✓ name*” for “with assumptions”, and a hollow, dashed “≥ name (incomplete)” for a lower bound.</li>
+            </ul>
+            <figure class="shot" data-img="chart-main.webp">
+              <div class="shot-frame"><img src="help/img/chart-main.webp" alt="The main chart: curves for each drug with shaded range bands, a dotted Today line, the gold Ibogaine line and a dashed booster line, and clear ticks with drug names along the bottom." /></div>
+              <figcaption>The main chart.</figcaption>
+              <ol class="callout-list">
+                <li>Today.</li>
+                <li>The ibogaine flood dose.</li>
+                <li>A booster.</li>
+                <li>A drug taken (solid line) with its range band.</li>
+                <li>A metabolite (dashed line).</li>
+                <li>A clear tick.</li>
+              </ol>
+            </figure>
+            <h4>Zooming, highlighting and hovering</h4>
+            <ul>
+              <li>Scroll over the chart to zoom, and drag to pan. The slider under the chart does the same. <em>Reset view</em> goes back to the full range.</li>
+              <li>Hover anywhere for a tooltip with the date, the amount of every compound at that moment, any assumptions or missing data, whether CYP2D6 is inhibited, which QT-relevant compounds are present and any lingering effects.</li>
+              <li>Click a product in the legend, or one of its lines, to highlight it and fade the others. Click it again, or an empty part of the chart, to show all.</li>
+            </ul>
+            <div class="shot-row">
+              <figure class="shot" data-img="chart-tooltip.webp">
+                <div class="shot-frame"><img src="help/img/chart-tooltip.webp" alt="The chart with the hover tooltip open, listing the date, the amount of each drug and metabolite at that time, and lines for CYP2D6 and QT liability." /></div>
+                <figcaption>The hover tooltip.</figcaption>
+              </figure>
+              <figure class="shot" data-img="chart-highlight.webp">
+                <div class="shot-frame"><img src="help/img/chart-highlight.webp" alt="The legend and chart with diazepam highlighted: its curves are bright and the other drugs are faded." /></div>
+                <figcaption>Diazepam highlighted from the legend.</figcaption>
+              </figure>
+            </div>
+            <h4>Display options</h4>
+            <p>In <em>Settings → Display</em>:</p>
+            <ul>
+              <li><strong>Y-axis</strong>: <em>Linear</em> or <em>Log</em>. A log scale shows the long low tails, where most of the clearance time is spent.</li>
+              <li><strong>Units</strong>: <em>mg amount</em>, or <em>% of dose</em> (percent of the most recent dose). Patches always stay in mg.</li>
+              <li><strong>Show metabolites</strong> and <strong>Show range bands</strong> turn those off for a simpler view.</li>
+              <li><strong>Show inactive metabolites</strong> is off by default. Metabolites classed as clinically inactive are then hidden; when shown they're faint, labelled “(inactive)”, and never hold up a clear date.</li>
+            </ul>
+            <p>Where the library knows a metabolite's timing but not how much is formed, its curve is drawn dotted as a percentage of its own peak on a separate right-hand axis, labelled “% of own peak (timing only)”.</p>
+            <figure class="shot" data-img="chart-log-scale.webp">
+              <div class="shot-frame"><img src="help/img/chart-log-scale.webp" alt="The same chart on a logarithmic vertical axis, showing the long tails of each curve." /></div>
+              <figcaption>The log scale makes long tails visible.</figcaption>
+            </figure>
+            <h4>The legend</h4>
+            <figure class="shot" data-img="legend.webp">
+              <div class="shot-frame"><img src="help/img/legend.webp" alt="The legend: products grouped by category with their clear dates, a “≥ date (incomplete)” entry, badges, and a key explaining line styles." /></div>
+              <figcaption>The legend shows each product's clear date or status.</figcaption>
+              <ol class="callout-list">
+                <li>A clear date with an asterisk: “with assumptions”.</li>
+                <li>“≥ date (incomplete)”: a lower bound.</li>
+                <li>Data badges.</li>
+                <li>Key to line styles.</li>
+              </ol>
+            </figure>
+          </section>
+
+          <section id="statuses">
+            <h3>Clear statuses</h3>
+            <p>A product is clear when the drug and every relevant metabolite it forms have fallen below the clear threshold (by default 5.5 half-lives, about 2% of each compound's peak). The status appears in the dose list, the legend (in short form), the tooltip and the PDF.</p>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead><tr><th scope="col">Status</th><th scope="col">What it means</th><th scope="col">What to do</th></tr></thead>
+                <tbody>
+                  <tr><td>Clear by &lt;date&gt;</td><td>Every relevant compound is below the threshold by that date, using library values only.</td><td>Still read the range: the PDF also gives the slowest date in the range.</td></tr>
+                  <tr><td>Clear by &lt;date&gt; — with assumptions</td><td>The date relies on something the tool had to assume: an assumed spread around a single published value, the midpoint of a published range, an assumed phenotype effect, a steady-state switch, a conservative choice for partial data, or a metabolite treated as inactive before review.</td><td>Hover over the status, or read the PDF's “Assumptions and missing data”, and decide whether each one is acceptable for this patient.</td></tr>
+                  <tr><td>Incomplete — missing kinetics for: … · not before &lt;date&gt;</td><td>At least one active or not-yet-classified compound in the drug has no published kinetics in the library. The date is a lower bound: clearance can't happen earlier, but it may be later.</td><td>Treat the date as the earliest possible. Check the missing compound in the literature or with a laboratory test before relying on it.</td></tr>
+                  <tr><td>No data yet</td><td>The drug itself has no half-life in the library. It can't be selected, and isn't plotted.</td><td>Use other sources, or <a href="#custom">enter it as a custom drug</a> with a cited half-life, and <a href="#feedback">request it</a>.</td></tr>
+                  <tr><td>Verified — incomplete data</td><td>A badge: the entry has been fully reviewed, and the missing kinetics are confirmed as unpublished rather than not yet looked up.</td><td>As for Incomplete. Waiting for a library update won't help.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>“Not clear within the simulated window” means the slowest part of the range is still above the threshold at the end of the simulation. An “Incomplete” product near the ibogaine date gets an amber warning, never a green light.</p>
+          </section>
+
+          <section id="cyp2d6">
+            <h3>CYP2D6 track</h3>
+            <p>Ibogaine is metabolised mainly by CYP2D6. Drugs that inhibit CYP2D6 can raise ibogaine exposure to resemble a poor metaboliser's. The <em>CYP2D6 inhibition</em> track shows when that is likely.</p>
+            <ul>
+              <li>A bar is drawn while an inhibiting compound is above its clear threshold, coloured by strength: yellow for weak, orange for moderate, red for strong.</li>
+              <li><strong>Reversible</strong> inhibition ends when the inhibitor clears. <strong>Mechanism-based</strong> inhibition destroys the enzyme, so a fading <em>recovery tail</em> follows while it is resynthesised. The tail lasts the clear threshold × the CYP2D6 recovery half-life (by default 5.5 × 51 h, about 12 days). The recovery half-life is set in <a href="#settings">Settings</a>.</li>
+              <li>If inhibition overlaps the flood dose or a booster, a red warning says <em>“CYP2D6 likely inhibited at treatment”</em> and names the drugs. The ibogaine projection then uses poor-metaboliser values.</li>
+              <li>If a compound still present at the ibogaine date hasn't been assessed for CYP2D6 inhibition, an amber warning lists it. Unassessed is not the same as “no inhibition”.</li>
+              <li>When no inhibitor is present, the track reads “— none”.</li>
+            </ul>
+            <figure class="shot" data-img="chart-tracks.webp">
+              <div class="shot-frame"><img src="help/img/chart-tracks.webp" alt="The tracks under the main chart: CYP2D6 inhibition, one QT lane per QT-relevant compound with the baseline QTc label at the right, the lingering-effects track, and the zoom slider at the bottom." /></div>
+              <figcaption>The tracks under the main chart.</figcaption>
+              <ol class="callout-list">
+                <li>CYP2D6 inhibition.</li>
+                <li>QT lanes, one per compound.</li>
+                <li>The patient's baseline QTc.</li>
+                <li>Lingering effects after clearance.</li>
+                <li>Zoom slider.</li>
+              </ol>
+            </figure>
+          </section>
+
+          <section id="qt">
+            <h3>QT lanes</h3>
+            <ul>
+              <li>Each compound with QT liability, or whose QT liability hasn't been assessed, gets its own lane, labelled on the left. Metabolite lanes are hidden when metabolites are hidden.</li>
+              <li>Colour shows the risk tier from CredibleMeds: red for known risk, orange for possible risk, yellow for conditional risk. A grey hatched lane means <strong>unassessed</strong>: no tier has been entered yet.</li>
+              <li>A lane is drawn while the compound is above its clear threshold. Its opacity follows the amount as a fraction of its own peak, so it fades as the drug clears.</li>
+              <li>The patient's baseline QTc is shown at the right of the track title.</li>
+              <li><strong>Summed relative QT load</strong> (in Settings) adds the compounds together, weighted by their risk and amount. It is qualitative, never a predicted change in ms. It is only available when every compound in the lanes has been calibrated in the library, so it is often greyed out; hover over it to see which compounds are missing.</li>
+            </ul>
+          </section>
+
+          <section id="lingering">
+            <h3>Lingering effects and receptor overlap</h3>
+            <p>Some drugs have effects that outlast the drug itself, such as receptor down-regulation or depleted transmitters. Where the library records how long these last, the <em>Lingering effects after clearance</em> track shows a fading band from the compound's clear date. Hover for the library's note.</p>
+            <p>Below the chart, <strong>Receptor overlap at the ibogaine date</strong> lists receptors and transporters hit by compounds from two or more different products still present at the treatment date, with each compound's action.</p>
+            <p>Both are qualitative reminders taken from the literature, not modelled effects.</p>
+            <figure class="shot" data-img="warnings.webp">
+              <div class="shot-frame"><img src="help/img/warnings.webp" alt="The warnings area under the chart, listing amber warnings for incomplete clear dates and unassessed CYP2D6 inhibition, and blue information notes about unverified data." /></div>
+              <figcaption>Warnings under the chart. Red is a safety warning, amber needs attention, blue is information about the data.</figcaption>
+            </figure>
+          </section>
+
+          <section id="custom">
+            <h3>Custom drugs</h3>
+            <p>If a drug isn't in the library, or has no data yet, you can enter it yourself from a published source. Use <em>+ Add custom drug</em> under the search box, or the offer that appears when a search finds nothing. The wizard has eight steps:</p>
+            <ol>
+              <li><strong>Basics</strong>: name, aliases, route, category, class, typical dose and molecular weight.</li>
+              <li><strong>Kinetics &amp; release</strong>: the half-life (typical, min and max, or mark each unknown), an optional early phase and steady-state half-life, and how the product is taken (immediate, modified release, patch or depot), dose unit, salt factor and bioavailability.</li>
+              <li><strong>Metabolites</strong>: add metabolites, and metabolites of metabolites, with the fraction formed and their own kinetics, or link one already in the library.</li>
+              <li><strong>CYP2D6</strong>: whether it is a substrate or inhibitor, and how strongly.</li>
+              <li><strong>QT</strong>: the risk tier.</li>
+              <li><strong>Receptors</strong>: targets and actions.</li>
+              <li><strong>Lingering &amp; nonlinear</strong>: effects that outlast clearance, and whether the kinetics are nonlinear.</li>
+              <li><strong>Source</strong>: the citation and a link.</li>
+            </ol>
+            <p>Custom drugs belong to this patient's session: they are saved in this browser and in patient files, but not added to the shared library. They carry the <span class="badge badge-user">user-entered</span> badge everywhere, including the PDF. <em>Settings → Custom drugs</em> lists them; <em>Copy as library entry</em> produces the text needed to <a href="#feedback">request that the drug be added</a>.</p>
+            <div class="shot-row">
+              <figure class="shot" data-img="wizard-basics.webp">
+                <div class="shot-frame"><img src="help/img/wizard-basics.webp" alt="Step 1 of the custom drug wizard, Basics: name, aliases, route, category, class, typical dose and molecular weight." /></div>
+                <figcaption>Step 1, Basics.</figcaption>
+                <ol class="callout-list"><li>The eight steps.</li></ol>
+              </figure>
+              <figure class="shot" data-img="wizard-kinetics.webp">
+                <div class="shot-frame"><img src="help/img/wizard-kinetics.webp" alt="Step 2, Kinetics and release: kinetic mode, terminal half-life with typical, min and max values and unknown checkboxes, range type, and the product's input, dose unit and formulation." /></div>
+                <figcaption>Step 2, Kinetics &amp; release.</figcaption>
+              </figure>
+              <figure class="shot" data-img="wizard-metabolites.webp">
+                <div class="shot-frame"><img src="help/img/wizard-metabolites.webp" alt="Step 3, Metabolites: a metabolite named “Example metabolite” with its fraction formed and its own kinetics." /></div>
+                <figcaption>Step 3, Metabolites.</figcaption>
+              </figure>
+            </div>
+          </section>
+
+          <section id="settings">
+            <h3>Settings</h3>
+            <h4>Clearance</h4>
+            <ul>
+              <li><strong>Clear threshold (half-lives)</strong>: default 5.5, about 2% of each compound's peak remaining. The percentage is shown under the box.</li>
+              <li><strong>CYP2D6 recovery half-life (h)</strong>: default 51 h. How fast CYP2D6 is resynthesised after mechanism-based inhibition. Marked “verify”: check it against current literature.</li>
+              <li><strong>Assumed spread when only one value is known (CV %)</strong>: default 30%. Used where the library has a single half-life or a missing bound. Labelled “assumed spread” wherever it is used.</li>
+              <li><strong>Treat unknown metabolites as formation-limited</strong>: off by default. Off, a product with a metabolite of unknown kinetics is “Incomplete”. On, that metabolite is assumed to clear as fast as it is formed, and the product is “with assumptions” instead.</li>
+            </ul>
+            <h4>Display</h4>
+            <ul>
+              <li><strong>Y-axis</strong> and <strong>Units</strong>: see <a href="#chart">Reading the chart</a>.</li>
+              <li><strong>Show metabolites</strong>, <strong>Show inactive metabolites</strong>, <strong>Show range bands</strong>.</li>
+              <li><strong>CYP2D6 inhibition track</strong>, <strong>QT liability track</strong>, <strong>Summed relative QT load overlay</strong> and <strong>Lingering effects track</strong>: show or hide each track.</li>
+              <li><strong>Date format</strong>: day first or month first. <strong>Time</strong>: 24-hour or 12-hour.</li>
+            </ul>
+            <h4>Exports and data</h4>
+            <ul>
+              <li><strong>Clinic name</strong>: printed at the top of PDF and PNG exports.</li>
+              <li><strong>Custom drugs</strong>: list, copy or delete them.</li>
+              <li><strong>Clear all data</strong>: see <a href="#privacy">Privacy</a>.</li>
+            </ul>
+            <div class="shot-row">
+              <figure class="shot narrow" data-img="settings-clearance.webp">
+                <div class="shot-frame"><img src="help/img/settings-clearance.webp" alt="The Clearance settings: clear threshold 5.5 half-lives with about 2.21% remaining, CYP2D6 recovery half-life 51 hours with a verify badge, assumed spread 30%, and the unknown-metabolites option." /></div>
+                <figcaption>Clearance settings.</figcaption>
+              </figure>
+              <figure class="shot narrow" data-img="settings-display.webp">
+                <div class="shot-frame"><img src="help/img/settings-display.webp" alt="The Display settings: Y-axis and units, toggles for metabolites, inactive metabolites, range bands, the CYP2D6, QT and lingering tracks and the summed QT load, and date and time formats." /></div>
+                <figcaption>Display settings.</figcaption>
+              </figure>
+            </div>
+          </section>
+
+          <section id="saving">
+            <h3>Saving, loading, exporting</h3>
+            <ul>
+              <li><strong>Save file</strong> downloads the whole session (patient, doses, ibogaine plan, custom drugs and settings) as <code>name-date.cleardate.json</code>.</li>
+              <li><strong>Load file</strong> opens a saved file and replaces what's on screen. If a custom drug in the file has the same ID as a library drug, it is renamed and you're told.</li>
+              <li><strong>PDF</strong> creates a landscape A4 report in light colours. Page 1 has the clinic name, patient details, baseline QTc, CYP2D6 phenotype and the chart as currently zoomed. The following pages list the doses, the planned ibogaine, the clear dates (typical and slowest in the range), the <strong>Assumptions and missing data</strong> for each product, and the warnings. The disclaimer is printed at the foot of every page.</li>
+              <li><strong>PNG</strong> saves an image with the same header, the chart and up to eight warnings.</li>
+            </ul>
+            <p><strong>Assumptions and missing data</strong> lists, per product: incomplete clear dates and the missing compounds; every assumption (assumed spreads and range midpoints, assumed phenotype effects, steady-state switches, conservative choices for partial data); metabolites excluded as inactive; branches not formed for the patient's phenotype; formation-limited conjugates, which can accumulate in renal impairment; amounts given on an administered basis; and whether QT, CYP2D6 or receptor data is unassessed.</p>
+            <div class="shot-row">
+              <figure class="shot" data-img="export-pdf-page-1.webp">
+                <div class="shot-frame light"><img src="help/img/export-pdf-page-1.webp" alt="Page 1 of an exported PDF: the ClearDate title and clinic name, the patient's details, and the chart in light colours." /></div>
+                <figcaption>PDF export, page 1.</figcaption>
+              </figure>
+              <figure class="shot" data-img="export-pdf-page-2.webp">
+                <div class="shot-frame light"><img src="help/img/export-pdf-page-2.webp" alt="Page 2 of an exported PDF: tables of doses, the planned ibogaine and clear dates, then the Assumptions and missing data section." /></div>
+                <figcaption>PDF export, page 2.</figcaption>
+              </figure>
+            </div>
+            <figure class="shot" data-img="export-png.webp">
+              <div class="shot-frame light"><img src="help/img/export-png.webp" alt="An exported PNG image: the header with patient details, the chart in light colours, the warnings and the disclaimer." /></div>
+              <figcaption>PNG export.</figcaption>
+            </figure>
+          </section>
+        </section>
+
+        <!-- 6 -->
+        <section id="model">
+          <h2>How the model works</h2>
+          <h3>Amount remaining and half-lives</h3>
+          <p>For each dose, ClearDate estimates how much of the drug is left in the body over time. Most drugs are eliminated at a rate proportional to the amount present (first-order elimination), so the amount halves every <em>half-life</em>. After 5.5 half-lives about 2% is left, about 98% eliminated: that is the default clear threshold. You can change it in Settings.</p>
+          <figure class="diagram">
+            <svg viewBox="0 0 640 272" role="img" aria-labelledby="decay-title decay-desc">
+              <title id="decay-title">Exponential decay and the clear threshold</title>
+              <desc id="decay-desc">A curve falling from 100% at dose time, halving each half-life: 50% after 1, 25% after 2, 12.5% after 3, and about 2% after 5.5 half-lives, where it crosses the dashed clear threshold line.</desc>
+              <g class="dg-grid">
+                <line x1="60" y1="220" x2="620" y2="220" /><line x1="60" y1="20" x2="60" y2="220" />
+              </g>
+              <g class="dg-ticks">
+                <text x="60" y="240">0</text><text x="150" y="240">1</text><text x="240" y="240">2</text><text x="330" y="240">3</text><text x="420" y="240">4</text><text x="510" y="240">5</text><text x="555" y="240">5.5</text>
+                <text x="620" y="266" text-anchor="end">half-lives after the last dose</text>
+                <text x="52" y="24" text-anchor="end">100%</text><text x="52" y="124" text-anchor="end">50%</text><text x="52" y="174" text-anchor="end">25%</text><text x="52" y="216" text-anchor="end">0</text>
+              </g>
+              <path class="dg-curve" d="M60 20 C 105 80, 130 110, 150 120 S 210 165, 240 170 S 300 190, 330 195 S 390 207, 420 208 S 490 214, 510 214 S 560 216, 620 217" />
+              <line class="dg-threshold" x1="60" y1="215.6" x2="620" y2="215.6" />
+              <line class="dg-clear" x1="555" y1="40" x2="555" y2="220" />
+              <text class="dg-label gold" x="561" y="52">clear</text>
+              <text class="dg-label" x="190" y="209">threshold ≈ 2% of peak</text>
+              <g class="dg-dots"><circle cx="150" cy="120" r="3.5" /><circle cx="240" cy="170" r="3.5" /><circle cx="330" cy="195" r="3.5" /></g>
+            </svg>
+            <figcaption>Each half-life removes half of what is left. The clear date is when the amount falls below the threshold.</figcaption>
+          </figure>
+          <p>With repeated doses, the amounts add up. The clear threshold is measured against each compound's own peak in this patient's regimen.</p>
+
+          <h3>Metabolites</h3>
+          <p>Many drugs are converted into metabolites, some of which are active and some of which clear more slowly than the drug itself. ClearDate follows the chain: the fraction of each compound that becomes each metabolite, and each metabolite's own half-life. A metabolite shared by two drugs in the same chain, like oxazepam below, is tracked once per product. A product isn't clear until the drug and every relevant metabolite are below the threshold.</p>
+          <figure class="diagram">
+            <svg viewBox="0 0 640 200" role="img" aria-labelledby="chain-title chain-desc">
+              <title id="chain-title">A parent drug and its metabolite chain</title>
+              <desc id="chain-desc">Diazepam is converted to nordiazepam and to temazepam; both are converted to oxazepam.</desc>
+              <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="dg-arrowhead" /></marker></defs>
+              <g class="dg-node parent"><rect x="20" y="78" width="140" height="44" rx="10" /><text x="90" y="105">Diazepam</text></g>
+              <g class="dg-node"><rect x="250" y="20" width="150" height="44" rx="10" /><text x="325" y="47">Nordiazepam</text></g>
+              <g class="dg-node"><rect x="250" y="136" width="150" height="44" rx="10" /><text x="325" y="163">Temazepam</text></g>
+              <g class="dg-node"><rect x="490" y="78" width="130" height="44" rx="10" /><text x="555" y="105">Oxazepam</text></g>
+              <path class="dg-edge" d="M160 92 L248 46" marker-end="url(#arrow)" />
+              <path class="dg-edge" d="M160 108 L248 156" marker-end="url(#arrow)" />
+              <path class="dg-edge" d="M400 46 L488 92" marker-end="url(#arrow)" />
+              <path class="dg-edge" d="M400 156 L488 108" marker-end="url(#arrow)" />
+              <text class="dg-small" x="90" y="140">drug taken (solid line)</text>
+              <text class="dg-small" x="555" y="140">metabolites (dashed)</text>
+            </svg>
+            <figcaption>A metabolite chain: diazepam forms nordiazepam and temazepam, which both form oxazepam.</figcaption>
+          </figure>
+          <p>Some conjugates (for example glucuronides) clear faster than they are formed. These are <em>formation-limited</em>: they are plotted tracking their parent, and labelled as such, because they can accumulate when the kidneys are impaired.</p>
+
+          <h3>Two phases, steady state, patches and depots</h3>
+          <ul>
+            <li><strong>Two-phase drugs</strong> clear part of each dose quickly and the rest slowly. Both phases are modelled when the library has them.</li>
+            <li><strong>Steady state</strong>: some drugs clear more slowly (or quickly) after weeks of regular dosing. Once a regimen has run long enough, the steady-state half-life is used, and the tooltip and PDF say so.</li>
+            <li><strong>Patches, infusions and depots</strong> release the drug into the body gradually. ClearDate models the release as its own step before elimination, so the drug keeps entering the body for a while after a patch is removed or long after a depot injection.</li>
+          </ul>
+
+          <h3>CYP2D6 phenotype</h3>
+          <p>For drugs cleared by CYP2D6, the library records how the half-life changes in poor, intermediate and ultrarapid metabolisers, and how much of each metabolite is formed. ClearDate applies the patient's phenotype. When the phenotype is unknown, the range band runs from the ultrarapid to the poor metaboliser. Where a metabolite is not formed at all in a phenotype, its branch is left out and the chart notes “not formed in … metabolisers”.</p>
+
+          <h3>Clinical relevance of metabolites</h3>
+          <p>Every metabolite in the library is classed as <em>active</em>, <em>inactive</em> or <em>unknown</em>. Drugs taken and active metabolites always count towards the clear date. Unknown ones count too, so an unclassified metabolite with unpublished kinetics makes the product “Incomplete” rather than silently ignored. Inactive metabolites never hold up the clear date; when that classification hasn't been reviewed yet, the status becomes “with assumptions”.</p>
+
+          <h3>The conservative rule</h3>
+          <p>When data is only partly published, ClearDate uses whichever option gives the later clear date, and labels it. For example, a fast early phase without a known size is ignored, so the whole dose follows the slower half-life. When it isn't known how long a drug takes to reach steady state, a repeated regimen is simulated both ways and the later date counts.</p>
+
+          <h3>Range bands and assumed spread</h3>
+          <p>Where the literature gives a range of half-lives, the band covers it. Where only a range is published, the typical value is taken as the geometric midpoint. Where only one value is published, ClearDate assumes a spread around it (30% by default) and labels it “assumed spread”.</p>
+
+          <h3>Limitations</h3>
+          <ul>
+            <li>It estimates the amount in the body, not plasma concentrations.</li>
+            <li>Ordinary oral doses are treated as absorbed immediately; absorption delays are not modelled.</li>
+            <li>There are no adjustments for liver or kidney impairment, age, pregnancy or body composition.</li>
+            <li>Drug–drug interactions are not modelled, apart from the CYP2D6 effect on the ibogaine projection.</li>
+            <li>Nonlinear kinetics (for example at high doses) are flagged with ⚠ and a warning, but not modelled.</li>
+            <li>Lingering effects and receptor overlap are qualitative reminders, not predictions.</li>
+          </ul>
+        </section>
+
+        <!-- 7 -->
+        <section id="library">
+          <h2>The drug library and its sources</h2>
+          <p>Drug values are entered by hand from published sources, with the citations recorded in the library. In a <strong>verified</strong> entry, every section has been reviewed against those sources. Entries still being reviewed are marked <span class="badge badge-warn">unverified</span> or <span class="badge badge-warn">draft</span> wherever they appear, including the PDF.</p>
+          <p>Primary sources:</p>
+          <ul class="sources">
+            <li>FDA prescribing information via <a href="https://dailymed.nlm.nih.gov/">DailyMed</a>, and EU and UK product information (<a href="https://www.ema.europa.eu/">EMA</a>, <a href="https://www.medicines.org.uk/emc">electronic medicines compendium</a>).</li>
+            <li>Baselt, <em>Disposition of Toxic Drugs and Chemicals in Man</em>.</li>
+            <li>The <a href="https://drug-interactions.medicine.iu.edu/">Flockhart CYP table</a> and the <a href="https://www.fda.gov/drugs/drug-interactions-labeling/healthcare-professionals-fdas-examples-drugs-interact-cyp-enzymes-and-transporter-systems">FDA drug-interaction tables</a>.</li>
+            <li><a href="https://crediblemeds.org/">CredibleMeds</a> for QT risk tiers, entered by hand with a citation and used under their terms.</li>
+            <li><a href="https://cpicpgx.org/">CPIC</a> and <a href="https://www.clinpgx.org/">ClinPGx</a> for pharmacogenomics.</li>
+            <li>The <a href="https://www.guidetopharmacology.org/">IUPHAR/BPS Guide to Pharmacology</a> and the <a href="https://pdsp.unc.edu/databases/kidb.php">PDSP K<sub>i</sub> Database</a> for receptor targets.</li>
+            <li>The primary pharmacokinetic literature via <a href="https://pubmed.ncbi.nlm.nih.gov/">PubMed</a>.</li>
+          </ul>
+          <h3>Review and verification</h3>
+          <p>Each entry is reviewed section by section (half-life, metabolites, CYP2D6, QT, receptors and so on). A section can be confirmed, confirmed as unknown when the data genuinely isn't published, or marked not applicable. An entry is verified only when every section has been reviewed. Where the data is genuinely unpublished, as it is for many metabolites, the tool says so instead of guessing: the entry shows <span class="badge badge-warn">verified — incomplete data</span> and its clear dates are lower bounds.</p>
+          <h3>What's in the library</h3>
+          <p class="live" hidden>The library currently holds <strong data-fig="drugs"></strong> drugs as <strong data-fig="products"></strong> products (each route and formulation is a product), made up of <strong data-fig="compounds"></strong> compounds including metabolites. <strong data-fig="verifiedProducts"></strong> products and <strong data-fig="verifiedCompounds"></strong> compounds are verified so far. Last updated <strong data-fig="updated"></strong>.</p>
+          <p>Categories covered: <span data-fig="categories">opioids and opioid use disorder treatments; benzodiazepines and sedatives; antidepressants; antipsychotics; mood stabilisers and anticonvulsants; stimulants; psychedelics, entactogens and dissociatives; cardiovascular drugs; antimicrobials, antiemetics and other interactors</span>.</p>
+          <p><strong>The library will keep growing.</strong> Requests for new drugs, corrections and source suggestions are welcome: see <a href="#feedback">Requests and feedback</a>.</p>
+        </section>
+
+        <!-- 8 -->
+        <section id="faq">
+          <h2>FAQ</h2>
+          <dl class="faq">
+            <dt>Why does a drug show “Incomplete”?</dt>
+            <dd>The drug, or a metabolite it forms that may be active, has no published kinetics in the library. The date shown is the earliest the product could be clear. Hover over the status to see which compound is missing.</dd>
+            <dt>Why is the clear date later than I expected?</dt>
+            <dd>Usually because of a long-lived metabolite (for example nordiazepam from diazepam, or norfluoxetine from fluoxetine), a slower half-life at steady state, slow release from a patch or depot, or the conservative rule for partial data. Hover over the curve to see which compound is still present, and check the assumptions.</dd>
+            <dt>Why isn't a drug listed?</dt>
+            <dd>It hasn't been added yet, or it is listed under another name: try the brand or generic name. You can enter it as a custom drug and request it for the library.</dd>
+            <dt>Why can't I select a drug that is listed?</dt>
+            <dd>It shows “no data yet”: it is in the library but has no half-life yet.</dd>
+            <dt>Does it account for kidney or liver disease?</dt>
+            <dd>No. There are no adjustments for organ function, age or pregnancy. Formation-limited conjugates, which can accumulate in renal impairment, are flagged.</dd>
+            <dt>Why amounts instead of blood levels?</dt>
+            <dd>The amount remaining needs fewer assumptions, and is what matters for whether a drug has cleared. Blood levels also depend on distribution and protein binding, which vary widely between patients and aren't consistently published.</dd>
+            <dt>Is any data sent anywhere?</dt>
+            <dd>No. Everything stays in your browser. The app only downloads its own files and the drug library.</dd>
+            <dt>Can I use it offline once it's loaded?</dt>
+            <dd>Yes, as long as the page stays open: nothing is fetched after loading. Reloading the page needs a connection, unless your browser has cached it.</dd>
+            <dt>What does “verified — incomplete data” mean?</dt>
+            <dd>The entry has been fully reviewed, and the missing kinetics are confirmed as unpublished. Its clear dates are lower bounds, and a library update won't change that until new research is published.</dd>
+            <dt>Will closing the browser lose my patient?</dt>
+            <dd>No: the session is autosaved in this browser and is there next time. It is lost only if you use Clear all data or clear the browser's site data. Save a file for a permanent copy.</dd>
+            <dt>How do I correct an entry?</dt>
+            <dd>Open a GitHub issue with the drug, the value you think is wrong and a source. See <a href="#feedback">Requests and feedback</a>.</dd>
+          </dl>
+        </section>
+
+        <!-- 9 -->
+        <section id="feedback">
+          <h2>Requests and feedback</h2>
+          <p>To request a drug, report an error or suggest a source, open an issue on <a href="https://github.com/IboTool/cleardate/issues">GitHub Issues</a>. A free GitHub account is needed.</p>
+          <!-- TODO(Ian): contact method -->
+          <p>Please include:</p>
+          <ul>
+            <li>the drug name, and brand or street names if relevant;</li>
+            <li>the route and formulation (for example oral extended release, patch, depot injection);</li>
+            <li>ideally a source: a prescribing information document, review article or study;</li>
+            <li>for a custom drug you've already entered, the text from <em>Settings → Custom drugs → Copy as library entry</em>.</li>
+          </ul>
+          <p>Never include patient details in a request.</p>
+        </section>
+
+        <!-- 10 -->
+        <section id="about">
+          <h2>About</h2>
+          <ul>
+            <li>Created by <strong>Ian MacKenna</strong>. Free to use.</li>
+            <li><strong>Open source</strong> under the <a href="https://github.com/IboTool/cleardate/blob/main/LICENSE">MIT licence</a>: <a href="https://github.com/IboTool/cleardate">github.com/IboTool/cleardate</a>.</li>
+            <li>App version <span data-fig="version"></span>. <span class="live" hidden>Drug library schema <span data-fig="schema"></span>, last updated <span data-fig="updated"></span>.</span></li>
+            <li><strong>For developers</strong>: see the <a href="https://github.com/IboTool/cleardate#readme">repository README</a>.</li>
+          </ul>
+          <h3>Acknowledgements</h3>
+          <p>The data sources listed under <a href="#library">The drug library and its sources</a>, and these open-source libraries:</p>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr><th scope="col">Library</th><th scope="col">Used for</th><th scope="col">Licence</th></tr></thead>
+              <tbody>
+                <tr><td><a href="https://echarts.apache.org/">Apache ECharts</a> (with ZRender)</td><td>The chart</td><td>Apache-2.0 (ZRender: BSD-3-Clause)</td></tr>
+                <tr><td><a href="https://www.fusejs.io/">Fuse.js</a></td><td>Fuzzy drug search</td><td>Apache-2.0</td></tr>
+                <tr><td><a href="https://github.com/parallax/jsPDF">jsPDF</a></td><td>PDF export</td><td>MIT</td></tr>
+                <tr><td><a href="https://rsms.me/inter/">Inter</a>, via <a href="https://fontsource.org/">Fontsource</a></td><td>Typeface</td><td>SIL Open Font License 1.1</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <footer class="help-footer">
+      <p><strong>Reference and planning aid only — not medical advice, not for clinical decisions or dosing.</strong></p>
+      <p><a href="./">← Back to ClearDate</a> · <a href="https://github.com/IboTool/cleardate">Source on GitHub</a> · <a href="#what">Back to top</a></p>
+    </footer>
+
+    <script type="module" src="/src/help/help.ts"></script>
+  </body>
+</html>
