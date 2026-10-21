@@ -13,9 +13,3 @@ patient-*.json
 tools/editor/.no-build/
 
 user_to_do.md
-
-# Working documents kept local
-docs/ClearDate_Help_Page_Prompt.md
-docs/ClearDate_Prepopulate_Supplement_*.md
-docs/prepopulation_report_v2_1*.md
-docs/prepopulation_report_supplement_*.md
