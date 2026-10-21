@@ -5,7 +5,7 @@
 import { emptyRange, isRangeOnly, rangeTypical, RANGE_TYPE_LABEL } from '../schema';
 import {
   CLINICAL_RELEVANCE, INHIBITION_TYPES, INHIBITOR_STRENGTHS, KINETIC_MODES, PHENOTYPES, QT_TIERS, RANGE_TYPES, RECEPTOR_ACTIONS, TRI_STATES,
-  type ClinicalRelevance, type Compound, type CompoundSection, type PhenotypeMap, type Range, type RangeType,
+  type ClinicalRelevance, type Compound, type CompoundSection, type KineticMode, type PhenotypeMap, type Range, type RangeType,
 } from '../types';
 import { field, h, select, textInput } from './dom';
 
@@ -156,6 +156,14 @@ function phenotypeMap(get: () => PhenotypeMap | null, set: (m: PhenotypeMap | nu
   return h('div', { class: 'sub' }, h('div', { class: 'hl-head' }, h('span', { class: 'field-hint' }, label), h('label', { class: 'unk' }, unknown, 'unknown')), row);
 }
 
+export const MODE_LABEL: Record<KineticMode, string> = {
+  intrinsic: 'intrinsic (own half-life)',
+  'formation-limited': 'formation-limited (tracks parent)',
+  'zero-order': 'zero-order (fixed mg/kg/h, e.g. alcohol)',
+  'not-modelled': 'not modelled (exposure only)',
+  unknown: 'unknown',
+};
+
 /** Kinetics editor: mode, terminal half-life, optional early phase and steady-state half-life. */
 export function kineticsInputs(c: Compound, onChange: () => void): HTMLElement {
   const k = c.kinetics;
@@ -184,6 +192,12 @@ export function kineticsInputs(c: Compound, onChange: () => void): HTMLElement {
       }
     } else if (k.mode === 'formation-limited') {
       parts.push(h('p', { class: 'field-hint' }, 'Tracks its parent(s): eliminated much faster than it forms, so no half-life is needed. Simulated with one-tenth of the fastest parent’s half-life and labelled “formation-limited”. Needs at least one parent.'));
+    } else if (k.mode === 'zero-order') {
+      parts.push(rangeInputs(() => k.zeroOrderRateMgPerKgPerHour ?? null, (r) => (k.zeroOrderRateMgPerKgPerHour = r), onChange, 'Elimination rate (mg/kg/h)', false));
+      parts.push(h('p', { class: 'field-hint' }, 'Saturable elimination at a fixed rate × body weight (alcohol). Without a body weight the product isn’t simulated. The minimum curve uses the fastest rate and the maximum the slowest.'));
+    } else if (k.mode === 'not-modelled') {
+      parts.push(field('Why it isn’t modelled', textInput(k.notModelledReason ?? '', (v) => { k.notModelledReason = v; onChange(); }, { placeholder: 'e.g. exhaled within minutes; the relevant effect is B12 inactivation' }),
+        'Shown wherever a clear date would be. Exposures are drawn as markers and the lingering-effects band still applies.'));
     } else {
       parts.push(h('p', { class: 'field-hint' }, 'Kinetics unknown. Products containing this compound show an “Incomplete” clear date (unless the “treat unknown metabolites as formation-limited” setting is on).'));
     }
@@ -191,15 +205,31 @@ export function kineticsInputs(c: Compound, onChange: () => void): HTMLElement {
   };
   render();
   return h('div', null,
-    field('Kinetic mode', select(k.mode, KINETIC_MODES.map((m) => [m, m === 'intrinsic' ? 'intrinsic (own half-life)' : m === 'formation-limited' ? 'formation-limited (tracks parent)' : 'unknown'] as [string, string]),
+    field('Kinetic mode', select(k.mode, KINETIC_MODES.map((m) => [m, MODE_LABEL[m]] as [string, string]),
       (v) => {
         k.mode = v as typeof k.mode;
         if (k.mode !== 'intrinsic') { k.halfLifeHours = null; k.earlyPhase = null; k.steadyState = null; }
         else k.halfLifeHours ??= emptyRange();
+        if (k.mode === 'zero-order') k.zeroOrderRateMgPerKgPerHour ??= emptyRange();
+        else delete k.zeroOrderRateMgPerKgPerHour;
+        if (k.mode === 'not-modelled') k.notModelledReason ??= '';
+        else delete k.notModelledReason;
         onChange();
         render();
       })),
     body);
+}
+
+function endogenousToggle(c: Compound, onChange: () => void): HTMLElement {
+  const box = h('input', { type: 'checkbox', checked: !!c.endogenous });
+  box.addEventListener('change', () => {
+    if (box.checked) c.endogenous = true;
+    else delete c.endogenous;
+    onChange();
+  });
+  return h('div', null,
+    h('label', { class: 'check' }, box, 'Endogenous — also produced by the body'),
+    h('p', { class: 'field-hint' }, 'With unknown kinetics and a reviewer-confirmed relevance, it shows as “endogenous — excess over baseline not modelled” and never holds up the clear date.'));
 }
 
 export function compoundSection(c: Compound, section: SectionName, o: SectionOpts): HTMLElement {
@@ -219,6 +249,7 @@ export function compoundSection(c: Compound, section: SectionName, o: SectionOpt
           ? field('Clinical relevance', select(c.clinicalRelevance, CLINICAL_RELEVANCE.map((r) => [r, RELEVANCE_LABEL[r]] as [string, string]), (v) => { c.clinicalRelevance = v as ClinicalRelevance; ch('relevance'); }),
               'Does this metabolite contribute pharmacological activity, toxicity or a withdrawal-relevant effect at the amounts formed? A metabolite that a product doses directly is always treated as active.')
           : h('p', { class: 'field-hint' }, 'Parent compound — always treated as active.'),
+        c.isMetabolite ? endogenousToggle(c, () => ch('halfLife')) : null,
         sourceNote(c, section, o));
     case 'cyp2d6': {
       const cy = c.cyp2d6;

@@ -1,7 +1,7 @@
 // Drug Library: entries, routing, filtering, the "at a glance" summary and the metabolite tree.
 // No DOM here; every derived value comes from the app's own model and status functions.
 
-import { computeScenario, DAY, HOUR, displayName, isRateUnit, productTree, toLocalInput, type LibraryIndex, type ProductResult } from '../model';
+import { computeScenario, DAY, HOUR, displayName, isRateUnit, productTree, requiredLabel, toLocalInput, type LibraryIndex, type ProductResult } from '../model';
 import { compoundSections, primaryCompound, productSections } from '../schema';
 import type { ProductSearch } from '../search';
 import { emptySession } from '../state';
@@ -102,7 +102,7 @@ export function buildLibraryModel(idx: LibraryIndex, unknownAsFL: boolean): Libr
 
 // ---------- search and filters ----------
 
-export type StatusFilter = 'verified' | 'draft' | 'incomplete' | 'no-data';
+export type StatusFilter = 'verified' | 'draft' | 'incomplete' | 'not-modelled' | 'no-data';
 
 export interface ListQuery {
   query: string;
@@ -117,6 +117,8 @@ export function entryStatus(e: Entry): DrugStatus {
   return e.compound.verified ? 'verified' : e.compound.kinetics.mode === 'unknown' ? 'no-data' : 'draft';
 }
 
+const isNotModelledEntry = (e: Entry) => (e.kind === 'drug' ? e.state.notModelled : e.compound.kinetics.mode === 'not-modelled');
+
 function matchesStatus(e: Entry, statuses: Set<StatusFilter>): boolean {
   if (!statuses.size) return true;
   const st = entryStatus(e);
@@ -125,6 +127,7 @@ function matchesStatus(e: Entry, statuses: Set<StatusFilter>): boolean {
     (statuses.has('verified') && (st === 'verified' || st === 'verified-incomplete')) ||
     (statuses.has('draft') && st === 'draft') ||
     (statuses.has('incomplete') && incomplete) ||
+    (statuses.has('not-modelled') && isNotModelledEntry(e)) ||
     (statuses.has('no-data') && st === 'no-data')
   );
 }
@@ -199,6 +202,10 @@ export function atAGlance(idx: LibraryIndex, drug: DrugEntry, settings: Settings
   const notes: string[] = [];
   const none = (text: string): Glance => ({ text, notes, assumptions: [], result: null, t0: GLANCE_T0 });
   if (drug.state.noData) return none('No half-life in the library yet, so a clear time can’t be estimated.');
+  if (drug.state.notModelled) {
+    const reason = idx.compounds.get(primaryCompound(p))?.kinetics.notModelledReason;
+    return none(`Not modelled — ${reason || 'no simulation for this product'}. Doses are shown as exposure markers and there is no clear date.`);
+  }
 
   const session = emptySession();
   session.settings = { ...settings };
@@ -255,6 +262,8 @@ export interface TreeEdge {
   from: string;
   to: string;
   label: string;
+  /** "with alcohol": the link only applies while that compound is present (drawn dashed). */
+  conditional?: string;
 }
 
 const phenText = (m: PhenotypeMap | null) =>
@@ -274,7 +283,13 @@ export function treeLayout(idx: LibraryIndex, roots: string[]): { nodes: TreeNod
     const row = rows.get(depth) ?? 0;
     rows.set(depth, row + 1);
     const k = c?.kinetics;
-    const hl = k?.mode === 'formation-limited' ? 'tracks parent' : k?.halfLifeHours?.typical ? `t½ ${hoursText(k.halfLifeHours.typical)}` : 't½ unknown';
+    const rate = k?.zeroOrderRateMgPerKgPerHour?.typical;
+    const hl = k?.mode === 'formation-limited' ? 'tracks parent'
+      : k?.mode === 'zero-order' ? (rate ? `${+rate.toPrecision(3)} mg/kg/h` : 'rate unknown')
+      : k?.mode === 'not-modelled' ? 'not modelled'
+      : k?.halfLifeHours?.typical ? `t½ ${hoursText(k.halfLifeHours.typical)}`
+      : c?.endogenous ? 'endogenous'
+      : 't½ unknown';
     return {
       id, name: c?.name ?? id, depth, row, href: libraryHash(id),
       relevance: depth === 0 || idx.dosed.has(id) ? 'active' : (c?.clinicalRelevance ?? 'unknown'),
@@ -288,7 +303,8 @@ export function treeLayout(idx: LibraryIndex, roots: string[]): { nodes: TreeNod
       if (!inTree.has(e.id)) continue;
       const f = e.fraction === null ? 'fraction unknown' : `fraction ${+e.fraction.toPrecision(3)}`;
       const m = phenText(e.multiplier);
-      edges.push({ from: n.id, to: e.id, label: m ? `${f} · ${m}` : f });
+      const cond = e.condition ? `with ${requiredLabel(idx, e.condition)}` : '';
+      edges.push({ from: n.id, to: e.id, label: [f, m, cond].filter(Boolean).join(' · '), ...(cond ? { conditional: cond } : {}) });
     }
   return { nodes, edges };
 }

@@ -581,6 +581,20 @@ function edgeMultiplier(f: Compound['formedFrom'][number], onChange: () => void)
   return h('div', { class: 'sub' }, h('label', { class: 'check' }, on, 'Formation depends on CYP2D6 (multiplier on the fraction by phenotype)'), row);
 }
 
+/** Conditional formation: the link only applies while another compound (e.g. ethanol) is present. */
+function edgeCondition(f: Compound['formedFrom'][number], others: Compound[], onChange: () => void): HTMLElement {
+  const sel = h('select', null,
+    h('option', { value: '' }, 'Always formed'),
+    ...others.map((o) => h('option', { value: o.id, selected: f.condition?.requiresCompound === o.id }, `Only while ${o.name} is present`)));
+  sel.addEventListener('change', () => {
+    if (sel.value) f.condition = { requiresCompound: sel.value };
+    else delete f.condition;
+    onChange();
+  });
+  return h('div', { class: 'sub' }, field('Condition', sel,
+    'Conditional links are skipped unless the required compound is in the body while the parent is (e.g. cocaine → cocaethylene with alcohol). They never hold up a clear date.'));
+}
+
 function metabolismSection(c: Compound): HTMLElement {
   const edit = () => touched(c, 'metabolism');
   const others = lib().compounds.filter((x) => x.id !== c.id).sort((a, b) => a.name.localeCompare(b.name));
@@ -626,7 +640,8 @@ function metabolismSection(c: Compound): HTMLElement {
                 edit();
                 renderMain();
               } }, '✕')),
-            edgeMultiplier(f, edit)))
+            edgeMultiplier(f, edit),
+            edgeCondition(f, others, edit)))
       : h('div', { class: 'field-hint' }, 'Not formed from any tracked compound.'),
     linkSel,
     h('div', { class: `field-hint ${outSum > 1 + 1e-9 ? 'bad' : ''}` },

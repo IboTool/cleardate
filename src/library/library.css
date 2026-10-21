@@ -83,6 +83,7 @@ body.lib-open { overflow: hidden; }
 .lib-rel.rel-active { color: var(--accent); border-color: rgba(124, 156, 255, 0.4); }
 .lib-rel.rel-inactive { color: var(--dim); }
 .lib-rel.rel-unknown { color: var(--warn); border-color: rgba(242, 196, 109, 0.35); }
+.lib-chip-endo { font-size: 10px; padding: 1px 7px; border-radius: 99px; margin-left: 6px; border: 1px solid rgba(127, 216, 166, 0.35); color: #7fd8a6; }
 
 .lib-range { margin: 6px 0 10px; }
 .lib-range-head { font-size: 12.5px; display: flex; gap: 8px; flex-wrap: wrap; align-items: baseline; }
@@ -98,6 +99,7 @@ body.lib-open { overflow: hidden; }
 .lib-tree-wrap { overflow-x: auto; padding: 4px 0; }
 .lib-tree { display: block; font-family: var(--font); }
 .lib-edge { fill: none; stroke: rgba(255, 255, 255, 0.22); stroke-width: 1.4; }
+.lib-edge.conditional { stroke-dasharray: 5 4; stroke: rgba(242, 196, 109, 0.55); }
 .lib-edge-label { font-size: 10px; fill: var(--muted); }
 .lib-node rect { fill: rgba(255, 255, 255, 0.03); stroke: rgba(124, 156, 255, 0.55); stroke-width: 1.2; }
 .lib-node.rel-inactive rect { stroke: rgba(255, 255, 255, 0.18); }

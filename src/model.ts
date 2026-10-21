@@ -504,7 +504,7 @@ interface Ctx {
 
 const condKey = (from: string, to: string) => `${from}>${to}`;
 /** "alcohol" for ethanol, else the compound name. */
-const requiredLabel = (idx: LibraryIndex, id: string) => (id === 'ethanol' ? 'alcohol' : idx.compounds.get(id)?.name ?? id);
+export const requiredLabel = (idx: LibraryIndex, id: string) => (id === 'ethanol' ? 'alcohol' : idx.compounds.get(id)?.name ?? id);
 export const ENDOGENOUS_LABEL = 'endogenous — excess over baseline not modelled';
 
 /** Prodrug components of a product, by compound name. */
