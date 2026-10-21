@@ -63,6 +63,6 @@ writeFileSync(tmp, text, 'utf8');
 renameSync(tmp, file);
 
 const reportPath = resolve(root, 'docs/migration_v2_1_report.md');
-writeFileSync(reportPath, renderV21Report(report, new Date().toISOString().slice(0, 10), relative(root, backup).replace(/\\/g, '/')), 'utf8');
+writeFileSync(reportPath, renderV21Report(report, new Date().toLocaleDateString('sv-SE'), relative(root, backup).replace(/\\/g, '/')), 'utf8');
 console.log(`Wrote ${file} (v2 backup: ${backup}) and ${reportPath}.`);
 process.exit(v.errors.length ? 1 : 0);
