@@ -383,6 +383,7 @@ async function main() {
     await shot(page, 'library-entry', union(await box(detail.locator('.lib-entry-head')), await box(kinetics.locator('.lib-card').first())), [
       corner(await box(detail.locator('.lib-entry-head .lib-status'))),
       await textEnd(detail.locator('.lib-glance')),
+      corner(await box(detail.locator('.lib-linger'))),
       corner(await box(detail.locator('.lib-cards .lib-card').first())),
       corner(await box(kinetics.locator('.lib-bar').first())),
     ]);
