@@ -143,6 +143,14 @@ describe('not-modelled exposures (§3)', () => {
     expect(scn.lingering).toEqual([{ start: T0 + 2 * HOUR, end: T0 + 2 * HOUR + 7 * DAY, compound: 'Nitrous_oxide', productKey: 'nitrous_oxide_inhaled', note: 'B12 inactivation' }]);
     expect(scn.warnings.some((w) => w.text.startsWith('Nitrous oxide: not modelled'))).toBe(true);
   });
+
+  it('draws an exposure bar across the session on the chart, labelled "not modelled"', async () => {
+    const { buildChartOption, exposureLabel } = await import('./chart');
+    const opt = buildChartOption(scn, emptySession(), { theme: 'dark', height: 600, focusKey: null, animate: false });
+    const series = (opt.series as { id?: string; data?: unknown[] }[]).find((x) => x.id === 'exposures');
+    expect(series?.data).toEqual([[T0, T0 + 2 * HOUR]]);
+    expect(exposureLabel(r)).toBe('Nitrous oxide — not modelled');
+  });
 });
 
 // ---------- endogenous ----------

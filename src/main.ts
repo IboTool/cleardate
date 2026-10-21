@@ -5,11 +5,11 @@ import './styles.css';
 import * as echarts from './echarts';
 import { buildChartOption, minChartHeight } from './chart';
 import { exportPdf, exportPng, download, DISCLAIMER } from './export';
-import { ageFrom, fmtDate, fmtDateTime, fmtEvery } from './format';
+import { ageFrom, fmtDate, fmtDateTime, fmtDoseAmount, fmtEvery } from './format';
 import { dateTimeInput } from './ui/datetime';
 import {
   buildIndex, clearStatusText, combinationText, componentIds, computeScenario, convertUnit, describeIbogaineDose, displayName, expandDose,
-  expandIbogaine, findIbogaineProduct, IBOGAINE_KEY, IBOGAINE_KIND_LABEL, isRateUnit, mergeLibraries, missingKinetics, parseLocal, productColors, productDataStatus, productHasData, toLocalInput, toMg, withCustom,
+  expandIbogaine, findIbogaineProduct, IBOGAINE_KEY, IBOGAINE_KIND_LABEL, isAlcoholUnit, isRateUnit, isSessionUnit, mergeLibraries, prodrugParts, missingKinetics, parseLocal, productColors, productDataStatus, productHasData, toLocalInput, toMg, withCustom,
   DAY, HOUR, type LibraryIndex, type ProductResult, type Scenario,
 } from './model';
 import { primaryCompound, SCHEMA_VERSION } from './schema';
@@ -207,6 +207,8 @@ const entryBadges = (p: Product, compoundsVerified = true) => productBadges(p, d
 
 /** Short legend form of the clear status. */
 function legendClear(r: ProductResult, s: Session['settings']): string {
+  if (r.status === 'not-modelled') return 'not modelled';
+  if (r.status === 'needs-weight') return 'needs body weight';
   if (r.status === 'incomplete') return r.clearAt === null ? 'incomplete' : `≥ ${fmtDate(r.clearAt, s)} (incomplete)`;
   const base = r.clearAt === null ? 'clear: beyond window' : `clear ${fmtDate(r.clearAt, s)}`;
   return r.status === 'assumptions' ? `${base}*` : base;
@@ -214,6 +216,7 @@ function legendClear(r: ProductResult, s: Session['settings']): string {
 
 function statusTitle(r: ProductResult): string {
   const lines = [clearStatusText(r, (t) => fmtDateTime(t, S()))];
+  for (const x of r.prodrug ?? []) lines.push(`Administered as ${x.administeredAs}, modelled as ${x.modelledAs}.`);
   if (r.assumptions.length) lines.push('', 'Assumptions:', ...r.assumptions.map((a) => `• ${a}`));
   if (r.excluded.length) lines.push('', 'Excluded from the clear date:', ...r.excluded.map((a) => `• ${a}`));
   if (r.notes.length) lines.push('', ...r.notes.map((a) => `• ${a}`));
@@ -258,7 +261,7 @@ function renderLegend() {
   }
   const hasMetabolites = scn.products.some((r) => r.curves.some((c) => c.depth > 0));
   const hasNormalized = scn.products.some((r) => r.curves.some((c) => c.normalized));
-  const hasAssumptions = scn.products.some((r) => r.status !== 'clear');
+  const hasAssumptions = scn.products.some((r) => r.status === 'assumptions' || r.status === 'incomplete');
   const focused = app.focusKey !== null && scn.products.some((r) => r.key === app.focusKey);
   if (groups.length && ((hasMetabolites && s.showMetabolites) || hasAssumptions || focused))
     groups.push(h('span', { class: 'legend-key' },
@@ -346,30 +349,37 @@ function renderDoseForm() {
   if (!p) return;
   const unit = p.doseUnit;
   const rate = isRateUnit(unit);
+  const sessionUnit = isSessionUnit(unit);
+  const interval = rate || sessionUnit;
+  const alcohol = isAlcoholUnit(unit);
+  const gPerDrink = S().standardDrinkGrams;
   const depot = p.input.type === 'first-order-release' && p.formulation === 'depot';
-  const typical = p.typicalDose.amount !== null ? convertUnit(p.typicalDose.amount, p.typicalDose.unit, unit) : null;
+  const typical = p.typicalDose.amount !== null ? convertUnit(p.typicalDose.amount, p.typicalDose.unit, unit, gPerDrink) : null;
   const d: DoseEntry = formDraft?.productId === p.id
     ? formDraft
     : editing
       ? structuredClone(editing)
-      : { id: uid(), productId: p.id, amount: typical ?? 0, unit, kind: 'single', time: defaultTime() };
+      : { id: uid(), productId: p.id, amount: sessionUnit ? 1 : typical ?? 0, unit, kind: 'single', time: defaultTime() };
   formDraft = d;
-  if (d.unit !== unit) {
-    const v = convertUnit(d.amount, d.unit, unit);
+  // Alcohol may be entered in standard drinks or grams; every other product uses its own unit.
+  if (d.unit !== unit && !(alcohol && isAlcoholUnit(d.unit))) {
+    const v = convertUnit(d.amount, d.unit, unit, gPerDrink);
     d.amount = v ?? 0;
     d.unit = unit;
   }
-  const defaultDur = p.input.defaultDurationHours ?? 24;
-  if (rate) d.durationHours ??= defaultDur;
+  if (sessionUnit) d.amount = 1;
+  const defaultDur = p.input.defaultDurationHours ?? (sessionUnit ? 1 : 24);
+  if (interval) d.durationHours ??= defaultDur;
   else delete d.durationHours;
-  d.regimen ??= { every: rate ? defaultDur : 24, unit: 'hours', start: d.time ?? defaultTime(), end: toLocalInput(Date.now()) };
+  d.regimen ??= { every: rate ? defaultDur : alcohol ? 1 : 24, unit: alcohol ? 'days' : 'hours', start: d.time ?? defaultTime(), end: toLocalInput(Date.now()) };
 
   const hint = h('span', { class: 'mgkg' });
   const updHint = () => {
     const w = app.session.patient.weightKg;
-    const combo = combinationText(app.idx, p, d.amount, unit);
-    const perKg = !rate && w > 0 && d.amount > 0 ? `${(toMg(d.amount, unit) / w).toFixed(2)} mg/kg` : '';
-    hint.textContent = [combo, perKg].filter(Boolean).join(' · ');
+    const combo = combinationText(app.idx, p, d.amount, d.unit);
+    const perKg = !interval && w > 0 && d.amount > 0 ? `${(toMg(d.amount, d.unit, gPerDrink) / w).toFixed(2)} mg/kg` : '';
+    const grams = d.unit === 'standard drinks' && d.amount > 0 ? `${+(d.amount * gPerDrink).toPrecision(3)} g ethanol` : '';
+    hint.textContent = [combo, grams, perKg].filter(Boolean).join(' · ');
   };
   updHint();
   const amount = numberInput(d.amount, (v) => { d.amount = v; updHint(); updRemoved(); }, {
@@ -385,11 +395,11 @@ function renderDoseForm() {
   }, S(), { name: 'removed' });
   const updRemoved = () => {
     const t = parseLocal(d.time);
-    removed.value = rate && Number.isFinite(t) ? toLocalInput(t + (d.durationHours ?? defaultDur) * HOUR) : '';
+    removed.value = interval && Number.isFinite(t) ? toLocalInput(t + (d.durationHours ?? defaultDur) * HOUR) : '';
   };
   updRemoved();
-  single.append(rate
-    ? h('div', { class: 'row' }, field('Applied at', time), field('Removed at', removed))
+  single.append(interval
+    ? h('div', { class: 'row' }, field(rate ? 'Applied at' : 'Started at', time), field(rate ? 'Removed at' : 'Ended at', removed))
     : field(depot ? 'Injection date & time' : 'Date & time', time));
   const r = d.regimen!;
   const start = dateTimeInput(r.start, (v) => { r.start = v; updCount(); }, S(), { name: 'start' });
@@ -397,13 +407,16 @@ function renderDoseForm() {
   const count = h('span', { class: 'field-hint' });
   const updCount = () => {
     const n = expandDose({ ...d, kind: 'regimen' }).length;
-    count.textContent = n ? `${n} ${rate ? 'applications' : depot ? 'injections' : 'doses'}` : '';
+    count.textContent = n ? `${n} ${rate ? 'applications' : sessionUnit ? 'sessions' : depot ? 'injections' : 'doses'}` : '';
   };
   append(regimen, [
     h('div', { class: 'row' },
       field(rate ? 'Change every' : 'Every', numberInput(r.every, (v) => { r.every = v; updCount(); }, { min: '0' })),
       field('Unit', select(r.unit, ['hours', 'days'] as const, (v) => { r.unit = v; updCount(); }))),
-    rate ? field('Each patch worn for (hours)', numberInput(d.durationHours ?? defaultDur, (v) => { if (v > 0) d.durationHours = v; }, { min: '0' })) : null,
+    interval
+      ? field(rate ? 'Each patch worn for (hours)' : 'Each session lasts (hours)',
+          numberInput(d.durationHours ?? defaultDur, (v) => { if (v > 0) d.durationHours = v; }, { min: '0', step: 'any' }))
+      : null,
     h('div', { class: 'row' }, field('Start', start), field('End', end)), count]);
   updCount();
   const setKind = (k: DoseEntry['kind']) => {
@@ -412,16 +425,22 @@ function renderDoseForm() {
     regimen.hidden = k !== 'regimen';
     kindBtns.forEach((b) => b.classList.toggle('on', b.dataset.k === k));
   };
-  const kindLabels = rate ? ['Single patch', 'Patch changes'] : depot ? ['Single injection', 'Repeated injections'] : ['Single dose', 'Regimen'];
+  const kindLabels = rate ? ['Single patch', 'Patch changes']
+    : sessionUnit ? ['Single session', 'Repeated sessions']
+    : depot ? ['Single injection', 'Repeated injections']
+    : ['Single dose', 'Regimen'];
   const kindBtns = (['single', 'regimen'] as const).map((k, i) =>
     h('button', { type: 'button', class: 'seg', dataset: { k }, onclick: () => setKind(k) }, kindLabels[i]));
 
   const submit = () => {
-    if (!(d.amount > 0)) return toast(`Enter ${rate ? 'the rate' : 'an amount'} in ${unit}.`);
+    if (!(d.amount > 0)) return toast(`Enter ${rate ? 'the rate' : 'an amount'} in ${d.unit}.`);
     if (d.kind === 'single') {
-      if (!Number.isFinite(parseLocal(d.time))) return toast(rate ? 'Enter when the patch was applied.' : 'Enter the date and time of the dose.');
+      if (!Number.isFinite(parseLocal(d.time)))
+        return toast(rate ? 'Enter when the patch was applied.' : sessionUnit ? 'Enter when the session started.' : 'Enter the date and time of the dose.');
+      if (sessionUnit && !(d.durationHours! > 0)) return toast('Enter when the session ended (after it started).');
       delete d.regimen;
     } else {
+      if (sessionUnit && !(d.durationHours! > 0)) return toast('Enter how long each session lasts.');
       if (!expandDose(d).length) return toast('Check the regimen: interval > 0 and end after start.');
       delete d.time;
     }
@@ -439,12 +458,28 @@ function renderDoseForm() {
   const compound = app.idx.compounds.get(primaryCompound(p));
   const status = dataStatus(p);
   const missing = status === 'incomplete' ? productTreeMissing(p) : [];
+  const zeroOrder = compound?.kinetics.mode === 'zero-order';
   const notes: (HTMLElement | null)[] = [
+    status === 'not-modelled'
+      ? h('div', { class: 'warning info' }, `ℹ Not modelled — ${compound?.kinetics.notModelledReason || 'no simulation for this product'}. Exposures show as markers on the chart; there is no clear date.`) : null,
     status === 'incomplete' ? h('div', { class: 'warning info' }, `ℹ Missing kinetics for ${missing.join(', ')} — the clear date will be a lower bound.`) : null,
+    ...prodrugParts(app.idx, p).map((x) => h('div', { class: 'warning info' },
+      `ℹ Administered as ${x.administeredAs}, modelled as ${x.modelledAs}${x.massFactor != null ? ` (× ${+x.massFactor.toPrecision(3)})` : ''}.`)),
+    zeroOrder && status !== 'not-modelled' && !(app.session.patient.weightKg > 0)
+      ? h('div', { class: 'warning warn' }, '⚠ Needs body weight — alcohol elimination scales with weight. Enter it in the Patient tab or this product won\'t be simulated.') : null,
     p.input.type === 'first-order-release' && p.input.releaseHalfLifeHours === null
       ? h('div', { class: 'warning info' }, 'ℹ Release half-life not in the library yet — simulated as immediate release.') : null,
   ];
   const amountLabel = rate ? `Rate (${unit})` : depot ? `Amount per injection (${unit})` : p.components.length > 1 ? `Amount of ${compound?.name.toLowerCase() ?? 'primary component'} (${unit})` : `Amount (${unit})`;
+  const unitPick = alcohol
+    ? field('Unit', select(d.unit as 'standard drinks' | 'g', ['standard drinks', 'g'] as const, (v) => {
+        const conv = convertUnit(d.amount, d.unit, v, gPerDrink);
+        d.unit = v;
+        d.amount = conv !== null ? +conv.toPrecision(4) : d.amount;
+        amount.value = String(d.amount);
+        updHint();
+      }), h('span', { class: 'field-hint' }, `1 standard drink = ${gPerDrink} g (Settings)`))
+    : null;
   doseFormEl.replaceChildren(
     h('div', { class: 'dose-form-head' },
       h('div', null,
@@ -454,7 +489,7 @@ function renderDoseForm() {
       h('button', { class: 'icon-btn', type: 'button', title: 'Cancel', onclick: () => openDoseForm(null) }, '✕')),
     ...notes.filter((n): n is HTMLElement => n !== null),
     h('div', { class: 'segmented' }, ...kindBtns),
-    h('div', { class: 'row' }, field(amountLabel, amount, hint)),
+    ...(sessionUnit ? [] : [h('div', { class: 'row' }, field(alcohol ? 'Amount' : amountLabel, amount, hint), unitPick)]),
     single, regimen,
     h('button', { class: 'btn btn-primary wide', type: 'button', onclick: submit }, editing ? 'Save changes' : 'Add dose'),
   );
@@ -469,14 +504,15 @@ function doseSummary(d: DoseEntry, p: Product | undefined) {
   const s = S();
   const events = expandDose(d, p?.input.defaultDurationHours);
   const combo = p ? combinationText(app.idx, p, d.amount, d.unit) : null;
-  const amount = combo ?? `${d.amount} ${d.unit}`;
+  const amount = isSessionUnit(d.unit) ? 'Session' : combo ?? fmtDoseAmount(d.amount, d.unit);
   if (d.kind === 'single') {
     if (!d.time) return `${amount} · —`;
     const e = events[0];
     return e?.end ? `${amount} · ${fmtDateTime(e.time, s)} → ${fmtDateTime(e.end, s)}` : `${amount} · ${fmtDateTime(parseLocal(d.time), s)}`;
   }
   const r = d.regimen!;
-  return `${amount} · ${fmtEvery(r.every, r.unit)} · ${fmtDate(parseLocal(r.start), s)} → ${fmtDate(parseLocal(r.end), s)} (${events.length}×)`;
+  const each = isSessionUnit(d.unit) ? ` of ${+(d.durationHours ?? p?.input.defaultDurationHours ?? 1).toPrecision(3)} h` : '';
+  return `${amount}${each} · ${fmtEvery(r.every, r.unit)} · ${fmtDate(parseLocal(r.start), s)} → ${fmtDate(parseLocal(r.end), s)} (${events.length}×)`;
 }
 
 function renderDoseList() {
@@ -618,7 +654,9 @@ function renderSettingsTab() {
       field('Assumed spread when only one value is known (CV %)', numberInput(Math.round(s.assumedCv * 100), (v) => { if (v > 0 && v < 200) { s.assumedCv = v / 100; view(); } }, { min: '1', max: '199' }),
         'Used for half-lives entered as a single value or with a missing bound. Labelled “assumed spread” wherever it applies.'),
       toggle('Treat unknown metabolites as formation-limited', s.unknownAsFormationLimited, (v) => { s.unknownAsFormationLimited = v; view(); renderDoseForm(); }),
-      h('p', { class: 'field-hint' }, 'Off: products with a metabolite of unknown kinetics are marked “Incomplete” and their clear date is a lower bound. On: those metabolites track their parent and the clear date is labelled “with assumptions”.')),
+      h('p', { class: 'field-hint' }, 'Off: products with a metabolite of unknown kinetics are marked “Incomplete” and their clear date is a lower bound. On: those metabolites track their parent and the clear date is labelled “with assumptions”.'),
+      field('Standard drink (g of ethanol)', numberInput(s.standardDrinkGrams, (v) => { if (v > 0) { s.standardDrinkGrams = v; view(); renderDoseForm(); } }, { min: '1', step: 'any' }),
+        'Differs by country: 14 g in the US, 10 g in Australia, 8 g for a UK unit. Alcohol doses entered in standard drinks use this size.')),
     h('div', { class: 'section form-section' },
       h('h3', null, 'Display'),
       h('div', { class: 'row' },
