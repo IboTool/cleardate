@@ -44,15 +44,32 @@ console.log(
   `  Compounds: ${progress.compoundsVerified} / ${progress.compounds} verified · ${progress.compoundsStarted} with data · ` +
     `Products: ${progress.productsVerified} / ${progress.products} verified`,
 );
+console.log(
+  `  Sections: ${progress.sectionsReviewed} / ${progress.sections} reviewed · ${progress.sectionsFlagged} flagged · ` +
+    `${progress.sectionsConfirmedUnknown} confirmed unknown`,
+);
 const w = Math.max(0, ...progress.categories.map((c) => c.name.length));
 for (const c of progress.categories)
   console.log(
-    `  ${c.name.padEnd(w)}  ${String(c.productsVerified).padStart(3)} / ${String(c.products).padEnd(3)} verified` +
-      `  (${c.productsStarted} started, ${c.products - c.productsStarted} not started)`,
+    `  ${c.name.padEnd(w)} — ${String(c.sectionsReviewed).padStart(4)} / ${String(c.sections).padEnd(4)} sections reviewed · ` +
+      `${String(c.drugsVerified).padStart(2)} / ${String(c.drugs).padEnd(2)} drugs verified · ` +
+      `products ${c.productsVerified} / ${c.products} verified (${c.productsStarted} started)`,
   );
 const fmt = (o: Record<string, number>) => Object.entries(o).map(([k, v]) => `${k} ${v}`).join(' · ');
 console.log(`\n  Section provenance: ${fmt(progress.provenance)}`);
 console.log(`  Compounds by kinetics mode: ${fmt(progress.modes)}`);
+console.log(`  Metabolites by clinical relevance: ${fmt(progress.metaboliteRelevance)}`);
+const inc = progress.incomplete;
+console.log(
+  `  Products "Incomplete": ${inc.total} (blocked only by unknown-relevance metabolites ${inc.unknownRelevanceOnly} · ` +
+    `by an active compound ${inc.active}) · no data yet: ${progress.noData}`,
+);
+const ids = (l: string[]) => (l.length ? `${l.length} (${l.join(', ')})` : '0');
+console.log(`  Verified, incomplete data: ${ids(progress.verifiedIncomplete)}`);
+console.log(
+  `  Partial kinetics (conservative rule): early phase ignored ${ids(progress.partial.earlyPhaseIgnored)} · ` +
+    `steady-state onset unknown ${ids(progress.partial.steadyStateOnsetUnknown)} · steady state ignored ${ids(progress.partial.steadyStateIgnored)}`,
+);
 console.log('  Unassessed safety fields (compounds used by each category):');
 for (const c of progress.categories)
   console.log(`    ${c.name.padEnd(w)}  QT ${c.unassessed.qt} · CYP2D6 ${c.unassessed.cyp2d6} · receptors ${c.unassessed.receptors} · nonlinear ${c.unassessed.nonlinear}`);

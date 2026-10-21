@@ -611,7 +611,7 @@ export function findIbogaineProduct(idx: LibraryIndex): Product {
     secondaryCategories: [], class: '', route: 'Oral', formulation: null,
     components: [{ compound: 'ibogaine', ratio: 1, saltFactor: null, bioavailability: null }], doseUnit: 'mg',
     input: { type: 'bolus', releaseHalfLifeHours: null, defaultDurationHours: null },
-    typicalDose: { amount: null, unit: 'mg', basis: 'single-use' }, provenance: {}, sourceNotes: {}, source: '', verified: false, verifiedDate: '',
+    typicalDose: { amount: null, unit: 'mg', basis: 'single-use' }, provenance: {}, sourceNotes: {}, reviewedDates: {}, source: '', verified: false, verifiedDate: '',
   };
 }
 

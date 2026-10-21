@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { clearFraction, clearTime, CycleError, expandRegimen, simulate, topoOrder, valueAt, type SimCompound } from './pk';
-import { emptyCompound, SCHEMA_VERSION } from './schema';
+import { emptyCompound, emptyProduct, SCHEMA_VERSION } from './schema';
 import { findCycle, fractionSums, validateLibrary } from './validate';
 import type { Library } from './types';
 
@@ -252,23 +252,103 @@ describe('validation', () => {
     expect(msgs).toMatch(/c: .*needs cv/);
   });
 
-  it('requires source, date and non-gap kinetics for verified entries', () => {
+  const reviewedAll = (sections: string[]) => Object.fromEntries(sections.map((s) => [s, 'reviewer' as const]));
+  const PARENT_SECTIONS = ['halfLife', 'metabolism', 'molecularWeight', 'cyp2d6', 'qt', 'receptors', 'lingeringEffects', 'nonlinearKinetics'];
+
+  it('requires source, date and every section reviewed for verified entries', () => {
     const l = lib();
-    l.compounds[0] = { ...l.compounds[0], verified: true, provenance: { halfLife: 'gap' } };
+    l.compounds[0] = { ...l.compounds[0], kinetics: intrinsic(5), verified: true, provenance: { halfLife: 'reviewer', qt: 'recall' } };
     const msgs = validateLibrary(l).errors.map((e) => e.message).join('\n');
     expect(msgs).toMatch(/source/);
     expect(msgs).toMatch(/verifiedDate/);
-    expect(msgs).toMatch(/mode "unknown"/);
-    expect(msgs).toMatch(/halfLife provenance/);
-    l.compounds[0] = { ...l.compounds[0], kinetics: intrinsic(5), provenance: { halfLife: 'recall' }, source: 'x', verifiedDate: '2026-01-01' };
-    const r = validateLibrary(l);
-    expect(r.errors).toEqual([]);
-    expect(r.warnings.some((w) => /recall\/estimate/.test(w.message))).toBe(true);
+    expect(msgs).toMatch(/not reviewed: metabolism, molecularWeight, cyp2d6, qt, receptors, lingeringEffects, nonlinearKinetics/);
+    l.compounds[0] = { ...l.compounds[0], provenance: reviewedAll(PARENT_SECTIONS), source: 'x', verifiedDate: '2026-01-01' };
+    expect(validateLibrary(l).errors).toEqual([]);
   });
 
-  it('requires schemaVersion 2', () => {
+  it('allows verified with unknown kinetics only when the half-life is confirmed unknown', () => {
+    const l = lib();
+    const b = l.compounds[1];
+    l.compounds[1] = { ...b, verified: true, source: 'x', verifiedDate: '2026-01-01', clinicalRelevance: 'unknown', provenance: reviewedAll([...PARENT_SECTIONS, 'relevance']) };
+    let msgs = validateLibrary(l).errors.map((e) => e.message).join('\n');
+    expect(msgs).toMatch(/cannot be verified with clinicalRelevance "unknown"/);
+    expect(msgs).toMatch(/Confirmed unknown/);
+    l.compounds[1] = { ...l.compounds[1], clinicalRelevance: 'inactive', sourceNotes: { halfLife: 'None published. Confirmed unknown — reviewer' } };
+    expect(validateLibrary(l).errors).toEqual([]);
+    // A metabolite also needs its relevance section reviewed.
+    l.compounds[1] = { ...l.compounds[1], provenance: { ...l.compounds[1].provenance, relevance: 'recall' } };
+    msgs = validateLibrary(l).errors.map((e) => e.message).join('\n');
+    expect(msgs).toMatch(/not reviewed: relevance/);
+  });
+
+  it('accepts range-only evidence and rejects incomplete ranges', () => {
+    const l = lib();
+    const r = (min: number | null, max: number | null, rangeType: 'observed-range' | 'single-value' | 'cohort-means') =>
+      ({ mode: 'intrinsic' as const, halfLifeHours: { typical: null, min, max, rangeType, cv: null }, earlyPhase: null, steadyState: null });
+    l.compounds[0].kinetics = r(43 * 24, 60 * 24, 'observed-range');
+    l.compounds[1].kinetics = r(3, 5, 'cohort-means');
+    expect(validateLibrary(l).errors).toEqual([]);
+    l.compounds[0].kinetics = r(3, null, 'observed-range');
+    l.compounds[1].kinetics = r(3, 5, 'single-value');
+    const msgs = validateLibrary(l).errors.map((e) => `${e.id}: ${e.message}`).join('\n');
+    expect(msgs).toMatch(/a: .*only one bound/);
+    expect(msgs).toMatch(/a: .*needs typical, or both min and max/);
+    expect(msgs).toMatch(/b: .*observed-range" or "cohort-means/);
+  });
+
+  it('allows zero and partial formation multipliers, but not zero half-life multipliers', () => {
+    const l = lib();
+    l.compounds[1].formedFrom[0].cyp2d6Multiplier = { poor: 0, ultrarapid: 1.5 };
+    l.compounds[0].cyp2d6 = { ...l.compounds[0].cyp2d6, substrate: 'yes', halfLifeMultiplier: { poor: 2 } };
+    expect(validateLibrary(l).errors).toEqual([]);
+    l.compounds[0].cyp2d6.halfLifeMultiplier = { poor: 0 };
+    l.compounds[2].formedFrom[0].cyp2d6Multiplier = { slow: 1 } as never;
+    const msgs = validateLibrary(l).errors.map((e) => `${e.id}: ${e.message}`).join('\n');
+    expect(msgs).toMatch(/a: cyp2d6.halfLifeMultiplier.poor must be > 0/);
+    expect(msgs).toMatch(/c: .*slow is not a phenotype/);
+  });
+
+  it('warns about partial kinetics, relevance overrides and unassessed inhibitor notes', () => {
+    const l = lib();
+    l.compounds[0] = {
+      ...l.compounds[0],
+      clinicalRelevance: 'inactive',
+      kinetics: { ...intrinsic(15), earlyPhase: { fraction: null, halfLifeHours: { typical: 2, min: null, max: null, rangeType: 'single-value', cv: null } }, steadyState: { afterDays: null, halfLifeHours: { typical: 22, min: null, max: null, rangeType: 'single-value', cv: null } } },
+      cyp2d6: { substrate: 'yes', halfLifeMultiplier: null, inhibitor: 'none', inhibitionType: 'none' },
+      sourceNotes: { cyp2d6: '[checked] CPIC substrate. Inhibition not assessed.' },
+    };
+    const r = validateLibrary(l);
+    expect(r.errors).toEqual([]);
+    const w = r.warnings.map((x) => x.message).join('\n');
+    expect(w).toMatch(/earlyPhase fraction is unknown — early phase ignored/);
+    expect(w).toMatch(/afterDays is unknown/);
+    expect(w).toMatch(/inhibition was not assessed/);
+    expect(w).toMatch(/parent compound — always treated as active/);
+    expect(r.progress.partial).toEqual({ earlyPhaseIgnored: ['a'], steadyStateOnsetUnknown: ['a'], steadyStateIgnored: [] });
+  });
+
+  it('reports sections reviewed, relevance and what blocks incomplete products', () => {
+    const l = lib();
+    l.compounds[0].kinetics = intrinsic(5);
+    l.compounds[1] = { ...l.compounds[1], clinicalRelevance: 'inactive' };
+    l.products.push({ ...emptyProduct('a_oral', 'A (Oral)', 'a', 'Oral', 'opioids'), provenance: { class: 'reviewer' } });
+    let p = validateLibrary(l).progress;
+    // b is inactive with unknown kinetics (excluded), and c is only formed through it.
+    expect(p.incomplete).toEqual({ total: 1, unknownRelevanceOnly: 1, active: 0 });
+    expect(p.metaboliteRelevance).toEqual({ active: 0, inactive: 1, unknown: 1 });
+    expect(p.sections).toBe(8 + 9 + 9 + 5);
+    expect(p.sectionsReviewed).toBe(1);
+    expect(p.categories[0]).toMatchObject({ sections: 31, sectionsReviewed: 1, drugs: 1, drugsVerified: 0 });
+    l.compounds[2] = { ...l.compounds[2], clinicalRelevance: 'inactive' };
+    p = validateLibrary(l).progress;
+    expect(p.incomplete.total).toBe(0);
+  });
+
+  it('requires schemaVersion 2.1 and points older files at the right migration', () => {
     const l = lib() as unknown as Record<string, unknown>;
     delete l.schemaVersion;
-    expect(validateLibrary(l as never).errors.some((e) => /migrate-v2/.test(e.message))).toBe(true);
+    expect(validateLibrary(l as never).errors.some((e) => /migrate-v2, then npm run migrate-v2\.1/.test(e.message))).toBe(true);
+    l.schemaVersion = 2;
+    expect(validateLibrary(l as never).errors.some((e) => /v2 file; run npm run migrate-v2\.1/.test(e.message))).toBe(true);
   });
 });

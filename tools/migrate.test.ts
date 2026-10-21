@@ -74,10 +74,11 @@ describe('migrate-v2', () => {
   const c = (id: string) => lib.compounds.find((x) => x.id === id)!;
   const p = (id: string) => lib.products.find((x) => x.id === id);
 
-  it('produces a valid v2 library', () => {
+  it('produces a valid v2 library (apart from what migrate-v2.1 adds)', () => {
     expect(skipped).toBe(false);
     expect(lib.schemaVersion).toBe(2);
-    expect(validateLibrary(lib).errors).toEqual([]);
+    const v21 = /schemaVersion must be 2\.1|clinicalRelevance "undefined"|reviewedDates missing/;
+    expect(validateLibrary(lib).errors.filter((e) => !v21.test(e.message))).toEqual([]);
   });
 
   it('migrates compound kinetics, nulls and provenance', () => {

@@ -1,9 +1,12 @@
-// Defaults, slugs, Range maths and canonical (stable, diff-friendly) serialisation for drugs.json.
-// Shared by the app, init-data, migrate-v2, the validator and the local editor.
+// Defaults, slugs, Range maths, review-state helpers and canonical (stable, diff-friendly)
+// serialisation for drugs.json. Shared by the app, init-data, the migrations, the validator and the editor.
 
-import type { Compound, Library, PhenotypeMap, Product, Range } from './types';
+import {
+  COMPOUND_SECTIONS, PRODUCT_SECTIONS,
+  type ClinicalRelevance, type Compound, type CompoundSection, type Library, type PhenotypeMap, type Product, type ProductSection, type Range,
+} from './types';
 
-export const SCHEMA_VERSION = 2 as const;
+export const SCHEMA_VERSION = 2.1 as const;
 
 export function slug(s: string): string {
   // Mirrors slug() in tools/build_candidates.py so IDs line up with candidates.json.
@@ -34,6 +37,7 @@ export function emptyCompound(id: string, name: string): Compound {
     aliases: [],
     isMetabolite: false,
     formedFrom: [],
+    clinicalRelevance: 'unknown',
     molecularWeight: null,
     kinetics: { mode: 'unknown', halfLifeHours: null, earlyPhase: null, steadyState: null },
     cyp2d6: { substrate: 'unassessed', halfLifeMultiplier: null, inhibitor: 'unassessed', inhibitionType: 'unassessed' },
@@ -44,6 +48,7 @@ export function emptyCompound(id: string, name: string): Compound {
     nonlinearKinetics: { flag: 'unassessed', note: '' },
     provenance: {},
     sourceNotes: {},
+    reviewedDates: {},
     source: '',
     verified: false,
     verifiedDate: '',
@@ -67,6 +72,7 @@ export function emptyProduct(id: string, name: string, compound: string, route: 
     typicalDose: { amount: null, unit: 'mg', basis: 'maintenance' },
     provenance: {},
     sourceNotes: {},
+    reviewedDates: {},
     source: '',
     verified: false,
     verifiedDate: '',
@@ -83,6 +89,21 @@ export interface Bounds {
   max: number;
   /** True when any bound came from the assumed spread rather than the data. */
   assumed: boolean;
+  /** Range-only evidence: typical is the geometric midpoint √(min × max). */
+  midpoint?: boolean;
+}
+
+const pos = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v) && v > 0;
+
+/** Range-only evidence: no typical, both bounds, and a range type that describes individual spread. */
+export const isRangeOnly = (r: Range | null | undefined): boolean =>
+  !!r && !pos(r.typical) && pos(r.min) && pos(r.max) && r.min <= r.max && (r.rangeType === 'observed-range' || r.rangeType === 'cohort-means');
+
+/** The typical value the simulation uses: the published one, or the midpoint of a range-only Range. */
+export function rangeTypical(r: Range | null | undefined): number | null {
+  if (!r) return null;
+  if (pos(r.typical)) return r.typical;
+  return isRangeOnly(r) ? Math.sqrt(r.min! * r.max!) : null;
 }
 
 function lognormal(typical: number, cv: number) {
@@ -92,10 +113,13 @@ function lognormal(typical: number, cv: number) {
 
 /**
  * min/typical/max for the three simulation runs. `cv` ranges give a lognormal 95% band;
- * single values (or missing bounds) use the assumed spread. null = no typical value.
+ * single values (or missing bounds) use the assumed spread; range-only evidence uses its bounds
+ * around the geometric midpoint. null = no usable value.
  */
 export function rangeBounds(r: Range | null | undefined, assumedCv: number): Bounds | null {
-  if (!r || !(typeof r.typical === 'number' && r.typical > 0)) return null;
+  if (!r) return null;
+  if (isRangeOnly(r)) return { typical: Math.sqrt(r.min! * r.max!), min: r.min!, max: r.max!, assumed: false, midpoint: true };
+  if (!pos(r.typical)) return null;
   const t = r.typical;
   if (r.rangeType === 'cv' && typeof r.cv === 'number' && r.cv > 0) return { typical: t, ...lognormal(t, r.cv), assumed: false };
   const hasMin = typeof r.min === 'number' && r.min > 0;
@@ -110,10 +134,12 @@ export function rangeBounds(r: Range | null | undefined, assumedCv: number): Bou
   };
 }
 
-export const hasTypical = (r: Range | null | undefined): boolean => !!r && typeof r.typical === 'number' && r.typical > 0;
+/** A typical value, or range-only evidence the app can derive one from. */
+export const hasTypical = (r: Range | null | undefined): boolean => rangeTypical(r) !== null;
 
 export function formatRange(r: Range | null | undefined, unit = 'h'): string {
   if (!hasTypical(r)) return 'unknown';
+  if (isRangeOnly(r)) return `${r!.min}–${r!.max} ${unit} (assumed midpoint ${+rangeTypical(r)!.toPrecision(3)} ${unit})`;
   const { typical, min, max, rangeType, cv } = r!;
   if (rangeType === 'cv' && cv) return `${typical} ${unit} (CV ${Math.round(cv * 100)}%)`;
   if (min != null && max != null && (min !== typical || max !== typical)) return `${typical} ${unit} (${min}–${max})`;
@@ -140,23 +166,61 @@ export function compoundHasData(c: Compound): boolean {
 export const hasIntrinsicKinetics = (c: Compound | undefined): boolean =>
   !!c && c.kinetics.mode === 'intrinsic' && hasTypical(c.kinetics.halfLifeHours);
 
+// ---------- clinical relevance ----------
+
+/** Every compound some product doses directly (any component). */
+export const dosedCompoundIds = (products: Pick<Product, 'components'>[]): Set<string> =>
+  new Set(products.flatMap((p) => (p.components ?? []).map((c) => c.compound)));
+
+/** Parents and directly dosed compounds always count as active, whatever the field says. */
+export function effectiveRelevance(c: Pick<Compound, 'id' | 'isMetabolite' | 'clinicalRelevance'>, dosed: Set<string>): ClinicalRelevance {
+  if (!c.isMetabolite || dosed.has(c.id)) return 'active';
+  return c.clinicalRelevance ?? 'unknown';
+}
+
+/** CYP2D6 note says inhibition was never assessed (v2.1 migration and validator). */
+export const INHIBITOR_NOT_ASSESSED_RE = /inhibit[^.]*?(unassessed|not assessed|pending|not established|unconfirmed)/i;
+
+// ---------- review state (editor workflow, validator) ----------
+
+export const CONFIRMED_UNKNOWN_NOTE = 'Confirmed unknown — reviewer';
+export const NA_NOTE = 'N/A — reviewer';
+export const FLAG_PREFIX = 'REVIEWER FLAG:';
+
+/** Sections a compound is reviewed by; `relevance` applies to metabolites only. */
+export const compoundSections = (c: Pick<Compound, 'isMetabolite'>): CompoundSection[] =>
+  COMPOUND_SECTIONS.filter((s) => s !== 'relevance' || c.isMetabolite);
+
+export const productSections = (): ProductSection[] => [...PRODUCT_SECTIONS];
+
+type Reviewable = { provenance?: Record<string, string | null | undefined>; sourceNotes?: Record<string, string | undefined> };
+
+export const isReviewed = (e: Reviewable, section: string): boolean => e.provenance?.[section] === 'reviewer';
+export const isConfirmedUnknown = (e: Reviewable, section: string): boolean =>
+  isReviewed(e, section) && (e.sourceNotes?.[section] ?? '').includes(CONFIRMED_UNKNOWN_NOTE);
+/** A flag counts until the section is reviewed. */
+export const isFlagged = (e: Reviewable, section: string): boolean =>
+  !isReviewed(e, section) && (e.sourceNotes?.[section] ?? '').includes(FLAG_PREFIX);
+
+export function unreviewedSections(e: Reviewable, sections: readonly string[]): string[] {
+  return sections.filter((s) => !isReviewed(e, s));
+}
+
 // ---------- canonical serialisation ----------
 
 const RANGE_KEYS = ['typical', 'min', 'max', 'rangeType', 'cv'];
 const PHEN_KEYS = ['poor', 'intermediate', 'normal', 'ultrarapid'];
 const COMPOUND_KEYS = [
-  'id', 'name', 'aliases', 'isMetabolite', 'formedFrom', 'molecularWeight', 'kinetics', 'cyp2d6', 'qt',
-  'receptors', 'receptorsAssessed', 'lingeringEffects', 'nonlinearKinetics', 'provenance', 'sourceNotes',
+  'id', 'name', 'aliases', 'isMetabolite', 'formedFrom', 'clinicalRelevance', 'molecularWeight', 'kinetics', 'cyp2d6', 'qt',
+  'receptors', 'receptorsAssessed', 'lingeringEffects', 'nonlinearKinetics', 'provenance', 'sourceNotes', 'reviewedDates',
   'source', 'verified', 'verifiedDate',
 ];
-const COMPOUND_SECTION_KEYS = [
-  'halfLife', 'metabolism', 'molecularWeight', 'cyp2d6', 'qt', 'receptors', 'lingeringEffects', 'nonlinearKinetics',
-];
+const COMPOUND_SECTION_KEYS: string[] = [...COMPOUND_SECTIONS];
 const PRODUCT_KEYS = [
   'id', 'candidateId', 'name', 'aliases', 'category', 'secondaryCategories', 'class', 'route', 'formulation',
-  'components', 'doseUnit', 'input', 'typicalDose', 'provenance', 'sourceNotes', 'source', 'verified', 'verifiedDate',
+  'components', 'doseUnit', 'input', 'typicalDose', 'provenance', 'sourceNotes', 'reviewedDates', 'source', 'verified', 'verifiedDate',
 ];
-const PRODUCT_SECTION_KEYS = ['class', 'aliases', 'components', 'input', 'typicalDose'];
+const PRODUCT_SECTION_KEYS: string[] = [...PRODUCT_SECTIONS];
 
 function ordered(obj: Record<string, unknown>, keys: string[]): Record<string, unknown> {
   const out: Record<string, unknown> = {};
@@ -198,6 +262,7 @@ function canonicalCompound(c: Compound): Compound {
       nonlinearKinetics: sub(c.nonlinearKinetics, ['flag', 'note']),
       provenance: ordered(c.provenance ?? {}, COMPOUND_SECTION_KEYS),
       sourceNotes: ordered(c.sourceNotes ?? {}, COMPOUND_SECTION_KEYS),
+      reviewedDates: c.reviewedDates && ordered(c.reviewedDates, COMPOUND_SECTION_KEYS),
     } as Record<string, unknown>,
     COMPOUND_KEYS,
   ) as unknown as Compound;
@@ -213,6 +278,7 @@ function canonicalProduct(p: Product): Product {
       typicalDose: sub(p.typicalDose, ['amount', 'unit', 'basis']),
       provenance: ordered(p.provenance ?? {}, PRODUCT_SECTION_KEYS),
       sourceNotes: ordered(p.sourceNotes ?? {}, PRODUCT_SECTION_KEYS),
+      reviewedDates: p.reviewedDates && ordered(p.reviewedDates, PRODUCT_SECTION_KEYS),
     } as Record<string, unknown>,
     PRODUCT_KEYS,
   ) as unknown as Product;
@@ -230,7 +296,7 @@ export function canonicalLibrary(lib: Library): Library {
       compounds: [...lib.compounds].sort(byId).map(canonicalCompound),
       products: [...lib.products].sort(byId).map(canonicalProduct),
     } as unknown as Record<string, unknown>,
-    ['schemaVersion', 'categories', 'compounds', 'products'],
+    ['schemaVersion', 'qtCalibrationNote', 'categories', 'compounds', 'products'],
   ) as unknown as Library;
 }
 

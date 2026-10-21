@@ -586,6 +586,7 @@ exports[`migrate-v2 > matches the expected v2 snapshot 1`] = `
       "sourceNotes": {
         "components": "[recall] Fixed-ratio 4:1 buprenorphine:naloxone (Suboxone, Zubsolv). Bioavailability of sublingual naloxone is very low; reviewer to set."
       },
+      "reviewedDates": {},
       "source": "",
       "verified": false,
       "verifiedDate": ""

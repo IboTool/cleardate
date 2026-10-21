@@ -1,12 +1,15 @@
 // v1 → v2 library migration (docs/ClearDate_Spec_v2.md, "Migration"). Pure: no file access, so
-// it is unit-tested directly. tools/migrate-v2.ts is the CLI wrapper.
+// it is unit-tested directly. tools/migrate-v2.ts is the CLI wrapper. Its output is schema 2;
+// tools/migrate-v2_1-lib.ts takes it on to 2.1.
 
-import { SCHEMA_VERSION } from '../src/schema';
 import {
-  COMPOUND_SECTIONS, PRODUCT_SECTIONS,
+  COMPOUND_SECTIONS as CURRENT_COMPOUND_SECTIONS, PRODUCT_SECTIONS,
   type Compound, type CompoundSection, type Library, type Product, type Provenance, type Range, type TriState,
 } from '../src/types';
 import { applyProductRules, type ProductChange } from './product-rules';
+
+/** Compound sections as they were in schema 2 (`relevance` arrived in 2.1). */
+const COMPOUND_SECTIONS = CURRENT_COMPOUND_SECTIONS.filter((s) => s !== 'relevance');
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type V1 = any;
@@ -197,15 +200,15 @@ export function emptyReport(): MigrationReport {
   return { counts: {}, formationLimited: [], productChanges: [], unassessed: {}, releaseConverted: [], releaseDropped: [], halfLifeWithoutTypical: [] };
 }
 
-/** Migrate a v1 library. A v2 library is returned unchanged with `skipped: true` (idempotent). */
+/** Migrate a v1 library to schema 2. A v2-or-later library is returned unchanged with `skipped: true` (idempotent). */
 export function migrateLibrary(input: V1): { lib: Library; report: MigrationReport; skipped: boolean } {
   const report = emptyReport();
-  if (input?.schemaVersion === SCHEMA_VERSION) return { lib: input as Library, report, skipped: true };
+  if (typeof input?.schemaVersion === 'number' && input.schemaVersion >= 2) return { lib: input as Library, report, skipped: true };
   const v1Compounds = new Map<string, V1>((input.compounds ?? []).map((c: V1) => [c.id, c]));
   const { categories, compounds, products, ...extra } = input;
   const lib: Library = {
     ...extra,
-    schemaVersion: SCHEMA_VERSION,
+    schemaVersion: 2 as unknown as Library['schemaVersion'],
     categories: (categories ?? []).map((c: V1) => ({ ...c })),
     compounds: (compounds ?? []).map((c: V1) => migrateCompound(c, report)),
     products: (products ?? []).map((p: V1) => migrateProduct(p, v1Compounds, report)),

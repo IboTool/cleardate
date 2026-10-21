@@ -1,5 +1,5 @@
-// Schema v2 for public/drugs.json and for the in-browser session (docs/ClearDate_Spec_v2.md).
-// Unknown numbers are `null`, never 0. Safety enums have an explicit "unassessed" value.
+// Schema v2.1 for public/drugs.json and for the in-browser session (docs/ClearDate_Spec_v2.md and
+// the v2.1 addendum). Unknown numbers are `null`, never 0. Safety enums have an explicit "unassessed" value.
 
 export const QT_TIERS = ['unassessed', 'none', 'conditional', 'possible', 'known'] as const;
 export const INHIBITOR_STRENGTHS = ['unassessed', 'none', 'weak', 'moderate', 'strong'] as const;
@@ -21,8 +21,9 @@ export const DOSE_UNITS = ['mg', 'µg', 'µg/h', 'mg/h'] as const;
 export const FORMULATIONS = ['IR', 'ER', 'SR', 'XL', 'XR', 'CR', 'depot', 'patch'] as const;
 export const INPUT_TYPES = ['bolus', 'first-order-release', 'zero-order'] as const;
 export const DOSE_BASES = ['maintenance', 'single-use', 'per-injection', 'rate'] as const;
+export const CLINICAL_RELEVANCE = ['active', 'inactive', 'unknown'] as const;
 export const COMPOUND_SECTIONS = [
-  'halfLife', 'metabolism', 'molecularWeight', 'cyp2d6', 'qt', 'receptors', 'lingeringEffects', 'nonlinearKinetics',
+  'halfLife', 'metabolism', 'relevance', 'molecularWeight', 'cyp2d6', 'qt', 'receptors', 'lingeringEffects', 'nonlinearKinetics',
 ] as const;
 export const PRODUCT_SECTIONS = ['class', 'aliases', 'components', 'input', 'typicalDose'] as const;
 
@@ -40,10 +41,14 @@ export type DoseUnit = (typeof DOSE_UNITS)[number];
 export type Formulation = (typeof FORMULATIONS)[number];
 export type InputType = (typeof INPUT_TYPES)[number];
 export type DoseBasis = (typeof DOSE_BASES)[number];
+export type ClinicalRelevance = (typeof CLINICAL_RELEVANCE)[number];
 export type CompoundSection = (typeof COMPOUND_SECTIONS)[number];
 export type ProductSection = (typeof PRODUCT_SECTIONS)[number];
 
-/** A published value with its spread. Every number may be null (unknown). */
+/**
+ * A published value with its spread. Every number may be null (unknown). Range-only evidence
+ * (typical null, min and max set) is allowed for observed-range / cohort-means.
+ */
 export interface Range {
   typical: number | null;
   min: number | null;
@@ -53,7 +58,8 @@ export interface Range {
   cv: number | null;
 }
 
-export type PhenotypeMap = Record<Phenotype, number>;
+/** May be partial: a missing phenotype counts as 1 (normal), labelled as assumed. */
+export type PhenotypeMap = Partial<Record<Phenotype, number>>;
 
 export interface Category {
   id: string;
@@ -65,7 +71,7 @@ export interface FormedFrom {
   compound: string;
   /** Share of the parent's elimination that forms this compound, 0–1; null = unknown. */
   fraction: number | null;
-  /** Per-phenotype multiplier on the fraction (e.g. codeine → morphine). */
+  /** Per-phenotype multiplier on the fraction (e.g. codeine → morphine). 0 = not formed. */
   cyp2d6Multiplier: PhenotypeMap | null;
 }
 
@@ -85,6 +91,8 @@ export interface Kinetics {
 }
 
 export type ProvenanceMap<K extends string> = Partial<Record<K, Provenance | null>>;
+/** Section → date (YYYY-MM-DD) it last became reviewed. */
+export type ReviewedDates<K extends string> = Partial<Record<K, string>>;
 
 export interface Compound {
   id: string;
@@ -92,6 +100,8 @@ export interface Compound {
   aliases: string[];
   isMetabolite: boolean;
   formedFrom: FormedFrom[];
+  /** Parents and directly dosed compounds always count as active, whatever this says. */
+  clinicalRelevance: ClinicalRelevance;
   molecularWeight: number | null;
   kinetics: Kinetics;
   cyp2d6: {
@@ -108,6 +118,7 @@ export interface Compound {
   nonlinearKinetics: { flag: TriState; note: string };
   provenance: ProvenanceMap<CompoundSection>;
   sourceNotes: Partial<Record<CompoundSection, string>> & Record<string, string>;
+  reviewedDates: ReviewedDates<CompoundSection>;
   source: string;
   verified: boolean;
   verifiedDate: string;
@@ -151,6 +162,7 @@ export interface Product {
   typicalDose: { amount: number | null; unit: DoseUnit; basis: DoseBasis };
   provenance: ProvenanceMap<ProductSection>;
   sourceNotes: Partial<Record<ProductSection, string>> & Record<string, string>;
+  reviewedDates: ReviewedDates<ProductSection>;
   source: string;
   verified: boolean;
   verifiedDate: string;
@@ -158,7 +170,9 @@ export interface Product {
 }
 
 export interface Library {
-  schemaVersion: 2;
+  schemaVersion: 2.1;
+  /** The scale QT weights are calibrated on (editor's QT calibration view). */
+  qtCalibrationNote?: string;
   categories: Category[];
   compounds: Compound[];
   products: Product[];

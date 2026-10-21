@@ -167,6 +167,7 @@ function combinationProduct(lib: Library): Product {
     typicalDose: { amount: null, unit: 'mg', basis: 'maintenance' },
     provenance: { components: 'recall' },
     sourceNotes: { components: '[recall] Fixed-ratio 4:1 buprenorphine:naloxone (Suboxone, Zubsolv). Bioavailability of sublingual naloxone is very low; reviewer to set.' },
+    reviewedDates: {},
     source: '',
     verified: false,
     verifiedDate: '',
