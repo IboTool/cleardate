@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { buildIndex, computeScenario, HOUR, toLocalInput, type Scenario } from './model';
+import { curveVisible } from './chart';
+import { assumptionLines } from './export';
 import { valueAt } from './pk';
 import { emptyCompound, emptyProduct, SCHEMA_VERSION } from './schema';
 import { emptySession, normaliseSession } from './state';
@@ -231,6 +233,45 @@ describe('v2.1: zero formation multipliers', () => {
     expect(m.formed).toEqual({ min: true, typical: true, max: false });
     expect(u.products[0].notes).toContain('Morphine: not formed in poor metabolisers');
     expect(u.products[0].clearAt!).toBeGreaterThan(curve(u, 'codeine').clearAt!);
+  });
+});
+
+describe('v2.1: labelling', () => {
+  it('lists exclusions, partial-data assumptions and not-formed notes in the export', () => {
+    const l = library([
+      compound('p', null, { kinetics: { mode: 'intrinsic', halfLifeHours: { typical: null, min: 4, max: 16, rangeType: 'observed-range', cv: null }, earlyPhase: { fraction: null, halfLifeHours: null }, steadyState: null } }),
+      metabolite('i', 'p', 0.5, null, { clinicalRelevance: 'inactive', provenance: { relevance: 'reviewer' } }),
+      { ...metabolite('z', 'p', 0.2, 5), formedFrom: [{ compound: 'p', fraction: 0.2, cyp2d6Multiplier: { poor: 0 } }] },
+    ], [emptyProduct('p_oral', 'P (Oral)', 'p', 'Oral', 'x')]);
+    const scn = run(l, [{ productId: 'p_oral', amount: 100 }], (s) => { s.patient.phenotype = 'poor'; });
+    const lines = assumptionLines(scn)[0].lines.join('\n');
+    expect(lines).toMatch(/Assumed midpoint of reported range on P half-life\./);
+    expect(lines).toMatch(/P: early phase ignored \(fraction unknown\) — conservative\./);
+    expect(lines).toMatch(/I: inactive metabolite, kinetics unknown — excluded from clear date\./);
+    expect(lines).toMatch(/Z: not formed in poor metabolisers\./);
+  });
+
+  it('hides inactive metabolites unless "Show inactive metabolites" is on', () => {
+    const l = library([compound('p', 4), metabolite('i', 'p', 0.5, 10, { clinicalRelevance: 'inactive' }), metabolite('a', 'p', 0.5, 10)],
+      [emptyProduct('p_oral', 'P (Oral)', 'p', 'Oral', 'x')]);
+    const scn = run(l, [{ productId: 'p_oral', amount: 100 }]);
+    const s = emptySession().settings;
+    expect(s.showInactiveMetabolites).toBe(false);
+    expect(curveVisible(curve(scn, 'i'), s)).toBe(false);
+    expect(curveVisible(curve(scn, 'a'), s)).toBe(true);
+    expect(curveVisible(curve(scn, 'i'), { ...s, showInactiveMetabolites: true })).toBe(true);
+    expect(curveVisible(curve(scn, 'i'), { ...s, showMetabolites: false, showInactiveMetabolites: true })).toBe(false);
+  });
+
+  it('session normalise adds clinicalRelevance and reviewedDates to older custom drugs', () => {
+    const c = { ...emptyCompound('x', 'X') } as Partial<Compound>;
+    const m = { ...emptyCompound('m', 'M'), isMetabolite: true } as Partial<Compound>;
+    const p = { ...emptyProduct('x_oral', 'X', 'x', 'Oral', 'x') } as Partial<Product>;
+    delete c.clinicalRelevance; delete c.reviewedDates; delete m.clinicalRelevance; delete p.reviewedDates;
+    const s = normaliseSession({ ...emptySession(), custom: { compounds: [c, m] as Compound[], products: [p] as Product[], links: [] } });
+    expect(s.custom.compounds.map((x) => [x.clinicalRelevance, x.reviewedDates])).toEqual([['active', {}], ['unknown', {}]]);
+    expect(s.custom.products[0].reviewedDates).toEqual({});
+    expect(s.settings.showInactiveMetabolites).toBe(false);
   });
 });
 

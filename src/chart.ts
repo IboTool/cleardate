@@ -6,7 +6,7 @@ import type { EChartsOption, CustomSeriesRenderItemAPI, CustomSeriesRenderItemPa
 import { fmtAmount, fmtAxis, fmtDateTime } from './format';
 import { valueAt } from './pk';
 import { DAY, isRateUnit, strongestAt, toMg, type CompoundCurve, type ProductResult, type QtLane, type Scenario } from './model';
-import type { QtTier, Session } from './types';
+import type { QtTier, Session, Settings } from './types';
 
 export type Theme = 'dark' | 'light';
 
@@ -81,6 +81,11 @@ export function lighten(hex: string, t: number): string {
 
 const DASHES: number[][] = [[], [7, 4], [4, 4], [2, 4], [1, 4]];
 
+/** Metabolites follow "Show metabolites"; inactive ones also need "Show inactive metabolites". */
+export function curveVisible(c: CompoundCurve, s: Settings): boolean {
+  return c.depth === 0 || (s.showMetabolites && (!c.inactive || s.showInactiveMetabolites));
+}
+
 export function curveColor(r: ProductResult, c: CompoundCurve) {
   return c.depth === 0 ? r.color : lighten(r.color, Math.min(0.6, c.depth * 0.18));
 }
@@ -146,7 +151,7 @@ export function buildChartOption(scn: Scenario, session: Session, o: ChartOpts):
   const tracksTotal = tracks.reduce((acc, t) => acc + trackHeight(t) + TRACK_GAP, 0);
   const mainH = Math.max(140, o.height - top - bottom - tracksTotal - 6);
   const left = 64;
-  const right = scn.products.some((r) => r.curves.some((c) => c.normalized && (c.depth === 0 || s.showMetabolites))) ? 52 : 22;
+  const right = scn.products.some((r) => r.curves.some((c) => c.normalized && curveVisible(c, s))) ? 52 : 22;
   const grids: { top: number; height: number }[] = [{ top, height: mainH }];
   let y = top + mainH + TRACK_GAP;
   for (const t of tracks) {
@@ -177,7 +182,7 @@ export function buildChartOption(scn: Scenario, session: Session, o: ChartOpts):
     },
   }));
 
-  const visibleCurves = (r: ProductResult) => r.curves.filter((c) => c.depth === 0 || s.showMetabolites);
+  const visibleCurves = (r: ProductResult) => r.curves.filter((c) => curveVisible(c, s));
   let maxDisplay = 0;
   for (const r of scn.products)
     for (const c of visibleCurves(r)) if (!c.normalized) maxDisplay = Math.max(maxDisplay, toDisplay(r, c, Math.max(...c.runs.max.amounts), session));
@@ -257,7 +262,7 @@ export function buildChartOption(scn: Scenario, session: Session, o: ChartOpts):
           renderItem: (_p: CustomSeriesRenderItemParams, api: CustomSeriesRenderItemAPI) => ({
             type: 'polygon',
             shape: { points: poly.map((pt) => api.coord(pt)) },
-            style: { fill: hexToRgba(color, fade(c.depth === 0 ? 0.13 : 0.08, r.key)) },
+            style: { fill: hexToRgba(color, fade(c.depth === 0 ? 0.13 : c.inactive ? 0.04 : 0.08, r.key)) },
           }),
           tooltip: { show: false },
         } as SeriesOption);
@@ -267,7 +272,7 @@ export function buildChartOption(scn: Scenario, session: Session, o: ChartOpts):
       series.push({
         type: 'line',
         id: `line:${c.key}`,
-        name: `${r.name} · ${c.compound.name}${c.normalized ? ' (% of own peak)' : ''}`,
+        name: `${r.name} · ${c.compound.name}${c.normalized ? ' (% of own peak)' : ''}${c.inactive ? ' (inactive)' : ''}`,
         xAxisIndex: 0,
         yAxisIndex: yi,
         data,
@@ -280,9 +285,9 @@ export function buildChartOption(scn: Scenario, session: Session, o: ChartOpts):
         animationEasing: 'cubicOut',
         lineStyle: {
           color,
-          width: isParent ? 2.2 : 1.5,
+          width: isParent ? 2.2 : c.inactive ? 1 : 1.5,
           type: (c.normalized ? [3, 3] : DASHES[Math.min(c.depth, DASHES.length - 1)]) as never,
-          opacity: fade(1, r.key),
+          opacity: fade(c.inactive ? 0.4 : 1, r.key),
           shadowBlur: dark && isParent && !dim(r.key) ? 12 : 0,
           shadowColor: hexToRgba(color, 0.7),
         },
@@ -585,16 +590,20 @@ function tooltipHtml(scn: Scenario, session: Session, t: number | undefined): st
   const rows: string[] = [];
   for (const r of scn.products) {
     for (const c of r.curves) {
-      if (c.depth > 0 && !s.showMetabolites) continue;
+      if (!curveVisible(c, s)) continue;
       const eq = valueAt(c.runs.typical.times, c.runs.typical.amounts, t);
       if (!(eq > 0) || t < c.runs.typical.times[0]) continue;
       const v = toDisplay(r, c, eq, session);
       if (v < 1e-6) continue;
       const col = curveColor(r, c);
-      const indent = c.depth > 0 ? `padding-left:${c.depth * 10}px;opacity:.85` : 'font-weight:600';
+      const indent = c.depth > 0 ? `padding-left:${c.depth * 10}px;opacity:${c.inactive ? '.55' : '.85'}` : 'font-weight:600';
       const unit = unitLabel(r, c, session);
       const shown = c.normalized ? `${v.toFixed(0)}% of peak` : fmtAmount(v, unit === '% of dose' ? '%' : unit);
-      const tag = c.normalized ? ' <span style="opacity:.6;font-weight:400">· amount unknown — timing only</span>' : c.formationLimited ? ' <span style="opacity:.6;font-weight:400">· formation-limited</span>' : '';
+      const tags = [
+        c.inactive ? 'inactive — not in clear date' : '',
+        c.normalized ? 'amount unknown — timing only' : c.formationLimited ? 'formation-limited' : '',
+      ].filter(Boolean);
+      const tag = tags.map((x) => ` <span style="opacity:.6;font-weight:400">· ${x}</span>`).join('');
       rows.push(
         `<div style="display:flex;justify-content:space-between;gap:14px;${indent}"><span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${col};margin-right:6px"></span>${c.depth === 0 ? r.name : c.compound.name}${tag}</span><span style="font-variant-numeric:tabular-nums">${shown}</span></div>`,
       );
@@ -603,6 +612,8 @@ function tooltipHtml(scn: Scenario, session: Session, t: number | undefined): st
       const list = r.assumptions.slice(0, 3).join('; ') + (r.assumptions.length > 3 ? `; +${r.assumptions.length - 3} more` : '');
       rows.push(`<div style="opacity:.6;font-size:11px;max-width:340px;white-space:normal;margin:1px 0 4px 14px">Assumptions: ${list}</div>`);
     }
+    if ((r.excluded.length || r.notes.length) && rows.length)
+      rows.push(`<div style="opacity:.6;font-size:11px;max-width:340px;white-space:normal;margin:1px 0 4px 14px">${[...r.excluded, ...r.notes].join('; ')}</div>`);
     if (r.status === 'incomplete' && rows.length)
       rows.push(`<div style="opacity:.75;font-size:11px;margin:0 0 4px 14px;color:#ffb74d">Incomplete — no kinetics for ${r.missing.join(', ')}</div>`);
   }

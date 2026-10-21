@@ -15,6 +15,7 @@ export const defaultSettings = (): Settings => ({
   yScale: 'linear',
   units: 'mg',
   showMetabolites: true,
+  showInactiveMetabolites: false,
   showBands: true,
   showCypTrack: true,
   showQtTrack: true,
@@ -65,8 +66,13 @@ export function normaliseSession(input: Partial<Session> | Record<string, unknow
     doses: Array.isArray(raw.doses) ? raw.doses.map((x) => ({ ...x, unit: x.unit ?? 'mg' })) : [],
     ibogaine: raw.ibogaine ?? null,
     custom: {
-      compounds: (raw.custom?.compounds ?? []).map((c) => ({ ...c, userEntered: true })),
-      products: (raw.custom?.products ?? []).map((p) => ({ ...p, userEntered: true })),
+      compounds: (raw.custom?.compounds ?? []).map((c) => ({
+        ...c,
+        clinicalRelevance: c.clinicalRelevance ?? (c.isMetabolite ? 'unknown' : 'active'),
+        reviewedDates: c.reviewedDates ?? {},
+        userEntered: true,
+      })),
+      products: (raw.custom?.products ?? []).map((p) => ({ ...p, reviewedDates: p.reviewedDates ?? {}, userEntered: true })),
       links: raw.custom?.links ?? [],
     },
     settings: { ...d.settings, ...(raw.settings ?? {}) },

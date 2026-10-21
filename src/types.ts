@@ -227,6 +227,8 @@ export interface Settings {
   yScale: 'linear' | 'log';
   units: 'mg' | 'percent';
   showMetabolites: boolean;
+  /** Plot metabolites classed `inactive` (fainter). They never count toward the clear date. */
+  showInactiveMetabolites: boolean;
   showBands: boolean;
   showCypTrack: boolean;
   showQtTrack: boolean;

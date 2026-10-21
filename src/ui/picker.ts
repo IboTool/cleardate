@@ -8,9 +8,12 @@ import { badge, h, highlight } from './dom';
 
 /** Status badges shared by the picker, dose form and dose list. */
 export function productBadges(p: Product, status: DataStatus, compoundsVerified = true): (HTMLElement | null)[] {
+  const verified = !p.userEntered && !isDraft(p) && p.verified && compoundsVerified;
+  if (verified && status === 'incomplete')
+    return [badge('verified — incomplete data', 'warn', 'Fully reviewed, but kinetics for at least one compound are confirmed unknown — the clear date is a lower bound.')];
   return [
     status === 'no-data' ? badge('no data yet', 'muted') : status === 'incomplete' ? badge('incomplete', 'warn') : null,
-    p.userEntered ? badge('user-entered', 'user') : isDraft(p) ? badge('draft', 'warn') : !p.verified || !compoundsVerified ? badge('unverified', 'warn') : null,
+    p.userEntered ? badge('user-entered', 'user') : isDraft(p) ? badge('draft', 'warn') : !verified ? badge('unverified', 'warn') : null,
   ];
 }
 

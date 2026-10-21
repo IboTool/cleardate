@@ -4,7 +4,7 @@ import * as echarts from './echarts';
 import type { jsPDF as JsPDF } from 'jspdf';
 import { buildChartOption } from './chart';
 import { ageFrom, fmtDate, fmtDateTime } from './format';
-import { clearStatusText, combinationText, expandDose, isRateUnit, type LibraryIndex, type Scenario } from './model';
+import { clearStatusText, combinationText, expandDose, isRateUnit, type LibraryIndex, type ProductResult, type Scenario } from './model';
 import { isDraft } from './schema';
 import type { Session } from './types';
 
@@ -63,19 +63,25 @@ function clearRows(scn: Scenario, session: Session): string[][] {
   const s = session.settings;
   const fmt = (t: number) => fmtDateTime(t, s);
   return scn.products.filter((r) => !r.isIbogaine).map((r) => [
-    `${r.name}${r.product.userEntered ? ' [user-entered]' : ''}`,
+    `${r.name}${r.product.userEntered ? ' [user-entered]' : r.status === 'incomplete' && verifiedEntry(r) ? ' [verified - incomplete data]' : ''}`,
     clearStatusText(r, fmt),
     r.status === 'incomplete' ? (r.clearAtMax !== null ? `not before ${fmt(r.clearAtMax)}` : '—') : r.clearAtMax === null ? 'beyond window' : fmt(r.clearAtMax),
   ]);
 }
+
+const verifiedEntry = (r: ProductResult) => r.product.verified && !r.product.userEntered && r.curves.every((c) => c.compound.verified);
 
 /** Per-product "Assumptions and missing data" lines. */
 export function assumptionLines(scn: Scenario): { product: string; lines: string[] }[] {
   const out: { product: string; lines: string[] }[] = [];
   for (const r of scn.products) {
     const lines: string[] = [];
+    const sentence = (a: string) => a.charAt(0).toUpperCase() + a.slice(1) + '.';
     if (r.status === 'incomplete') lines.push(`Incomplete clear date — missing kinetics for: ${r.missing.join(', ')} (date shown is a lower bound).`);
-    for (const a of r.assumptions) lines.push(a.charAt(0).toUpperCase() + a.slice(1) + '.');
+    if (r.status === 'incomplete' && verifiedEntry(r)) lines.push('Verified — incomplete data: every section was reviewed, but the kinetics above are confirmed unknown.');
+    for (const a of r.assumptions) lines.push(sentence(a));
+    for (const a of r.excluded) lines.push(sentence(a));
+    for (const a of r.notes) lines.push(sentence(a));
     const conj = r.curves.filter((c) => c.formationLimited).map((c) => c.compound.name);
     if (conj.length) lines.push(`Formation-limited conjugates (${conj.join(', ')}) can accumulate in renal impairment.`);
     if (r.administered) lines.push('Amounts are on an administered basis (bioavailability not applied for at least one component).');

@@ -205,6 +205,8 @@ function legendClear(r: ProductResult, s: Session['settings']): string {
 function statusTitle(r: ProductResult): string {
   const lines = [clearStatusText(r, (t) => fmtDateTime(t, S()))];
   if (r.assumptions.length) lines.push('', 'Assumptions:', ...r.assumptions.map((a) => `• ${a}`));
+  if (r.excluded.length) lines.push('', 'Excluded from the clear date:', ...r.excluded.map((a) => `• ${a}`));
+  if (r.notes.length) lines.push('', ...r.notes.map((a) => `• ${a}`));
   if (r.administered) lines.push('', 'Amounts are on an administered basis (bioavailability not applied).');
   return lines.join('\n');
 }
@@ -605,6 +607,8 @@ function renderSettingsTab() {
         field('Y-axis', select(s.yScale, [['linear', 'Linear'], ['log', 'Log']] as const, (v) => { s.yScale = v; view(); })),
         field('Units', select(s.units, [['mg', 'mg amount'], ['percent', '% of dose']] as const, (v) => { s.units = v; view(); }))),
       toggle('Show metabolites', s.showMetabolites, (v) => { s.showMetabolites = v; view(); }),
+      toggle('Show inactive metabolites', s.showInactiveMetabolites, (v) => { s.showInactiveMetabolites = v; view(); }),
+      h('p', { class: 'field-hint' }, 'Metabolites classed as clinically inactive are drawn fainter and never hold up a clear date.'),
       toggle('Show range bands (min–max half-life)', s.showBands, (v) => { s.showBands = v; view(); }),
       toggle('CYP2D6 inhibition track', s.showCypTrack, (v) => { s.showCypTrack = v; view(); }),
       toggle('QT liability track', s.showQtTrack, (v) => { s.showQtTrack = v; view(); renderSettingsTab(); }),
