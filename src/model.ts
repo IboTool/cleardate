@@ -268,13 +268,19 @@ export interface ProductResult {
   administered: boolean;
   /** Compounds with qt / cyp2d6 / receptors still unassessed (export section). */
   unassessed: { qt: string[]; cyp2d6: string[]; receptors: string[] };
+  /** Projected with the poor-metaboliser multiplier (it exists for every CYP2D6 substrate in the product). */
   pmAdjusted?: boolean;
+  /** Projected as a poor metaboliser, but these CYP2D6 substrates have no "poor" half-life multiplier. */
+  pmUnquantified?: string[];
 }
 
 export interface CypInterval {
   start: number;
   end: number;
+  /** For an inhibitor of unassessed strength, the minimum assumed ("weak"). */
   strength: Exclude<InhibitorStrength, 'none' | 'unassessed'>;
+  /** Inhibition documented (inhibitionType set) but strength unassessed. */
+  strengthUnassessed: boolean;
   tail: boolean;
   compound: string;
   productKey: string;
@@ -325,7 +331,8 @@ export interface Scenario {
   ibogaineAt: number | null;
   ibogaineDoseTimes: number[];
   cyp: CypInterval[];
-  cypAtTreatment: { inhibited: boolean; by: string[]; unassessed: string[] };
+  /** `by`: inhibitors of known strength; `byUnassessedStrength`: documented inhibitors of unassessed strength (counted as weak). */
+  cypAtTreatment: { inhibited: boolean; by: string[]; byUnassessedStrength: string[]; unassessed: string[] };
   qt: QtResult;
   lingering: LingeringBand[];
   overlaps: ReceptorOverlap[];
@@ -353,6 +360,28 @@ function phenValue(m: PhenotypeMap, phen: Phenotype): { value: number; assumed: 
   const v = m[phen];
   if (typeof v === 'number' && v >= 0) return { value: v, assumed: false };
   return { value: 1, assumed: phen !== 'normal' };
+}
+
+/** A CYP2D6 substrate whose poor-metaboliser half-life multiplier is missing. */
+const lacksPoorMultiplier = (c: Compound) => c.cyp2d6.substrate === 'yes' && typeof c.cyp2d6.halfLifeMultiplier?.poor !== 'number';
+
+export const pmNotQuantified = (names: string[]) => `not quantified — no phenotype data for ${names.join(', ')}`;
+
+/**
+ * For a product projected as a poor metaboliser: caveat every substrate curve that has no "poor" multiplier
+ * (its curve is unchanged, not a poor-metaboliser projection). Returns the compound names.
+ */
+function markPmUnquantified(r: ProductResult): string[] {
+  const curves = r.curves.filter((c) => lacksPoorMultiplier(c.compound));
+  if (!curves.length) return [];
+  const names = curves.map((c) => c.compound.name);
+  const caveat = `poor-metaboliser exposure increase ${pmNotQuantified(names)} — curve shows unadjusted kinetics`;
+  const assumedX1 = (a: string) => curves.some((c) => a === `${c.compound.name}: CYP2D6 half-life multiplier for poor metabolisers unknown — assumed ×1`);
+  for (const c of curves) c.assumptions = [caveat, ...c.assumptions.filter((a) => !assumedX1(a))];
+  r.assumptions = [caveat, ...r.assumptions.filter((a) => !assumedX1(a))];
+  r.pmUnquantified = names;
+  if (r.status === 'clear') r.status = 'assumptions';
+  return names;
 }
 
 /** Half-life multiplier for a CYP2D6 substrate in a given run. */
@@ -774,12 +803,16 @@ export function computeScenario(idx: LibraryIndex, session: Session, now: number
   const cyp: CypInterval[] = [];
   const collectCyp = (r: ProductResult) => {
     for (const c of r.curves) {
-      const inh = c.compound.cyp2d6.inhibitor;
-      if (inh === 'none' || inh === 'unassessed') continue;
+      const { inhibitor, inhibitionType } = c.compound.cyp2d6;
+      if (inhibitor === 'none') continue;
+      const strengthUnassessed = inhibitor === 'unassessed';
+      // Unassessed strength counts only when the inhibition itself is documented; then it is at least weak.
+      if (strengthUnassessed && inhibitionType !== 'reversible' && inhibitionType !== 'mechanism-based') continue;
+      const strength = strengthUnassessed ? 'weak' : inhibitor;
+      const base = { strength, strengthUnassessed, compound: c.compound.name, productKey: r.key } as const;
       for (const [a, b] of intervalsAbove(c.runs.typical.times, c.runs.typical.amounts, c.threshold)) {
-        cyp.push({ start: a, end: b, strength: inh, tail: false, compound: c.compound.name, productKey: r.key });
-        if (c.compound.cyp2d6.inhibitionType === 'mechanism-based')
-          cyp.push({ start: b, end: b + recoveryTail, strength: inh, tail: true, compound: c.compound.name, productKey: r.key });
+        cyp.push({ ...base, start: a, end: b, tail: false });
+        if (inhibitionType === 'mechanism-based') cyp.push({ ...base, start: b, end: b + recoveryTail, tail: true });
       }
     }
   };
@@ -792,17 +825,16 @@ export function computeScenario(idx: LibraryIndex, session: Session, now: number
     }));
   const inhibitedAt = (t: number) => cyp.filter((iv) => t >= iv.start && t <= iv.end);
   const atTreatment = ibTimes.flatMap(inhibitedAt);
-  const cypUnassessed = ibogaineAt === null ? [] : [...new Set(presentAt(ibogaineAt).filter((c) => c.compound.cyp2d6.inhibitor === 'unassessed').map((c) => c.compound.name))];
-  const cypAtTreatment = { inhibited: atTreatment.length > 0, by: [...new Set(atTreatment.map((i) => i.compound))], unassessed: cypUnassessed };
-  if (cypAtTreatment.inhibited)
-    warnings.unshift({
-      level: 'danger',
-      text: `CYP2D6 likely inhibited at treatment — ibogaine exposure may resemble a poor metaboliser's. (Inhibited by: ${cypAtTreatment.by.join(', ')}.)`,
-    });
-  if (cypUnassessed.length)
-    warnings.push({ level: 'warn', text: `CYP2D6 inhibition unassessed for compounds present at the ibogaine date: ${cypUnassessed.join(', ')}.` });
+  const documented = (c: Compound) => c.cyp2d6.inhibitionType === 'reversible' || c.cyp2d6.inhibitionType === 'mechanism-based';
+  const cypUnassessed = ibogaineAt === null ? [] : [...new Set(presentAt(ibogaineAt)
+    .filter((c) => c.compound.cyp2d6.inhibitor === 'unassessed' && !documented(c.compound)).map((c) => c.compound.name))];
+  const by = [...new Set(atTreatment.filter((i) => !i.strengthUnassessed).map((i) => i.compound))];
+  const byUnassessedStrength = [...new Set(atTreatment.filter((i) => i.strengthUnassessed).map((i) => i.compound))].filter((n) => !by.includes(n));
+  const cypAtTreatment = { inhibited: atTreatment.length > 0, by, byUnassessedStrength, unassessed: cypUnassessed };
 
   // Projected ibogaine + noribogaine.
+  const projectAsPoor = cypAtTreatment.inhibited || session.patient.phenotype === 'poor';
+  let pmUnquantified: string[] = [];
   if (ib) {
     const p = findIbogaineProduct(idx);
     const doses = [ib.flood, ...ib.boosters]
@@ -817,8 +849,12 @@ export function computeScenario(idx: LibraryIndex, session: Session, now: number
         },
         ctx, warnings,
       );
-      r.pmAdjusted = cypAtTreatment.inhibited;
-      if (r.pmAdjusted) r.name = 'Ibogaine (projected, poor-metaboliser adjusted)';
+      if (projectAsPoor) {
+        pmUnquantified = markPmUnquantified(r);
+        r.pmAdjusted = cypAtTreatment.inhibited && !pmUnquantified.length;
+        if (r.pmAdjusted) r.name = 'Ibogaine (projected, poor-metaboliser adjusted)';
+        else if (pmUnquantified.length) r.name = 'Ibogaine (projected, poor-metaboliser effect not quantified)';
+      }
       if (r.missing.length) warnings.push({ level: 'warn', text: `Ibogaine projection incomplete — missing kinetics for: ${r.missing.join(', ')}.` });
       products.push(r);
       collectCyp(r);
@@ -826,6 +862,22 @@ export function computeScenario(idx: LibraryIndex, session: Session, now: number
       warnings.push({ level: 'info', text: 'Ibogaine has no half-life data in the library yet — only the treatment date is shown.' });
     }
   }
+
+  const notQuantified = pmUnquantified.length ? `the increase is ${pmNotQuantified(pmUnquantified)}` : '';
+  if (cypAtTreatment.inhibited) {
+    const who = [
+      by.length ? `Inhibited by: ${by.join(', ')}.` : '',
+      byUnassessedStrength.length ? `Inhibition documented, strength unassessed — treated as at least weak: ${byUnassessedStrength.join(', ')}.` : '',
+    ].filter(Boolean).join(' ');
+    warnings.unshift({
+      level: 'danger',
+      text: `CYP2D6 likely inhibited at treatment — ibogaine exposure may resemble a poor metaboliser's${notQuantified ? `, but ${notQuantified}` : ''}. (${who})`,
+    });
+  } else if (notQuantified) {
+    warnings.unshift({ level: 'danger', text: `Poor CYP2D6 metaboliser — ibogaine exposure may be increased, but ${notQuantified}.` });
+  }
+  if (cypUnassessed.length)
+    warnings.push({ level: 'warn', text: `CYP2D6 inhibition unassessed for compounds present at the ibogaine date: ${cypUnassessed.join(', ')}.` });
 
   const qt = computeQt(products, axisStart, Math.max(axisEnd, ...products.map((p) => p.clearAtMax ?? axisEnd)));
 
@@ -963,4 +1015,5 @@ export function computeQt(products: ProductResult[], start: number, end: number)
 }
 
 export const strongestAt = (cyp: CypInterval[], t: number): CypInterval | null =>
-  cyp.filter((iv) => t >= iv.start && t <= iv.end).sort((a, b) => STRENGTH_RANK[b.strength] - STRENGTH_RANK[a.strength])[0] ?? null;
+  cyp.filter((iv) => t >= iv.start && t <= iv.end)
+    .sort((a, b) => STRENGTH_RANK[b.strength] - STRENGTH_RANK[a.strength] || Number(a.strengthUnassessed) - Number(b.strengthUnassessed))[0] ?? null;

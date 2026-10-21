@@ -234,7 +234,7 @@ function renderLegend() {
   if (ib)
     groups.push(h('div', { class: 'legend-group' },
       h('span', { class: 'legend-cat', style: '--c:#e8c36a' }, 'Treatment'),
-      item(IBOGAINE_KEY, ib.name, ib.color, ib.pmAdjusted ? 'CYP2D6 inhibited' : '', [...entryBadges(ib.product, ib.curves.every((c) => c.compound.verified))], statusTitle(ib))));
+      item(IBOGAINE_KEY, ib.name, ib.color, ib.pmUnquantified?.length ? 'poor-metaboliser effect not quantified' : ib.pmAdjusted ? 'CYP2D6 inhibited' : '', [...entryBadges(ib.product, ib.curves.every((c) => c.compound.verified))], statusTitle(ib))));
   for (const cat of cats) {
     const rs = scn.products.filter((r) => !r.isIbogaine && r.product.category === cat.id);
     if (!rs.length) continue;
@@ -747,7 +747,7 @@ function openIbogaineForm() {
       } }, '+ Add booster'));
   renderBoosters();
   const m = modal('Ibogaine treatment', h('div', { class: 'form-section' },
-    h('p', { class: 'field-hint' }, 'The flood dose time is the planned treatment date (bold marker). Projected ibogaine and noribogaine are plotted forward; if CYP2D6 is likely inhibited at that time, the projection uses the poor-metaboliser multiplier.'),
+    h('p', { class: 'field-hint' }, 'The flood dose time is the planned treatment date (bold marker). Projected ibogaine and noribogaine are plotted forward; if CYP2D6 is likely inhibited at that time, the projection uses the poor-metaboliser multiplier; where the library has none, the curve is unadjusted and labelled “not quantified”.'),
     noData ? h('div', { class: 'warning info' }, 'ℹ Ibogaine has no half-life data in the library yet — only the date marker will be shown.') : null,
     doseRow(ib.flood, 'Flood'),
     boostersEl,

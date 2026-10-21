@@ -5,7 +5,7 @@ import * as echarts from './echarts';
 import type { EChartsOption, CustomSeriesRenderItemAPI, CustomSeriesRenderItemParams, SeriesOption } from 'echarts';
 import { fmtAmount, fmtAxis, fmtDateTime } from './format';
 import { valueAt } from './pk';
-import { DAY, isRateUnit, strongestAt, toMg, type CompoundCurve, type ProductResult, type QtLane, type Scenario } from './model';
+import { DAY, isRateUnit, pmNotQuantified, strongestAt, toMg, type CompoundCurve, type CypInterval, type ProductResult, type QtLane, type Scenario } from './model';
 import type { QtTier, Session, Settings } from './types';
 
 export type Theme = 'dark' | 'light';
@@ -33,6 +33,7 @@ const PALETTE = {
 };
 
 export const CYP_COLORS = { weak: '#f2c46d', moderate: '#ff9a3c', strong: '#ff5a5f' };
+export const CYP_UNASSESSED_LABEL = 'inhibition documented, strength unassessed';
 export const QT_COLORS: Record<QtTier, string> = { none: '#6c7a96', unassessed: '#8a8f9c', conditional: '#d7c34a', possible: '#ff9a3c', known: '#ff4d6d' };
 
 const TRACK_H = { cyp: 22, qt: 26, lingering: 26 };
@@ -409,7 +410,7 @@ export function buildChartOption(scn: Scenario, session: Session, o: ChartOpts):
     const g = grids[gi];
     const qtNote = s.showQtLoad && !scn.qt.loadAvailable ? ' · summed load unavailable (not calibrated)' : '';
     const label =
-      t === 'cyp' ? 'CYP2D6 inhibition'
+      t === 'cyp' ? `CYP2D6 inhibition${scn.cyp.some((iv) => iv.strengthUnassessed) ? ` — hatched = ${CYP_UNASSESSED_LABEL}` : ''}`
       : t === 'qt' ? `QT liability by compound — qualitative, hatched = unassessed${qtNote}`
       : t === 'qtload' ? 'Summed relative QT load — qualitative, not predicted ms'
       : 'Lingering effects after clearance';
@@ -421,7 +422,8 @@ export function buildChartOption(scn: Scenario, session: Session, o: ChartOpts):
       });
 
     if (t === 'cyp') {
-      const ivs = scn.cyp;
+      // Unassessed-strength bands are drawn last, in the lower part of the track, so they stay visible over a known inhibitor.
+      const ivs = [...scn.cyp].sort((a, b) => Number(a.strengthUnassessed) - Number(b.strengthUnassessed));
       series.push({
         type: 'custom',
         id: 'cyp',
@@ -437,9 +439,21 @@ export function buildChartOption(scn: Scenario, session: Session, o: ChartOpts):
           const b = api.coord([iv.end, 1]);
           const col = CYP_COLORS[iv.strength];
           const op = dim(iv.productKey) ? 0.25 : 1;
+          const width = Math.max(1, b[0] - a[0]);
+          if (iv.strengthUnassessed) {
+            const hh = Math.round((a[1] - b[1]) * 0.45);
+            const shape = { x: a[0], y: a[1] - hh, width, height: hh, r: 2 };
+            return {
+              type: 'group',
+              children: [
+                { type: 'rect', shape, style: { fill: P.tooltipBg, opacity: op } },
+                { type: 'rect', shape, style: { fill: { image: hatch(col), repeat: 'repeat' }, opacity: (iv.tail ? 0.5 : 1) * op } },
+              ],
+            } as never;
+          }
           return {
             type: 'rect',
-            shape: { x: a[0], y: b[1], width: Math.max(1, b[0] - a[0]), height: a[1] - b[1], r: 3 },
+            shape: { x: a[0], y: b[1], width, height: a[1] - b[1], r: 3 },
             style: {
               fill: iv.tail
                 ? new echarts.graphic.LinearGradient(0, 0, 1, 0, [{ offset: 0, color: hexToRgba(col, 0.5 * op) }, { offset: 1, color: hexToRgba(col, 0) }])
@@ -619,7 +633,10 @@ function tooltipHtml(scn: Scenario, session: Session, t: number | undefined): st
         c.inactive ? 'inactive — not in clear date' : '',
         c.normalized ? 'amount unknown — timing only' : c.formationLimited ? 'formation-limited' : '',
       ].filter(Boolean);
-      const tag = tags.map((x) => ` <span style="opacity:.6;font-weight:400">· ${x}</span>`).join('');
+      const pmCaveat = r.pmUnquantified?.includes(c.compound.name)
+        ? ` <span style="color:#ffb74d;font-weight:400">· poor-metaboliser effect ${pmNotQuantified([c.compound.name])}</span>`
+        : '';
+      const tag = tags.map((x) => ` <span style="opacity:.6;font-weight:400">· ${x}</span>`).join('') + pmCaveat;
       rows.push(
         `<div style="display:flex;justify-content:space-between;gap:14px;${indent}"><span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${col};margin-right:6px"></span>${c.depth === 0 ? r.name : c.compound.name}${tag}</span><span style="font-variant-numeric:tabular-nums">${shown}</span></div>`,
       );
@@ -635,15 +652,20 @@ function tooltipHtml(scn: Scenario, session: Session, t: number | undefined): st
       rows.push(`<div style="opacity:.75;font-size:11px;margin:0 0 4px 14px;color:#ffb74d">Incomplete — no kinetics for ${r.missing.join(', ')}</div>`);
   }
   const cyp = strongestAt(scn.cyp, t);
+  const cypStrength = (iv: CypInterval) => (iv.strengthUnassessed ? `${CYP_UNASSESSED_LABEL} (counted as at least weak)` : iv.strength);
+  const otherUnassessed = [...new Set(scn.cyp
+    .filter((iv) => iv.strengthUnassessed && iv !== cyp && iv.compound !== cyp?.compound && t >= iv.start && t <= iv.end)
+    .map((iv) => iv.compound))];
   const qtHere = scn.qt.lanes.filter((l) => l.segments.some((sg) => t >= sg[0] && t <= sg[1]));
   const qt = scn.qt.loadAvailable && s.showQtLoad && scn.qt.load.length ? nearestQt(scn, t) : null;
   const lingering = scn.lingering.filter((b) => t >= b.start && t <= b.end);
   const foot: string[] = [];
   foot.push(
     cyp
-      ? `<div><b style="color:${CYP_COLORS[cyp.strength]}">CYP2D6 inhibited</b> — ${cyp.strength}${cyp.tail ? ', enzyme recovering' : ''} (${cyp.compound})</div>`
+      ? `<div><b style="color:${CYP_COLORS[cyp.strength]}">CYP2D6 inhibited</b> — ${cypStrength(cyp)}${cyp.tail ? ', enzyme recovering' : ''} (${cyp.compound})</div>`
       : '<div style="opacity:.7">CYP2D6 not inhibited</div>',
   );
+  if (otherUnassessed.length) foot.push(`<div style="opacity:.85">Also: ${CYP_UNASSESSED_LABEL} — ${otherUnassessed.join(', ')}</div>`);
   if (qtHere.length)
     foot.push(`<div>QT liability present: ${qtHere.map((l) => `<b style="color:${QT_COLORS[l.tier]}">${l.compound}</b> <span style="opacity:.7">(${l.tier})</span>`).join(', ')}</div>`);
   if (qt) foot.push(`<div>Summed relative QT load: <b>${qt.load.toFixed(2)}</b> <span style="opacity:.7">(qualitative)</span></div>`);

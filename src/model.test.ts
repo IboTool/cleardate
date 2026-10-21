@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildIndex, computeScenario, HOUR, toLocalInput, type Scenario } from './model';
+import { buildIndex, computeScenario, HOUR, strongestAt, toLocalInput, type Scenario } from './model';
 import { curveVisible } from './chart';
 import { assumptionLines } from './export';
 import { valueAt } from './pk';
@@ -289,6 +289,107 @@ describe('QT display', () => {
     const onlyA = run(l, [{ productId: 'a_oral', amount: 50 }]);
     expect(onlyA.qt.loadAvailable).toBe(true);
     expect(Math.max(...onlyA.qt.load.map((x) => x.load))).toBeCloseTo(1, 2);
+  });
+});
+
+describe('CYP2D6: poor-metaboliser projection without phenotype data', () => {
+  const cyp = (over: Partial<Compound['cyp2d6']>): Compound['cyp2d6'] =>
+    ({ substrate: 'no', halfLifeMultiplier: null, inhibitor: 'none', inhibitionType: 'none', ...over });
+  const lib = (ibMult: Compound['cyp2d6']['halfLifeMultiplier'], inhibitor = true) => library([
+    compound('ibogaine', 7, { cyp2d6: cyp({ substrate: 'yes', halfLifeMultiplier: ibMult }) }),
+    compound('inh', 10, { cyp2d6: cyp({ inhibitor: inhibitor ? 'strong' : 'none', inhibitionType: inhibitor ? 'reversible' : 'none' }) }),
+  ], [emptyProduct('ibogaine_oral', 'Ibogaine (Oral)', 'ibogaine', 'Oral', 'x'), emptyProduct('inh_oral', 'Inh (Oral)', 'inh', 'Oral', 'x')]);
+  const scenario = (l: Library, patch: (s: Session) => void = () => {}) =>
+    run(l, [{ productId: 'inh_oral', amount: 20 }], (s) => { s.ibogaine = { flood: { mg: 1000, time: at(12) }, boosters: [] }; patch(s); });
+  const ib = (scn: Scenario) => scn.products.find((p) => p.isIbogaine)!;
+  const danger = (scn: Scenario) => scn.warnings.filter((w) => w.level === 'danger').map((w) => w.text);
+
+  it('does not present an unchanged curve as the poor-metaboliser projection', () => {
+    const inhibited = scenario(lib(null));
+    const baseline = scenario(lib(null, false));
+    expect(inhibited.cypAtTreatment.inhibited).toBe(true);
+    const r = ib(inhibited);
+    expect(r.pmAdjusted).toBe(false);
+    expect(r.pmUnquantified).toEqual(['Ibogaine']);
+    expect(r.name).toBe('Ibogaine (projected, poor-metaboliser effect not quantified)');
+    expect(r.clearAt).toBe(ib(baseline).clearAt);
+    expect(danger(inhibited)).toEqual([expect.stringMatching(/may resemble a poor metaboliser's, but the increase is not quantified — no phenotype data for Ibogaine\. \(Inhibited by: Inh\.\)/)]);
+  });
+
+  it('caveats the projected curve and lists it under Assumptions and missing data', () => {
+    const scn = scenario(lib({ normal: 1, intermediate: 1.5 }));
+    const r = ib(scn);
+    expect(r.pmUnquantified).toEqual(['Ibogaine']);
+    expect(r.status).toBe('assumptions');
+    expect(curve(scn, 'ibogaine').assumptions[0]).toMatch(/^poor-metaboliser exposure increase not quantified — no phenotype data for Ibogaine/);
+    expect(r.assumptions.some((a) => /assumed ×1/.test(a))).toBe(false);
+    const lines = assumptionLines(scn).find((x) => x.product === r.name)!.lines;
+    expect(lines).toContain('Poor-metaboliser exposure increase not quantified — no phenotype data for Ibogaine — curve shows unadjusted kinetics.');
+  });
+
+  it('warns for a poor-metaboliser patient without an inhibitor', () => {
+    const scn = scenario(lib(null, false), (s) => { s.patient.phenotype = 'poor'; });
+    expect(scn.cypAtTreatment.inhibited).toBe(false);
+    expect(ib(scn).pmUnquantified).toEqual(['Ibogaine']);
+    expect(danger(scn)).toEqual(['Poor CYP2D6 metaboliser — ibogaine exposure may be increased, but the increase is not quantified — no phenotype data for Ibogaine.']);
+  });
+
+  it('is unchanged when a "poor" multiplier exists', () => {
+    const scn = scenario(lib({ poor: 3, normal: 1 }));
+    const r = ib(scn);
+    expect(r.pmAdjusted).toBe(true);
+    expect(r.pmUnquantified).toBeUndefined();
+    expect(r.name).toBe('Ibogaine (projected, poor-metaboliser adjusted)');
+    expect(r.clearAt!).toBeGreaterThan(ib(scenario(lib(null, false))).clearAt!);
+    expect(danger(scn)).toEqual(["CYP2D6 likely inhibited at treatment — ibogaine exposure may resemble a poor metaboliser's. (Inhibited by: Inh.)"]);
+    expect(scn.warnings.some((w) => /not quantified/.test(w.text))).toBe(false);
+  });
+});
+
+describe('CYP2D6: inhibitors of unassessed strength', () => {
+  const lib = (inhibitionType: Compound['cyp2d6']['inhibitionType']) => library([
+    compound('meth', 10, { cyp2d6: { substrate: 'unassessed', halfLifeMultiplier: null, inhibitor: 'unassessed', inhibitionType } }),
+  ], [emptyProduct('meth_oral', 'Meth (Oral)', 'meth', 'Oral', 'x')]);
+  const scenario = (l: Library) =>
+    run(l, [{ productId: 'meth_oral', amount: 60 }], (s) => { s.ibogaine = { flood: { mg: 1000, time: at(24) }, boosters: [] }; });
+
+  it('appear on the track while above the clear threshold, counted as at least weak', () => {
+    const scn = scenario(lib('reversible'));
+    expect(scn.cyp).toHaveLength(1);
+    const iv = scn.cyp[0];
+    expect(iv).toMatchObject({ strength: 'weak', strengthUnassessed: true, tail: false, compound: 'Meth' });
+    expect(iv.start).toBe(T0);
+    expect(Math.abs(iv.end - curve(scn, 'meth').clearAt!)).toBeLessThanOrEqual(HOUR);
+  });
+
+  it('count towards inhibition at treatment, with their own wording', () => {
+    const scn = scenario(lib('reversible'));
+    expect(scn.cypAtTreatment).toMatchObject({ inhibited: true, by: [], byUnassessedStrength: ['Meth'], unassessed: [] });
+    const w = scn.warnings.find((x) => x.level === 'danger')!.text;
+    expect(w).toMatch(/^CYP2D6 likely inhibited at treatment/);
+    expect(w).toMatch(/Inhibition documented, strength unassessed — treated as at least weak: Meth\./);
+    expect(scn.warnings.some((x) => /CYP2D6 inhibition unassessed for compounds present/.test(x.text))).toBe(false);
+  });
+
+  it('keep the recovery tail when mechanism-based', () => {
+    const scn = scenario(lib('mechanism-based'));
+    expect(scn.cyp.map((iv) => [iv.tail, iv.strengthUnassessed])).toEqual([[false, true], [true, true]]);
+  });
+
+  it('stay off the track when the inhibition type is also unassessed', () => {
+    const scn = scenario(lib('unassessed'));
+    expect(scn.cyp).toEqual([]);
+    expect(scn.cypAtTreatment).toMatchObject({ inhibited: false, unassessed: ['Meth'] });
+    expect(scn.warnings.some((x) => x.text === 'CYP2D6 inhibition unassessed for compounds present at the ibogaine date: Meth.')).toBe(true);
+  });
+
+  it('rank below an assessed weak inhibitor in the tooltip', () => {
+    const base = { start: 0, end: 10, tail: false, productKey: 'p' };
+    const pick = strongestAt([
+      { ...base, strength: 'weak', strengthUnassessed: true, compound: 'U' },
+      { ...base, strength: 'weak', strengthUnassessed: false, compound: 'W' },
+    ], 5);
+    expect(pick?.compound).toBe('W');
   });
 });
 
