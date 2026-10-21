@@ -58,7 +58,13 @@ input:focus, select:focus, textarea:focus { border-color: rgba(124, 156, 255, 0.
 input[type='checkbox'] { width: auto; accent-color: var(--accent); }
 select option { background: var(--panel-solid); }
 input[type='datetime-local'], input[type='date'] { color-scheme: dark; }
-.row > .field:has(input[type='datetime-local']) { min-width: 230px; }
+.dt { position: relative; display: flex; min-width: 0; }
+.dt-text { padding-right: 32px; font-variant-numeric: tabular-nums; }
+.dt-text.invalid { border-color: rgba(255, 90, 95, 0.7); }
+.dt-pick { position: absolute; right: 3px; top: 50%; transform: translateY(-50%); display: grid; place-items: center; width: 26px; height: 26px; border: 0; border-radius: 7px; background: transparent; color: var(--muted); cursor: pointer; }
+.dt-pick:hover, .dt-pick:focus-visible { color: var(--text); background: rgba(255, 255, 255, 0.06); }
+.dt-native { position: absolute; right: 0; bottom: 0; width: 1px; height: 1px; padding: 0; border: 0; opacity: 0; pointer-events: none; }
+.row > .field:has(.dt) { min-width: 170px; }
 textarea { resize: vertical; }
 textarea.code { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 12px; }
 .check { display: flex; gap: 8px; align-items: center; cursor: pointer; color: var(--text); }
@@ -127,6 +133,8 @@ mark { background: rgba(124, 156, 255, 0.28); color: #fff; border-radius: 3px; p
 .legend-item.dimmed { opacity: .38; }
 .legend-sub { font-size: 11px; color: var(--muted); }
 .legend-key { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--dim); margin-left: auto; }
+.legend-key .show-all { margin-left: 10px; padding: 3px 10px; font-size: 11.5px; border-color: var(--accent-soft); color: var(--accent); background: var(--accent-soft); }
+.legend-key .show-all:hover { border-color: var(--accent); }
 .k-solid, .k-dash, .k-band { display: inline-block; width: 18px; height: 0; border-top: 2px solid var(--muted); margin-left: 6px; }
 .k-dash { border-top-style: dashed; }
 .k-band { height: 8px; border: 0; background: rgba(139, 146, 165, 0.25); border-radius: 2px; }

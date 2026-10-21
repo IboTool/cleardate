@@ -283,7 +283,7 @@ async function main() {
     await shot(page, 'dose-entry-single', pad(await box(form), 4), [
       corner(await box(form.locator('.segmented'))),
       corner(await box(form.locator('input[name=amount]'))),
-      corner(await box(form.locator('input[type=datetime-local]').first())),
+      corner(await box(form.locator('.dt-text').first())),
     ]);
     await form.locator('.dose-form-head .icon-btn').click();
 
@@ -328,7 +328,7 @@ async function main() {
     await shot(page, 'ibogaine-form', pad(await box(modal), 2), [
       corner(await box(modal.locator('.ib-row').first().locator('input[type=number]'))),
       await textEnd(modal.locator('.ib-row').first().locator('.mgkg')),
-      corner(await box(modal.locator('.ib-row').nth(1).locator('input[type=datetime-local]'))),
+      corner(await box(modal.locator('.ib-row').nth(1).locator('.dt-text'))),
       corner(await box(modal.getByRole('button', { name: '+ Add booster' }))),
     ]);
     await modal.locator('.modal-head .icon-btn').click();

@@ -6,6 +6,7 @@ import * as echarts from './echarts';
 import { buildChartOption, minChartHeight } from './chart';
 import { exportPdf, exportPng, download, DISCLAIMER } from './export';
 import { ageFrom, fmtDate, fmtDateTime, fmtEvery } from './format';
+import { dateTimeInput } from './ui/datetime';
 import {
   buildIndex, clearStatusText, combinationText, componentIds, computeScenario, convertUnit, displayName, expandDose, findIbogaineProduct,
   IBOGAINE_KEY, isRateUnit, mergeLibraries, missingKinetics, parseLocal, productColors, productDataStatus, productHasData, toLocalInput, toMg, withCustom,
@@ -223,7 +224,7 @@ function renderLegend() {
       type: 'button',
       class: `legend-item ${app.focusKey === key ? 'focused' : ''} ${app.focusKey && app.focusKey !== key ? 'dimmed' : ''}`,
       onclick: () => setFocus(key),
-      title: `${title ? title + '\n\n' : ''}Click to highlight this product and its metabolites`,
+      title: `${title ? title + '\n\n' : ''}${app.focusKey === key ? 'Click again, or Show all, to show every product' : 'Click to highlight this product and its metabolites'}`,
     },
       h('span', { class: 'swatch', style: `--c:${color}` }),
       h('span', { class: 'legend-name' }, name),
@@ -234,7 +235,7 @@ function renderLegend() {
   if (ib)
     groups.push(h('div', { class: 'legend-group' },
       h('span', { class: 'legend-cat', style: '--c:#e8c36a' }, 'Treatment'),
-      item(IBOGAINE_KEY, ib.name, ib.color, ib.pmUnquantified?.length ? 'poor-metaboliser effect not quantified' : ib.pmAdjusted ? 'CYP2D6 inhibited' : '', [...entryBadges(ib.product, ib.curves.every((c) => c.compound.verified))], statusTitle(ib))));
+      item(IBOGAINE_KEY, ib.name, ib.color, ib.pmAdjusted ? 'CYP2D6 inhibited' : '', [...entryBadges(ib.product, ib.curves.every((c) => c.compound.verified))], statusTitle(ib))));
   for (const cat of cats) {
     const rs = scn.products.filter((r) => !r.isIbogaine && r.product.category === cat.id);
     if (!rs.length) continue;
@@ -252,12 +253,14 @@ function renderLegend() {
   const hasMetabolites = scn.products.some((r) => r.curves.some((c) => c.depth > 0));
   const hasNormalized = scn.products.some((r) => r.curves.some((c) => c.normalized));
   const hasAssumptions = scn.products.some((r) => r.status !== 'clear');
-  if (groups.length && ((hasMetabolites && s.showMetabolites) || hasAssumptions))
+  const focused = app.focusKey !== null && scn.products.some((r) => r.key === app.focusKey);
+  if (groups.length && ((hasMetabolites && s.showMetabolites) || hasAssumptions || focused))
     groups.push(h('span', { class: 'legend-key' },
       hasMetabolites && s.showMetabolites ? [h('span', { class: 'k-solid' }), 'parent', h('span', { class: 'k-dash' }), 'metabolites'] : null,
       s.showBands ? [h('span', { class: 'k-band' }), 'min–max range'] : null,
       hasNormalized ? [h('span', { class: 'k-dot' }), '% of own peak — amount unknown'] : null,
-      hasAssumptions ? h('span', null, '* with assumptions · ≥ incomplete (hover for details)') : null));
+      hasAssumptions ? h('span', null, '* with assumptions · ≥ incomplete (hover for details)') : null,
+      focused ? h('button', { type: 'button', class: 'btn btn-sm show-all', title: 'Show every product again (Esc)', onclick: () => setFocus(null) }, '✕ Show all') : null));
   legendEl.replaceChildren(...groups);
 }
 
@@ -369,32 +372,27 @@ function renderDoseForm() {
   });
   const single = h('div', { class: 'single' });
   const regimen = h('div', { class: 'regimen' });
-  const time = h('input', { type: 'datetime-local', value: d.time ?? '' });
-  const removed = h('input', { type: 'datetime-local' });
+  const time = dateTimeInput(d.time ?? '', (v) => { d.time = v; updRemoved(); }, S(), { name: 'time' });
+  const removed = dateTimeInput('', (v) => {
+    const hrs = (parseLocal(v) - parseLocal(d.time)) / HOUR;
+    if (hrs > 0) d.durationHours = hrs;
+  }, S(), { name: 'removed' });
   const updRemoved = () => {
     const t = parseLocal(d.time);
     removed.value = rate && Number.isFinite(t) ? toLocalInput(t + (d.durationHours ?? defaultDur) * HOUR) : '';
   };
-  time.addEventListener('input', () => { d.time = time.value; updRemoved(); });
-  removed.addEventListener('input', () => {
-    const hrs = (parseLocal(removed.value) - parseLocal(d.time)) / HOUR;
-    if (hrs > 0) d.durationHours = hrs;
-  });
   updRemoved();
   single.append(rate
     ? h('div', { class: 'row' }, field('Applied at', time), field('Removed at', removed))
     : field(depot ? 'Injection date & time' : 'Date & time', time));
   const r = d.regimen!;
-  const start = h('input', { type: 'datetime-local', value: r.start });
-  start.addEventListener('input', () => (r.start = start.value));
-  const end = h('input', { type: 'datetime-local', value: r.end });
-  end.addEventListener('input', () => (r.end = end.value));
+  const start = dateTimeInput(r.start, (v) => { r.start = v; updCount(); }, S(), { name: 'start' });
+  const end = dateTimeInput(r.end, (v) => { r.end = v; updCount(); }, S(), { name: 'end' });
   const count = h('span', { class: 'field-hint' });
   const updCount = () => {
     const n = expandDose({ ...d, kind: 'regimen' }).length;
     count.textContent = n ? `${n} ${rate ? 'applications' : depot ? 'injections' : 'doses'}` : '';
   };
-  for (const el of [start, end]) el.addEventListener('input', updCount);
   append(regimen, [
     h('div', { class: 'row' },
       field(rate ? 'Change every' : 'Every', numberInput(r.every, (v) => { r.every = v; updCount(); }, { min: '0' })),
@@ -563,8 +561,7 @@ function renderPatientTab() {
     age.textContent = a !== null ? `Age ${a}` : '';
   };
   updAge();
-  const dob = h('input', { type: 'date', value: p.dob });
-  dob.addEventListener('input', () => { p.dob = dob.value; updAge(); ch(); });
+  const dob = dateTimeInput(p.dob, (v) => { p.dob = v; updAge(); ch(); }, S(), { withTime: false, name: 'dob' });
   const weight = h('input', { type: 'number', step: 'any', min: '0' });
   const showWeight = () => (weight.value = p.weightKg > 0 ? String(+(p.weightUnit === 'lb' ? p.weightKg * 2.20462 : p.weightKg).toFixed(1)) : '');
   showWeight();
@@ -726,8 +723,7 @@ function openIbogaineForm() {
     const mgkg = h('span', { class: 'mgkg' });
     const upd = () => (mgkg.textContent = w() > 0 && d.mg > 0 ? `${(d.mg / w()).toFixed(1)} mg/kg` : w() > 0 ? '' : 'set weight in Patient tab for mg/kg');
     upd();
-    const t = h('input', { type: 'datetime-local', value: d.time });
-    t.addEventListener('input', () => (d.time = t.value));
+    const t = dateTimeInput(d.time, (v) => (d.time = v), S(), { name: 'time' });
     return h('div', { class: 'row ib-row' },
       h('span', { class: 'ib-label' }, label),
       field('mg', numberInput(d.mg, (v) => { d.mg = v; upd(); }, { min: '0' }), mgkg),
@@ -852,6 +848,11 @@ function restoreUiState() {
 }
 
 window.addEventListener('pagehide', saveUiState);
+document.addEventListener('keydown', (e) => {
+  const el = e.target as HTMLElement | null;
+  if (e.key !== 'Escape' || !app.focusKey || document.querySelector('.modal') || el?.closest('input, select, textarea')) return;
+  setFocus(null);
+});
 
 // ---------- boot ----------
 
