@@ -10,6 +10,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",
+    "test:e2e": "tsx tools/e2e-library.ts",
     "init-data": "tsx tools/init-data.ts",
     "validate": "tsx tools/validate-drugs.ts",
     "migrate-v2": "tsx tools/migrate-v2.ts",

@@ -19,6 +19,8 @@ import {
 } from './state';
 import { IBOGAINE_DOSE_KINDS, type CustomDrugs, type DoseEntry, type IbogaineDose, type IbogaineDoseKind, type IbogaineTreatment, type Library, type Product, type Session } from './types';
 import { validateLibrary } from './validate';
+import { closePlan, libraryHash, nextLibraryState, parseLibraryHash, type LibraryHistoryState } from './library/route';
+import type { LibraryView } from './library/view';
 import { replacementsFor } from '../tools/product-rules';
 import { $, append, badge, field, h, modal, numberInput, select, textInput, toast } from './ui/dom';
 import { categoryColor, categoryTag, createPicker, productBadges } from './ui/picker';
@@ -130,6 +132,10 @@ root.append(
     h('div', { class: 'btn-group' },
       h('button', { class: 'btn btn-ghost', type: 'button', onclick: savePatientFile }, 'Save file'),
       h('button', { class: 'btn btn-ghost', type: 'button', onclick: () => fileInput.click() }, 'Load file')),
+    h('a', {
+      class: 'btn btn-ghost', href: libraryHash(null), title: 'Browse the drug library',
+      onclick: (e: MouseEvent) => { if (!e.metaKey && !e.ctrlKey) { e.preventDefault(); openLibrary(null); } },
+    }, bookIcon(), 'Library'),
     h('a', { class: 'btn btn-ghost', href: 'help.html', title: 'How to use ClearDate' }, h('span', { class: 'help-q', 'aria-hidden': 'true' }, '?'), 'Help'),
     fileInput),
   bannerEl,
@@ -894,8 +900,67 @@ function restoreUiState() {
 window.addEventListener('pagehide', saveUiState);
 document.addEventListener('keydown', (e) => {
   const el = e.target as HTMLElement | null;
-  if (e.key !== 'Escape' || !app.focusKey || document.querySelector('.modal') || el?.closest('input, select, textarea')) return;
+  if (e.key !== 'Escape' || !app.focusKey || document.querySelector('.modal, .lib-overlay') || el?.closest('input, select, textarea')) return;
   setFocus(null);
+});
+
+// ---------- drug library (read-only overlay, lazy-loaded, hash-routed) ----------
+
+function bookIcon() {
+  const span = h('span', { class: 'lib-icon', 'aria-hidden': 'true' });
+  span.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>';
+  return span;
+}
+
+let libView: LibraryView | null = null;
+let libStripOnArrival = false;
+const libState = () => (history.state as LibraryHistoryState | null)?.lib !== undefined ? (history.state as LibraryHistoryState) : null;
+const stripHash = () => history.replaceState(null, '', location.pathname + location.search);
+
+/** Push a library entry (from the app or within the library) and show it. */
+function openLibrary(id: string | null) {
+  const inLib = !!parseLibraryHash(location.hash);
+  if (inLib && location.hash === libraryHash(id)) return routeLibrary();
+  if (inLib && !libState()) history.replaceState({ lib: 0, root: 'lib' } satisfies LibraryHistoryState, '');
+  history.pushState(nextLibraryState(libState(), inLib), '', libraryHash(id));
+  routeLibrary();
+}
+
+/** Close back to the app: step back over library entries, or strip the hash of a deep link. */
+function closeLibrary() {
+  const plan = closePlan(libState());
+  if (plan.back) {
+    libStripOnArrival = plan.stripHash;
+    history.go(-plan.back);
+  } else {
+    stripHash();
+    routeLibrary();
+  }
+}
+
+async function routeLibrary() {
+  const route = parseLibraryHash(location.hash);
+  if (!route) return libView?.hide();
+  if (!libView) {
+    const { createLibraryView } = await import('./library/view');
+    libView ??= createLibraryView({
+      idx: () => app.idx, search: () => app.search, settings: S, navigate: openLibrary, close: closeLibrary,
+    });
+  }
+  const now = parseLibraryHash(location.hash);
+  if (now) libView.show(now.id);
+}
+
+window.addEventListener('popstate', () => {
+  if (libStripOnArrival) {
+    libStripOnArrival = false;
+    stripHash();
+  }
+  routeLibrary();
+});
+window.addEventListener('hashchange', () => {
+  if (parseLibraryHash(location.hash) && !libState()) history.replaceState({ lib: 0, root: 'lib' } satisfies LibraryHistoryState, '');
+  routeLibrary();
 });
 
 // ---------- boot ----------
@@ -927,6 +992,7 @@ async function boot() {
   commit('library');
   restoreUiState();
   resolveOrphanDoses();
+  if (parseLibraryHash(location.hash)) routeLibrary();
 }
 
 const showError = (e: unknown) => toast(`Unexpected error: ${(e as Error)?.message ?? String(e)}`, 6000);
