@@ -61,10 +61,18 @@ Double-click **`stop-cleardate.bat`** to stop it. It kills whatever is listening
 
 ## Deploying to Cloudflare Pages
 
-1. Push the repo to GitHub.
-2. In the Cloudflare dashboard: Workers & Pages → Create → Pages → *Connect to Git*, and pick the repo.
-3. Framework preset *None*. Build command `npm run build`. Build output directory `dist`.
-4. Deploy. Every push to the production branch redeploys; other branches get preview URLs.
+The repo lives at https://github.com/IboTool/cleardate (branch `main`).
+
+1. In the Cloudflare dashboard: Workers & Pages → Create → **Pages** tab → *Import an existing Git repository*, and pick `IboTool/cleardate`.
+2. Production branch `main`. Framework preset *None* (or *Vite*). Build command `npm run build`. Build output directory `dist`. Leave the root directory empty.
+3. Deploy. Then, under the project's *Custom domains*, add your domain.
+
+Cloudflare builds the site itself: `npm run build` validates `drugs.json`, type-checks, and writes the static site to `dist/`, including `dist/index.html`. Don't commit `dist/`. `.node-version` pins Node 22 for the build. `public/_headers` sets security headers, makes browsers revalidate `drugs.json` on every load, and caches the hashed `assets/` files for a long time. Every push to `main` redeploys within a minute or two; other branches get preview URLs. If `drugs.json` has validation errors, the build fails and the previous version stays live.
+
+**Pushing changes (Windows):**
+
+- `push-cleardate.bat` validates `drugs.json`, commits everything (it asks for a message), and pushes.
+- `tools\push-drugs.bat` commits and pushes only `public/drugs.json`, after validating it. Run it after an editor session to update the live library.
 
 The site is fully static: no backend, no analytics, no external requests at runtime (the Inter font is bundled). A Content-Security-Policy in `index.html` restricts everything to the site's own origin. Patient sessions live only in the browser's `localStorage`; *Save file* / *Load file* move them between machines as `.cleardate.json` files, which `.gitignore` keeps out of the repo.
 
