@@ -170,13 +170,16 @@ async function main() {
 
     const topbar = page.locator('.topbar');
     await shot(page, 'saved-indicator', pad(union(await box(page.locator('.wordmark')), await box(page.locator('.saved'))), 12));
-    const headerButtons = union(await box(page.locator('.topbar .btn-gold')), await box(page.locator('.topbar a.btn')));
+    const libraryBtn = topbar.getByRole('link', { name: 'Library' });
+    const helpBtn = topbar.getByRole('link', { name: 'Help' });
+    const headerButtons = union(await box(page.locator('.topbar .btn-gold')), await box(helpBtn));
     await shot(page, 'header-controls', pad(headerButtons, 10), [
       corner(await box(page.locator('.topbar .btn-gold'))),
       corner(await box(topbar.getByRole('button', { name: 'Reset view' }))),
       corner(union(await box(topbar.getByRole('button', { name: 'PNG' })), await box(topbar.getByRole('button', { name: 'PDF' })))),
       corner(union(await box(topbar.getByRole('button', { name: 'Save file' })), await box(topbar.getByRole('button', { name: 'Load file' })))),
-      corner(await box(page.locator('.topbar a.btn'))),
+      corner(await box(libraryBtn)),
+      corner(await box(helpBtn)),
     ]);
 
     console.log('Chart');
@@ -354,6 +357,67 @@ async function main() {
     await shot(page, 'wizard-metabolites', pad(await box(modal), 2));
     await modal.locator('.modal-head .icon-btn').click();
     await settle(page, 200);
+
+    console.log('Drug library');
+    await libraryBtn.click();
+    const lib = page.locator('.lib-overlay');
+    await lib.waitFor();
+    await settle(page, 400);
+    await shot(page, 'library-overview', null, [
+      corner(await box(lib.locator('.lib-search'))),
+      corner(await box(lib.locator('.lib-chips').first())),
+      corner(await box(lib.locator('.lib-chips').nth(1))),
+      corner(await box(lib.locator('.lib-toggle'))),
+      left(await box(lib.locator('a.lib-row .lib-st').first()), -2),
+      corner(await box(lib.locator('.lib-stats').first())),
+    ]);
+
+    await lib.locator('.lib-search').fill('fluoxetine');
+    await settle(page, 250);
+    await lib.locator('.lib-search').press('Enter');
+    await page.waitForFunction(() => location.hash === '#library/fluoxetine');
+    await settle(page, 300);
+    const detail = lib.locator('.lib-detail');
+    const libSection = (title: string) => detail.locator('.lib-sec').filter({ has: page.locator('h3', { hasText: new RegExp(`^${title}$`) }) });
+    const kinetics = libSection('Kinetics');
+    await shot(page, 'library-entry', union(await box(detail.locator('.lib-entry-head')), await box(kinetics.locator('.lib-card').first())), [
+      corner(await box(detail.locator('.lib-entry-head .lib-status'))),
+      await textEnd(detail.locator('.lib-glance')),
+      corner(await box(detail.locator('.lib-cards .lib-card').first())),
+      corner(await box(kinetics.locator('.lib-bar').first())),
+    ]);
+
+    await lib.locator('.lib-search').fill('codeine');
+    await settle(page, 250);
+    await lib.locator('.lib-search').press('Enter');
+    await page.waitForFunction(() => location.hash === '#library/codeine');
+    await settle(page, 300);
+    const treeSec = libSection('Metabolites');
+    await treeSec.scrollIntoViewIfNeeded();
+    await settle(page, 200);
+    await shot(page, 'library-tree', pad(await box(treeSec), 6), [
+      corner(await box(treeSec.locator('.lib-node.self rect'))),
+      corner(await box(treeSec.locator('.lib-node').nth(1).locator('rect'))),
+      await textEnd(treeSec.locator('.lib-edge-label').first()),
+    ]);
+
+    const srcSec = libSection('Sources');
+    const firstSrc = srcSec.locator('details.lib-src[open]').nth(1);
+    await firstSrc.locator('.lib-raw summary').click();
+    await page.setViewportSize({ width: 1440, height: 1700 });
+    await settle(page, 200);
+    await firstSrc.evaluate((el) => el.scrollIntoView({ block: 'start' }));
+    await settle(page, 200);
+    await shot(page, 'library-sources', pad(union(await box(firstSrc), await box(srcSec.locator('.lib-legend'))), 6), [
+      corner(await box(firstSrc.locator('.lib-cites').first())),
+      left(await box(firstSrc.locator('.lib-prov').first()), -2),
+      corner(await box(firstSrc.locator('.lib-raw summary'))),
+      corner(await box(srcSec.locator('.lib-legend'))),
+    ]);
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.keyboard.press('Escape');
+    await page.waitForFunction(() => !document.querySelector('.lib-overlay'));
+    await settle(page, 300);
 
     console.log('Exports');
     const [pdf] = await Promise.all([page.waitForEvent('download'), topbar.getByRole('button', { name: 'PDF' }).click()]);

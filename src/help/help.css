@@ -44,6 +44,7 @@ li { margin: 3px 0; }
 a { color: var(--accent); text-underline-offset: 2px; }
 a:hover { color: #a9bcff; }
 code { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 0.88em; background: rgba(255, 255, 255, 0.06); padding: 1px 5px; border-radius: 5px; }
+kbd { font-family: inherit; font-size: 0.85em; padding: 1px 6px; border-radius: 5px; border: 1px solid rgba(255, 255, 255, 0.18); border-bottom-width: 2px; }
 strong { color: #f2f4fa; }
 .note { color: var(--muted); font-size: 14px; }
 

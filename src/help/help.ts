@@ -3,6 +3,7 @@
 
 import '@fontsource-variable/inter';
 import './help.css';
+import { dataStatement, libraryStats } from '../library/status';
 import type { Library } from '../types';
 
 const base = import.meta.env.BASE_URL;
@@ -29,6 +30,12 @@ async function liveFigures() {
     setFig('compounds', n(lib.compounds.length));
     setFig('verifiedProducts', n(lib.products.filter((p) => p.verified).length));
     setFig('verifiedCompounds', n(lib.compounds.filter((c) => c.verified).length));
+    const stats = libraryStats(lib);
+    setFig('drugsVerified', n(stats.verified));
+    setFig('drugsDraft', n(stats.draft));
+    setFig('drugsIncomplete', n(stats.incomplete));
+    setFig('drugsNoData', n(stats.noData));
+    setFig('statement', dataStatement(stats));
     setFig('schema', String(lib.schemaVersion));
     setFig('updated', latest ? new Date(`${latest}T12:00:00`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : 'unknown');
     if (lib.categories.length)

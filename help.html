@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -45,7 +45,12 @@
               </ol>
             </li>
             <li><a href="#model">How the model works</a></li>
-            <li><a href="#library">The drug library and its sources</a></li>
+            <li>
+              <a href="#library">The drug library and its sources</a>
+              <ol>
+                <li><a href="#library-view">Browsing the library</a></li>
+              </ol>
+            </li>
             <li><a href="#faq">FAQ</a></li>
             <li><a href="#feedback">Requests and feedback</a></li>
             <li><a href="#about">About</a></li>
@@ -60,6 +65,7 @@
           <h2>What ClearDate is</h2>
           <p>ClearDate is a free reference tool for iboga and ibogaine providers. It supports patient intake and treatment planning.</p>
           <p>You enter a patient's recent medications and substances. ClearDate plots how much of each drug and its metabolites is likely to remain in the body over time, relative to the planned ibogaine date. Underneath the main chart it shows when CYP2D6 is likely to be inhibited, which compounds carry QT liability, and which effects may linger after a drug has cleared.</p>
+          <p>The drug data was drafted with the assistance of AI language models from published, cited sources, and every value records its source. Entries are verified by hand against those sources; until then they are marked <strong>Draft</strong>. You can browse every entry, with its sources, in the <a href="#library-view">Drug Library</a>. See <a href="#library">The drug library and its sources</a>.</p>
           <figure class="shot" data-img="chart-overview.webp">
             <div class="shot-frame"><img src="help/img/chart-overview.webp" alt="The ClearDate window with a fictional patient loaded: the Doses panel on the left, a legend of drugs grouped by category across the top, clearance curves for methadone, fluoxetine, diazepam, a fentanyl patch and hydroxyzine in the main chart, the gold ibogaine treatment marker, the CYP2D6, QT and lingering-effects tracks underneath, and warnings at the bottom." /></div>
             <figcaption>The main screen with a fictional patient. Doses are entered on the left; the chart, tracks and warnings are on the right.</figcaption>
@@ -143,13 +149,14 @@
             <li>
               <strong>Export a record.</strong> <em>PDF</em> creates a report with the chart, the doses, the clear dates, every assumption and the warnings. <em>PNG</em> saves an image of the chart.
               <figure class="shot inline" data-img="header-controls.webp">
-                <div class="shot-frame"><img src="help/img/header-controls.webp" alt="The buttons at the top right of ClearDate: Ibogaine, Reset view, PNG, PDF, Save file, Load file and Help." /></div>
+                <div class="shot-frame"><img src="help/img/header-controls.webp" alt="The buttons at the top right of ClearDate: Ibogaine, Reset view, PNG, PDF, Save file, Load file, Library and Help." /></div>
                 <figcaption>The controls at the top of the app.</figcaption>
                 <ol class="callout-list">
                   <li>Plan the ibogaine treatment.</li>
                   <li>Reset the chart's zoom.</li>
                   <li>Export the chart as an image, or a full PDF report.</li>
                   <li>Save the patient to a file, or open a saved file.</li>
+                  <li>Browse the <a href="#library-view">Drug Library</a>.</li>
                   <li>This help page.</li>
                 </ol>
               </figure>
@@ -202,8 +209,8 @@
             <table class="data-table">
               <thead><tr><th scope="col">Badge</th><th scope="col">Meaning</th></tr></thead>
               <tbody>
-                <tr><td><span class="badge badge-warn">unverified</span></td><td>Library data that has not been fully reviewed yet.</td></tr>
-                <tr><td><span class="badge badge-warn">draft</span></td><td>The entry still contains values marked as drafts.</td></tr>
+                <tr><td><span class="badge badge-warn">unverified</span></td><td>Library data that has not yet been verified by hand against its sources.</td></tr>
+                <tr><td><span class="badge badge-warn">draft</span></td><td>The entry still has AI-assisted values from model recall or estimates that haven't been checked against a source.</td></tr>
                 <tr><td><span class="badge badge-muted">no data yet</span></td><td>The drug is in the library but has no half-life yet. It is listed so you know it's coming, but can't be selected.</td></tr>
                 <tr><td><span class="badge badge-warn">incomplete</span></td><td>The drug can be plotted, but some compound it forms has no kinetics yet. Its clear date will be a lower bound.</td></tr>
                 <tr><td><span class="badge badge-user">user-entered</span></td><td>A custom drug you entered yourself. It is not part of the shared library.</td></tr>
@@ -304,16 +311,16 @@
               <li><em>+ Add dose</em> adds the next dose after the last one: a flood 3 hours after a test dose, a booster 12 hours after a flood or booster, the next microdose a day later.</li>
               <li><strong>mg/kg</strong> is shown in gold under each amount when the patient's weight is set.</li>
               <li><strong>Projected ibogaine and noribogaine</strong> are plotted forward from the doses once the library has their kinetics. Until then only the date markers are shown, and a note says so. If CYP2D6 is likely inhibited at the treatment time, the projection uses the poor-metaboliser values and is labelled “poor-metaboliser adjusted”. If the library has no poor-metaboliser values for ibogaine, it is labelled “poor-metaboliser effect not quantified” instead (see <a href="#cyp2d6">CYP2D6 track</a>).</li>
-              <li><em>Remove all ibogaine doses</em> clears the treatment.</li>
+              <li>The sidebar lists every ibogaine dose in time order. <em>Remove all ibogaine doses</em> clears the treatment.</li>
             </ul>
             <figure class="shot narrow" data-img="ibogaine-form.webp">
               <div class="shot-frame"><img src="help/img/ibogaine-form.webp" alt="The Ibogaine dialog: an explanation, a 1300 mg flood with its mg/kg value and time, a 200 mg booster 12 hours later, each with a Repeat checkbox, an Add dose button, and Remove all ibogaine doses and Save buttons." /></div>
               <figcaption>The Ibogaine dialog.</figcaption>
               <ol class="callout-list">
-                <li>Flood dose in mg.</li>
+                <li>Dose type (test dose, flood, booster, microdose or other).</li>
                 <li>mg/kg, from the patient's weight.</li>
-                <li>Booster time.</li>
-                <li>Add another booster.</li>
+                <li>Repeat a dose, for example for microdosing.</li>
+                <li>Add another dose.</li>
               </ol>
             </figure>
           </section>
@@ -441,7 +448,7 @@
             <p>Below the chart, <strong>Receptor overlap at the ibogaine date</strong> lists receptors and transporters hit by compounds from two or more different products still present at the treatment date, with each compound's action.</p>
             <p>Both are qualitative reminders taken from the literature, not modelled effects.</p>
             <figure class="shot" data-img="warnings.webp">
-              <div class="shot-frame"><img src="help/img/warnings.webp" alt="The warnings area under the chart, listing amber warnings for incomplete clear dates and unassessed CYP2D6 inhibition, and blue information notes about unverified data." /></div>
+              <div class="shot-frame"><img src="help/img/warnings.webp" alt="The warnings area under the chart, listing amber warnings for incomplete clear dates and unassessed CYP2D6 inhibition, and blue information notes about draft library data." /></div>
               <figcaption>Warnings under the chart. Red is a safety warning, amber needs attention, blue is information about the data.</figcaption>
             </figure>
           </section>
@@ -516,7 +523,7 @@
             <ul>
               <li><strong>Save file</strong> downloads the whole session (patient, doses, ibogaine plan, custom drugs and settings) as <code>name-date.cleardate.json</code>.</li>
               <li><strong>Load file</strong> opens a saved file and replaces what's on screen. If a custom drug in the file has the same ID as a library drug, it is renamed and you're told.</li>
-              <li><strong>PDF</strong> creates a landscape A4 report in light colours. Page 1 has the clinic name, patient details, baseline QTc, CYP2D6 phenotype and the chart as currently zoomed. The following pages list the doses, the planned ibogaine, the clear dates (typical and slowest in the range), the <strong>Assumptions and missing data</strong> for each product, and the warnings. The disclaimer is printed at the foot of every page.</li>
+              <li><strong>PDF</strong> creates a landscape A4 report in light colours. Page 1 has the clinic name, patient details, baseline QTc, CYP2D6 phenotype and the chart as currently zoomed. The following pages list the doses, the planned ibogaine, the clear dates (typical and slowest in the range), the <strong>Assumptions and missing data</strong> for each product, and the warnings. The foot of every page has the disclaimer and a data line: how many library drugs are verified, and which drugs in this report are still drafts.</li>
               <li><strong>PNG</strong> saves an image with the same header, the chart and up to eight warnings.</li>
             </ul>
             <p><strong>Assumptions and missing data</strong> lists, per product: incomplete clear dates and the missing compounds; every assumption (assumed spreads and range midpoints, assumed phenotype effects, steady-state switches, conservative choices for partial data); metabolites excluded as inactive; branches not formed for the patient's phenotype; formation-limited conjugates, which can accumulate in renal impairment; amounts given on an administered basis; and whether QT, CYP2D6 or receptor data is unassessed.</p>
@@ -620,13 +627,15 @@
         <!-- 7 -->
         <section id="library">
           <h2>The drug library and its sources</h2>
-          <p>Drug values are entered by hand from published sources, with the citations recorded in the library. In a <strong>verified</strong> entry, every section has been reviewed against those sources. Entries still being reviewed are marked <span class="badge badge-warn">unverified</span> or <span class="badge badge-warn">draft</span> wherever they appear, including the PDF.</p>
+          <p data-fig="statement">Drug data was drafted with the assistance of AI language models from published, cited sources (FDA labels, Baselt, CredibleMeds, the Flockhart table, CPIC, the IUPHAR/BPS Guide to Pharmacology and the primary literature). Every value records its source. Entries are reviewed and verified by hand against those sources; entries marked Draft have not yet been verified. The library will keep growing.</p>
+          <p>In a <strong>verified</strong> entry, every section has been checked by hand against its sources. Entries not yet verified are marked <span class="badge badge-warn">draft</span> or <span class="badge badge-warn">unverified</span> in the drug search, <strong>Draft</strong> in the <a href="#library-view">Drug Library</a>, and are named in the data line at the foot of the PDF.</p>
+          <p class="live" hidden>Verification so far: <strong data-fig="drugsVerified"></strong> of <strong data-fig="drugs"></strong> drugs verified, <strong data-fig="drugsDraft"></strong> drafts, and <strong data-fig="drugsNoData"></strong> with no data yet. <strong data-fig="drugsIncomplete"></strong> drugs have incomplete data (a compound they form has no kinetics yet).</p>
           <p>Primary sources:</p>
           <ul class="sources">
             <li>FDA prescribing information via <a href="https://dailymed.nlm.nih.gov/">DailyMed</a>, and EU and UK product information (<a href="https://www.ema.europa.eu/">EMA</a>, <a href="https://www.medicines.org.uk/emc">electronic medicines compendium</a>).</li>
             <li>Baselt, <em>Disposition of Toxic Drugs and Chemicals in Man</em>.</li>
             <li>The <a href="https://drug-interactions.medicine.iu.edu/">Flockhart CYP table</a> and the <a href="https://www.fda.gov/drugs/drug-interactions-labeling/healthcare-professionals-fdas-examples-drugs-interact-cyp-enzymes-and-transporter-systems">FDA drug-interaction tables</a>.</li>
-            <li><a href="https://crediblemeds.org/">CredibleMeds</a> for QT risk tiers, entered by hand with a citation and used under their terms.</li>
+            <li><a href="https://crediblemeds.org/">CredibleMeds</a> for QT risk tiers, recorded with a citation and used under their terms.</li>
             <li><a href="https://cpicpgx.org/">CPIC</a> and <a href="https://www.clinpgx.org/">ClinPGx</a> for pharmacogenomics.</li>
             <li>The <a href="https://www.guidetopharmacology.org/">IUPHAR/BPS Guide to Pharmacology</a> and the <a href="https://pdsp.unc.edu/databases/kidb.php">PDSP K<sub>i</sub> Database</a> for receptor targets.</li>
             <li>The primary pharmacokinetic literature via <a href="https://pubmed.ncbi.nlm.nih.gov/">PubMed</a>.</li>
@@ -637,6 +646,57 @@
           <p class="live" hidden>The library currently holds <strong data-fig="drugs"></strong> drugs as <strong data-fig="products"></strong> products (each route and formulation is a product), made up of <strong data-fig="compounds"></strong> compounds including metabolites. <strong data-fig="verifiedProducts"></strong> products and <strong data-fig="verifiedCompounds"></strong> compounds are verified so far. Last updated <strong data-fig="updated"></strong>.</p>
           <p>Categories covered: <span data-fig="categories">opioids and opioid use disorder treatments; benzodiazepines and sedatives; antidepressants; antipsychotics; mood stabilisers and anticonvulsants; stimulants; psychedelics, entactogens and dissociatives; cardiovascular drugs; antimicrobials, antiemetics and other interactors</span>.</p>
           <p><strong>The library will keep growing.</strong> Requests for new drugs, corrections and source suggestions are welcome: see <a href="#feedback">Requests and feedback</a>.</p>
+
+          <h3 id="library-view">Browsing the library</h3>
+          <p>Press <em>Library</em> at the top of the app to open the Drug Library: a read-only view of every drug, its metabolites and its sources. Nothing in it changes your patient, and closing it (× or Esc) returns you to the chart exactly as it was.</p>
+          <ul>
+            <li>Each drug has its own address (for example <code>#library/fluoxetine</code>), so you can bookmark or share an entry. The browser's back and forward buttons move between the entries you've opened.</li>
+            <li>Keyboard: <kbd>/</kbd> jumps to the search box, <kbd>↑</kbd> <kbd>↓</kbd> move through the list, <kbd>Enter</kbd> opens a drug.</li>
+            <li>On a narrow screen the list comes first; opening a drug replaces it, with <em>← All drugs</em> to go back.</li>
+          </ul>
+          <figure class="shot" data-img="library-overview.webp">
+            <div class="shot-frame"><img src="help/img/library-overview.webp" alt="The Drug Library: a search box, category and status filter chips and a Show metabolites checkbox above a list of drugs grouped by category, each with a coloured status dot; on the right, a summary of the library with the data statement and counts of drugs, compounds, products, verified, draft, incomplete and no-data entries." /></div>
+            <figcaption>The Drug Library. The list is on the left; with no drug selected, the right side summarises the library.</figcaption>
+            <ol class="callout-list">
+              <li>Search by name, brand or alias, using the same search as the Doses panel.</li>
+              <li>Filter by category. You can select more than one.</li>
+              <li>Filter by status: Verified, Draft, Incomplete data, No data yet.</li>
+              <li>Also list metabolites, which have entries of their own.</li>
+              <li>Status dot: green for verified (a green ring for verified with incomplete data), amber for draft, an empty circle for no data yet.</li>
+              <li>Live counts from the library.</li>
+            </ol>
+          </figure>
+          <p>A drug's entry shows, in order: its status; <strong>at a glance</strong>, the clear time after a single dose; its products; the kinetics of the drug and each metabolite; the metabolite tree; safety (CYP2D6, QT, lingering effects, nonlinear kinetics); receptors; and the sources. Unknown values are shown as <em>unknown</em> or <em>unassessed</em>, never left blank.</p>
+          <figure class="shot" data-img="library-entry.webp">
+            <div class="shot-frame"><img src="help/img/library-entry.webp" alt="The top of the fluoxetine entry: its name and aliases, the Draft status, an at-a-glance sentence giving the typical clear time after a single dose with its range, product cards for the oral and weekly delayed-release products, and the fluoxetine half-life shown as a range bar." /></div>
+            <figcaption>The top of a drug's entry.</figcaption>
+            <ol class="callout-list">
+              <li>Status: Verified (with its date), Verified — incomplete data, Draft, or No data yet.</li>
+              <li>At a glance: the same simulation as the chart, for one dose of the main product in a normal CYP2D6 metaboliser, using your current clear threshold. Incomplete drugs say “not before” and name the compound without kinetics.</li>
+              <li>Each product: route, formulation, input model and typical dose. “Not set” or “not applied” means the library has no value.</li>
+              <li>Half-life range: the band runs from the fastest to the slowest value, the gold tick is the typical value, and the label says how the range was derived. A striped band is an assumed spread around a single published value.</li>
+            </ol>
+          </figure>
+          <figure class="shot" data-img="library-tree.webp">
+            <div class="shot-frame"><img src="help/img/library-tree.webp" alt="The metabolite tree for codeine: codeine on the left, outlined in gold, linked to its metabolites, each box showing whether it is active and its half-life, with the fraction formed on each link." /></div>
+            <figcaption>The metabolite tree.</figcaption>
+            <ol class="callout-list">
+              <li>The drug itself, outlined in gold.</li>
+              <li>A metabolite. Select it to open its own entry. Blue outline: active; grey: inactive; dashed amber: relevance unknown.</li>
+              <li>The fraction formed, and any CYP2D6 phenotype multipliers, on each link.</li>
+            </ol>
+          </figure>
+          <figure class="shot" data-img="library-sources.webp">
+            <div class="shot-frame"><img src="help/img/library-sources.webp" alt="The sources of one entry: each section with its cited sources as links and a small coloured provenance dot, an open Show evidence notes panel with the raw notes, and a legend explaining the dots." /></div>
+            <figcaption>Sources, with the evidence notes open.</figcaption>
+            <ol class="callout-list">
+              <li>The sources cited for each section, as links where there is one.</li>
+              <li>Provenance (draft entries only): whether the value was checked against its source, came from model recall, is an estimate, or no data was found. Verified entries don't show these.</li>
+              <li><em>Show evidence notes</em> reveals the full notes, word for word.</li>
+              <li>What each dot means.</li>
+            </ol>
+          </figure>
+          <p>At the bottom of each entry, <em>Report a correction</em> opens a pre-filled issue on the project's GitHub page (you'll need a GitHub account). Choose the section first. You can also email a correction: see <a href="#feedback">Requests and feedback</a>.</p>
         </section>
 
         <!-- 8 -->
@@ -663,8 +723,12 @@
             <dd>The entry has been fully reviewed, and the missing kinetics are confirmed as unpublished. Its clear dates are lower bounds, and a library update won't change that until new research is published.</dd>
             <dt>Will closing the browser lose my patient?</dt>
             <dd>No: the session is autosaved in this browser and is there next time. It is lost only if you use Clear all data or clear the browser's site data. Save a file for a permanent copy.</dd>
+            <dt>Where does the drug data come from?</dt>
+            <dd>It was drafted with the assistance of AI language models from published, cited sources, and every value records its source. Entries are verified by hand against those sources; until then they are marked Draft. Open any drug in the <a href="#library-view">Drug Library</a> to see its sources. See <a href="#library">The drug library and its sources</a>.</dd>
+            <dt>Can I trust a Draft entry?</dt>
+            <dd>Treat it as unchecked. Its values have sources, but nobody has yet confirmed them against those sources. Each section in the Library shows whether it was checked, came from model recall, or is an estimate. Verify anything that matters to your decision.</dd>
             <dt>How do I correct an entry?</dt>
-            <dd>Email the drug, the value you think is wrong and a source. See <a href="#feedback">Requests and feedback</a>.</dd>
+            <dd>Open the drug in the <a href="#library-view">Drug Library</a> and use <em>Report a correction</em> at the bottom (needs a GitHub account), or email the drug, the value you think is wrong and a source. See <a href="#feedback">Requests and feedback</a>.</dd>
           </dl>
         </section>
 

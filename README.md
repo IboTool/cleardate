@@ -4,6 +4,8 @@ Client-side drug clearance visualiser for ibogaine-clinic intake. Reference use 
 
 **Using ClearDate:** see the [help page](help.html) (`/help.html` on the deployed site, or the *Help* button in the app). This README is for developers.
 
+**The drug data.** Drug data was drafted with the assistance of AI language models from published, cited sources (FDA labels, Baselt, CredibleMeds, the Flockhart table, CPIC, the IUPHAR/BPS Guide to Pharmacology and the primary literature). Every value records its source. Entries are reviewed and verified by hand against those sources; entries marked **Draft** have not yet been verified. The library will keep growing. `npm run validate` prints the current verification progress; in the app, the *Library* button (`#library`) shows every entry with its status and sources, and the help page and PDF export show live verified counts.
+
 ## What's in this starter
 
 | Path | Purpose |

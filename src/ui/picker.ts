@@ -13,7 +13,9 @@ export function productBadges(p: Product, status: DataStatus, compoundsVerified 
     return [badge('verified — incomplete data', 'warn', 'Fully reviewed, but kinetics for at least one compound are confirmed unknown — the clear date is a lower bound.')];
   return [
     status === 'no-data' ? badge('no data yet', 'muted') : status === 'incomplete' ? badge('incomplete', 'warn') : null,
-    p.userEntered ? badge('user-entered', 'user') : isDraft(p) ? badge('draft', 'warn') : !verified ? badge('unverified', 'warn') : null,
+    p.userEntered ? badge('user-entered', 'user')
+      : isDraft(p) ? badge('draft', 'warn', 'AI-assisted draft: some values are from model recall or estimates, not yet checked against a source.')
+      : !verified ? badge('unverified', 'warn', 'Not yet verified by hand against its sources.') : null,
   ];
 }
 
