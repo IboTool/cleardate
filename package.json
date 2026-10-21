@@ -18,6 +18,7 @@
     "migrate-v2.2": "tsx tools/migrate-v2.2.ts",
     "migrate-v2.3": "tsx tools/migrate-v2.3.ts",
     "migrate-v2.4": "tsx tools/migrate-v2.4.ts",
+    "apply-worksheet-2026-10": "tsx tools/apply-worksheet-2026-10.ts",
     "editor": "vite --config tools/editor/vite.config.ts",
     "screenshots": "tsx tools/screenshots.ts",
     "structures:lookup": "tsx tools/structures/lookup.ts",

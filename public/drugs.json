@@ -1,5 +1,6 @@
 {
   "schemaVersion": 2.4,
+  "qtCalibrationNote": "No validated common calibration between modeled body amount and QTc effect has been established. Study-specific concentration-response and QT measurements are recorded in source notes. Numerical QT load is unavailable until an exposure model, reference conditions and validation have been agreed; QT/TdP categories remain separate evidence.",
   "categories": [
     {
       "id": "opioids",
@@ -2821,7 +2822,7 @@
       "cyp2d6": {
         "substrate": "unassessed",
         "halfLifeMultiplier": null,
-        "inhibitor": "weak",
+        "inhibitor": "unassessed",
         "inhibitionType": "mechanism-based",
         "strengthEvidence": {
           "basis": null,
@@ -2865,7 +2866,7 @@
         "relevance": "[checked] Label weak CYP2D6 inhibitor, plus beta-blocking activity recalled; not excluded. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=554c7446-8407-460e-b157-f860c5afbf12",
         "molecularWeight": "[gap] 4_hydroxypropranolol: neutral/free-base PubChem molecular weight not independently confirmed; null retained.",
         "identity": "Known trap (generic hydroxy/nor/desmethyl metabolite — position or isomer may be unspecified) and PubChem CID 91565 leaves stereochemistry undefined.",
-        "cyp2d6": "[checked] Label weak CYP2D6 inhibitor; primary human-liver study shows NADPH-dependent enhanced inhibition, reactive irreversible binding and glutathione scavenging. Human propranolol80mg twice daily inhibition insufficient for phenoconversion. Type refers to documented bioactivation, not prolonged clinical recovery quantified. Free4OHP persistence unknown. https://pubmed.ncbi.nlm.nih.gov/7946944/ https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=554c7446-8407-460e-b157-f860c5afbf12",
+        "cyp2d6": "[checked] Label weak CYP2D6 inhibitor; primary human-liver study shows NADPH-dependent enhanced inhibition, reactive irreversible binding and glutathione scavenging. Human propranolol80mg twice daily inhibition insufficient for phenoconversion. Type refers to documented bioactivation, not prolonged clinical recovery quantified. Free4OHP persistence unknown. https://pubmed.ncbi.nlm.nih.gov/7946944/ https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=554c7446-8407-460e-b157-f860c5afbf12 [worksheet 2026-10-21] Clinical strength set to unassessed: the label describes weak inhibition only in an in-vitro metabolism paragraph, with no probe AUC ratio, so no clinical tier is established. Mechanism-based designation (bioactivation evidence above) kept for separate review; strength and mechanism need different evidence.",
         "qt": "[gap] 4_hydroxypropranolol: live CredibleMeds not accessed; no negative QT assertion. Calibration weight/reference amount reserved for reviewer.",
         "receptors": "[gap] 4_hydroxypropranolol: no species-specific clinically relevant target/action confirmed in this pass; empty list is an evidence gap.",
         "lingeringEffects": "[gap] 4_hydroxypropranolol: no defensible quantified duration after chemical clearance established. Withdrawal, irreversible target effects and toxicity may require separate clinical assessment.",
@@ -5307,11 +5308,11 @@
         "inhibitor": "weak",
         "inhibitionType": "reversible",
         "strengthEvidence": {
-          "basis": null,
+          "basis": "fda-category",
           "probe": null,
           "regimen": null,
           "aucRatio": null,
-          "citation": null
+          "citation": "https://www.fda.gov/drugs/drug-interactions-labeling/healthcare-professionals-fdas-examples-drugs-interact-cyp-enzymes-and-transporter-systems"
         }
       },
       "qt": {
@@ -7154,11 +7155,11 @@
         "inhibitor": "strong",
         "inhibitionType": "reversible",
         "strengthEvidence": {
-          "basis": null,
-          "probe": null,
-          "regimen": null,
-          "aucRatio": null,
-          "citation": null
+          "basis": "clinical-aucr",
+          "probe": "desipramine",
+          "regimen": "bupropion 150 mg twice daily",
+          "aucRatio": 5,
+          "citation": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=e57451fd-aba5-47d6-9892-ffe2a6021b6f"
         }
       },
       "qt": {
@@ -7208,7 +7209,7 @@
         "relevance": "[checked] Directly dosed compound in the candidate queue; schema v2.1 retains directly dosed molecules as active, including molecules also formed as metabolites.",
         "molecularWeight": "PubChem CID 444. Earlier note: [gap] Free-base molecular weight not confirmed against PubChem in this pass; null retained. Label salt molecular weights are not substituted.",
         "identity": "PubChem CID 444 https://pubchem.ncbi.nlm.nih.gov/compound/444 (retrieved 2026-10-21)",
-        "cyp2d6": "[checked] FDA strong clinical CYP2D6 classification retained. Primary 2025 inhibition experiments favor competitive inhibition by parent/metabolites, not time-dependent inactivation; CYP2D6 downregulation reported elsewhere is not mechanism-based enzyme destruction. Hydroxy-, threo- and erythrohydrobupropion contribute; pooled label half-lives about 20, 37, 33 h, with bounds up to 30, 63, 53 h in this draft. Inhibition can outlast parent; exact recovery duration not assigned. https://www.fda.gov/drugs/drug-interactions-labeling/healthcare-professionals-fdas-examples-drugs-interact-cyp-enzymes-and-transporter-systems ; https://pmc.ncbi.nlm.nih.gov/articles/PMC13095643/ Existing substrate and phenotype half-life fields retained; these are distinct from perpetrator inhibition.",
+        "cyp2d6": "[checked] FDA strong clinical CYP2D6 classification retained. Primary 2025 inhibition experiments favor competitive inhibition by parent/metabolites, not time-dependent inactivation; CYP2D6 downregulation reported elsewhere is not mechanism-based enzyme destruction. Hydroxy-, threo- and erythrohydrobupropion contribute; pooled label half-lives about 20, 37, 33 h, with bounds up to 30, 63, 53 h in this draft. Inhibition can outlast parent; exact recovery duration not assigned. https://www.fda.gov/drugs/drug-interactions-labeling/healthcare-professionals-fdas-examples-drugs-interact-cyp-enzymes-and-transporter-systems ; https://pmc.ncbi.nlm.nih.gov/articles/PMC13095643/ Existing substrate and phenotype half-life fields retained; these are distinct from perpetrator inhibition. [worksheet 2026-10-21] Label §12.3: bupropion 150 mg twice daily with desipramine 50 mg increased desipramine AUC about 5-fold; the effect was present at least 7 days after the last bupropion dose. Metabolites contribute.",
         "qt": "[gap] No compound-specific QT category assessed in an authoritative source; unassessed retained. weight and referenceAmountMg remain reviewer-set nulls.",
         "receptors": "[recall] Main target profile recalled from IUPHAR/BPS and standard product pharmacology; subtype selectivity, potency and metabolite-specific contributions require confirmation. This is not an affinity ranking. ",
         "lingeringEffects": "[gap] No defensible duration of persisting pharmacology established; null retained. Drug elimination does not quantify withdrawal or recovery.",
@@ -8694,11 +8695,11 @@
         "inhibitor": "moderate",
         "inhibitionType": "reversible",
         "strengthEvidence": {
-          "basis": null,
+          "basis": "fda-category",
           "probe": null,
           "regimen": null,
           "aucRatio": null,
-          "citation": null
+          "citation": "https://www.fda.gov/drugs/drug-interactions-labeling/healthcare-professionals-fdas-examples-drugs-interact-cyp-enzymes-and-transporter-systems"
         }
       },
       "qt": {
@@ -8933,7 +8934,7 @@
         "molecularWeight": "PubChem CID 2771. Earlier note: [gap] Free-base molecular weight not confirmed against PubChem in this pass; null retained. Label salt molecular weights are not substituted.",
         "identity": "PubChem CID 2771 https://pubchem.ncbi.nlm.nih.gov/compound/2771 (retrieved 2026-10-21)",
         "cyp2d6": "[gap] Supplement A inhibitor assessment for citalopram: FDA example table checked; no species-specific clinical strength or mechanistic classification established in this pass. Absence from the examples is not a negative study. Inhibition status/type retained unless explicit evidence below; no class-wide none assignment. https://www.fda.gov/drugs/drug-interactions-labeling/healthcare-professionals-fdas-examples-drugs-interact-cyp-enzymes-and-transporter-systems Earlier section evidence (may concern substrate rather than inhibition): [gap] Substrate status, clinically quantified inhibitory strength/type and phenotype half-life multipliers not established; unassessed/null retained.",
-        "qt": "[recall] CredibleMeds-style known risk recalled; check CredibleMeds before review. No current list access or ranking among drugs asserted. QT weight/referenceAmountMg left null.",
+        "qt": "[recall] CredibleMeds-style known risk recalled; check CredibleMeds before review. No current list access or ranking among drugs asserted. QT weight/referenceAmountMg left null. [worksheet 2026-10-21] Quantitative QT (not a category check): mean placebo-corrected QTcNi 8.5 ms at 20 mg and 18.5 ms at 60 mg; 12.6 ms at 40 mg is predicted (upper one-sided 95% bounds 10.8/21.0/14.3 ms). Archived regulatory study report. https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/020822s047lbl.pdf",
         "receptors": "[recall] Main target profile recalled from IUPHAR/BPS and standard product pharmacology; subtype selectivity, potency and metabolite-specific contributions require confirmation. This is not an affinity ranking. ",
         "lingeringEffects": "[gap] No defensible duration of persisting pharmacology established; null retained. Drug elimination does not quantify withdrawal or recovery.",
         "nonlinearKinetics": "[checked] Label reports approximate dose proportionality within studied therapeutic range; source in sourceNotes.halfLife. Overdose and interactions may differ."
@@ -9074,11 +9075,11 @@
         "inhibitor": "weak",
         "inhibitionType": "reversible",
         "strengthEvidence": {
-          "basis": null,
+          "basis": "fda-category",
           "probe": null,
           "regimen": null,
           "aucRatio": null,
-          "citation": null
+          "citation": "https://www.fda.gov/drugs/drug-interactions-labeling/healthcare-professionals-fdas-examples-drugs-interact-cyp-enzymes-and-transporter-systems"
         }
       },
       "qt": {
@@ -11489,7 +11490,7 @@
         "relevance": "[checked] Label identifies active DEA; substantial tissue accumulation and antiarrhythmic relevance. https://www.dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=57df7b65-7829-4364-894f-ae4c2772c733",
         "molecularWeight": "PubChem CID 104774. Earlier note: [gap] desethylamiodarone: neutral/free-base PubChem molecular weight not independently confirmed; null retained.",
         "identity": "PubChem CID 104774 https://pubchem.ncbi.nlm.nih.gov/compound/104774 (retrieved 2026-10-21)",
-        "cyp2d6": "[checked] Ohyama2000 documents both competitive CYP2D6 inhibition and time-dependent inactivation by desethylamiodarone. Retain MBI; in-vitro Ki4.5 micromolar is not clinical strength. Parent+metabolite clinical/PBPK effects are not an isolated-metabolite sensitive-probe AUCr; no defensible species-specific tier recovered. Mean formed apparent persistence36days (14–75) retained; inhibitor track must include metabolite and enzyme recovery. https://bpspubs.onlinelibrary.wiley.com/doi/10.1046/j.1365-2125.2000.00134.x",
+        "cyp2d6": "[checked] Ohyama2000 documents both competitive CYP2D6 inhibition and time-dependent inactivation by desethylamiodarone. Retain MBI; in-vitro Ki4.5 micromolar is not clinical strength. Parent+metabolite clinical/PBPK effects are not an isolated-metabolite sensitive-probe AUCr; no defensible species-specific tier recovered. Mean formed apparent persistence36days (14–75) retained; inhibitor track must include metabolite and enzyme recovery. https://bpspubs.onlinelibrary.wiley.com/doi/10.1046/j.1365-2125.2000.00134.x [worksheet 2026-10-21] Ohyama 2000: CYP2D6 inactivation KI 1.3 micromolar, kinact 0.12 per min (competitive Ki 4.5 micromolar). These do not establish a clinical tier.",
         "qt": "[gap] desethylamiodarone: live CredibleMeds not accessed; no negative QT assertion. Calibration weight/reference amount reserved for reviewer.",
         "receptors": "[gap] desethylamiodarone: no species-specific clinically relevant target/action confirmed in this pass; empty list is an evidence gap.",
         "lingeringEffects": "[gap] desethylamiodarone: no defensible quantified duration after chemical clearance established. Withdrawal, irreversible target effects and toxicity may require separate clinical assessment.",
@@ -14422,11 +14423,11 @@
         "inhibitor": "moderate",
         "inhibitionType": "reversible",
         "strengthEvidence": {
-          "basis": null,
+          "basis": "label",
           "probe": null,
           "regimen": null,
           "aucRatio": null,
-          "citation": null
+          "citation": "https://www.dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=7fa41601-7fb5-4155-8e50-2ae903f0d2d6"
         }
       },
       "qt": {
@@ -14520,11 +14521,11 @@
         "inhibitor": "moderate",
         "inhibitionType": "reversible",
         "strengthEvidence": {
-          "basis": null,
-          "probe": null,
-          "regimen": null,
-          "aucRatio": null,
-          "citation": null
+          "basis": "clinical-aucr",
+          "probe": "desipramine",
+          "regimen": "duloxetine 60 mg twice daily",
+          "aucRatio": 3,
+          "citation": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ff118c08-2e64-4416-a996-fd9de45d018a"
         }
       },
       "qt": {
@@ -14570,7 +14571,7 @@
         "relevance": "[checked] Directly dosed compound in the candidate queue; schema v2.1 retains directly dosed molecules as active, including molecules also formed as metabolites.",
         "molecularWeight": "PubChem CID 60835. Earlier note: [gap] Free-base molecular weight not confirmed against PubChem in this pass; null retained. Label salt molecular weights are not substituted.",
         "identity": "PubChem CID 60835 https://pubchem.ncbi.nlm.nih.gov/compound/60835 (retrieved 2026-10-21)",
-        "cyp2d6": "[checked] DailyMed 12.3: CYP2D6 substrate; 7.9: moderate inhibitor. Primary Storelli et al. study identifies competitive inhibition. No phenotype half-life map derived from inhibitor-interaction AUC. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ff118c08-2e64-4416-a996-fd9de45d018a ; https://onlinelibrary.wiley.com/doi/10.1111/bcpt.13124 Supplement A persistence assessment: Moderate/reversible retained from label and primary competitive-inhibition evidence. Parent half-life about 12 h (8-17). No confirmed CYP2D6 inhibitor contribution of queued 4-hydroxyduloxetine glucuronide; its unknown kinetics remain a distinct gap, not proof of no contribution.",
+        "cyp2d6": "[checked] DailyMed 12.3: CYP2D6 substrate; 7.9: moderate inhibitor. Primary Storelli et al. study identifies competitive inhibition. No phenotype half-life map derived from inhibitor-interaction AUC. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ff118c08-2e64-4416-a996-fd9de45d018a ; https://onlinelibrary.wiley.com/doi/10.1111/bcpt.13124 Supplement A persistence assessment: Moderate/reversible retained from label and primary competitive-inhibition evidence. Parent half-life about 12 h (8-17). No confirmed CYP2D6 inhibitor contribution of queued 4-hydroxyduloxetine glucuronide; its unknown kinetics remain a distinct gap, not proof of no contribution. [worksheet 2026-10-21] Label §7.9: duloxetine 60 mg twice daily with desipramine 50 mg increased desipramine AUC 3-fold.",
         "qt": "[checked] Label thorough-QT study found no prolongation. none scoped to studied clinical exposure; not a live CredibleMeds classification or absence of overdose risk. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ff118c08-2e64-4416-a996-fd9de45d018a",
         "receptors": "[recall] Main target profile recalled from IUPHAR/BPS and standard product pharmacology; subtype selectivity, potency and metabolite-specific contributions require confirmation. This is not an affinity ranking. ",
         "lingeringEffects": "[gap] No defensible duration of persisting pharmacology established; null retained. Drug elimination does not quantify withdrawal or recovery.",
@@ -15193,11 +15194,11 @@
         "inhibitor": "moderate",
         "inhibitionType": "reversible",
         "strengthEvidence": {
-          "basis": null,
-          "probe": null,
-          "regimen": null,
-          "aucRatio": null,
-          "citation": null
+          "basis": "model-estimate",
+          "probe": "desipramine",
+          "regimen": "exposure from bupropion 150 mg twice daily (PBPK, sole-inhibitor counterfactual)",
+          "aucRatio": 2.83,
+          "citation": "https://www.mdpi.com/1999-4923/10/1/1/pdf"
         }
       },
       "qt": {
@@ -15239,7 +15240,7 @@
         "relevance": "[checked] DailyMed bupropion 12.3 identifies this as an active metabolite. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=e57451fd-aba5-47d6-9892-ffe2a6021b6f",
         "molecularWeight": "PubChem CID 9813542. Earlier note: [gap] Free-base molecular weight not confirmed against PubChem in this pass; null retained. Label salt molecular weights are not substituted.",
         "identity": "PubChem CID 9813542 https://pubchem.ncbi.nlm.nih.gov/compound/9813542 (retrieved 2026-10-21)",
-        "cyp2d6": "[estimate] Xue et al., Pharmaceutics 2018;10:1 PBPK Table 5 predicts desipramine AUC ratio 2.83 from this inhibitory species at exposure generated by bupropion 150 mg BID; 2 to <5 maps to draft moderate. NOT an isolated-metabolite clinical FDA classification. Primary 2025 human-microsome study supports competitive reversible inhibition; no time-dependent inactivation. Existing pooled metabolite half-life about 33 h; isoforms and clinical persistence uncertain. https://www.mdpi.com/1999-4923/10/1/1/pdf ; https://pmc.ncbi.nlm.nih.gov/articles/PMC13095643/ Existing substrate and phenotype half-life fields retained; these are distinct from perpetrator inhibition.",
+        "cyp2d6": "[estimate] Xue et al., Pharmaceutics 2018;10:1 PBPK Table 5 predicts desipramine AUC ratio 2.83 from this inhibitory species at exposure generated by bupropion 150 mg BID; 2 to <5 maps to draft moderate. NOT an isolated-metabolite clinical FDA classification. Primary 2025 human-microsome study supports competitive reversible inhibition; no time-dependent inactivation. Existing pooled metabolite half-life about 33 h; isoforms and clinical persistence uncertain. https://www.mdpi.com/1999-4923/10/1/1/pdf ; https://pmc.ncbi.nlm.nih.gov/articles/PMC13095643/ Existing substrate and phenotype half-life fields retained; these are distinct from perpetrator inhibition. [worksheet 2026-10-21] Predicted moderate. Xue 2018 Table 5: the combined model gives 5.05 and the observed bupropion/desipramine interaction 5.2; the isolated metabolite ratios must not be added.",
         "qt": "[gap] No compound-specific QT category assessed in an authoritative source; unassessed retained. weight and referenceAmountMg remain reviewer-set nulls.",
         "receptors": "[recall] Main target profile recalled from IUPHAR/BPS and standard product pharmacology; subtype selectivity, potency and metabolite-specific contributions require confirmation. This is not an affinity ranking. ",
         "lingeringEffects": "[gap] No defensible duration of persisting pharmacology established; null retained. Drug elimination does not quantify withdrawal or recovery.",
@@ -15376,14 +15377,14 @@
       "cyp2d6": {
         "substrate": "unassessed",
         "halfLifeMultiplier": null,
-        "inhibitor": "weak",
+        "inhibitor": "moderate",
         "inhibitionType": "reversible",
         "strengthEvidence": {
-          "basis": null,
-          "probe": null,
-          "regimen": null,
-          "aucRatio": null,
-          "citation": null
+          "basis": "clinical-aucr",
+          "probe": "desipramine",
+          "regimen": "escitalopram 20 mg/day for 21 days",
+          "aucRatio": 2,
+          "citation": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f4a12048-181e-45ed-a382-f53096d1b689"
         }
       },
       "qt": {
@@ -15413,7 +15414,7 @@
         "relevance": "checked",
         "molecularWeight": "checked",
         "identity": "checked",
-        "cyp2d6": "recall",
+        "cyp2d6": "checked",
         "qt": "recall",
         "receptors": "recall",
         "lingeringEffects": "gap",
@@ -15425,8 +15426,8 @@
         "relevance": "[checked] Directly dosed compound in the candidate queue; schema v2.1 retains directly dosed molecules as active, including molecules also formed as metabolites.",
         "molecularWeight": "PubChem CID 146570. Earlier note: [gap] Free-base molecular weight not confirmed against PubChem in this pass; null retained. Label salt molecular weights are not substituted.",
         "identity": "PubChem CID 146570 https://pubchem.ncbi.nlm.nih.gov/compound/146570 (retrieved 2026-10-21)",
-        "cyp2d6": "[recall] FDA weak clinical strength retained (checked table). Reversible/competitive CYP2D6 mechanism recalled from drug interaction pharmacology; no new primary mechanism-based study established. Review mechanism; not set mechanism-based merely because inhibition lasts. https://www.fda.gov/drugs/drug-interactions-labeling/healthcare-professionals-fdas-examples-drugs-interact-cyp-enzymes-and-transporter-systems Prior substrate/phenotype evidence retained in starting backup; fields unchanged.",
-        "qt": "[recall] CredibleMeds-style known risk recalled; check CredibleMeds before review. No current list access or ranking among drugs asserted. QT weight/referenceAmountMg left null.",
+        "cyp2d6": "[recall] FDA weak clinical strength retained (checked table). Reversible/competitive CYP2D6 mechanism recalled from drug interaction pharmacology; no new primary mechanism-based study established. Review mechanism; not set mechanism-based merely because inhibition lasts. https://www.fda.gov/drugs/drug-interactions-labeling/healthcare-professionals-fdas-examples-drugs-interact-cyp-enzymes-and-transporter-systems Prior substrate/phenotype evidence retained in starting backup; fields unchanged. [worksheet 2026-10-21] Strength set from the strongest applicable clinical evidence: label §§7, 12.3, escitalopram 20 mg/day for 21 days increased desipramine AUC 100% (ratio 2.00, exactly the moderate threshold) and metoprolol AUC 82% (1.82, weak). Clinical AUCr-derived moderate; FDA examples table lists weak. Both results preserved. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f4a12048-181e-45ed-a382-f53096d1b689",
+        "qt": "[recall] CredibleMeds-style known risk recalled; check CredibleMeds before review. No current list access or ranking among drugs asserted. QT weight/referenceAmountMg left null. [worksheet 2026-10-21] Quantitative QT (not a category check): QTcF 4.5 ms at 10 mg and 10.7 ms at 30 mg; 6.6 ms at 20 mg is predicted (upper bounds 6.4/12.7/7.9 ms), multiple-dose healthy volunteers. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f4a12048-181e-45ed-a382-f53096d1b689",
         "receptors": "[recall] Main target profile recalled from IUPHAR/BPS and standard product pharmacology; subtype selectivity, potency and metabolite-specific contributions require confirmation. This is not an affinity ranking. ",
         "lingeringEffects": "[gap] No defensible duration of persisting pharmacology established; null retained. Drug elimination does not quantify withdrawal or recovery.",
         "nonlinearKinetics": "[checked] Label reports approximate dose proportionality within studied therapeutic range; source in sourceNotes.halfLife. Overdose and interactions may differ."
@@ -16432,11 +16433,11 @@
         "inhibitor": "strong",
         "inhibitionType": "reversible",
         "strengthEvidence": {
-          "basis": null,
+          "basis": "fda-category",
           "probe": null,
           "regimen": null,
           "aucRatio": null,
-          "citation": null
+          "citation": "https://www.fda.gov/drugs/drug-interactions-labeling/healthcare-professionals-fdas-examples-drugs-interact-cyp-enzymes-and-transporter-systems"
         }
       },
       "qt": {
@@ -16814,11 +16815,11 @@
         "inhibitor": "weak",
         "inhibitionType": "reversible",
         "strengthEvidence": {
-          "basis": null,
+          "basis": "fda-category",
           "probe": null,
           "regimen": null,
           "aucRatio": null,
-          "citation": null
+          "citation": "https://www.fda.gov/drugs/drug-interactions-labeling/healthcare-professionals-fdas-examples-drugs-interact-cyp-enzymes-and-transporter-systems"
         }
       },
       "qt": {
@@ -17518,7 +17519,7 @@
         "relevance": "[checked] Directly administered parent is clinically active; this is not a statement of therapeutic equivalence across formulations.",
         "molecularWeight": "PubChem CID 3559. Earlier note: [gap] haloperidol: neutral/free-base PubChem molecular weight not independently confirmed; null retained.",
         "identity": "PubChem CID 3559 https://pubchem.ncbi.nlm.nih.gov/compound/3559 (retrieved 2026-10-21)",
-        "cyp2d6": "[checked] Shin 2001 primary human-microsomal study: competitive CYP2D6 inhibition by haloperidol (Ki .89 micromolar) and reduced haloperidol (.24 micromolar); 1999 assay reports different parent Ki7.2, confirming assay dependence. Reversible mechanism supported, but no sensitive-probe clinical AUCr or FDA tier recovered; strength remains unassessed, not none. Reduced metabolite is separately assessed and may contribute; its independent human terminal value remains unknown. Current app shows documented unclassified inhibitors as hatched at-least-weak when exposure is computable. CYP2D6/3A4 substrate evidence retained. https://pubmed.ncbi.nlm.nih.gov/11167668/ https://pubmed.ncbi.nlm.nih.gov/10460810/",
+        "cyp2d6": "[checked] Shin 2001 primary human-microsomal study: competitive CYP2D6 inhibition by haloperidol (Ki .89 micromolar) and reduced haloperidol (.24 micromolar); 1999 assay reports different parent Ki7.2, confirming assay dependence. Reversible mechanism supported, but no sensitive-probe clinical AUCr or FDA tier recovered; strength remains unassessed, not none. Reduced metabolite is separately assessed and may contribute; its independent human terminal value remains unknown. Current app shows documented unclassified inhibitors as hatched at-least-weak when exposure is computable. CYP2D6/3A4 substrate evidence retained. https://pubmed.ncbi.nlm.nih.gov/11167668/ https://pubmed.ncbi.nlm.nih.gov/10460810/ [worksheet 2026-10-21] Not present in the FDA examples table retrieved for the worksheet, so an FDA moderate category is not claimed; absence does not establish no inhibition. https://www.fda.gov/drugs/drug-interactions-labeling/healthcare-professionals-fdas-examples-drugs-interact-cyp-enzymes-and-transporter-systems",
         "qt": "[recall] Recall — check CredibleMeds. Draft risk tier from label/cardiac pharmacology recalled; reviewer must confirm and calibrate. https://www.medicines.org.uk/emc/product/4521/smpc",
         "receptors": "[recall] Main antipsychotic targets recalled from product pharmacology; not a checked affinity panel. https://www.medicines.org.uk/emc/product/4521/smpc",
         "lingeringEffects": "[gap] haloperidol: no defensible quantified duration after chemical clearance established. Withdrawal, irreversible target effects and toxicity may require separate clinical assessment.",
@@ -18966,11 +18967,11 @@
         "inhibitor": "moderate",
         "inhibitionType": "reversible",
         "strengthEvidence": {
-          "basis": null,
-          "probe": null,
-          "regimen": null,
-          "aucRatio": null,
-          "citation": null
+          "basis": "model-estimate",
+          "probe": "desipramine",
+          "regimen": "exposure from bupropion 150 mg twice daily (PBPK, sole-inhibitor counterfactual)",
+          "aucRatio": 4.58,
+          "citation": "https://www.mdpi.com/1999-4923/10/1/1/pdf"
         }
       },
       "qt": {
@@ -19012,7 +19013,7 @@
         "relevance": "[checked] DailyMed bupropion 12.3 identifies this as an active metabolite. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=e57451fd-aba5-47d6-9892-ffe2a6021b6f",
         "molecularWeight": "[gap] Free-base molecular weight not confirmed against PubChem in this pass; null retained. Label salt molecular weights are not substituted.",
         "identity": "Known trap (generic hydroxy/nor/desmethyl metabolite — position or isomer may be unspecified) and PubChem CID 446 leaves stereochemistry undefined.",
-        "cyp2d6": "[estimate] Xue et al., Pharmaceutics 2018;10:1 PBPK Table 5 predicts desipramine AUC ratio 4.58 from this inhibitory species at exposure generated by bupropion 150 mg BID; 2 to <5 maps to draft moderate. NOT an isolated-metabolite clinical FDA classification. Primary 2025 human-microsome study supports competitive reversible inhibition; no time-dependent inactivation. Existing pooled metabolite half-life about 20 h; isoforms and clinical persistence uncertain. https://www.mdpi.com/1999-4923/10/1/1/pdf ; https://pmc.ncbi.nlm.nih.gov/articles/PMC13095643/ Existing substrate and phenotype half-life fields retained; these are distinct from perpetrator inhibition.",
+        "cyp2d6": "[estimate] Xue et al., Pharmaceutics 2018;10:1 PBPK Table 5 predicts desipramine AUC ratio 4.58 from this inhibitory species at exposure generated by bupropion 150 mg BID; 2 to <5 maps to draft moderate. NOT an isolated-metabolite clinical FDA classification. Primary 2025 human-microsome study supports competitive reversible inhibition; no time-dependent inactivation. Existing pooled metabolite half-life about 20 h; isoforms and clinical persistence uncertain. https://www.mdpi.com/1999-4923/10/1/1/pdf ; https://pmc.ncbi.nlm.nih.gov/articles/PMC13095643/ Existing substrate and phenotype half-life fields retained; these are distinct from perpetrator inhibition. [worksheet 2026-10-21] Predicted moderate. Xue 2018 Table 5: the combined model gives 5.05 and the observed bupropion/desipramine interaction 5.2; the isolated metabolite ratios must not be added.",
         "qt": "[gap] No compound-specific QT category assessed in an authoritative source; unassessed retained. weight and referenceAmountMg remain reviewer-set nulls.",
         "receptors": "[recall] Main target profile recalled from IUPHAR/BPS and standard product pharmacology; subtype selectivity, potency and metabolite-specific contributions require confirmation. This is not an affinity ranking. ",
         "lingeringEffects": "[gap] No defensible duration of persisting pharmacology established; null retained. Drug elimination does not quantify withdrawal or recovery.",
@@ -19164,11 +19165,11 @@
         "inhibitor": "weak",
         "inhibitionType": "reversible",
         "strengthEvidence": {
-          "basis": null,
-          "probe": null,
-          "regimen": null,
-          "aucRatio": null,
-          "citation": null
+          "basis": "clinical-aucr",
+          "probe": "metoprolol",
+          "regimen": "hydroxychloroquine 400 mg/day for 8 days",
+          "aucRatio": 1.65,
+          "citation": "https://pubmed.ncbi.nlm.nih.gov/10848718/"
         }
       },
       "qt": {
@@ -19210,7 +19211,7 @@
         "relevance": "[checked] Directly administered parent is clinically active; this is not a statement of therapeutic equivalence across formulations.",
         "molecularWeight": "PubChem CID 3652. Earlier note: [gap] hydroxychloroquine: neutral/free-base PubChem molecular weight not independently confirmed; null retained.",
         "identity": "PubChem CID 3652 https://pubchem.ncbi.nlm.nih.gov/compound/3652 (retrieved 2026-10-21)",
-        "cyp2d6": "[estimate] Primary400mg/day8days healthy EM metoprolol AUC+65% implies1.65fold and weak clinical2D6 at studied dose; not a current FDA table assignment. Reversible mechanism provisional, not proven time-dependent. Active desethyl metabolite separate inhibition/persistence unresolved; no parent class transferred. https://pubmed.ncbi.nlm.nih.gov/10848718/ https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=2eeaf562-95f9-bcef-e063-6394a90a1c19",
+        "cyp2d6": "[estimate] Primary400mg/day8days healthy EM metoprolol AUC+65% implies1.65fold and weak clinical2D6 at studied dose; not a current FDA table assignment. Reversible mechanism provisional, not proven time-dependent. Active desethyl metabolite separate inhibition/persistence unresolved; no parent class transferred. https://pubmed.ncbi.nlm.nih.gov/10848718/ https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=2eeaf562-95f9-bcef-e063-6394a90a1c19 [worksheet 2026-10-21] Somer 2000 randomized crossover, 7 healthy volunteers: metoprolol AUC +65% (ratio 1.65) supports weak at the studied regimen.",
         "qt": "[recall] Recall — check CredibleMeds. CredibleMeds known-risk listing recalled; current live list not verified. Exact risk depends on exposure, interactions and patient context; weights remain reviewer-set.",
         "receptors": "[recall] Main pharmacological target/actions recalled from label pharmacology/IUPHAR; not independently confirmed target affinities. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=a5b3455a-e842-7d4b-e053-2995a90adee3 https://pubmed.ncbi.nlm.nih.gov/2757893/",
         "lingeringEffects": "[gap] hydroxychloroquine: no defensible quantified duration after chemical clearance established. Withdrawal, irreversible target effects and toxicity may require separate clinical assessment.",
@@ -20179,15 +20180,15 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[estimate] Mash et al. 2018 reports average blood half-lives 1.6-6 h in dependent patients; provisional range-of-means proxy for healthy single-dose terminal kinetics. Healthy uninhibited terminal estimate was not available in the retrieved Glue 2015 abstract. Do not read this as a healthy-adult observed min/max. Paroxetine-pretreated healthy subjects had 10.2 h (Glue 2015); pharmacological inhibition is not steady state or an early phase. Neither phase added. https://pmc.ncbi.nlm.nih.gov/articles/PMC5996271/ ; https://pubmed.ncbi.nlm.nih.gov/25651476/",
+        "halfLife": "[estimate] Mash et al. 2018 reports average blood half-lives 1.6-6 h in dependent patients; provisional range-of-means proxy for healthy single-dose terminal kinetics. Healthy uninhibited terminal estimate was not available in the retrieved Glue 2015 abstract. Do not read this as a healthy-adult observed min/max. Paroxetine-pretreated healthy subjects had 10.2 h (Glue 2015); pharmacological inhibition is not steady state or an early phase. Neither phase added. https://pmc.ncbi.nlm.nih.gov/articles/PMC5996271/ ; https://pubmed.ncbi.nlm.nih.gov/25651476/ [worksheet 2026-10-21] Mash 2018 Table 3 individual whole-blood half-lives: 1.1-6.1 h overall (wt/*4 1.8-6.1 h, wt/wt 1.1-3.8 h among quantifiable entries); observed values in a patient subset, not population limits. Glue et al., J Clin Pharmacol 2015;55:680-687, doi:10.1002/jcph.471.",
         "metabolism": "[checked] CYP2D6 O-demethylation produces noribogaine; NIG is downstream. No parent formedFrom links. Human dose-recovery fraction and phenotype formation multipliers not quantified from recovered primary sources. In-vitro >95% contribution to intrinsic O-demethylase clearance is NOT a human dose formation fraction. https://dmd.aspetjournals.org/article/S0090-9556%2824%2904019-4/fulltext",
         "relevance": "[checked] Directly dosed active compound and human QT-relevant species; retained active. https://pubmed.ncbi.nlm.nih.gov/25651476/ ; https://accp1.onlinelibrary.wiley.com/doi/10.1002/cpdd.254",
         "molecularWeight": "[checked] PubChem free-base molecular weight 310.4 g/mol, not hydrochloride. https://pubchem.ncbi.nlm.nih.gov/compound/Ibogaine",
         "identity": "PubChem CID 197060 https://pubchem.ncbi.nlm.nih.gov/compound/197060 (retrieved 2026-10-21)",
-        "cyp2d6": "[checked] Obach et al. 1998 human microsomes and Glue et al. 2015 human paroxetine interaction confirm CYP2D6 substrate. Healthy inhibited half-life 10.2 h; active-moiety AUC about doubled, which is NOT a half-life multiplier. Genotype model: CL = 0.82 + 30.7 x activity score L/h (Knuijver 2024); clearance is not terminal half-life in a multicompartment model. No validated poor/intermediate/ultrarapid half-life map extracted; null. Perpetrator strength/type unassessed: substrate status is not inhibitor evidence. https://pubmed.ncbi.nlm.nih.gov/25651476/ ; https://dmd.aspetjournals.org/article/S0090-9556%2824%2904019-4/fulltext ; https://journals.sagepub.com/doi/pdf/10.1177/02698811241237873",
+        "cyp2d6": "[checked] Obach et al. 1998 human microsomes and Glue et al. 2015 human paroxetine interaction confirm CYP2D6 substrate. Healthy inhibited half-life 10.2 h; active-moiety AUC about doubled, which is NOT a half-life multiplier. Genotype model: CL = 0.82 + 30.7 x activity score L/h (Knuijver 2024); clearance is not terminal half-life in a multicompartment model. No validated poor/intermediate/ultrarapid half-life map extracted; null. Perpetrator strength/type unassessed: substrate status is not inhibitor evidence. https://pubmed.ncbi.nlm.nih.gov/25651476/ ; https://dmd.aspetjournals.org/article/S0090-9556%2824%2904019-4/fulltext ; https://journals.sagepub.com/doi/pdf/10.1177/02698811241237873 [worksheet 2026-10-21] Mash 2018 Table 3 has no null/null group (two wt/wt subjects described as ultrarapid), so it cannot supply a poor-metaboliser multiplier. The about twofold exposure in Glue 2015 is ibogaine plus noribogaine, not ibogaine alone; noribogaine exposure was similar between arms. The recalled 2-3x multiplier is not confirmed.",
         "qt": "[checked] Draft known tier inferred from human TdP case (Hildyard et al., J Emerg Med 2016;50:e83-e87, doi:10.1016/j.jemermed.2015.06.051), not a live CredibleMeds lookup. hERG IC50 3.9 +/- 0.3 micromolar (Koenig et al. primary study). Knuijver 2024 human concentration-QTc sigmoid model Emax 67.9 ms, EC50 0.195 micromolar (RSE 64.1%); not a linear effect per body mg or an individual threshold. weight/referenceAmountMg null. https://pubmed.ncbi.nlm.nih.gov/26329675/ ; https://pmc.ncbi.nlm.nih.gov/articles/PMC3853361/ ; https://journals.sagepub.com/doi/pdf/10.1177/02698811241237873",
         "receptors": "[checked] Primary transporter structural/functional study supports SERT inhibition; cardiac studies support hERG inhibition. Broader opioid/NMDA/nicotinic profiles not assigned without resolving assay-dependent functional actions. https://pmc.ncbi.nlm.nih.gov/articles/PMC6750207/ ; https://pmc.ncbi.nlm.nih.gov/articles/PMC5334404/",
-        "lingeringEffects": "[checked] Human toxicokinetic case reported QT prolongation through 12 days after ibogaine exposure; overdose case is not a universal recovery duration. durationDays null; no extra fixed washout inferred. https://pubmed.ncbi.nlm.nih.gov/28489458/",
+        "lingeringEffects": "[checked] Human toxicokinetic case reported QT prolongation through 12 days after ibogaine exposure; overdose case is not a universal recovery duration. durationDays null; no extra fixed washout inferred. https://pubmed.ncbi.nlm.nih.gov/28489458/ [worksheet 2026-10-21] The 12-day case (PMID 28489458) is a 2017 report, not Knuijver 2024; the time is after exposure, not extra time after clearance.",
         "nonlinearKinetics": "[gap] Genotype/interaction variability and a nonlinear QT response do not establish dose-dependent PK. No adequate dose-proportionality analysis established; flag unassessed."
       },
       "reviewedDates": {},
@@ -20735,9 +20736,9 @@
       ],
       "receptorsAssessed": true,
       "lingeringEffects": {
-        "durationDays": null,
-        "origin": "clearance",
-        "note": "Irreversible MAO inhibition outlasts circulating drug and requires enzyme resynthesis (mechanistic interpretation). Marplan label prohibits SSRIs within 14 days after discontinuation and gives at least 14 days before bupropion. This is a labeled interaction interval, not a measured individual enzyme-recovery half-life or guaranteed ibogaine-safe date; quantitative recovery duration remains null. https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=ac387aa0-3f04-4865-a913-db6ed6f4fdc5"
+        "durationDays": 14,
+        "origin": "last-dose",
+        "note": "Marplan label: no SSRIs within 14 days of stopping isocarboxazid, and at least 14 days before bupropion (irreversible MAO inhibition). A labelled interaction interval, not a measured recovery time."
       },
       "nonlinearKinetics": {
         "flag": "unassessed",
@@ -20752,7 +20753,7 @@
         "cyp2d6": "gap",
         "qt": "gap",
         "receptors": "recall",
-        "lingeringEffects": "estimate",
+        "lingeringEffects": "checked",
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
@@ -20764,7 +20765,7 @@
         "cyp2d6": "[gap] Supplement A inhibitor assessment for isocarboxazid: FDA example table checked; no species-specific clinical strength or mechanistic classification established in this pass. Absence from the examples is not a negative study. Inhibition status/type retained unless explicit evidence below; no class-wide none assignment. https://www.fda.gov/drugs/drug-interactions-labeling/healthcare-professionals-fdas-examples-drugs-interact-cyp-enzymes-and-transporter-systems Earlier section evidence (may concern substrate rather than inhibition): [gap] Substrate status, clinically quantified inhibitory strength/type and phenotype half-life multipliers not established; unassessed/null retained.",
         "qt": "[gap] No compound-specific QT category assessed in an authoritative source; unassessed retained. weight and referenceAmountMg remain reviewer-set nulls.",
         "receptors": "[recall] Main target profile recalled from IUPHAR/BPS and standard product pharmacology; subtype selectivity, potency and metabolite-specific contributions require confirmation. This is not an affinity ranking. ",
-        "lingeringEffects": "[estimate] Irreversible MAO inhibition outlasts circulating drug and requires enzyme resynthesis (mechanistic interpretation). Marplan label prohibits SSRIs within 14 days after discontinuation and gives at least 14 days before bupropion. This is a labeled interaction interval, not a measured individual enzyme-recovery half-life or guaranteed ibogaine-safe date; quantitative recovery duration remains null. https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=ac387aa0-3f04-4865-a913-db6ed6f4fdc5",
+        "lingeringEffects": "[estimate] Irreversible MAO inhibition outlasts circulating drug and requires enzyme resynthesis (mechanistic interpretation). Marplan label prohibits SSRIs within 14 days after discontinuation and gives at least 14 days before bupropion. This is a labeled interaction interval, not a measured individual enzyme-recovery half-life or guaranteed ibogaine-safe date; quantitative recovery duration remains null. https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=ac387aa0-3f04-4865-a913-db6ed6f4fdc5 [worksheet 2026-10-21] Duration 14 days counted from the last dose (label washout), now that the app supports that origin.",
         "nonlinearKinetics": "[gap] No sufficient dose/exposure evidence assessed; flag unassessed, not no."
       },
       "reviewedDates": {},
@@ -22753,7 +22754,7 @@
         "molecularWeight": "PubChem CID 30668. Earlier note: [gap] lofexidine: neutral/free-base PubChem molecular weight not independently confirmed; null retained.",
         "identity": "PubChem CID 30668 https://pubchem.ncbi.nlm.nih.gov/compound/30668 (retrieved 2026-10-21)",
         "cyp2d6": "[checked] Label human microsomal main contributor2D6, also1A2/2C19. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ed7613f5-ac52-4108-afb7-d92c818d6e3c",
-        "qt": "[recall] Recall — check CredibleMeds. Recalled QT category; clinical QT/bradycardia effects require review before ibogaine.",
+        "qt": "[recall] Recall — check CredibleMeds. Recalled QT category; clinical QT/bradycardia effects require review before ibogaine. [worksheet 2026-10-21] Quantitative QT (not a category check): healthy single-dose change in QTcF 14.4/13.6 ms at 1.44/1.8 mg; phase-3 maximum mean prolongation 7.3/9.3 ms at 2.16/2.88 mg/day. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ed7613f5-ac52-4108-afb7-d92c818d6e3c",
         "receptors": "[recall] Main cardiovascular mechanism recalled from prescribing information/IUPHAR; metabolite/isomer-specific contributions require clinical review.",
         "lingeringEffects": "[gap] lofexidine: no defensible quantified duration after chemical clearance established. Withdrawal, irreversible target effects and toxicity may require separate clinical assessment.",
         "nonlinearKinetics": "[gap] lofexidine: linearity/dose dependence not established; unassessed is not no."
@@ -23833,11 +23834,11 @@
         "inhibitor": "strong",
         "inhibitionType": "mechanism-based",
         "strengthEvidence": {
-          "basis": null,
-          "probe": null,
-          "regimen": null,
-          "aucRatio": null,
-          "citation": null
+          "basis": "clinical-aucr",
+          "probe": "dextromethorphan",
+          "regimen": "MDMA 1.5 mg/kg single dose (12 women)",
+          "aucRatio": 13.64,
+          "citation": "https://bibliography.maps.org/resources/download/8748"
         }
       },
       "qt": {
@@ -23890,7 +23891,7 @@
         "cyp2d6": "[checked] Yubero-Lahoz 2011 primary human study Table II: 12 healthy CYP2D6 extensive-metabolizer women, MDMA 1.5 mg/kg before dextromethorphan30mg. Dextromethorphan mean AUC0-inf29.1→397.0 (ratio13.64), AUC0-8 15.8→145.1 (ratio9.18); both exceed5, supporting clinical strong tier under Supplement B rule. Mechanism-based CYP2D6 inactivation retained. Recovery half-time36.6±22.9h in women, prior men27.6±25.1h; around90% activity by10days, not fully baseline. This is enzyme recovery, not MDMA elimination or universal safe interval. MDA reversible inhibition separately documented; HMMA/HMA free inhibitor persistence unresolved. https://bibliography.maps.org/resources/download/8748 https://pubmed.ncbi.nlm.nih.gov/21456632/",
         "qt": "[gap] mdma: live CredibleMeds not accessed; no negative QT assertion. Calibration weight/reference amount reserved for reviewer.",
         "receptors": "[recall] Main clinically relevant targets recalled from IUPHAR/BPS or product pharmacology. Isomer specificity and partial/full efficacy require reviewer confirmation.",
-        "lingeringEffects": "[checked] Human dextromethorphan-probe study after single MDMA showed persistent CYP2D6 suppression: mean recovery half-time36.6 h women/27.6 h prior men, approximately90% activity at10days and incomplete full recovery. No fixed individual duration assigned; not an ibogaine-safe interval. https://pubmed.ncbi.nlm.nih.gov/21456632/",
+        "lingeringEffects": "[checked] Human dextromethorphan-probe study after single MDMA showed persistent CYP2D6 suppression: mean recovery half-time36.6 h women/27.6 h prior men, approximately90% activity at10days and incomplete full recovery. No fixed individual duration assigned; not an ibogaine-safe interval. https://pubmed.ncbi.nlm.nih.gov/21456632/ [worksheet 2026-10-21] Duration stays null: the CYP2D6 track already draws the mechanism-based enzyme-recovery tail, so a 10-day band would count the same effect twice. About 90% of baseline activity at 10 days is a study-specific observation, not full recovery.",
         "nonlinearKinetics": "[checked] Human crossover exposure is nonlinear; dose-dependent autoinhibition and mechanism-based CYP2D6 inactivation. https://pmc.ncbi.nlm.nih.gov/articles/PMC2014905/"
       },
       "reviewedDates": {},
@@ -25841,11 +25842,11 @@
         "inhibitor": "moderate",
         "inhibitionType": "mechanism-based",
         "strengthEvidence": {
-          "basis": null,
+          "basis": "fda-category",
           "probe": null,
           "regimen": null,
           "aucRatio": null,
-          "citation": null
+          "citation": "https://www.fda.gov/drugs/drug-interactions-labeling/healthcare-professionals-fdas-examples-drugs-interact-cyp-enzymes-and-transporter-systems"
         }
       },
       "qt": {
@@ -30981,11 +30982,11 @@
         "inhibitor": "strong",
         "inhibitionType": "reversible",
         "strengthEvidence": {
-          "basis": null,
-          "probe": null,
-          "regimen": null,
-          "aucRatio": null,
-          "citation": null
+          "basis": "model-estimate",
+          "probe": "fully CYP2D6-cleared probe (static model)",
+          "regimen": "exposure during fluoxetine treatment",
+          "aucRatio": 5.9,
+          "citation": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4029899/"
         }
       },
       "qt": {
@@ -31027,7 +31028,7 @@
         "relevance": "[checked] Active serotonergic metabolite, DailyMed fluoxetine 12.3. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=a5d49dee-a7de-44d8-80b5-1aeb89e76938",
         "molecularWeight": "[gap] Free-base molecular weight not confirmed against PubChem in this pass; null retained. Label salt molecular weights are not substituted.",
         "identity": "Known trap (generic hydroxy/nor/desmethyl metabolite — position or isomer may be unspecified) and PubChem CID 4541 leaves stereochemistry undefined.",
-        "cyp2d6": "[estimate] Primary Sager et al. fluoxetine interaction study reports reversible CYP2D6 inhibition; unbound I/Ki ratios 0.4 (R) + 4.5 (S) = 4.9. Static fully CYP2D6-cleared probe model predicts AUC ratio 1+4.9=5.9 (strong threshold >=5). Draft strong is MODEL-DERIVED at studied exposure, not FDA classification of isolated norfluoxetine. Parent/metabolite coexist; model and dose uncertainty remain. Long terminal mean 206.4 h, reported 96-384 h, carries inhibition beyond parent. https://pmc.ncbi.nlm.nih.gov/articles/PMC4029899/ Existing substrate and phenotype half-life fields retained; these are distinct from perpetrator inhibition.",
+        "cyp2d6": "[estimate] Primary Sager et al. fluoxetine interaction study reports reversible CYP2D6 inhibition; unbound I/Ki ratios 0.4 (R) + 4.5 (S) = 4.9. Static fully CYP2D6-cleared probe model predicts AUC ratio 1+4.9=5.9 (strong threshold >=5). Draft strong is MODEL-DERIVED at studied exposure, not FDA classification of isolated norfluoxetine. Parent/metabolite coexist; model and dose uncertainty remain. Long terminal mean 206.4 h, reported 96-384 h, carries inhibition beyond parent. https://pmc.ncbi.nlm.nih.gov/articles/PMC4029899/ Existing substrate and phenotype half-life fields retained; these are distinct from perpetrator inhibition. [worksheet 2026-10-21] Predicted strong: static-model estimate, not an observed isolated-norfluoxetine AUC ratio. The primary page could not be rechecked in the worksheet pass.",
         "qt": "[gap] No compound-specific QT category assessed in an authoritative source; unassessed retained. weight and referenceAmountMg remain reviewer-set nulls.",
         "receptors": "[recall] Main target profile recalled from IUPHAR/BPS and standard product pharmacology; subtype selectivity, potency and metabolite-specific contributions require confirmation. This is not an affinity ranking. ",
         "lingeringEffects": "[gap] No defensible duration of persisting pharmacology established; null retained. Drug elimination does not quantify withdrawal or recovery.",
@@ -31216,10 +31217,10 @@
         "relevance": "[checked] Directly dosed active compound and human QT-relevant species; retained active. https://pubmed.ncbi.nlm.nih.gov/25651476/ ; https://accp1.onlinelibrary.wiley.com/doi/10.1002/cpdd.254",
         "molecularWeight": "[checked] PubChem free-base molecular weight 296.4 g/mol, not hydrochloride. https://pubchem.ncbi.nlm.nih.gov/compound/Noribogaine",
         "identity": "PubChem CID 3083548 https://pubchem.ncbi.nlm.nih.gov/compound/3083548 (retrieved 2026-10-21)",
-        "cyp2d6": "[gap] No primary human perpetrator classification or time-dependent CYP2D6 inhibition evidence confirmed for noribogaine. Inhibitor/type and substrate remain unassessed; do not transfer ibogaine substrate status or SERT inhibition to CYP2D6.",
+        "cyp2d6": "[gap] No primary human perpetrator classification or time-dependent CYP2D6 inhibition evidence confirmed for noribogaine. Inhibitor/type and substrate remain unassessed; do not transfer ibogaine substrate status or SERT inhibition to CYP2D6. [worksheet 2026-10-21] Knuijver 2024 supports glucuronidation to noribogaine glucuronide; it does not quantify all clearance routes or establish a CYP2D6-negative result, so substrate stays unassessed.",
         "qt": "[checked] Draft possible tier inferred from human QT prolongation, not current CredibleMeds listing. Primary human Glue 2016: slope 0.17 ms per ng/mL; largest group mean changes about 16/28/42 ms at 60/120/180 mg single doses. Primary cardiomyocyte study: hERG IC50 about 3 micromolar (TSA-201 cells), similar to ibogaine. Concentration slope is not a body-amount weight; weights/referenceAmountMg null. https://accp1.onlinelibrary.wiley.com/doi/10.1002/cpdd.254 ; https://pmc.ncbi.nlm.nih.gov/articles/PMC5334404/",
         "receptors": "[checked] Primary transporter structural/functional study supports SERT inhibition; cardiac studies support hERG inhibition. Broader opioid/NMDA/nicotinic profiles not assigned without resolving assay-dependent functional actions. https://pmc.ncbi.nlm.nih.gov/articles/PMC6750207/ ; https://pmc.ncbi.nlm.nih.gov/articles/PMC5334404/",
-        "lingeringEffects": "[checked] Human toxicokinetic case reported QT prolongation through 12 days after ibogaine exposure; overdose case is not a universal recovery duration. durationDays null; no extra fixed washout inferred. https://pubmed.ncbi.nlm.nih.gov/28489458/",
+        "lingeringEffects": "[checked] Human toxicokinetic case reported QT prolongation through 12 days after ibogaine exposure; overdose case is not a universal recovery duration. durationDays null; no extra fixed washout inferred. https://pubmed.ncbi.nlm.nih.gov/28489458/ [worksheet 2026-10-21] The 12-day case (PMID 28489458) is a 2017 report, not Knuijver 2024; the time is after exposure, not extra time after clearance.",
         "nonlinearKinetics": "[checked] Dose proportional single-dose exposure in Glue 2015/2016 studies; does not establish multiple-dose linearity. https://pubmed.ncbi.nlm.nih.gov/25279818/ ; https://accp1.onlinelibrary.wiley.com/doi/10.1002/cpdd.254"
       },
       "reviewedDates": {},
@@ -33110,7 +33111,7 @@
         "molecularWeight": "PubChem CID 4595. Earlier note: [gap] ondansetron: neutral/free-base PubChem molecular weight not independently confirmed; null retained.",
         "identity": "PubChem CID 4595 https://pubchem.ncbi.nlm.nih.gov/compound/4595 (retrieved 2026-10-21)",
         "cyp2d6": "[recall] Recalled label multiple pathways CYP3A4/1A2/2D6; substrate does not imply inhibitor. Clinical strength remains unassessed.",
-        "qt": "[recall] Recall — check CredibleMeds. CredibleMeds known-risk listing recalled; current live list not verified. Exact risk depends on exposure, interactions and patient context; weights remain reviewer-set.",
+        "qt": "[recall] Recall — check CredibleMeds. CredibleMeds known-risk listing recalled; current live list not verified. Exact risk depends on exposure, interactions and patient context; weights remain reviewer-set. [worksheet 2026-10-21] Quantitative QT (not a category check): baseline-adjusted placebo-subtracted QTcF 5.6 ms at 8 mg IV and 19.5 ms at 32 mg IV, 15-minute infusions (upper 95% bounds 7.4/21.8 ms). https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4a62608c-4187-3473-e054-00144ff8d46c",
         "receptors": "[recall] Main pharmacological target/actions recalled from label pharmacology/IUPHAR; not independently confirmed target affinities. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4a62608c-4187-3473-e054-00144ff8d46c",
         "lingeringEffects": "[gap] ondansetron: no defensible quantified duration after chemical clearance established. Withdrawal, irreversible target effects and toxicity may require separate clinical assessment.",
         "nonlinearKinetics": "[gap] ondansetron: linearity/dose dependence not established; unassessed is not no."
@@ -34061,7 +34062,7 @@
         "molecularWeight": "PubChem CID 115237. Earlier note: [gap] paliperidone: neutral/free-base PubChem molecular weight not independently confirmed; null retained.",
         "identity": "PubChem CID 115237 https://pubchem.ncbi.nlm.nih.gov/compound/115237 (retrieved 2026-10-21)",
         "cyp2d6": "[gap] paliperidone: substrate, clinical inhibitor strength, mechanism and phenotype half-life ratios not established. No none/no inference from absence in FDA examples or substrate status.",
-        "qt": "[recall] Recall — check CredibleMeds. Draft risk tier from label/cardiac pharmacology recalled; reviewer must confirm and calibrate. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=018cf3ca-bee9-23a6-e063-6394a90ad905",
+        "qt": "[recall] Recall — check CredibleMeds. Draft risk tier from label/cardiac pharmacology recalled; reviewer must confirm and calibrate. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=018cf3ca-bee9-23a6-e063-6394a90ad905 [worksheet 2026-10-21] Quantitative QT (not a category check): placebo-subtracted QTcLD 6.8 ms at 4 mg IR and 12.3 ms at 8 mg IR; 8 mg IR peak exposure exceeded 12 mg ER, so IR milligrams are not an ER reference. Label §5.4.",
         "receptors": "[recall] Main antipsychotic targets recalled from product pharmacology; not a checked affinity panel. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=018cf3ca-bee9-23a6-e063-6394a90ad905",
         "lingeringEffects": "[gap] paliperidone: no defensible quantified duration after chemical clearance established. Withdrawal, irreversible target effects and toxicity may require separate clinical assessment.",
         "nonlinearKinetics": "[gap] paliperidone: linearity/dose dependence not established; unassessed is not no."
@@ -34210,11 +34211,11 @@
         "inhibitor": "strong",
         "inhibitionType": "mechanism-based",
         "strengthEvidence": {
-          "basis": null,
+          "basis": "fda-category",
           "probe": null,
           "regimen": null,
           "aucRatio": null,
-          "citation": null
+          "citation": "https://www.fda.gov/drugs/drug-interactions-labeling/healthcare-professionals-fdas-examples-drugs-interact-cyp-enzymes-and-transporter-systems"
         }
       },
       "qt": {
@@ -34614,9 +34615,9 @@
       ],
       "receptorsAssessed": true,
       "lingeringEffects": {
-        "durationDays": null,
-        "origin": "clearance",
-        "note": "Irreversible MAO inhibition can outlast plasma drug; enzyme resynthesis governs recovery. No patient-specific recovery duration inferred."
+        "durationDays": 14,
+        "origin": "last-dose",
+        "note": "Label: at least 14 days after stopping phenelzine before starting another antidepressant or buspirone (irreversible MAO inhibition; enzyme resynthesis governs recovery). A labelled interaction interval, not a measured recovery time."
       },
       "nonlinearKinetics": {
         "flag": "unassessed",
@@ -34631,7 +34632,7 @@
         "cyp2d6": "gap",
         "qt": "gap",
         "receptors": "recall",
-        "lingeringEffects": "recall",
+        "lingeringEffects": "checked",
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
@@ -34643,7 +34644,7 @@
         "cyp2d6": "[gap] Supplement A inhibitor assessment for phenelzine: FDA example table checked; no species-specific clinical strength or mechanistic classification established in this pass. Absence from the examples is not a negative study. Inhibition status/type retained unless explicit evidence below; no class-wide none assignment. https://www.fda.gov/drugs/drug-interactions-labeling/healthcare-professionals-fdas-examples-drugs-interact-cyp-enzymes-and-transporter-systems Earlier section evidence (may concern substrate rather than inhibition): [gap] Substrate status, clinically quantified inhibitory strength/type and phenotype half-life multipliers not established; unassessed/null retained.",
         "qt": "[gap] No compound-specific QT category assessed in an authoritative source; unassessed retained. weight and referenceAmountMg remain reviewer-set nulls.",
         "receptors": "[recall] Main target profile recalled from IUPHAR/BPS and standard product pharmacology; subtype selectivity, potency and metabolite-specific contributions require confirmation. This is not an affinity ranking. ",
-        "lingeringEffects": "[recall] Irreversible MAO inhibition and enzyme resynthesis (standard MAOI product pharmacology). Common two-week interaction precautions are not measured exact enzyme-recovery durations; durationDays null. This field concerns MAO, not CYP2D6 inhibitionType.",
+        "lingeringEffects": "[recall] Irreversible MAO inhibition and enzyme resynthesis (standard MAOI product pharmacology). Common two-week interaction precautions are not measured exact enzyme-recovery durations; durationDays null. This field concerns MAO, not CYP2D6 inhibitionType. [worksheet 2026-10-21] Manufacturer label, Contraindications: at least 14 days after discontinuation before another antidepressant or buspirone. Duration counted from the last dose. https://labeling.pfizer.com/ShowLabeling.aspx?id=921",
         "nonlinearKinetics": "[gap] No sufficient dose/exposure evidence assessed; flag unassessed, not no."
       },
       "reviewedDates": {},
@@ -36814,11 +36815,11 @@
         "inhibitor": "strong",
         "inhibitionType": "reversible",
         "strengthEvidence": {
-          "basis": null,
+          "basis": "fda-category",
           "probe": null,
           "regimen": null,
           "aucRatio": null,
-          "citation": null
+          "citation": "https://www.fda.gov/drugs/drug-interactions-labeling/healthcare-professionals-fdas-examples-drugs-interact-cyp-enzymes-and-transporter-systems"
         }
       },
       "qt": {
@@ -36912,11 +36913,11 @@
         "inhibitor": "weak",
         "inhibitionType": "unassessed",
         "strengthEvidence": {
-          "basis": null,
-          "probe": null,
-          "regimen": null,
-          "aucRatio": null,
-          "citation": null
+          "basis": "clinical-aucr",
+          "probe": "metoprolol",
+          "regimen": "ranolazine PR 750 mg twice daily at steady state",
+          "aucRatio": 1.82,
+          "citation": "https://www.tga.gov.au/sites/default/files/auspar-ranolazine-180220-cer.pdf"
         }
       },
       "qt": {
@@ -37381,11 +37382,11 @@
         "inhibitor": "weak",
         "inhibitionType": "reversible",
         "strengthEvidence": {
-          "basis": null,
-          "probe": null,
-          "regimen": null,
-          "aucRatio": null,
-          "citation": null
+          "basis": "clinical-aucr",
+          "probe": "desipramine",
+          "regimen": "ritonavir 100 mg twice daily for two weeks (booster dose)",
+          "aucRatio": 1.26,
+          "citation": "https://pubmed.ncbi.nlm.nih.gov/16338282/"
         }
       },
       "qt": {
@@ -37988,7 +37989,7 @@
         "cyp2d6": "[checked] Emsam 12.3: CYP2D6 inhibition in vitro occurs far above clinical concentrations; none scoped to therapeutic clinical inhibition, not absence of in vitro activity. No phenotype half-life map established. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b891bd9f-fdb8-4862-89c5-ecdd700398a3",
         "qt": "[gap] No compound-specific QT category assessed in an authoritative source; unassessed retained. weight and referenceAmountMg remain reviewer-set nulls.",
         "receptors": "[recall] Main target profile recalled from IUPHAR/BPS and standard product pharmacology; subtype selectivity, potency and metabolite-specific contributions require confirmation. This is not an affinity ranking. Selegiline becomes less MAO-B selective at antidepressant exposure; MAO-A inhibition also relevant.",
-        "lingeringEffects": "[recall] Irreversible MAO inhibition and enzyme resynthesis (standard MAOI product pharmacology). Common two-week interaction precautions are not measured exact enzyme-recovery durations; durationDays null. This field concerns MAO, not CYP2D6 inhibitionType.",
+        "lingeringEffects": "[recall] Irreversible MAO inhibition and enzyme resynthesis (standard MAOI product pharmacology). Common two-week interaction precautions are not measured exact enzyme-recovery durations; durationDays null. This field concerns MAO, not CYP2D6 inhibitionType. [worksheet 2026-10-21] EMSAM (transdermal) label §4: at least 2 weeks after stopping the patch before contraindicated drugs. Patch-specific; not extrapolated to oral selegiline, and the duration is stored per compound, so it stays null. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b891bd9f-fdb8-4862-89c5-ecdd700398a3",
         "nonlinearKinetics": "[gap] No sufficient dose/exposure evidence assessed; flag unassessed, not no."
       },
       "reviewedDates": {},
@@ -38129,11 +38130,11 @@
         "inhibitor": "weak",
         "inhibitionType": "reversible",
         "strengthEvidence": {
-          "basis": null,
+          "basis": "fda-category",
           "probe": null,
           "regimen": null,
           "aucRatio": null,
-          "citation": null
+          "citation": "https://www.fda.gov/drugs/drug-interactions-labeling/healthcare-professionals-fdas-examples-drugs-interact-cyp-enzymes-and-transporter-systems"
         }
       },
       "qt": {
@@ -39161,11 +39162,11 @@
         "inhibitor": "strong",
         "inhibitionType": "reversible",
         "strengthEvidence": {
-          "basis": null,
-          "probe": null,
+          "basis": "clinical-aucr",
+          "probe": "desipramine",
           "regimen": null,
-          "aucRatio": null,
-          "citation": null
+          "aucRatio": 5,
+          "citation": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=e0b309a5-bebe-c6da-2847-bda21aa488b1"
         }
       },
       "qt": {
@@ -39207,7 +39208,7 @@
         "relevance": "[checked] Directly administered parent is clinically active; this is not a statement of therapeutic equivalence across formulations.",
         "molecularWeight": "PubChem CID 1549008. Earlier note: [gap] terbinafine: neutral/free-base PubChem molecular weight not independently confirmed; null retained.",
         "identity": "PubChem CID 1549008 https://pubchem.ncbi.nlm.nih.gov/compound/1549008 (retrieved 2026-10-21)",
-        "cyp2d6": "[checked] FDA examples: strong2D6. Primary competitive inhibition study found no time dependence. Long persistence is tissue release, not proof of enzyme inactivation. Desmethylterbinafine contributes persistent2D6 inhibition; see metabolite assessment, not antifungal inactivity. https://www.fda.gov/drugs/drug-interactions-labeling/healthcare-professionals-fdas-examples-drugs-interact-cyp-enzymes-and-transporter-systems https://keio.elsevierpure.com/en/publications/variation-in-the-inhibitory-potency-of-terbinafine-among-genetic-",
+        "cyp2d6": "[checked] FDA examples: strong2D6. Primary competitive inhibition study found no time dependence. Long persistence is tissue release, not proof of enzyme inactivation. Desmethylterbinafine contributes persistent2D6 inhibition; see metabolite assessment, not antifungal inactivity. https://www.fda.gov/drugs/drug-interactions-labeling/healthcare-professionals-fdas-examples-drugs-interact-cyp-enzymes-and-transporter-systems https://keio.elsevierpure.com/en/publications/variation-in-the-inhibitory-potency-of-terbinafine-among-genetic- [worksheet 2026-10-21] Label §7.1: desipramine AUC about 5-fold; the interaction was still present at the last observation, four weeks after discontinuation (not proof of recovery at four weeks).",
         "qt": "[gap] terbinafine: live CredibleMeds not accessed; no negative QT assertion. Calibration weight/reference amount reserved for reviewer.",
         "receptors": "[recall] Main pharmacological target/actions recalled from label pharmacology/IUPHAR; not independently confirmed target affinities. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=e0b309a5-bebe-c6da-2847-bda21aa488b1",
         "lingeringEffects": "[gap] terbinafine: no defensible quantified duration after chemical clearance established. Withdrawal, irreversible target effects and toxicity may require separate clinical assessment.",
@@ -39644,11 +39645,11 @@
         "inhibitor": "moderate",
         "inhibitionType": "reversible",
         "strengthEvidence": {
-          "basis": null,
-          "probe": null,
-          "regimen": null,
-          "aucRatio": null,
-          "citation": null
+          "basis": "model-estimate",
+          "probe": "desipramine",
+          "regimen": "exposure from bupropion 150 mg twice daily (PBPK, sole-inhibitor counterfactual)",
+          "aucRatio": 3.47,
+          "citation": "https://www.mdpi.com/1999-4923/10/1/1/pdf"
         }
       },
       "qt": {
@@ -39690,7 +39691,7 @@
         "relevance": "[checked] DailyMed bupropion 12.3 identifies this as an active metabolite. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=e57451fd-aba5-47d6-9892-ffe2a6021b6f",
         "molecularWeight": "PubChem CID 9834682. Earlier note: [gap] Free-base molecular weight not confirmed against PubChem in this pass; null retained. Label salt molecular weights are not substituted.",
         "identity": "PubChem CID 9834682 https://pubchem.ncbi.nlm.nih.gov/compound/9834682 (retrieved 2026-10-21)",
-        "cyp2d6": "[estimate] Xue et al., Pharmaceutics 2018;10:1 PBPK Table 5 predicts desipramine AUC ratio 3.47 from this inhibitory species at exposure generated by bupropion 150 mg BID; 2 to <5 maps to draft moderate. NOT an isolated-metabolite clinical FDA classification. Primary 2025 human-microsome study supports competitive reversible inhibition; no time-dependent inactivation. Existing pooled metabolite half-life about 37 h; isoforms and clinical persistence uncertain. https://www.mdpi.com/1999-4923/10/1/1/pdf ; https://pmc.ncbi.nlm.nih.gov/articles/PMC13095643/ Existing substrate and phenotype half-life fields retained; these are distinct from perpetrator inhibition.",
+        "cyp2d6": "[estimate] Xue et al., Pharmaceutics 2018;10:1 PBPK Table 5 predicts desipramine AUC ratio 3.47 from this inhibitory species at exposure generated by bupropion 150 mg BID; 2 to <5 maps to draft moderate. NOT an isolated-metabolite clinical FDA classification. Primary 2025 human-microsome study supports competitive reversible inhibition; no time-dependent inactivation. Existing pooled metabolite half-life about 37 h; isoforms and clinical persistence uncertain. https://www.mdpi.com/1999-4923/10/1/1/pdf ; https://pmc.ncbi.nlm.nih.gov/articles/PMC13095643/ Existing substrate and phenotype half-life fields retained; these are distinct from perpetrator inhibition. [worksheet 2026-10-21] Predicted moderate. Xue 2018 Table 5: the combined model gives 5.05 and the observed bupropion/desipramine interaction 5.2; the isolated metabolite ratios must not be added.",
         "qt": "[gap] No compound-specific QT category assessed in an authoritative source; unassessed retained. weight and referenceAmountMg remain reviewer-set nulls.",
         "receptors": "[recall] Main target profile recalled from IUPHAR/BPS and standard product pharmacology; subtype selectivity, potency and metabolite-specific contributions require confirmation. This is not an affinity ranking. ",
         "lingeringEffects": "[gap] No defensible duration of persisting pharmacology established; null retained. Drug elimination does not quantify withdrawal or recovery.",
@@ -40351,9 +40352,9 @@
       ],
       "receptorsAssessed": true,
       "lingeringEffects": {
-        "durationDays": null,
-        "origin": "clearance",
-        "note": "Irreversible MAO inhibition can outlast plasma drug; enzyme resynthesis governs recovery. No patient-specific recovery duration inferred."
+        "durationDays": 7,
+        "origin": "last-dose",
+        "note": "Parnate label (2018) §2.2: at least one week after stopping tranylcypromine, then follow the next drug's label for its own required interval; 14 days is a common conservative convention. Irreversible MAO inhibition."
       },
       "nonlinearKinetics": {
         "flag": "unassessed",
@@ -40368,7 +40369,7 @@
         "cyp2d6": "gap",
         "qt": "gap",
         "receptors": "recall",
-        "lingeringEffects": "recall",
+        "lingeringEffects": "checked",
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
@@ -40380,7 +40381,7 @@
         "cyp2d6": "[gap] Supplement A inhibitor assessment for tranylcypromine: FDA example table checked; no species-specific clinical strength or mechanistic classification established in this pass. Absence from the examples is not a negative study. Inhibition status/type retained unless explicit evidence below; no class-wide none assignment. https://www.fda.gov/drugs/drug-interactions-labeling/healthcare-professionals-fdas-examples-drugs-interact-cyp-enzymes-and-transporter-systems Earlier section evidence (may concern substrate rather than inhibition): [gap] Substrate status, clinically quantified inhibitory strength/type and phenotype half-life multipliers not established; unassessed/null retained.",
         "qt": "[gap] No compound-specific QT category assessed in an authoritative source; unassessed retained. weight and referenceAmountMg remain reviewer-set nulls.",
         "receptors": "[recall] Main target profile recalled from IUPHAR/BPS and standard product pharmacology; subtype selectivity, potency and metabolite-specific contributions require confirmation. This is not an affinity ranking. ",
-        "lingeringEffects": "[recall] Irreversible MAO inhibition and enzyme resynthesis (standard MAOI product pharmacology). Common two-week interaction precautions are not measured exact enzyme-recovery durations; durationDays null. This field concerns MAO, not CYP2D6 inhibitionType.",
+        "lingeringEffects": "[recall] Irreversible MAO inhibition and enzyme resynthesis (standard MAOI product pharmacology). Common two-week interaction precautions are not measured exact enzyme-recovery durations; durationDays null. This field concerns MAO, not CYP2D6 inhibitionType. [worksheet 2026-10-21] 2018 Parnate label §2.2: at least one week, then consult the subsequent drug's label; not blanket permission to start all interacting drugs after seven days. Confirm the current product and destination-drug labels. https://www.accessdata.fda.gov/drugsatfda_docs/label/2018/012342s064lbl.pdf",
         "nonlinearKinetics": "[gap] No sufficient dose/exposure evidence assessed; flag unassessed, not no."
       },
       "reviewedDates": {},
