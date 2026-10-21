@@ -13,3 +13,5 @@ patient-*.json
 tools/editor/.no-build/
 
 user_to_do.md
+
+user_to_do_archive*.md
