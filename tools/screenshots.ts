@@ -380,13 +380,19 @@ async function main() {
     const detail = lib.locator('.lib-detail');
     const libSection = (title: string) => detail.locator('.lib-sec').filter({ has: page.locator('h3', { hasText: new RegExp(`^${title}$`) }) });
     const kinetics = libSection('Kinetics');
+    await page.setViewportSize({ width: 1440, height: 1300 });
+    await settle(page, 200);
+    await detail.locator('.lib-struct img').evaluate((img: HTMLImageElement) => img.decode());
     await shot(page, 'library-entry', union(await box(detail.locator('.lib-entry-head')), await box(kinetics.locator('.lib-card').first())), [
       corner(await box(detail.locator('.lib-entry-head .lib-status'))),
+      corner(await box(detail.locator('.lib-struct'))),
       await textEnd(detail.locator('.lib-glance')),
       corner(await box(detail.locator('.lib-linger'))),
       corner(await box(detail.locator('.lib-cards .lib-card').first())),
       corner(await box(kinetics.locator('.lib-bar').first())),
     ]);
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await settle(page, 200);
 
     await lib.locator('.lib-search').fill('codeine');
     await settle(page, 250);

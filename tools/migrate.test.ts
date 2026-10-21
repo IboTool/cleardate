@@ -80,7 +80,7 @@ describe('migrate-v2', () => {
     expect(lib.schemaVersion).toBe(2);
     const next = migrateLibraryV21(JSON.parse(serializeLibrary(lib)), { expectedInhibitorResets: null });
     expect(next.lib.schemaVersion).toBe(2.1);
-    expect(validateLibrary(next.lib).errors.filter((e) => !/^schemaVersion must be 2\.2/.test(e.message))).toEqual([]);
+    expect(validateLibrary(next.lib).errors.filter((e) => !/^(schemaVersion must be|identity missing)/.test(e.message))).toEqual([]);
   });
 
   it('migrates compound kinetics, nulls and provenance', () => {

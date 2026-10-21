@@ -15,7 +15,7 @@ export const sectionsOf = (e: Entry): Section[] => (isCompound(e) ? compoundSect
 
 export const SECTION_LABEL: Record<Section, string> = {
   halfLife: 'Kinetics', metabolism: 'Metabolite links & fractions', relevance: 'Clinical relevance', molecularWeight: 'Molecular weight',
-  cyp2d6: 'CYP2D6', qt: 'QT', receptors: 'Receptors', lingeringEffects: 'Lingering effects', nonlinearKinetics: 'Nonlinear kinetics',
+  identity: 'Chemical identity (PubChem)', cyp2d6: 'CYP2D6', qt: 'QT', receptors: 'Receptors', lingeringEffects: 'Lingering effects', nonlinearKinetics: 'Nonlinear kinetics',
   class: 'Class', aliases: 'Aliases', components: 'Components', conversion: 'Prodrug conversion', input: 'Input model (release)', typicalDose: 'Typical dose',
 };
 
@@ -25,6 +25,7 @@ const ISSUE_RE: Record<Section, RegExp> = {
   metabolism: /^(formedFrom|known metabolite fractions|cycle in formedFrom|isMetabolite|has formedFrom)/,
   relevance: /^clinicalRelevance/,
   molecularWeight: /^molecularWeight/,
+  identity: /^identity/,
   cyp2d6: /^cyp2d6/,
   qt: /^qt[. ]/,
   receptors: /^(receptor|receptorsAssessed)/,
@@ -66,6 +67,10 @@ export function unknownParts(e: Entry, s: Section): string[] {
         break;
       case 'molecularWeight':
         if (e.molecularWeight === null) out.push('molecular weight');
+        break;
+      case 'identity':
+        if (!e.identity) out.push('PubChem identity (not looked up)');
+        else if (e.identity.confidence === 'unconfirmed') out.push('PubChem identity (no CID chosen)');
         break;
       case 'cyp2d6':
         if (e.cyp2d6.substrate === 'unassessed') out.push('substrate');
@@ -138,6 +143,7 @@ export function confirmSection(e: Entry, s: Section, date: string, asUnknown = f
   if (unknown.length && !asUnknown) return `Unknown: ${unknown.join(', ')} — use “Confirm as unknown”, or fill them in.`;
   if (!unknown.length && asUnknown) return 'Nothing in this section is unknown — use Confirm.';
   markReviewed(e, s, date);
+  if (s === 'identity' && isCompound(e) && e.identity?.confidence === 'probable') e.identity = { ...e.identity, confidence: 'confirmed', note: '' };
   if (asUnknown) appendNote(e, s, CONFIRMED_UNKNOWN_NOTE);
   else if (notes(e)[s]?.includes(CONFIRMED_UNKNOWN_NOTE)) notes(e)[s] = notes(e)[s].replace(CONFIRMED_UNKNOWN_NOTE, '').replace(/\s{2,}/g, ' ').trim();
   return null;

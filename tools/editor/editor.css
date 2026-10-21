@@ -57,6 +57,9 @@ html, body { overflow-x: hidden; }
 .ed-issues:empty { display: none; }
 .ed-verify { display: flex; align-items: center; gap: 12px; padding-top: 8px; border-top: 1px solid var(--border); }
 .ed-note { font-size: 12px; color: var(--muted); }
+.ed-identity-grid { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start; font-size: 12.5px; }
+.ed-identity-grid > div { flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.ed-structure { max-width: 260px; max-height: 200px; }
 .ed-addroute { max-width: 520px; }
 .ed-views { margin-left: 8px; }
 .chip.fl { --c: #e6c46a; }

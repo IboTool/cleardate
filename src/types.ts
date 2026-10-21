@@ -1,5 +1,5 @@
-// Schema v2.2 for public/drugs.json and for the in-browser session (docs/ClearDate_Spec_v2.md and
-// the v2.1 / v2.2 deltas). Unknown numbers are `null`, never 0. Safety enums have an explicit "unassessed" value.
+// Schema v2.3 for public/drugs.json and for the in-browser session (docs/ClearDate_Spec_v2.md, the
+// v2.1 / v2.2 deltas, and the structures addendum docs/ClearDate_Structures_Prompt.md). Unknown numbers are `null`, never 0. Safety enums have an explicit "unassessed" value.
 
 export const QT_TIERS = ['unassessed', 'none', 'conditional', 'possible', 'known'] as const;
 export const INHIBITOR_STRENGTHS = ['unassessed', 'none', 'weak', 'moderate', 'strong'] as const;
@@ -24,8 +24,9 @@ export const INPUT_TYPES = ['bolus', 'first-order-release', 'zero-order'] as con
 export const DOSE_BASES = ['maintenance', 'single-use', 'per-injection', 'rate'] as const;
 export const CLINICAL_RELEVANCE = ['active', 'inactive', 'unknown'] as const;
 export const COMPOUND_SECTIONS = [
-  'halfLife', 'metabolism', 'relevance', 'molecularWeight', 'cyp2d6', 'qt', 'receptors', 'lingeringEffects', 'nonlinearKinetics',
+  'halfLife', 'metabolism', 'relevance', 'molecularWeight', 'identity', 'cyp2d6', 'qt', 'receptors', 'lingeringEffects', 'nonlinearKinetics',
 ] as const;
+export const IDENTITY_CONFIDENCE = ['confirmed', 'probable', 'unconfirmed', 'not-applicable'] as const;
 /** `conversion` applies to prodrug products only (a component with administeredAs or massFactor). */
 export const PRODUCT_SECTIONS = ['class', 'aliases', 'components', 'conversion', 'input', 'typicalDose'] as const;
 
@@ -46,6 +47,28 @@ export type DoseBasis = (typeof DOSE_BASES)[number];
 export type ClinicalRelevance = (typeof CLINICAL_RELEVANCE)[number];
 export type CompoundSection = (typeof COMPOUND_SECTIONS)[number];
 export type ProductSection = (typeof PRODUCT_SECTIONS)[number];
+export type IdentityConfidence = (typeof IDENTITY_CONFIDENCE)[number];
+
+/** A PubChem compound considered for an identity that couldn't be confirmed. */
+export interface IdentityCandidate {
+  cid: number;
+  name: string;
+  reason: string;
+}
+
+/**
+ * Chemical identity from PubChem (schema 2.3). `smiles` is PubChem's isomeric SMILES of the neutral
+ * parent (non-salt) compound. Unconfirmed identities keep their candidates but no chosen structure.
+ */
+export interface Identity {
+  pubchemCid: number | null;
+  smiles: string | null;
+  inchiKey: string | null;
+  formula: string | null;
+  confidence: IdentityConfidence;
+  candidates: IdentityCandidate[];
+  note: string;
+}
 
 /**
  * A published value with its spread. Every number may be null (unknown). Range-only evidence
@@ -113,6 +136,8 @@ export interface Compound {
   /** Also produced by the body: only the excess over baseline is simulated; unknown kinetics don't block once relevance is reviewed. */
   endogenous?: boolean;
   molecularWeight: number | null;
+  /** null = not looked up yet. Written by `npm run structures:lookup`. */
+  identity?: Identity | null;
   kinetics: Kinetics;
   cyp2d6: {
     substrate: TriState;
@@ -184,7 +209,7 @@ export interface Product {
 }
 
 export interface Library {
-  schemaVersion: 2.2;
+  schemaVersion: 2.3;
   /** The scale QT weights are calibrated on (editor's QT calibration view). */
   qtCalibrationNote?: string;
   categories: Category[];

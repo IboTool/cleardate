@@ -1,0 +1,2741 @@
+{
+  "source": "PubChem PUG REST (https://pubchem.ncbi.nlm.nih.gov)",
+  "compounds": {
+    "144": {
+      "title": "(+-)-5-Hydroxytryptophan",
+      "smiles": "C1=CC2=C(C=C1O)C(=CN2)CC(C(=O)O)N",
+      "inchiKey": "LDCYZAJDBXYCGN-UHFFFAOYSA-N",
+      "formula": "C11H12N2O3",
+      "molecularWeight": 220.22,
+      "retrieved": "2026-10-21"
+    },
+    "177": {
+      "title": "Acetaldehyde",
+      "smiles": "CC=O",
+      "inchiKey": "IKHGUXGNUITLKF-UHFFFAOYSA-N",
+      "formula": "C2H4O",
+      "molecularWeight": 44.05,
+      "retrieved": "2026-10-21"
+    },
+    "444": {
+      "title": "Bupropion",
+      "smiles": "CC(C(=O)C1=CC(=CC=C1)Cl)NC(C)(C)C",
+      "inchiKey": "SNPPWIUOZRMYNY-UHFFFAOYSA-N",
+      "formula": "C13H18ClNO",
+      "molecularWeight": 239.74,
+      "retrieved": "2026-10-21"
+    },
+    "702": {
+      "title": "Ethanol",
+      "smiles": "CCO",
+      "inchiKey": "LFQSCWFLJHTTHZ-UHFFFAOYSA-N",
+      "formula": "C2H6O",
+      "molecularWeight": 46.07,
+      "retrieved": "2026-10-21"
+    },
+    "802": {
+      "title": "Indole-3-Acetic Acid",
+      "smiles": "C1=CC=C2C(=C1)C(=CN2)CC(=O)O",
+      "inchiKey": "SEOVTRFCIGRIMH-UHFFFAOYSA-N",
+      "formula": "C10H9NO2",
+      "molecularWeight": 175.18,
+      "retrieved": "2026-10-21"
+    },
+    "896": {
+      "title": "Melatonin",
+      "smiles": "CC(=O)NCCC1=CNC2=C1C=C(C=C2)OC",
+      "inchiKey": "DRLFMBDRBRZALE-UHFFFAOYSA-N",
+      "formula": "C13H16N2O2",
+      "molecularWeight": 232.28,
+      "retrieved": "2026-10-21"
+    },
+    "999": {
+      "title": "Phenylacetic Acid",
+      "smiles": "C1=CC=C(C=C1)CC(=O)O",
+      "inchiKey": "WLJVXDMOQOGPHL-UHFFFAOYSA-N",
+      "formula": "C8H8O2",
+      "molecularWeight": 136.15,
+      "retrieved": "2026-10-21"
+    },
+    "1233": {
+      "title": "Ibotenic Acid",
+      "smiles": "C1=C(ONC1=O)C(C(=O)O)N",
+      "inchiKey": "IRJCBFDCFXCWGO-UHFFFAOYSA-N",
+      "formula": "C5H6N2O4",
+      "molecularWeight": 158.11,
+      "retrieved": "2026-10-21"
+    },
+    "1615": {
+      "title": "3,4-Methylenedioxymethamphetamine",
+      "smiles": "CC(CC1=CC2=C(C=C1)OCO2)NC",
+      "inchiKey": "SHXWCVYOXRDMCX-UHFFFAOYSA-N",
+      "formula": "C11H15NO2",
+      "molecularWeight": 193.24,
+      "retrieved": "2026-10-21"
+    },
+    "1775": {
+      "title": "Phenytoin",
+      "smiles": "C1=CC=C(C=C1)C2(C(=O)NC(=O)N2)C3=CC=CC=C3",
+      "inchiKey": "CXOFVDLJLONNDW-UHFFFAOYSA-N",
+      "formula": "C15H12N2O2",
+      "molecularWeight": 252.27,
+      "retrieved": "2026-10-21"
+    },
+    "1864": {
+      "title": "6-Hydroxymelatonin",
+      "smiles": "CC(=O)NCCC1=CNC2=CC(=C(C=C21)OC)O",
+      "inchiKey": "OMYMRCXOJJZYKE-UHFFFAOYSA-N",
+      "formula": "C13H16N2O3",
+      "molecularWeight": 248.28,
+      "retrieved": "2026-10-21"
+    },
+    "1963": {
+      "title": "alpha-Hydroxytriazolam",
+      "smiles": "C1C2=NN=C(N2C3=C(C=C(C=C3)Cl)C(=N1)C4=CC=CC=C4Cl)CO",
+      "inchiKey": "BHUYWUDMVCLHND-UHFFFAOYSA-N",
+      "formula": "C17H12Cl2N4O",
+      "molecularWeight": 359.2,
+      "retrieved": "2026-10-21"
+    },
+    "1983": {
+      "title": "Acetaminophen",
+      "smiles": "CC(=O)NC1=CC=C(C=C1)O",
+      "inchiKey": "RZVAJINKPMORJF-UHFFFAOYSA-N",
+      "formula": "C8H9NO2",
+      "molecularWeight": 151.16,
+      "retrieved": "2026-10-21"
+    },
+    "2118": {
+      "title": "Alprazolam",
+      "smiles": "CC1=NN=C2N1C3=C(C=C(C=C3)Cl)C(=NC2)C4=CC=CC=C4",
+      "inchiKey": "VREFGVBLTWBCJP-UHFFFAOYSA-N",
+      "formula": "C17H13ClN4",
+      "molecularWeight": 308.8,
+      "retrieved": "2026-10-21"
+    },
+    "2153": {
+      "title": "Theophylline",
+      "smiles": "CN1C2=C(C(=O)N(C1=O)C)NC=N2",
+      "inchiKey": "ZFXYFBGIUFBOJW-UHFFFAOYSA-N",
+      "formula": "C7H8N4O2",
+      "molecularWeight": 180.16,
+      "retrieved": "2026-10-21"
+    },
+    "2157": {
+      "title": "Amiodarone",
+      "smiles": "CCCCC1=C(C2=CC=CC=C2O1)C(=O)C3=CC(=C(C(=C3)I)OCCN(CC)CC)I",
+      "inchiKey": "IYIKLHRQXLHMJQ-UHFFFAOYSA-N",
+      "formula": "C25H29I2NO3",
+      "molecularWeight": 645.3,
+      "retrieved": "2026-10-21"
+    },
+    "2160": {
+      "title": "Amitriptyline",
+      "smiles": "CN(C)CCC=C1C2=CC=CC=C2CCC3=CC=CC=C31",
+      "inchiKey": "KRMDCWKBEZIMAB-UHFFFAOYSA-N",
+      "formula": "C20H23N",
+      "molecularWeight": 277.4,
+      "retrieved": "2026-10-21"
+    },
+    "2162": {
+      "title": "Amlodipine",
+      "smiles": "CCOC(=O)C1=C(NC(=C(C1C2=CC=CC=C2Cl)C(=O)OC)C)COCCN",
+      "inchiKey": "HTIQEAQVCYTUBX-UHFFFAOYSA-N",
+      "formula": "C20H25ClN2O5",
+      "molecularWeight": 408.9,
+      "retrieved": "2026-10-21"
+    },
+    "2249": {
+      "title": "Atenolol",
+      "smiles": "CC(C)NCC(COC1=CC=C(C=C1)CC(=O)N)O",
+      "inchiKey": "METKIMKYRPQLGS-UHFFFAOYSA-N",
+      "formula": "C14H22N2O3",
+      "molecularWeight": 266.34,
+      "retrieved": "2026-10-21"
+    },
+    "2284": {
+      "title": "Baclofen",
+      "smiles": "C1=CC(=CC=C1C(CC(=O)O)CN)Cl",
+      "inchiKey": "KPYSYYIEGFHWSV-UHFFFAOYSA-N",
+      "formula": "C10H12ClNO2",
+      "molecularWeight": 213.66,
+      "retrieved": "2026-10-21"
+    },
+    "2405": {
+      "title": "Bisoprolol",
+      "smiles": "CC(C)NCC(COC1=CC=C(C=C1)COCCOC(C)C)O",
+      "inchiKey": "VHYCDWMUTMEGQY-UHFFFAOYSA-N",
+      "formula": "C18H31NO4",
+      "molecularWeight": 325.4,
+      "retrieved": "2026-10-21"
+    },
+    "2481": {
+      "title": "Butalbital",
+      "smiles": "CC(C)CC1(C(=O)NC(=O)NC1=O)CC=C",
+      "inchiKey": "UZVHFVZFNXBMQJ-UHFFFAOYSA-N",
+      "formula": "C11H16N2O3",
+      "molecularWeight": 224.26,
+      "retrieved": "2026-10-21"
+    },
+    "2519": {
+      "title": "Caffeine",
+      "smiles": "CN1C=NC2=C1C(=O)N(C(=O)N2C)C",
+      "inchiKey": "RYYVLZVUVIJVGH-UHFFFAOYSA-N",
+      "formula": "C8H10N4O2",
+      "molecularWeight": 194.19,
+      "retrieved": "2026-10-21"
+    },
+    "2520": {
+      "title": "Verapamil",
+      "smiles": "CC(C)C(CCCN(C)CCC1=CC(=C(C=C1)OC)OC)(C#N)C2=CC(=C(C=C2)OC)OC",
+      "inchiKey": "SGTNSNPWRIOYBX-UHFFFAOYSA-N",
+      "formula": "C27H38N2O4",
+      "molecularWeight": 454.6,
+      "retrieved": "2026-10-21"
+    },
+    "2554": {
+      "title": "Carbamazepine",
+      "smiles": "C1=CC=C2C(=C1)C=CC3=CC=CC=C3N2C(=O)N",
+      "inchiKey": "FFGPTBGBLSHEPO-UHFFFAOYSA-N",
+      "formula": "C15H12N2O",
+      "molecularWeight": 236.27,
+      "retrieved": "2026-10-21"
+    },
+    "2555": {
+      "title": "Carbamazepine 10,11-epoxide",
+      "smiles": "C1=CC=C2C(=C1)C3C(O3)C4=CC=CC=C4N2C(=O)N",
+      "inchiKey": "ZRWWEEVEIOGMMT-UHFFFAOYSA-N",
+      "formula": "C15H12N2O2",
+      "molecularWeight": 252.27,
+      "retrieved": "2026-10-21"
+    },
+    "2576": {
+      "title": "Carisoprodol",
+      "smiles": "CCCC(C)(COC(=O)N)COC(=O)NC(C)C",
+      "inchiKey": "OFZCIYFFPZCNJE-UHFFFAOYSA-N",
+      "formula": "C12H24N2O4",
+      "molecularWeight": 260.33,
+      "retrieved": "2026-10-21"
+    },
+    "2585": {
+      "title": "Carvedilol",
+      "smiles": "COC1=CC=CC=C1OCCNCC(COC2=CC=CC3=C2C4=CC=CC=C4N3)O",
+      "inchiKey": "OGHNVEJMJSYVRP-UHFFFAOYSA-N",
+      "formula": "C24H26N2O4",
+      "molecularWeight": 406.5,
+      "retrieved": "2026-10-21"
+    },
+    "2678": {
+      "title": "Cetirizine",
+      "smiles": "C1CN(CCN1CCOCC(=O)O)C(C2=CC=CC=C2)C3=CC=C(C=C3)Cl",
+      "inchiKey": "ZKLPARSLTMPFCP-UHFFFAOYSA-N",
+      "formula": "C21H25ClN2O3",
+      "molecularWeight": 388.9,
+      "retrieved": "2026-10-21"
+    },
+    "2712": {
+      "title": "7-Chloro-2-(methylimino)-5-phenyl-2,3-dihydro-4H-1,4-benzodiazepin-4-ol",
+      "smiles": "CN=C1CN(C(=C2C=C(C=CC2=N1)Cl)C3=CC=CC=C3)O",
+      "inchiKey": "BUCORZSTKDOEKQ-UHFFFAOYSA-N",
+      "formula": "C16H14ClN3O",
+      "molecularWeight": 299.75,
+      "retrieved": "2026-10-21"
+    },
+    "2726": {
+      "title": "Chlorpromazine",
+      "smiles": "CN(C)CCCN1C2=CC=CC=C2SC3=C1C=C(C=C3)Cl",
+      "inchiKey": "ZPEIMTDSQAKGNT-UHFFFAOYSA-N",
+      "formula": "C17H19ClN2S",
+      "molecularWeight": 318.9,
+      "retrieved": "2026-10-21"
+    },
+    "2764": {
+      "title": "Ciprofloxacin",
+      "smiles": "C1CC1N2C=C(C(=O)C3=CC(=C(C=C32)N4CCNCC4)F)C(=O)O",
+      "inchiKey": "MYSWGUAQZAJSOK-UHFFFAOYSA-N",
+      "formula": "C17H18FN3O3",
+      "molecularWeight": 331.34,
+      "retrieved": "2026-10-21"
+    },
+    "2771": {
+      "title": "Citalopram",
+      "smiles": "CN(C)CCCC1(C2=C(CO1)C=C(C=C2)C#N)C3=CC=C(C=C3)F",
+      "inchiKey": "WSEQXVZVJXJVFP-UHFFFAOYSA-N",
+      "formula": "C20H21FN2O",
+      "molecularWeight": 324.4,
+      "retrieved": "2026-10-21"
+    },
+    "2789": {
+      "title": "Clobazam",
+      "smiles": "CN1C(=O)CC(=O)N(C2=C1C=CC(=C2)Cl)C3=CC=CC=C3",
+      "inchiKey": "CXOXHMZGEKVPMT-UHFFFAOYSA-N",
+      "formula": "C16H13ClN2O2",
+      "molecularWeight": 300.74,
+      "retrieved": "2026-10-21"
+    },
+    "2801": {
+      "title": "Clomipramine",
+      "smiles": "CN(C)CCCN1C2=CC=CC=C2CCC3=C1C=C(C=C3)Cl",
+      "inchiKey": "GDLIGKIOYRNHDA-UHFFFAOYSA-N",
+      "formula": "C19H23ClN2",
+      "molecularWeight": 314.9,
+      "retrieved": "2026-10-21"
+    },
+    "2802": {
+      "title": "Clonazepam",
+      "smiles": "C1C(=O)NC2=C(C=C(C=C2)[N+](=O)[O-])C(=N1)C3=CC=CC=C3Cl",
+      "inchiKey": "DGBIGWXXNGSACT-UHFFFAOYSA-N",
+      "formula": "C15H10ClN3O3",
+      "molecularWeight": 315.71,
+      "retrieved": "2026-10-21"
+    },
+    "2803": {
+      "title": "Clonidine",
+      "smiles": "C1CN=C(N1)NC2=C(C=CC=C2Cl)Cl",
+      "inchiKey": "GJSURZIOUXUGAL-UHFFFAOYSA-N",
+      "formula": "C9H9Cl2N3",
+      "molecularWeight": 230.09,
+      "retrieved": "2026-10-21"
+    },
+    "2809": {
+      "title": "Clorazepate",
+      "smiles": "C1=CC=C(C=C1)C2=NC(C(=O)NC3=C2C=C(C=C3)Cl)C(=O)O",
+      "inchiKey": "XDDJGVMJFWAHJX-UHFFFAOYSA-N",
+      "formula": "C16H11ClN2O3",
+      "molecularWeight": 314.72,
+      "retrieved": "2026-10-21"
+    },
+    "2895": {
+      "title": "Cyclobenzaprine",
+      "smiles": "CN(C)CCC=C1C2=CC=CC=C2C=CC3=CC=CC=C31",
+      "inchiKey": "JURKNVYFZMSNLP-UHFFFAOYSA-N",
+      "formula": "C20H21N",
+      "molecularWeight": 275.4,
+      "retrieved": "2026-10-21"
+    },
+    "2995": {
+      "title": "Desipramine",
+      "smiles": "CNCCCN1C2=CC=CC=C2CCC3=CC=CC=C31",
+      "inchiKey": "HCYAFALTSJYZDH-UHFFFAOYSA-N",
+      "formula": "C18H22N2",
+      "molecularWeight": 266.4,
+      "retrieved": "2026-10-21"
+    },
+    "2997": {
+      "title": "Nordiazepam",
+      "smiles": "C1C(=O)NC2=C(C=C(C=C2)Cl)C(=N1)C3=CC=CC=C3",
+      "inchiKey": "AKPLHCDWDRPJGD-UHFFFAOYSA-N",
+      "formula": "C15H11ClN2O",
+      "molecularWeight": 270.71,
+      "retrieved": "2026-10-21"
+    },
+    "3007": {
+      "title": "Amphetamine",
+      "smiles": "CC(CC1=CC=CC=C1)N",
+      "inchiKey": "KWTSXDURSIMDCE-UHFFFAOYSA-N",
+      "formula": "C9H13N",
+      "molecularWeight": 135.21,
+      "retrieved": "2026-10-21"
+    },
+    "3016": {
+      "title": "Diazepam",
+      "smiles": "CN1C(=O)CN=C(C2=C1C=CC(=C2)Cl)C3=CC=CC=C3",
+      "inchiKey": "AAOVKJBEBIDNHE-UHFFFAOYSA-N",
+      "formula": "C16H13ClN2O",
+      "molecularWeight": 284.74,
+      "retrieved": "2026-10-21"
+    },
+    "3100": {
+      "title": "Diphenhydramine",
+      "smiles": "CN(C)CCOC(C1=CC=CC=C1)C2=CC=CC=C2",
+      "inchiKey": "ZZVUWRFHKOJYTH-UHFFFAOYSA-N",
+      "formula": "C17H21NO",
+      "molecularWeight": 255.35,
+      "retrieved": "2026-10-21"
+    },
+    "3114": {
+      "title": "Disopyramide",
+      "smiles": "CC(C)N(CCC(C1=CC=CC=C1)(C2=CC=CC=N2)C(=O)N)C(C)C",
+      "inchiKey": "UVTNFZQICZKOEM-UHFFFAOYSA-N",
+      "formula": "C21H29N3O",
+      "molecularWeight": 339.5,
+      "retrieved": "2026-10-21"
+    },
+    "3117": {
+      "title": "Disulfiram",
+      "smiles": "CCN(CC)C(=S)SSC(=S)N(CC)CC",
+      "inchiKey": "AUZONCFQVSMFAP-UHFFFAOYSA-N",
+      "formula": "C10H20N2S4",
+      "molecularWeight": 296.5,
+      "retrieved": "2026-10-21"
+    },
+    "3151": {
+      "title": "Domperidone",
+      "smiles": "C1CN(CCC1N2C3=C(C=C(C=C3)Cl)NC2=O)CCCN4C5=CC=CC=C5NC4=O",
+      "inchiKey": "FGXWKSZFVQUSTL-UHFFFAOYSA-N",
+      "formula": "C22H24ClN5O2",
+      "molecularWeight": 425.9,
+      "retrieved": "2026-10-21"
+    },
+    "3158": {
+      "title": "Doxepin",
+      "smiles": "CN(C)CCC=C1C2=CC=CC=C2COC3=CC=CC=C31",
+      "inchiKey": "ODQWQRRAPPTVAG-UHFFFAOYSA-N",
+      "formula": "C19H21NO",
+      "molecularWeight": 279.4,
+      "retrieved": "2026-10-21"
+    },
+    "3162": {
+      "title": "Doxylamine",
+      "smiles": "CC(C1=CC=CC=C1)(C2=CC=CC=N2)OCCN(C)C",
+      "inchiKey": "HCFDWZZGGLSKEP-UHFFFAOYSA-N",
+      "formula": "C17H22N2O",
+      "molecularWeight": 270.37,
+      "retrieved": "2026-10-21"
+    },
+    "3307": {
+      "title": "Etizolam",
+      "smiles": "CCC1=CC2=C(S1)N3C(=NN=C3CN=C2C4=CC=CC=C4Cl)C",
+      "inchiKey": "VMZUTJCNQWMAGF-UHFFFAOYSA-N",
+      "formula": "C17H15ClN4S",
+      "molecularWeight": 342.8,
+      "retrieved": "2026-10-21"
+    },
+    "3345": {
+      "title": "Fentanyl",
+      "smiles": "CCC(=O)N(C1CCN(CC1)CCC2=CC=CC=C2)C3=CC=CC=C3",
+      "inchiKey": "PJMPHNIQZUBGLI-UHFFFAOYSA-N",
+      "formula": "C22H28N2O",
+      "molecularWeight": 336.5,
+      "retrieved": "2026-10-21"
+    },
+    "3356": {
+      "title": "Flecainide",
+      "smiles": "C1CCNC(C1)CNC(=O)C2=C(C=CC(=C2)OCC(F)(F)F)OCC(F)(F)F",
+      "inchiKey": "DJBNUMBKLMJRSA-UHFFFAOYSA-N",
+      "formula": "C17H20F6N2O3",
+      "molecularWeight": 414.34,
+      "retrieved": "2026-10-21"
+    },
+    "3365": {
+      "title": "Fluconazole",
+      "smiles": "C1=CC(=C(C=C1F)F)C(CN2C=NC=N2)(CN3C=NC=N3)O",
+      "inchiKey": "RFHAOTPXVQNOHP-UHFFFAOYSA-N",
+      "formula": "C13H12F2N6O",
+      "molecularWeight": 306.27,
+      "retrieved": "2026-10-21"
+    },
+    "3372": {
+      "title": "Fluphenazine",
+      "smiles": "C1CN(CCN1CCCN2C3=CC=CC=C3SC4=C2C=C(C=C4)C(F)(F)F)CCO",
+      "inchiKey": "PLDUPXSUYLZYBN-UHFFFAOYSA-N",
+      "formula": "C22H26F3N3OS",
+      "molecularWeight": 437.5,
+      "retrieved": "2026-10-21"
+    },
+    "3386": {
+      "title": "Fluoxetine",
+      "smiles": "CNCCC(C1=CC=CC=C1)OC2=CC=C(C=C2)C(F)(F)F",
+      "inchiKey": "RTHCYVBBDHJXIQ-UHFFFAOYSA-N",
+      "formula": "C17H18F3NO",
+      "molecularWeight": 309.33,
+      "retrieved": "2026-10-21"
+    },
+    "3393": {
+      "title": "Flurazepam",
+      "smiles": "CCN(CC)CCN1C(=O)CN=C(C2=C1C=CC(=C2)Cl)C3=CC=CC=C3F",
+      "inchiKey": "SAADBVWGJQAEFS-UHFFFAOYSA-N",
+      "formula": "C21H23ClFN3O",
+      "molecularWeight": 387.9,
+      "retrieved": "2026-10-21"
+    },
+    "3440": {
+      "title": "Furosemide",
+      "smiles": "C1=COC(=C1)CNC2=CC(=C(C=C2C(=O)O)S(=O)(=O)N)Cl",
+      "inchiKey": "ZZUFCTLCJUWOSV-UHFFFAOYSA-N",
+      "formula": "C12H11ClN2O5S",
+      "molecularWeight": 330.74,
+      "retrieved": "2026-10-21"
+    },
+    "3446": {
+      "title": "Gabapentin",
+      "smiles": "C1CCC(CC1)(CC(=O)O)CN",
+      "inchiKey": "UGJMXCAKCUNAIE-UHFFFAOYSA-N",
+      "formula": "C9H17NO2",
+      "molecularWeight": 171.24,
+      "retrieved": "2026-10-21"
+    },
+    "3519": {
+      "title": "Guanfacine",
+      "smiles": "C1=CC(=C(C(=C1)Cl)CC(=O)N=C(N)N)Cl",
+      "inchiKey": "INJOMKTZOLKMBF-UHFFFAOYSA-N",
+      "formula": "C9H9Cl2N3O",
+      "molecularWeight": 246.09,
+      "retrieved": "2026-10-21"
+    },
+    "3559": {
+      "title": "Haloperidol",
+      "smiles": "C1CN(CCC1(C2=CC=C(C=C2)Cl)O)CCCC(=O)C3=CC=C(C=C3)F",
+      "inchiKey": "LNEPOXFFQSENCJ-UHFFFAOYSA-N",
+      "formula": "C21H23ClFNO2",
+      "molecularWeight": 375.9,
+      "retrieved": "2026-10-21"
+    },
+    "3564": {
+      "title": "Harmaline",
+      "smiles": "CC1=NCCC2=C1NC3=C2C=CC(=C3)OC",
+      "inchiKey": "RERZNCLIYCABFS-UHFFFAOYSA-N",
+      "formula": "C13H14N2O",
+      "molecularWeight": 214.26,
+      "retrieved": "2026-10-21"
+    },
+    "3565": {
+      "title": "Harmalol",
+      "smiles": "CC1=NCCC2=C1NC3=C2C=CC(=C3)O",
+      "inchiKey": "RHVPEFQDYMMNSY-UHFFFAOYSA-N",
+      "formula": "C12H12N2O",
+      "molecularWeight": 200.24,
+      "retrieved": "2026-10-21"
+    },
+    "3639": {
+      "title": "Hydrochlorothiazide",
+      "smiles": "C1NC2=CC(=C(C=C2S(=O)(=O)N1)S(=O)(=O)N)Cl",
+      "inchiKey": "JZUFKLXOESDKRF-UHFFFAOYSA-N",
+      "formula": "C7H8ClN3O4S2",
+      "molecularWeight": 297.7,
+      "retrieved": "2026-10-21"
+    },
+    "3652": {
+      "title": "Hydroxychloroquine",
+      "smiles": "CCN(CCCC(C)NC1=C2C=CC(=CC2=NC=C1)Cl)CCO",
+      "inchiKey": "XXSMGPRMXLTPCZ-UHFFFAOYSA-N",
+      "formula": "C18H26ClN3O",
+      "molecularWeight": 335.9,
+      "retrieved": "2026-10-21"
+    },
+    "3658": {
+      "title": "Hydroxyzine",
+      "smiles": "C1CN(CCN1CCOCCO)C(C2=CC=CC=C2)C3=CC=C(C=C3)Cl",
+      "inchiKey": "ZQDWXGKKHFNSQK-UHFFFAOYSA-N",
+      "formula": "C21H27ClN2O2",
+      "molecularWeight": 374.9,
+      "retrieved": "2026-10-21"
+    },
+    "3675": {
+      "title": "Phenelzine",
+      "smiles": "C1=CC=C(C=C1)CCNN",
+      "inchiKey": "RMUCZJUITONUFY-UHFFFAOYSA-N",
+      "formula": "C8H12N2",
+      "molecularWeight": 136.19,
+      "retrieved": "2026-10-21"
+    },
+    "3696": {
+      "title": "Imipramine",
+      "smiles": "CN(C)CCCN1C2=CC=CC=C2CCC3=CC=CC=C31",
+      "inchiKey": "BCGWQEUPMDMJNV-UHFFFAOYSA-N",
+      "formula": "C19H24N2",
+      "molecularWeight": 280.4,
+      "retrieved": "2026-10-21"
+    },
+    "3759": {
+      "title": "Isocarboxazid",
+      "smiles": "CC1=CC(=NO1)C(=O)NNCC2=CC=CC=C2",
+      "inchiKey": "XKFPYPQQHFEXRZ-UHFFFAOYSA-N",
+      "formula": "C12H13N3O2",
+      "molecularWeight": 231.25,
+      "retrieved": "2026-10-21"
+    },
+    "3821": {
+      "title": "Ketamine",
+      "smiles": "CNC1(CCCCC1=O)C2=CC=CC=C2Cl",
+      "inchiKey": "YQEZLKZALYSWHR-UHFFFAOYSA-N",
+      "formula": "C13H16ClNO",
+      "molecularWeight": 237.72,
+      "retrieved": "2026-10-21"
+    },
+    "3878": {
+      "title": "Lamotrigine",
+      "smiles": "C1=CC(=C(C(=C1)Cl)Cl)C2=C(N=C(N=N2)N)N",
+      "inchiKey": "PYZRQGJRPPTADH-UHFFFAOYSA-N",
+      "formula": "C9H7Cl2N5",
+      "molecularWeight": 256.09,
+      "retrieved": "2026-10-21"
+    },
+    "3955": {
+      "title": "Loperamide",
+      "smiles": "CN(C)C(=O)C(CCN1CCC(CC1)(C2=CC=C(C=C2)Cl)O)(C3=CC=CC=C3)C4=CC=CC=C4",
+      "inchiKey": "RDOIQAHITMMDAJ-UHFFFAOYSA-N",
+      "formula": "C29H33ClN2O2",
+      "molecularWeight": 477,
+      "retrieved": "2026-10-21"
+    },
+    "3958": {
+      "title": "Lorazepam",
+      "smiles": "C1=CC=C(C(=C1)C2=NC(C(=O)NC3=C2C=C(C=C3)Cl)O)Cl",
+      "inchiKey": "DIWRORZWFLOCLC-UHFFFAOYSA-N",
+      "formula": "C15H10Cl2N2O2",
+      "molecularWeight": 321.2,
+      "retrieved": "2026-10-21"
+    },
+    "3961": {
+      "title": "Losartan",
+      "smiles": "CCCCC1=NC(=C(N1CC2=CC=C(C=C2)C3=CC=CC=C3C4=NNN=N4)CO)Cl",
+      "inchiKey": "PSIFNNKUMBGKDQ-UHFFFAOYSA-N",
+      "formula": "C22H23ClN6O",
+      "molecularWeight": 422.9,
+      "retrieved": "2026-10-21"
+    },
+    "4058": {
+      "title": "Meperidine",
+      "smiles": "CCOC(=O)C1(CCN(CC1)C)C2=CC=CC=C2",
+      "inchiKey": "XADCESSVHJOZHK-UHFFFAOYSA-N",
+      "formula": "C15H21NO2",
+      "molecularWeight": 247.33,
+      "retrieved": "2026-10-21"
+    },
+    "4064": {
+      "title": "Meprobamate",
+      "smiles": "CCCC(C)(COC(=O)N)COC(=O)N",
+      "inchiKey": "NPPQSCRMBWNHMW-UHFFFAOYSA-N",
+      "formula": "C9H18N2O4",
+      "molecularWeight": 218.25,
+      "retrieved": "2026-10-21"
+    },
+    "4076": {
+      "title": "Mescaline",
+      "smiles": "COC1=CC(=CC(=C1OC)OC)CCN",
+      "inchiKey": "RHCSKNNOAZULRK-UHFFFAOYSA-N",
+      "formula": "C11H17NO3",
+      "molecularWeight": 211.26,
+      "retrieved": "2026-10-21"
+    },
+    "4078": {
+      "title": "Mesoridazine",
+      "smiles": "CN1CCCCC1CCN2C3=CC=CC=C3SC4=C2C=C(C=C4)S(=O)C",
+      "inchiKey": "SLVMESMUVMCQIY-UHFFFAOYSA-N",
+      "formula": "C21H26N2OS2",
+      "molecularWeight": 386.6,
+      "retrieved": "2026-10-21"
+    },
+    "4095": {
+      "title": "Methadone",
+      "smiles": "CCC(=O)C(CC(C)N(C)C)(C1=CC=CC=C1)C2=CC=CC=C2",
+      "inchiKey": "USSIQXCVUWKGNF-UHFFFAOYSA-N",
+      "formula": "C21H27NO",
+      "molecularWeight": 309.4,
+      "retrieved": "2026-10-21"
+    },
+    "4158": {
+      "title": "Methylphenidate",
+      "smiles": "COC(=O)C(C1CCCCN1)C2=CC=CC=C2",
+      "inchiKey": "DUGOZIWVEXMGBE-UHFFFAOYSA-N",
+      "formula": "C14H19NO2",
+      "molecularWeight": 233.31,
+      "retrieved": "2026-10-21"
+    },
+    "4168": {
+      "title": "Metoclopramide",
+      "smiles": "CCN(CC)CCNC(=O)C1=CC(=C(C=C1OC)N)Cl",
+      "inchiKey": "TTWJBBZEZQICBI-UHFFFAOYSA-N",
+      "formula": "C14H22ClN3O2",
+      "molecularWeight": 299.79,
+      "retrieved": "2026-10-21"
+    },
+    "4171": {
+      "title": "Metoprolol",
+      "smiles": "CC(C)NCC(COC1=CC=C(C=C1)CCOC)O",
+      "inchiKey": "IUBSYMUCCVWXPE-UHFFFAOYSA-N",
+      "formula": "C15H25NO3",
+      "molecularWeight": 267.36,
+      "retrieved": "2026-10-21"
+    },
+    "4178": {
+      "title": "Mexiletine",
+      "smiles": "CC1=C(C(=CC=C1)C)OCC(C)N",
+      "inchiKey": "VLPIATFUUWWMKC-UHFFFAOYSA-N",
+      "formula": "C11H17NO",
+      "molecularWeight": 179.26,
+      "retrieved": "2026-10-21"
+    },
+    "4192": {
+      "title": "Midazolam",
+      "smiles": "CC1=NC=C2N1C3=C(C=C(C=C3)Cl)C(=NC2)C4=CC=CC=C4F",
+      "inchiKey": "DDLIGBOFAVUZHB-UHFFFAOYSA-N",
+      "formula": "C18H13ClFN3",
+      "molecularWeight": 325.8,
+      "retrieved": "2026-10-21"
+    },
+    "4205": {
+      "title": "Mirtazapine",
+      "smiles": "CN1CCN2C(C1)C3=CC=CC=C3CC4=C2N=CC=C4",
+      "inchiKey": "RONZAEMNMFQXRA-UHFFFAOYSA-N",
+      "formula": "C17H19N3",
+      "molecularWeight": 265.35,
+      "retrieved": "2026-10-21"
+    },
+    "4235": {
+      "title": "Moclobemide",
+      "smiles": "C1COCCN1CCNC(=O)C2=CC=C(C=C2)Cl",
+      "inchiKey": "YHXISWVBGDMDLQ-UHFFFAOYSA-N",
+      "formula": "C13H17ClN2O2",
+      "molecularWeight": 268.74,
+      "retrieved": "2026-10-21"
+    },
+    "4236": {
+      "title": "Modafinil",
+      "smiles": "C1=CC=C(C=C1)C(C2=CC=CC=C2)S(=O)CC(=O)N",
+      "inchiKey": "YFGHCGITMMYXAQ-UHFFFAOYSA-N",
+      "formula": "C15H15NO2S",
+      "molecularWeight": 273.4,
+      "retrieved": "2026-10-21"
+    },
+    "4266": {
+      "title": "Muscimol",
+      "smiles": "C1=C(ONC1=O)CN",
+      "inchiKey": "ZJQHPWUVQPJPQT-UHFFFAOYSA-N",
+      "formula": "C4H6N2O2",
+      "molecularWeight": 114.1,
+      "retrieved": "2026-10-21"
+    },
+    "4342": {
+      "title": "N-Acetylprocainamide",
+      "smiles": "CCN(CC)CCNC(=O)C1=CC=C(C=C1)NC(=O)C",
+      "inchiKey": "KEECCEWTUVWFCV-UHFFFAOYSA-N",
+      "formula": "C15H23N3O2",
+      "molecularWeight": 277.36,
+      "retrieved": "2026-10-21"
+    },
+    "4449": {
+      "title": "Nefazodone",
+      "smiles": "CCC1=NN(C(=O)N1CCOC2=CC=CC=C2)CCCN3CCN(CC3)C4=CC(=CC=C4)Cl",
+      "inchiKey": "VRBKIVRKKCLPHA-UHFFFAOYSA-N",
+      "formula": "C25H32ClN5O2",
+      "molecularWeight": 470,
+      "retrieved": "2026-10-21"
+    },
+    "4543": {
+      "title": "Nortriptyline",
+      "smiles": "CNCCC=C1C2=CC=CC=C2CCC3=CC=CC=C31",
+      "inchiKey": "PHVGLTMQBUFIQQ-UHFFFAOYSA-N",
+      "formula": "C19H21N",
+      "molecularWeight": 263.4,
+      "retrieved": "2026-10-21"
+    },
+    "4594": {
+      "title": "Omeprazole",
+      "smiles": "CC1=CN=C(C(=C1OC)C)CS(=O)C2=NC3=C(N2)C=C(C=C3)OC",
+      "inchiKey": "SUBDBMMJDZJVOS-UHFFFAOYSA-N",
+      "formula": "C17H19N3O3S",
+      "molecularWeight": 345.4,
+      "retrieved": "2026-10-21"
+    },
+    "4595": {
+      "title": "Ondansetron",
+      "smiles": "CC1=NC=CN1CC2CCC3=C(C2=O)C4=CC=CC=C4N3C",
+      "inchiKey": "FELGMEQIXOGIFQ-UHFFFAOYSA-N",
+      "formula": "C18H19N3O",
+      "molecularWeight": 293.4,
+      "retrieved": "2026-10-21"
+    },
+    "4616": {
+      "title": "Oxazepam",
+      "smiles": "C1=CC=C(C=C1)C2=NC(C(=O)NC3=C2C=C(C=C3)Cl)O",
+      "inchiKey": "ADIMAYPTOBDMTL-UHFFFAOYSA-N",
+      "formula": "C15H11ClN2O2",
+      "molecularWeight": 286.71,
+      "retrieved": "2026-10-21"
+    },
+    "4687": {
+      "title": "Paraxanthine",
+      "smiles": "CN1C=NC2=C1C(=O)N(C(=O)N2)C",
+      "inchiKey": "QUNWUDVFRNGTCO-UHFFFAOYSA-N",
+      "formula": "C7H8N4O2",
+      "molecularWeight": 180.16,
+      "retrieved": "2026-10-21"
+    },
+    "4763": {
+      "title": "Phenobarbital",
+      "smiles": "CCC1(C(=O)NC(=O)NC1=O)C2=CC=CC=C2",
+      "inchiKey": "DDBREPKUVSBGFI-UHFFFAOYSA-N",
+      "formula": "C12H12N2O3",
+      "molecularWeight": 232.23,
+      "retrieved": "2026-10-21"
+    },
+    "4771": {
+      "title": "Phentermine",
+      "smiles": "CC(C)(CC1=CC=CC=C1)N",
+      "inchiKey": "DHHVAGZRUROJKS-UHFFFAOYSA-N",
+      "formula": "C10H15N",
+      "molecularWeight": 149.23,
+      "retrieved": "2026-10-21"
+    },
+    "4913": {
+      "title": "Procainamide",
+      "smiles": "CCN(CC)CCNC(=O)C1=CC=C(C=C1)N",
+      "inchiKey": "REQCZEXYDRLIBE-UHFFFAOYSA-N",
+      "formula": "C13H21N3O",
+      "molecularWeight": 235.33,
+      "retrieved": "2026-10-21"
+    },
+    "4927": {
+      "title": "Promethazine",
+      "smiles": "CC(CN1C2=CC=CC=C2SC3=CC=CC=C31)N(C)C",
+      "inchiKey": "PWWVAXIEGOYWEE-UHFFFAOYSA-N",
+      "formula": "C17H20N2S",
+      "molecularWeight": 284.4,
+      "retrieved": "2026-10-21"
+    },
+    "4932": {
+      "title": "Propafenone",
+      "smiles": "CCCNCC(COC1=CC=CC=C1C(=O)CCC2=CC=CC=C2)O",
+      "inchiKey": "JWHAUXFOSRPERK-UHFFFAOYSA-N",
+      "formula": "C21H27NO3",
+      "molecularWeight": 341.4,
+      "retrieved": "2026-10-21"
+    },
+    "4946": {
+      "title": "Propranolol",
+      "smiles": "CC(C)NCC(COC1=CC=CC2=CC=CC=C21)O",
+      "inchiKey": "AQHHHDLHHXJYJD-UHFFFAOYSA-N",
+      "formula": "C16H21NO2",
+      "molecularWeight": 259.34,
+      "retrieved": "2026-10-21"
+    },
+    "4980": {
+      "title": "Psilocin",
+      "smiles": "CN(C)CCC1=CNC2=C1C(=CC=C2)O",
+      "inchiKey": "SPCIYGNTAMCTRO-UHFFFAOYSA-N",
+      "formula": "C12H16N2O",
+      "molecularWeight": 204.27,
+      "retrieved": "2026-10-21"
+    },
+    "5002": {
+      "title": "Quetiapine",
+      "smiles": "C1CN(CCN1CCOCCO)C2=NC3=CC=CC=C3SC4=CC=CC=C42",
+      "inchiKey": "URKOMYMAXPYINW-UHFFFAOYSA-N",
+      "formula": "C21H25N3O2S",
+      "molecularWeight": 383.5,
+      "retrieved": "2026-10-21"
+    },
+    "5073": {
+      "title": "Risperidone",
+      "smiles": "CC1=C(C(=O)N2CCCCC2=N1)CCN3CCC(CC3)C4=NOC5=C4C=CC(=C5)F",
+      "inchiKey": "RAPZEAPATHNIPO-UHFFFAOYSA-N",
+      "formula": "C23H27FN4O2",
+      "molecularWeight": 410.5,
+      "retrieved": "2026-10-21"
+    },
+    "5253": {
+      "title": "Sotalol",
+      "smiles": "CC(C)NCC(C1=CC=C(C=C1)NS(=O)(=O)C)O",
+      "inchiKey": "ZBMZVLHSJCTVON-UHFFFAOYSA-N",
+      "formula": "C12H20N2O3S",
+      "molecularWeight": 272.37,
+      "retrieved": "2026-10-21"
+    },
+    "5391": {
+      "title": "Temazepam",
+      "smiles": "CN1C2=C(C=C(C=C2)Cl)C(=NC(C1=O)O)C3=CC=CC=C3",
+      "inchiKey": "SEQDDYPDSLOBDC-UHFFFAOYSA-N",
+      "formula": "C16H13ClN2O2",
+      "molecularWeight": 300.74,
+      "retrieved": "2026-10-21"
+    },
+    "5429": {
+      "title": "Theobromine",
+      "smiles": "CN1C=NC2=C1C(=O)NC(=O)N2C",
+      "inchiKey": "YAPQBXQYLJRXSA-UHFFFAOYSA-N",
+      "formula": "C7H8N4O2",
+      "molecularWeight": 180.16,
+      "retrieved": "2026-10-21"
+    },
+    "5452": {
+      "title": "Thioridazine",
+      "smiles": "CN1CCCCC1CCN2C3=CC=CC=C3SC4=C2C=C(C=C4)SC",
+      "inchiKey": "KLBQZWRITKRQQV-UHFFFAOYSA-N",
+      "formula": "C21H26N2S2",
+      "molecularWeight": 370.6,
+      "retrieved": "2026-10-21"
+    },
+    "5487": {
+      "title": "Tizanidine",
+      "smiles": "C1CN=C(N1)NC2=C(C=CC3=NSN=C32)Cl",
+      "inchiKey": "XFYDIVBRZNQMJC-UHFFFAOYSA-N",
+      "formula": "C9H8ClN5S",
+      "molecularWeight": 253.71,
+      "retrieved": "2026-10-21"
+    },
+    "5530": {
+      "title": "Tranylcypromine",
+      "smiles": "C1C(C1N)C2=CC=CC=C2",
+      "inchiKey": "AELCINSCMGFISI-UHFFFAOYSA-N",
+      "formula": "C9H11N",
+      "molecularWeight": 133.19,
+      "retrieved": "2026-10-21"
+    },
+    "5533": {
+      "title": "Trazodone",
+      "smiles": "C1CN(CCN1CCCN2C(=O)N3C=CC=CC3=N2)C4=CC(=CC=C4)Cl",
+      "inchiKey": "PHLBKPHSAVXXEF-UHFFFAOYSA-N",
+      "formula": "C19H22ClN5O",
+      "molecularWeight": 371.9,
+      "retrieved": "2026-10-21"
+    },
+    "5556": {
+      "title": "Triazolam",
+      "smiles": "CC1=NN=C2N1C3=C(C=C(C=C3)Cl)C(=NC2)C4=CC=CC=C4Cl",
+      "inchiKey": "JOFWLTCLBGQGBO-UHFFFAOYSA-N",
+      "formula": "C17H12Cl2N4",
+      "molecularWeight": 343.2,
+      "retrieved": "2026-10-21"
+    },
+    "5656": {
+      "title": "Venlafaxine",
+      "smiles": "CN(C)CC(C1=CC=C(C=C1)OC)C2(CCCCC2)O",
+      "inchiKey": "PNVNVHUZROJLTJ-UHFFFAOYSA-N",
+      "formula": "C17H27NO2",
+      "molecularWeight": 277.4,
+      "retrieved": "2026-10-21"
+    },
+    "5719": {
+      "title": "Zaleplon",
+      "smiles": "CCN(C1=CC=CC(=C1)C2=CC=NC3=C(C=NN23)C#N)C(=O)C",
+      "inchiKey": "HUNXMJYCHXQEGX-UHFFFAOYSA-N",
+      "formula": "C17H15N5O",
+      "molecularWeight": 305.33,
+      "retrieved": "2026-10-21"
+    },
+    "5732": {
+      "title": "Zolpidem",
+      "smiles": "CC1=CC=C(C=C1)C2=C(N3C=C(C=CC3=N2)C)CC(=O)N(C)C",
+      "inchiKey": "ZAFYATHCZYHLPB-UHFFFAOYSA-N",
+      "formula": "C19H21N3O",
+      "molecularWeight": 307.4,
+      "retrieved": "2026-10-21"
+    },
+    "5735": {
+      "title": "Zopiclone",
+      "smiles": "CN1CCN(CC1)C(=O)OC2C3=NC=CN=C3C(=O)N2C4=NC=C(C=C4)Cl",
+      "inchiKey": "GBBSUAFBMRNDJC-UHFFFAOYSA-N",
+      "formula": "C17H17ClN6O3",
+      "molecularWeight": 388.8,
+      "retrieved": "2026-10-21"
+    },
+    "5755": {
+      "title": "Prednisolone",
+      "smiles": "C[C@]12C[C@@H]([C@H]3[C@H]([C@@H]1CC[C@@]2(C(=O)CO)O)CCC4=CC(=O)C=C[C@]34C)O",
+      "inchiKey": "OIGNJSKKLXVSLS-VWUMJDOOSA-N",
+      "formula": "C21H28O5",
+      "molecularWeight": 360.4,
+      "retrieved": "2026-10-21"
+    },
+    "5833": {
+      "title": "Spironolactone",
+      "smiles": "CC(=O)S[C@@H]1CC2=CC(=O)CC[C@@]2([C@@H]3[C@@H]1[C@@H]4CC[C@]5([C@]4(CC3)C)CCC(=O)O5)C",
+      "inchiKey": "LXMSZDCAJNLERA-ZHYRCANASA-N",
+      "formula": "C24H32O4S",
+      "molecularWeight": 416.6,
+      "retrieved": "2026-10-21"
+    },
+    "5865": {
+      "title": "Prednisone",
+      "smiles": "C[C@]12CC(=O)[C@H]3[C@H]([C@@H]1CC[C@@]2(C(=O)CO)O)CCC4=CC(=O)C=C[C@]34C",
+      "inchiKey": "XOFYZVNMUHMLCC-ZPOLXVRWSA-N",
+      "formula": "C21H26O5",
+      "molecularWeight": 358.4,
+      "retrieved": "2026-10-21"
+    },
+    "6089": {
+      "title": "N,N-Dimethyltryptamine",
+      "smiles": "CN(C)CCC1=CNC2=CC=CC=C21",
+      "inchiKey": "DMULVCHRPCFFGV-UHFFFAOYSA-N",
+      "formula": "C12H16N2",
+      "molecularWeight": 188.27,
+      "retrieved": "2026-10-21"
+    },
+    "6305": {
+      "title": "L-Tryptophan",
+      "smiles": "C1=CC=C2C(=C1)C(=CN2)C[C@@H](C(=O)O)N",
+      "inchiKey": "QIVBCDIJIAJPQS-VIFPVBQESA-N",
+      "formula": "C11H12N2O2",
+      "molecularWeight": 204.22,
+      "retrieved": "2026-10-21"
+    },
+    "6348": {
+      "title": "Carbon Disulfide",
+      "smiles": "C(=S)=S",
+      "inchiKey": "QGJOPFRUJISHPQ-UHFFFAOYSA-N",
+      "formula": "CS2",
+      "molecularWeight": 76.15,
+      "retrieved": "2026-10-21"
+    },
+    "6468": {
+      "title": "Phencyclidine",
+      "smiles": "C1CCC(CC1)(C2=CC=CC=C2)N3CCCCC3",
+      "inchiKey": "JTJMJGYZQZDUJJ-UHFFFAOYSA-N",
+      "formula": "C17H25N",
+      "molecularWeight": 243.4,
+      "retrieved": "2026-10-21"
+    },
+    "7028": {
+      "title": "Pseudoephedrine",
+      "smiles": "C[C@@H]([C@H](C1=CC=CC=C1)O)NC",
+      "inchiKey": "KWGRBVOPPLSCSI-WCBMZHEXSA-N",
+      "formula": "C10H15NO",
+      "molecularWeight": 165.23,
+      "retrieved": "2026-10-21"
+    },
+    "7302": {
+      "title": "Gamma-Butyrolactone",
+      "smiles": "C1CC(=O)OC1",
+      "inchiKey": "YEJRWHAVMIAJKC-UHFFFAOYSA-N",
+      "formula": "C4H6O2",
+      "molecularWeight": 86.09,
+      "retrieved": "2026-10-21"
+    },
+    "8064": {
+      "title": "1,4-Butanediol",
+      "smiles": "C(CCO)CO",
+      "inchiKey": "WERYXYBDKMZEQL-UHFFFAOYSA-N",
+      "formula": "C4H10O2",
+      "molecularWeight": 90.12,
+      "retrieved": "2026-10-21"
+    },
+    "8969": {
+      "title": "Yohimbine",
+      "smiles": "COC(=O)[C@H]1[C@H](CC[C@@H]2[C@@H]1C[C@H]3C4=C(CCN3C2)C5=CC=CC=C5N4)O",
+      "inchiKey": "BLGXFZZNTVWLAY-SCYLSFHTSA-N",
+      "formula": "C21H26N2O3",
+      "molecularWeight": 354.4,
+      "retrieved": "2026-10-21"
+    },
+    "8987": {
+      "title": "Diethyldithiocarbamic Acid",
+      "smiles": "CCN(CC)C(=S)S",
+      "inchiKey": "LMBWSYZSUOEYSN-UHFFFAOYSA-N",
+      "formula": "C5H11NS2",
+      "molecularWeight": 149.3,
+      "retrieved": "2026-10-21"
+    },
+    "9294": {
+      "title": "Ephedrine",
+      "smiles": "C[C@@H]([C@@H](C1=CC=CC=C1)O)NC",
+      "inchiKey": "KWGRBVOPPLSCSI-WPRPVWTQSA-N",
+      "formula": "C10H15NO",
+      "molecularWeight": 165.23,
+      "retrieved": "2026-10-21"
+    },
+    "9785": {
+      "title": "Hydroxyphenobarbital",
+      "smiles": "CCC1(C(=O)NC(=O)NC1=O)C2=CC=C(C=C2)O",
+      "inchiKey": "IEPXMKJNWPXDBP-UHFFFAOYSA-N",
+      "formula": "C12H12N2O4",
+      "molecularWeight": 248.23,
+      "retrieved": "2026-10-21"
+    },
+    "9918": {
+      "title": "Norcyclobenzaprine",
+      "smiles": "CNCCC=C1C2=CC=CC=C2C=CC3=CC=CC=C31",
+      "inchiKey": "XECQQDXTQRYYBH-UHFFFAOYSA-N",
+      "formula": "C19H19N",
+      "molecularWeight": 261.4,
+      "retrieved": "2026-10-21"
+    },
+    "10257": {
+      "title": "Bufotenine",
+      "smiles": "CN(C)CCC1=CNC2=C1C=C(C=C2)O",
+      "inchiKey": "VTTONGPRPXSUTJ-UHFFFAOYSA-N",
+      "formula": "C12H16N2O",
+      "molecularWeight": 204.27,
+      "retrieved": "2026-10-21"
+    },
+    "10297": {
+      "title": "Phenylpropanolamine",
+      "smiles": "C[C@@H]([C@@H](C1=CC=CC=C1)O)N",
+      "inchiKey": "DLNKOYKMWOXYQA-CBAPKCEASA-N",
+      "formula": "C9H13NO",
+      "molecularWeight": 151.21,
+      "retrieved": "2026-10-21"
+    },
+    "10413": {
+      "title": "4-Hydroxybutyric Acid",
+      "smiles": "C(CC(=O)O)CO",
+      "inchiKey": "SJZRECIVHVDYJC-UHFFFAOYSA-N",
+      "formula": "C4H8O3",
+      "molecularWeight": 104.1,
+      "retrieved": "2026-10-21"
+    },
+    "10624": {
+      "title": "Psilocybin",
+      "smiles": "CN(C)CCC1=CNC2=C1C(=CC=C2)OP(=O)(O)O",
+      "inchiKey": "QVDSEJDULKLHCG-UHFFFAOYSA-N",
+      "formula": "C12H17N2O4P",
+      "molecularWeight": 284.25,
+      "retrieved": "2026-10-21"
+    },
+    "10836": {
+      "title": "Methamphetamine",
+      "smiles": "C[C@@H](CC1=CC=CC=C1)NC",
+      "inchiKey": "MYWUZJCMWCOHBA-VIFPVBQESA-N",
+      "formula": "C10H15N",
+      "molecularWeight": 149.23,
+      "retrieved": "2026-10-21"
+    },
+    "12560": {
+      "title": "Erythromycin",
+      "smiles": "CC[C@@H]1[C@@]([C@@H]([C@H](C(=O)[C@@H](C[C@@]([C@@H]([C@H]([C@@H]([C@H](C(=O)O1)C)O[C@H]2C[C@@]([C@H]([C@@H](O2)C)O)(C)OC)C)O[C@H]3[C@@H]([C@H](C[C@H](O3)C)N(C)C)O)(C)O)C)C)O)(C)O",
+      "inchiKey": "ULGZDMOVFRHVEP-RWJQBGPGSA-N",
+      "formula": "C37H67NO13",
+      "molecularWeight": 733.9,
+      "retrieved": "2026-10-21"
+    },
+    "13756": {
+      "title": "Demoxepam",
+      "smiles": "C1C(=O)N=C2C=CC(=CC2=C(N1O)C3=CC=CC=C3)Cl",
+      "inchiKey": "PSADRZMLSXCSAS-UHFFFAOYSA-N",
+      "formula": "C15H11ClN2O2",
+      "molecularWeight": 286.71,
+      "retrieved": "2026-10-21"
+    },
+    "13789": {
+      "title": "Canrenone",
+      "smiles": "C[C@]12CCC(=O)C=C1C=C[C@@H]3[C@@H]2CC[C@]4([C@H]3CC[C@@]45CCC(=O)O5)C",
+      "inchiKey": "UJVLDDZCTMKXJK-WNHSNXHDSA-N",
+      "formula": "C22H28O3",
+      "molecularWeight": 340.5,
+      "retrieved": "2026-10-21"
+    },
+    "14113": {
+      "title": "Phenibut",
+      "smiles": "C1=CC=C(C=C1)C(CC(=O)O)CN",
+      "inchiKey": "DAFOCGYVTAOKAJ-UHFFFAOYSA-N",
+      "formula": "C10H13NO2",
+      "molecularWeight": 179.22,
+      "retrieved": "2026-10-21"
+    },
+    "16078": {
+      "title": "Tetrahydrocannabinol",
+      "smiles": "CCCCCC1=CC(=C2[C@@H]3C=C(CC[C@H]3C(OC2=C1)(C)C)C)O",
+      "inchiKey": "CYQFCXCEBYINGO-IAGOWNOFSA-N",
+      "formula": "C21H30O2",
+      "molecularWeight": 314.5,
+      "retrieved": "2026-10-21"
+    },
+    "16362": {
+      "title": "Pimozide",
+      "smiles": "C1CN(CCC1N2C3=CC=CC=C3NC2=O)CCCC(C4=CC=C(C=C4)F)C5=CC=C(C=C5)F",
+      "inchiKey": "YVUQSNJEYSNKRX-UHFFFAOYSA-N",
+      "formula": "C28H29F2N3O",
+      "molecularWeight": 461.5,
+      "retrieved": "2026-10-21"
+    },
+    "16414": {
+      "title": "7-Hydroxychlorpromazine",
+      "smiles": "CN(C)CCCN1C2=C(C=C(C=C2)O)SC3=C1C=C(C=C3)Cl",
+      "inchiKey": "HICFFJZGXWEIHN-UHFFFAOYSA-N",
+      "formula": "C17H19ClN2OS",
+      "molecularWeight": 334.9,
+      "retrieved": "2026-10-21"
+    },
+    "24397": {
+      "title": "Norchlordiazepoxide",
+      "smiles": "C1C(=N)N=C2C=CC(=CC2=C(N1O)C3=CC=CC=C3)Cl",
+      "inchiKey": "IRKXPJJKXBMOMW-UHFFFAOYSA-N",
+      "formula": "C15H12ClN3O",
+      "molecularWeight": 285.73,
+      "retrieved": "2026-10-21"
+    },
+    "26757": {
+      "title": "Selegiline",
+      "smiles": "C[C@H](CC1=CC=CC=C1)N(C)CC#C",
+      "inchiKey": "MEZLKOACVSPNER-GFCCVEGCSA-N",
+      "formula": "C13H17N",
+      "molecularWeight": 187.28,
+      "retrieved": "2026-10-21"
+    },
+    "30668": {
+      "title": "Lofexidine",
+      "smiles": "CC(C1=NCCN1)OC2=C(C=CC=C2Cl)Cl",
+      "inchiKey": "KSMAGQUYOIHWFS-UHFFFAOYSA-N",
+      "formula": "C11H12Cl2N2O",
+      "molecularWeight": 259.13,
+      "retrieved": "2026-10-21"
+    },
+    "31765": {
+      "title": "Sulforidazine",
+      "smiles": "CN1CCCCC1CCN2C3=CC=CC=C3SC4=C2C=C(C=C4)S(=O)(=O)C",
+      "inchiKey": "FLGCRGJDQJIJAW-UHFFFAOYSA-N",
+      "formula": "C21H26N2O2S2",
+      "molecularWeight": 402.6,
+      "retrieved": "2026-10-21"
+    },
+    "32414": {
+      "title": "Normeperidine",
+      "smiles": "CCOC(=O)C1(CCNCC1)C2=CC=CC=C2",
+      "inchiKey": "QKHMFBKXTNQCTM-UHFFFAOYSA-N",
+      "formula": "C14H19NO2",
+      "molecularWeight": 233.31,
+      "retrieved": "2026-10-21"
+    },
+    "33741": {
+      "title": "Tramadol",
+      "smiles": "CN(C)C[C@H]1CCCC[C@@]1(C2=CC(=CC=C2)OC)O",
+      "inchiKey": "TVYLLZQTGLZFBW-ZBFHGGJFSA-N",
+      "formula": "C16H25NO2",
+      "molecularWeight": 263.37,
+      "retrieved": "2026-10-21"
+    },
+    "34312": {
+      "title": "Oxcarbazepine",
+      "smiles": "C1C2=CC=CC=C2N(C3=CC=CC=C3C1=O)C(=O)N",
+      "inchiKey": "CTRLABGOLIVAIY-UHFFFAOYSA-N",
+      "formula": "C15H12N2O2",
+      "molecularWeight": 252.27,
+      "retrieved": "2026-10-21"
+    },
+    "36604": {
+      "title": "Levmetamfetamine",
+      "smiles": "C[C@H](CC1=CC=CC=C1)NC",
+      "inchiKey": "MYWUZJCMWCOHBA-SECBINFHSA-N",
+      "formula": "C10H15N",
+      "molecularWeight": 149.23,
+      "retrieved": "2026-10-21"
+    },
+    "39186": {
+      "title": "Diltiazem",
+      "smiles": "CC(=O)O[C@@H]1[C@@H](SC2=CC=CC=C2N(C1=O)CCN(C)C)C3=CC=C(C=C3)OC",
+      "inchiKey": "HSUGRBWQSSZJOP-RTWAWAEBSA-N",
+      "formula": "C22H26N2O4S",
+      "molecularWeight": 414.5,
+      "retrieved": "2026-10-21"
+    },
+    "40791": {
+      "title": "N-Desmethyldiphenhydramine",
+      "smiles": "CNCCOC(C1=CC=CC=C1)C2=CC=CC=C2",
+      "inchiKey": "AGSLYHYWLYGAOU-UHFFFAOYSA-N",
+      "formula": "C16H19NO",
+      "molecularWeight": 241.33,
+      "retrieved": "2026-10-21"
+    },
+    "43815": {
+      "title": "Paroxetine",
+      "smiles": "C1CNC[C@H]([C@@H]1C2=CC=C(C=C2)F)COC3=CC4=C(C=C3)OCO4",
+      "inchiKey": "AHOUBRCZNHFOSL-YOEHRIQHSA-N",
+      "formula": "C19H20FNO3",
+      "molecularWeight": 329.4,
+      "retrieved": "2026-10-21"
+    },
+    "47576": {
+      "title": "Ketoconazole",
+      "smiles": "CC(=O)N1CCN(CC1)C2=CC=C(C=C2)OC[C@@H]3CO[C@@](O3)(CN4C=CN=C4)C5=C(C=C(C=C5)Cl)Cl",
+      "inchiKey": "XMAYWYJOQHXEEK-ZEQKJWHPSA-N",
+      "formula": "C26H28Cl2N4O4",
+      "molecularWeight": 531.4,
+      "retrieved": "2026-10-21"
+    },
+    "54841": {
+      "title": "Atomoxetine",
+      "smiles": "CC1=CC=CC=C1O[C@H](CCNC)C2=CC=CC=C2",
+      "inchiKey": "VHGCDTVCOLNTBX-QGZVFWFLSA-N",
+      "formula": "C17H21NO",
+      "molecularWeight": 255.35,
+      "retrieved": "2026-10-21"
+    },
+    "55283": {
+      "title": "Itraconazole",
+      "smiles": "CCC(C)N1C(=O)N(C=N1)C2=CC=C(C=C2)N3CCN(CC3)C4=CC=C(C=C4)OC[C@H]5CO[C@](O5)(CN6C=NC=N6)C7=C(C=C(C=C7)Cl)Cl",
+      "inchiKey": "VHVPQPYKVGDNFY-ZPGVKDDISA-N",
+      "formula": "C35H38Cl2N8O4",
+      "molecularWeight": 705.6,
+      "retrieved": "2026-10-21"
+    },
+    "56959": {
+      "title": "Ranolazine",
+      "smiles": "CC1=C(C(=CC=C1)C)NC(=O)CN2CCN(CC2)CC(COC3=CC=CC=C3OC)O",
+      "inchiKey": "XKLMZUWKNUAPSZ-UHFFFAOYSA-N",
+      "formula": "C24H33N3O4",
+      "molecularWeight": 427.5,
+      "retrieved": "2026-10-21"
+    },
+    "60606": {
+      "title": "Clopidogrel",
+      "smiles": "COC(=O)[C@H](C1=CC=CC=C1Cl)N2CCC3=C(C2)C=CS3",
+      "inchiKey": "GKTWGGQPFAXNFI-HNNXBMFYSA-N",
+      "formula": "C16H16ClNO2S",
+      "molecularWeight": 321.8,
+      "retrieved": "2026-10-21"
+    },
+    "60795": {
+      "title": "Aripiprazole",
+      "smiles": "C1CC(=O)NC2=C1C=CC(=C2)OCCCCN3CCN(CC3)C4=C(C(=CC=C4)Cl)Cl",
+      "inchiKey": "CEUORZQYGODEFX-UHFFFAOYSA-N",
+      "formula": "C23H27Cl2N3O2",
+      "molecularWeight": 448.4,
+      "retrieved": "2026-10-21"
+    },
+    "60835": {
+      "title": "Duloxetine",
+      "smiles": "CNCC[C@@H](C1=CC=CS1)OC2=CC=CC3=CC=CC=C32",
+      "inchiKey": "ZEUITGRIYCTCEM-KRWDZBQOSA-N",
+      "formula": "C18H19NOS",
+      "molecularWeight": 297.4,
+      "retrieved": "2026-10-21"
+    },
+    "60854": {
+      "title": "Ziprasidone",
+      "smiles": "C1CN(CCN1CCC2=C(C=C3C(=C2)CC(=O)N3)Cl)C4=NSC5=CC=CC=C54",
+      "inchiKey": "MVWVFYHBGMAFLY-UHFFFAOYSA-N",
+      "formula": "C21H21ClN4OS",
+      "molecularWeight": 412.9,
+      "retrieved": "2026-10-21"
+    },
+    "62156": {
+      "title": "Carfentanil",
+      "smiles": "CCC(=O)N(C1=CC=CC=C1)C2(CCN(CC2)CCC3=CC=CC=C3)C(=O)OC",
+      "inchiKey": "YDSDEBIZUNNPOB-UHFFFAOYSA-N",
+      "formula": "C24H30N2O3",
+      "molecularWeight": 394.5,
+      "retrieved": "2026-10-21"
+    },
+    "62966": {
+      "title": "Lorazepam glucuronide",
+      "smiles": "C1=CC=C(C(=C1)C2=NC(C(=O)NC3=C2C=C(C=C3)Cl)O[C@H]4[C@@H]([C@H]([C@@H]([C@H](O4)C(=O)O)O)O)O)Cl",
+      "inchiKey": "IWOJSSFCRQKNKN-IFBJMGMISA-N",
+      "formula": "C21H18Cl2N2O8",
+      "molecularWeight": 497.3,
+      "retrieved": "2026-10-21"
+    },
+    "63032": {
+      "title": "10H-Phenothiazine-10-ethanamine, N,N,alpha-trimethyl-, 5-oxide",
+      "smiles": "CC(CN1C2=CC=CC=C2S(=O)C3=CC=CC=C31)N(C)C",
+      "inchiKey": "OWTCLFIFAFHQIX-UHFFFAOYSA-N",
+      "formula": "C17H20N2OS",
+      "molecularWeight": 300.4,
+      "retrieved": "2026-10-21"
+    },
+    "64139": {
+      "title": "Efavirenz",
+      "smiles": "C1CC1C#C[C@]2(C3=C(C=CC(=C3)Cl)NC(=O)O2)C(F)(F)F",
+      "inchiKey": "XPOQHMRABVBWPR-ZDUSSCGKSA-N",
+      "formula": "C14H9ClF3NO2",
+      "molecularWeight": 315.67,
+      "retrieved": "2026-10-21"
+    },
+    "65833": {
+      "title": "Milnacipran",
+      "smiles": "CCN(CC)C(=O)[C@@]1(C[C@@H]1CN)C2=CC=CC=C2",
+      "inchiKey": "GJJFMKBJSRMPLA-HIFRSBDPSA-N",
+      "formula": "C15H22N2O",
+      "molecularWeight": 246.35,
+      "retrieved": "2026-10-21"
+    },
+    "68094": {
+      "title": "Harmol",
+      "smiles": "CC1=C2C(=C3C=CC(=O)C=C3N2)C=CN1",
+      "inchiKey": "LBBJNGFCXDOYMQ-UHFFFAOYSA-N",
+      "formula": "C12H10N2O",
+      "molecularWeight": 198.22,
+      "retrieved": "2026-10-21"
+    },
+    "68617": {
+      "title": "Sertraline",
+      "smiles": "CN[C@H]1CC[C@H](C2=CC=CC=C12)C3=CC(=C(C=C3)Cl)Cl",
+      "inchiKey": "VGKDLMBJGBXTGI-SJCJKPOMSA-N",
+      "formula": "C17H17Cl2N",
+      "molecularWeight": 306.2,
+      "retrieved": "2026-10-21"
+    },
+    "68870": {
+      "title": "Tianeptine",
+      "smiles": "CN1C2=CC=CC=C2C(C3=C(S1(=O)=O)C=C(C=C3)Cl)NCCCCCCC(=O)O",
+      "inchiKey": "JICJBGPOMZQUBB-UHFFFAOYSA-N",
+      "formula": "C21H25ClN2O4S",
+      "molecularWeight": 437,
+      "retrieved": "2026-10-21"
+    },
+    "70372": {
+      "title": "3,4,5-Trimethoxyphenylacetic acid",
+      "smiles": "COC1=CC(=CC(=C1OC)OC)CC(=O)O",
+      "inchiKey": "DDSJXCGGOXKGSJ-UHFFFAOYSA-N",
+      "formula": "C11H14O5",
+      "molecularWeight": 226.23,
+      "retrieved": "2026-10-21"
+    },
+    "71301": {
+      "title": "Nebivolol",
+      "smiles": "C1CC2=C(C=CC(=C2)F)OC1C(CNCC(C3CCC4=C(O3)C=CC(=C4)F)O)O",
+      "inchiKey": "KOHIRBRYDXPAMZ-UHFFFAOYSA-N",
+      "formula": "C22H25F2NO4",
+      "molecularWeight": 405.4,
+      "retrieved": "2026-10-21"
+    },
+    "71329": {
+      "title": "Dofetilide",
+      "smiles": "CN(CCC1=CC=C(C=C1)NS(=O)(=O)C)CCOC2=CC=C(C=C2)NS(=O)(=O)C",
+      "inchiKey": "IXTMWRCNAAVVAI-UHFFFAOYSA-N",
+      "formula": "C19H27N3O5S2",
+      "molecularWeight": 441.6,
+      "retrieved": "2026-10-21"
+    },
+    "71360": {
+      "title": "Iloperidone",
+      "smiles": "CC(=O)C1=CC(=C(C=C1)OCCCN2CCC(CC2)C3=NOC4=C3C=CC(=C4)F)OC",
+      "inchiKey": "XMXHEBAFVSFQEX-UHFFFAOYSA-N",
+      "formula": "C24H27FN2O4",
+      "molecularWeight": 426.5,
+      "retrieved": "2026-10-21"
+    },
+    "84029": {
+      "title": "Clarithromycin",
+      "smiles": "CC[C@@H]1[C@@]([C@@H]([C@H](C(=O)[C@@H](C[C@@]([C@@H]([C@H]([C@@H]([C@H](C(=O)O1)C)O[C@H]2C[C@@]([C@H]([C@@H](O2)C)O)(C)OC)C)O[C@H]3[C@@H]([C@H](C[C@H](O3)C)N(C)C)O)(C)OC)C)C)O)(C)O",
+      "inchiKey": "AGOYDEPGAOXOCK-KCBOHYOISA-N",
+      "formula": "C38H69NO13",
+      "molecularWeight": 748,
+      "retrieved": "2026-10-21"
+    },
+    "86863": {
+      "title": "2-Piperidineacetic acid, alpha-phenyl-",
+      "smiles": "C1CCNC(C1)C(C2=CC=CC=C2)C(=O)O",
+      "inchiKey": "INGSNVSERUZOAK-UHFFFAOYSA-N",
+      "formula": "C13H17NO2",
+      "molecularWeight": 219.28,
+      "retrieved": "2026-10-21"
+    },
+    "89594": {
+      "title": "Nicotine",
+      "smiles": "CN1CCC[C@H]1C2=CN=CC=C2",
+      "inchiKey": "SNICXCGAKADSCV-JTQLQIEISA-N",
+      "formula": "C10H14N2",
+      "molecularWeight": 162.23,
+      "retrieved": "2026-10-21"
+    },
+    "89657": {
+      "title": "Desmethylclobazam",
+      "smiles": "C1C(=O)NC2=C(C=C(C=C2)Cl)N(C1=O)C3=CC=CC=C3",
+      "inchiKey": "RRTVVRIFVKKTJK-UHFFFAOYSA-N",
+      "formula": "C15H11ClN2O2",
+      "molecularWeight": 286.71,
+      "retrieved": "2026-10-21"
+    },
+    "91638": {
+      "title": "Deacetyldiltiazem",
+      "smiles": "CN(C)CCN1C2=CC=CC=C2S[C@H]([C@H](C1=O)O)C3=CC=C(C=C3)OC",
+      "inchiKey": "NZHUXMZTSSZXSB-MOPGFXCFSA-N",
+      "formula": "C20H24N2O3S",
+      "molecularWeight": 372.5,
+      "retrieved": "2026-10-21"
+    },
+    "104774": {
+      "title": "Desethylamiodarone",
+      "smiles": "CCCCC1=C(C2=CC=CC=C2O1)C(=O)C3=CC(=C(C(=C3)I)OCCNCC)I",
+      "inchiKey": "VXOKDLACQICQFA-UHFFFAOYSA-N",
+      "formula": "C23H25I2NO3",
+      "molecularWeight": 617.3,
+      "retrieved": "2026-10-21"
+    },
+    "104896": {
+      "title": "(+-)-2-n-Propyl-4-pentenoic acid",
+      "smiles": "CCCC(CC=C)C(=O)O",
+      "inchiKey": "UMYDNZXEHYSVFY-UHFFFAOYSA-N",
+      "formula": "C8H14O2",
+      "molecularWeight": 142.2,
+      "retrieved": "2026-10-21"
+    },
+    "104904": {
+      "title": "(-)-Ecgonine methyl ester",
+      "smiles": "CN1[C@H]2CC[C@@H]1[C@H]([C@H](C2)O)C(=O)OC",
+      "inchiKey": "QIQNNBXHAYSQRY-UYXSQOIJSA-N",
+      "formula": "C10H17NO3",
+      "molecularWeight": 199.25,
+      "retrieved": "2026-10-21"
+    },
+    "107891": {
+      "title": "N-Demethyldiltiazem",
+      "smiles": "CC(=O)O[C@@H]1[C@@H](SC2=CC=CC=C2N(C1=O)CCNC)C3=CC=C(C=C3)OC",
+      "inchiKey": "YOMLDISQSWWYOT-UXHICEINSA-N",
+      "formula": "C21H24N2O4S",
+      "molecularWeight": 400.5,
+      "retrieved": "2026-10-21"
+    },
+    "107917": {
+      "title": "1'-Hydroxymidazolam",
+      "smiles": "C1C2=CN=C(N2C3=C(C=C(C=C3)Cl)C(=N1)C4=CC=CC=C4F)CO",
+      "inchiKey": "QHSMEGADRFZVNE-UHFFFAOYSA-N",
+      "formula": "C18H13ClFN3O",
+      "molecularWeight": 341.8,
+      "retrieved": "2026-10-21"
+    },
+    "107963": {
+      "title": "3'-Hydroxycotinine, trans-",
+      "smiles": "CN1[C@@H](C[C@H](C1=O)O)C2=CN=CC=C2",
+      "inchiKey": "XOKCJXZZNAUIQN-DTWKUNHWSA-N",
+      "formula": "C10H12N2O2",
+      "molecularWeight": 192.21,
+      "retrieved": "2026-10-21"
+    },
+    "108051": {
+      "title": "2-Hydroxyimipramine",
+      "smiles": "CN(C)CCCN1C2=C(CCC3=CC=CC=C31)C=C(C=C2)O",
+      "inchiKey": "ROTCPJFWLNDKHU-UHFFFAOYSA-N",
+      "formula": "C19H24N2O",
+      "molecularWeight": 296.4,
+      "retrieved": "2026-10-21"
+    },
+    "114709": {
+      "title": "Licarbazepine",
+      "smiles": "C1C(C2=CC=CC=C2N(C3=CC=CC=C31)C(=O)N)O",
+      "inchiKey": "BMPDWHIDQYTSHX-UHFFFAOYSA-N",
+      "formula": "C15H14N2O2",
+      "molecularWeight": 254.28,
+      "retrieved": "2026-10-21"
+    },
+    "114743": {
+      "title": "Desmethylsertraline",
+      "smiles": "C1C[C@@H](C2=CC=CC=C2[C@@H]1C3=CC(=C(C=C3)Cl)Cl)N",
+      "inchiKey": "SRPXSILJHWNFMK-ZBEGNZNMSA-N",
+      "formula": "C16H15Cl2N",
+      "molecularWeight": 292.2,
+      "retrieved": "2026-10-21"
+    },
+    "114976": {
+      "title": "Norbuprenorphine",
+      "smiles": "C[C@]([C@H]1C[C@@]23CC[C@@]1([C@H]4[C@@]25CCN[C@@H]3CC6=C5C(=C(C=C6)O)O4)OC)(C(C)(C)C)O",
+      "inchiKey": "YOYLLRBMGQRFTN-IOMBULRVSA-N",
+      "formula": "C25H35NO4",
+      "molecularWeight": 413.5,
+      "retrieved": "2026-10-21"
+    },
+    "115237": {
+      "title": "Paliperidone",
+      "smiles": "CC1=C(C(=O)N2CCCC(C2=N1)O)CCN3CCC(CC3)C4=NOC5=C4C=CC(=C5)F",
+      "inchiKey": "PMXMIIMHBWHSKN-UHFFFAOYSA-N",
+      "formula": "C23H27FN4O3",
+      "molecularWeight": 426.5,
+      "retrieved": "2026-10-21"
+    },
+    "119265": {
+      "title": "4-(4-Chlorophenyl)-alpha-(4-fluorophenyl)-4-hydroxy-1-piperidinebutanol",
+      "smiles": "C1CN(CCC1(C2=CC=C(C=C2)Cl)O)CCCC(C3=CC=C(C=C3)F)O",
+      "inchiKey": "WNZBBTJFOIOEMP-UHFFFAOYSA-N",
+      "formula": "C21H25ClFNO2",
+      "molecularWeight": 377.9,
+      "retrieved": "2026-10-21"
+    },
+    "121249": {
+      "title": "2-Hydroxydesipramine",
+      "smiles": "CNCCCN1C2=C(CCC3=CC=CC=C31)C=C(C=C2)O",
+      "inchiKey": "NVJBOLMRGMDGLD-UHFFFAOYSA-N",
+      "formula": "C18H22N2O",
+      "molecularWeight": 282.4,
+      "retrieved": "2026-10-21"
+    },
+    "125017": {
+      "title": "Desvenlafaxine",
+      "smiles": "CN(C)CC(C1=CC=C(C=C1)O)C2(CCCCC2)O",
+      "inchiKey": "KYYIDSXMWOZKMP-UHFFFAOYSA-N",
+      "formula": "C16H25NO2",
+      "molecularWeight": 263.37,
+      "retrieved": "2026-10-21"
+    },
+    "128563": {
+      "title": "Salvinorin A",
+      "smiles": "CC(=O)O[C@H]1C[C@H]([C@@]2(CC[C@H]3C(=O)O[C@@H](C[C@@]3([C@H]2C1=O)C)C4=COC=C4)C)C(=O)OC",
+      "inchiKey": "OBSYBRPAKCASQB-AGQYDFLVSA-N",
+      "formula": "C23H28O8",
+      "molecularWeight": 432.5,
+      "retrieved": "2026-10-21"
+    },
+    "128820": {
+      "title": "N-Depropylpropafenone",
+      "smiles": "C1=CC=C(C=C1)CCC(=O)C2=CC=CC=C2OCC(CN)O",
+      "inchiKey": "HIGKMVIPYOFHBP-UHFFFAOYSA-N",
+      "formula": "C18H21NO3",
+      "molecularWeight": 299.4,
+      "retrieved": "2026-10-21"
+    },
+    "132831": {
+      "title": "N-(Aminoiminomethyl)-2,6-dichloro-3-hydroxybenzeneacetamide",
+      "smiles": "C1=CC(=C(C(=C1O)Cl)CC(=O)N=C(N)N)Cl",
+      "inchiKey": "WJJWHWYOPUIOBR-UHFFFAOYSA-N",
+      "formula": "C9H9Cl2N3O2",
+      "molecularWeight": 262.09,
+      "retrieved": "2026-10-21"
+    },
+    "132999": {
+      "title": "Ivabradine",
+      "smiles": "CN(CCCN1CCC2=CC(=C(C=C2CC1=O)OC)OC)C[C@H]3CC4=CC(=C(C=C34)OC)OC",
+      "inchiKey": "ACRHBAYQBXXRTO-OAQYLSRUSA-N",
+      "formula": "C27H36N2O5",
+      "molecularWeight": 468.6,
+      "retrieved": "2026-10-21"
+    },
+    "145900": {
+      "title": "Omeprazole sulfone",
+      "smiles": "CC1=CN=C(C(=C1OC)C)CS(=O)(=O)C2=NC3=C(N2)C=C(C=C3)OC",
+      "inchiKey": "IXEQEYRTSRFZEO-UHFFFAOYSA-N",
+      "formula": "C17H19N3O4S",
+      "molecularWeight": 361.4,
+      "retrieved": "2026-10-21"
+    },
+    "146570": {
+      "title": "Escitalopram",
+      "smiles": "CN(C)CCC[C@@]1(C2=C(CO1)C=C(C=C2)C#N)C3=CC=C(C=C3)F",
+      "inchiKey": "WSEQXVZVJXJVFP-FQEVSTJZSA-N",
+      "formula": "C20H21FN2O",
+      "molecularWeight": 324.4,
+      "retrieved": "2026-10-21"
+    },
+    "149096": {
+      "title": "Levofloxacin",
+      "smiles": "C[C@H]1COC2=C3N1C=C(C(=O)C3=CC(=C2N4CCN(CC4)C)F)C(=O)O",
+      "inchiKey": "GSDSWSVVBLHKDQ-JTQLQIEISA-N",
+      "formula": "C18H20FN3O4",
+      "molecularWeight": 361.4,
+      "retrieved": "2026-10-21"
+    },
+    "152946": {
+      "title": "Moxifloxacin",
+      "smiles": "COC1=C2C(=CC(=C1N3C[C@@H]4CCCN[C@@H]4C3)F)C(=O)C(=CN2C5CC5)C(=O)O",
+      "inchiKey": "FABPRXSRWADJSP-MEDUHNTESA-N",
+      "formula": "C21H24FN3O4",
+      "molecularWeight": 401.4,
+      "retrieved": "2026-10-21"
+    },
+    "156419": {
+      "title": "Cinacalcet",
+      "smiles": "C[C@H](C1=CC=CC2=CC=CC=C21)NCCCC3=CC(=CC=C3)C(F)(F)F",
+      "inchiKey": "VDHAWDNDOKGFTD-MRXNPFEDSA-N",
+      "formula": "C22H22F3N",
+      "molecularWeight": 357.4,
+      "retrieved": "2026-10-21"
+    },
+    "160870": {
+      "title": "Oxazepam glucuronide",
+      "smiles": "C1=CC=C(C=C1)C2=NC(C(=O)NC3=C2C=C(C=C3)Cl)O[C@H]4[C@@H]([C@H]([C@@H]([C@H](O4)C(=O)O)O)O)O",
+      "inchiKey": "FIKQKGFUBZQEBL-IFBJMGMISA-N",
+      "formula": "C21H19ClN2O8",
+      "molecularWeight": 462.8,
+      "retrieved": "2026-10-21"
+    },
+    "162244": {
+      "title": "alpha-Hydroxyalprazolam",
+      "smiles": "C1C2=NN=C(N2C3=C(C=C(C=C3)Cl)C(=N1)C4=CC=CC=C4)CO",
+      "inchiKey": "ZURUZYHEEMDQBU-UHFFFAOYSA-N",
+      "formula": "C17H13ClN4O",
+      "molecularWeight": 324.8,
+      "retrieved": "2026-10-21"
+    },
+    "162325": {
+      "title": "7alpha-(Thiomethyl)spironolactone",
+      "smiles": "C[C@]12CCC(=O)C=C1C[C@H]([C@@H]3[C@@H]2CC[C@]4([C@H]3CC[C@@]45CCC(=O)O5)C)SC",
+      "inchiKey": "FWRDLPQBEOKIRE-RJKHXGPOSA-N",
+      "formula": "C23H32O3S",
+      "molecularWeight": 388.6,
+      "retrieved": "2026-10-21"
+    },
+    "162548": {
+      "title": "Zopiclone N-oxide",
+      "smiles": "C[N+]1(CCN(CC1)C(=O)OC2C3=NC=CN=C3C(=O)N2C4=NC=C(C=C4)Cl)[O-]",
+      "inchiKey": "IPTIKKTXLHVRKN-UHFFFAOYSA-N",
+      "formula": "C17H17ClN6O4",
+      "molecularWeight": 404.8,
+      "retrieved": "2026-10-21"
+    },
+    "162835": {
+      "title": "Dehydronorketamine",
+      "smiles": "C1CC(C(=O)C=C1)(C2=CC=CC=C2Cl)N",
+      "inchiKey": "BXBPJMHHWPXBJL-UHFFFAOYSA-N",
+      "formula": "C12H12ClNO",
+      "molecularWeight": 221.68,
+      "retrieved": "2026-10-21"
+    },
+    "164342": {
+      "title": "3,5-Diamino-6-(2,3-dichlorophenyl)-2-beta-D-glucopyranuronosyl-1,2,4-triazinium",
+      "smiles": "C1=CC(=C(C(=C1)Cl)Cl)C2=C(N=C([N+](=N2)[C@H]3[C@@H]([C@H]([C@@H]([C@H](O3)C(=O)O)O)O)O)N)N",
+      "inchiKey": "IEVMENHZPOWVGO-XPORZQOISA-O",
+      "formula": "C15H16Cl2N5O6+",
+      "molecularWeight": 433.2,
+      "retrieved": "2026-10-21"
+    },
+    "169490": {
+      "title": "10-(3-(4-(2-Hydroxyethyl)-1-piperazinyl)propyl)-8-(trifluoromethyl)-10H-phenothiazin-3-ol",
+      "smiles": "C1CN(CCN1CCCN2C3=C(C=C(C=C3)O)SC4=C2C=C(C=C4)C(F)(F)F)CCO",
+      "inchiKey": "XVCSDQAFEIGVBC-UHFFFAOYSA-N",
+      "formula": "C22H26F3N3O2S",
+      "molecularWeight": 453.5,
+      "retrieved": "2026-10-21"
+    },
+    "182137": {
+      "title": "Esketamine",
+      "smiles": "CN[C@@]1(CCCCC1=O)C2=CC=CC=C2Cl",
+      "inchiKey": "YQEZLKZALYSWHR-ZDUSSCGKSA-N",
+      "formula": "C13H16ClNO",
+      "molecularWeight": 237.72,
+      "retrieved": "2026-10-21"
+    },
+    "183814": {
+      "title": "11-Hydroxyyohimbine",
+      "smiles": "COC(=O)[C@H]1[C@H](CC[C@@H]2[C@@H]1C[C@H]3C4=C(CCN3C2)C5=C(N4)C=C(C=C5)O)O",
+      "inchiKey": "MIUYYRGOYGWVDO-JHZUCGOESA-N",
+      "formula": "C21H26N2O4",
+      "molecularWeight": 370.4,
+      "retrieved": "2026-10-21"
+    },
+    "185859": {
+      "title": "Desmethylselegiline",
+      "smiles": "C[C@H](CC1=CC=CC=C1)NCC#C",
+      "inchiKey": "UUFAJPMQSFXDFR-LLVKDONJSA-N",
+      "formula": "C12H15N",
+      "molecularWeight": 173.25,
+      "retrieved": "2026-10-21"
+    },
+    "188298": {
+      "title": "7-Aminoclonazepam",
+      "smiles": "C1C(=O)NC2=C(C=C(C=C2)N)C(=N1)C3=CC=CC=C3Cl",
+      "inchiKey": "HEFRPWRJTGLSSV-UHFFFAOYSA-N",
+      "formula": "C15H12ClN3O",
+      "molecularWeight": 285.73,
+      "retrieved": "2026-10-21"
+    },
+    "197060": {
+      "title": "Ibogaine",
+      "smiles": "CC[C@H]1C[C@@H]2C[C@@H]3[C@H]1N(C2)CCC4=C3NC5=C4C=C(C=C5)OC",
+      "inchiKey": "HSIBGVUMFOSJPD-CFDPKNGZSA-N",
+      "formula": "C20H26N2O",
+      "molecularWeight": 310.4,
+      "retrieved": "2026-10-21"
+    },
+    "208898": {
+      "title": "Dronedarone",
+      "smiles": "CCCCC1=C(C2=C(O1)C=CC(=C2)NS(=O)(=O)C)C(=O)C3=CC=C(C=C3)OCCCN(CCCC)CCCC",
+      "inchiKey": "ZQTNQVWKHCQYLQ-UHFFFAOYSA-N",
+      "formula": "C31H44N2O5S",
+      "molecularWeight": 556.8,
+      "retrieved": "2026-10-21"
+    },
+    "213046": {
+      "title": "Lurasidone",
+      "smiles": "C1CC[C@H]([C@@H](C1)CN2CCN(CC2)C3=NSC4=CC=CC=C43)CN5C(=O)[C@H]6[C@@H]7CC[C@@H](C7)[C@H]6C5=O",
+      "inchiKey": "PQXKDMSYBGKCJA-CVTJIBDQSA-N",
+      "formula": "C28H36N4O2S",
+      "molecularWeight": 492.7,
+      "retrieved": "2026-10-21"
+    },
+    "219078": {
+      "title": "Lacosamide",
+      "smiles": "CC(=O)N[C@H](COC)C(=O)NCC1=CC=CC=C1",
+      "inchiKey": "VPPJLAIAVCUEMN-GFCCVEGCSA-N",
+      "formula": "C13H18N2O3",
+      "molecularWeight": 250.29,
+      "retrieved": "2026-10-21"
+    },
+    "259381": {
+      "title": "4-(N-Propionylaniline)piperidine",
+      "smiles": "CCC(=O)N(C1CCNCC1)C2=CC=CC=C2",
+      "inchiKey": "PMCBDBWCQQBSRJ-UHFFFAOYSA-N",
+      "formula": "C14H20N2O",
+      "molecularWeight": 232.32,
+      "retrieved": "2026-10-21"
+    },
+    "392622": {
+      "title": "Ritonavir",
+      "smiles": "CC(C)C1=NC(=CS1)CN(C)C(=O)N[C@@H](C(C)C)C(=O)N[C@@H](CC2=CC=CC=C2)C[C@@H]([C@H](CC3=CC=CC=C3)NC(=O)OCC4=CN=CS4)O",
+      "inchiKey": "NCDNCNXCDXHOMX-XGKFQTDJSA-N",
+      "formula": "C37H48N6O5S2",
+      "molecularWeight": 720.9,
+      "retrieved": "2026-10-21"
+    },
+    "394162": {
+      "title": "Mesembrine",
+      "smiles": "CN1CC[C@]2([C@@H]1CC(=O)CC2)C3=CC(=C(C=C3)OC)OC",
+      "inchiKey": "DAHIQPJTGIHDGO-IRXDYDNUSA-N",
+      "formula": "C17H23NO3",
+      "molecularWeight": 289.4,
+      "retrieved": "2026-10-21"
+    },
+    "441074": {
+      "title": "Quinidine",
+      "smiles": "COC1=CC2=C(C=CN=C2C=C1)[C@@H]([C@H]3C[C@@H]4CCN3C[C@@H]4C=C)O",
+      "inchiKey": "LOUPRKONTZGTKE-LHHVKLHASA-N",
+      "formula": "C20H24N2O2",
+      "molecularWeight": 324.4,
+      "retrieved": "2026-10-21"
+    },
+    "441278": {
+      "title": "Pentazocine",
+      "smiles": "C[C@H]1[C@H]2CC3=C([C@@]1(CCN2CC=C(C)C)C)C=C(C=C3)O",
+      "inchiKey": "VOKSWYLNZZRQPF-GDIGMMSISA-N",
+      "formula": "C19H27NO",
+      "molecularWeight": 285.4,
+      "retrieved": "2026-10-21"
+    },
+    "441298": {
+      "title": "Hyperforin",
+      "smiles": "CC(C)C(=O)[C@]12C(=O)C(=C([C@](C1=O)(C[C@@H]([C@@]2(C)CCC=C(C)C)CC=C(C)C)CC=C(C)C)O)CC=C(C)C",
+      "inchiKey": "KGSZHKRKHXOAMG-HQKKAZOISA-N",
+      "formula": "C35H52O4",
+      "molecularWeight": 536.8,
+      "retrieved": "2026-10-21"
+    },
+    "446220": {
+      "title": "Cocaine",
+      "smiles": "CN1[C@H]2CC[C@@H]1[C@H]([C@H](C2)OC(=O)C3=CC=CC=C3)C(=O)OC",
+      "inchiKey": "ZPUCINDJVBIVPJ-LJISPDSOSA-N",
+      "formula": "C17H21NO4",
+      "molecularWeight": 303.35,
+      "retrieved": "2026-10-21"
+    },
+    "447043": {
+      "title": "Azithromycin",
+      "smiles": "CC[C@@H]1[C@@]([C@@H]([C@H](N(C[C@@H](C[C@@]([C@@H]([C@H]([C@@H]([C@H](C(=O)O1)C)O[C@H]2C[C@@]([C@H]([C@@H](O2)C)O)(C)OC)C)O[C@H]3[C@@H]([C@H](C[C@H](O3)C)N(C)C)O)(C)O)C)C)C)O)(C)O",
+      "inchiKey": "MQTOSJVFKKJCRP-BICOPXKESA-N",
+      "formula": "C38H72N2O12",
+      "molecularWeight": 749,
+      "retrieved": "2026-10-21"
+    },
+    "448223": {
+      "title": "Benzoylecgonine",
+      "smiles": "CN1[C@H]2CC[C@@H]1[C@H]([C@H](C2)OC(=O)C3=CC=CC=C3)C(=O)O",
+      "inchiKey": "GVGYEFKIHJTNQZ-RFQIPJPRSA-N",
+      "formula": "C16H19NO4",
+      "molecularWeight": 289.33,
+      "retrieved": "2026-10-21"
+    },
+    "449459": {
+      "title": "4-Hydroxytamoxifen",
+      "smiles": "CC/C(=C(\\C1=CC=C(C=C1)O)/C2=CC=C(C=C2)OCCN(C)C)/C3=CC=CC=C3",
+      "inchiKey": "TXUZVZSFRXZGTL-QPLCGJKRSA-N",
+      "formula": "C26H29NO2",
+      "molecularWeight": 387.5,
+      "retrieved": "2026-10-21"
+    },
+    "487643": {
+      "title": "8-Hydroxyefavirenz",
+      "smiles": "C1CC1C#C[C@]2(C3=C(C(=CC(=C3)Cl)O)NC(=O)O2)C(F)(F)F",
+      "inchiKey": "OOVOMPCQLMFEDT-ZDUSSCGKSA-N",
+      "formula": "C14H9ClF3NO3",
+      "molecularWeight": 331.67,
+      "retrieved": "2026-10-21"
+    },
+    "622606": {
+      "title": "Norclomipramine",
+      "smiles": "CNCCCN1C2=CC=CC=C2CCC3=C1C=C(C=C3)Cl",
+      "inchiKey": "VPIXQGUBUKFLRF-UHFFFAOYSA-N",
+      "formula": "C18H21ClN2",
+      "molecularWeight": 300.8,
+      "retrieved": "2026-10-21"
+    },
+    "638026": {
+      "title": "Delta-8-Tetrahydrocannabinol",
+      "smiles": "CCCCCC1=CC(=C2[C@@H]3CC(=CC[C@H]3C(OC2=C1)(C)C)C)O",
+      "inchiKey": "HCAWPGARWVBULJ-IAGOWNOFSA-N",
+      "formula": "C21H30O2",
+      "molecularWeight": 314.5,
+      "retrieved": "2026-10-21"
+    },
+    "644006": {
+      "title": "Cocaethylene",
+      "smiles": "CCOC(=O)[C@@H]1[C@H]2CC[C@H](N2C)C[C@@H]1OC(=O)C3=CC=CC=C3",
+      "inchiKey": "NMPOSNRHZIWLLL-XUWVNRHRSA-N",
+      "formula": "C18H23NO4",
+      "molecularWeight": 317.4,
+      "retrieved": "2026-10-21"
+    },
+    "644007": {
+      "title": "(-)-Norcocaine",
+      "smiles": "COC(=O)[C@@H]1[C@H]2CC[C@H](N2)C[C@@H]1OC(=O)C3=CC=CC=C3",
+      "inchiKey": "AYDBLCSLKNTEJL-RFQIPJPRSA-N",
+      "formula": "C16H19NO4",
+      "molecularWeight": 289.33,
+      "retrieved": "2026-10-21"
+    },
+    "644019": {
+      "title": "Cannabidiol",
+      "smiles": "CCCCCC1=CC(=C(C(=C1)O)[C@@H]2C=C(CC[C@H]2C(=C)C)C)O",
+      "inchiKey": "QHMBSVQNZZTUGM-ZWKOTPCHSA-N",
+      "formula": "C21H30O2",
+      "molecularWeight": 314.5,
+      "retrieved": "2026-10-21"
+    },
+    "644073": {
+      "title": "Buprenorphine",
+      "smiles": "C[C@]([C@H]1C[C@@]23CC[C@@]1([C@H]4[C@@]25CCN([C@@H]3CC6=C5C(=C(C=C6)O)O4)CC7CC7)OC)(C(C)(C)C)O",
+      "inchiKey": "RMRJXGBAOAMLHD-IHFGGWKQSA-N",
+      "formula": "C29H41NO4",
+      "molecularWeight": 467.6,
+      "retrieved": "2026-10-21"
+    },
+    "676739": {
+      "title": "4-Bromo-2,5-dimethoxyphenylacetic acid",
+      "smiles": "COC1=CC(=C(C=C1CC(=O)O)OC)Br",
+      "inchiKey": "XXOYRLPGAQGLTR-UHFFFAOYSA-N",
+      "formula": "C10H11BrO4",
+      "molecularWeight": 275.1,
+      "retrieved": "2026-10-21"
+    },
+    "854019": {
+      "title": "Cotinine",
+      "smiles": "CN1[C@@H](CCC1=O)C2=CN=CC=C2",
+      "inchiKey": "UIKROCXWUNQSPJ-VIFPVBQESA-N",
+      "formula": "C10H12N2O",
+      "molecularWeight": 176.21,
+      "retrieved": "2026-10-21"
+    },
+    "969472": {
+      "title": "Eszopiclone",
+      "smiles": "CN1CCN(CC1)C(=O)O[C@H]2C3=NC=CN=C3C(=O)N2C4=NC=C(C=C4)Cl",
+      "inchiKey": "GBBSUAFBMRNDJC-INIZCTEOSA-N",
+      "formula": "C17H17ClN6O3",
+      "molecularWeight": 388.8,
+      "retrieved": "2026-10-21"
+    },
+    "1549008": {
+      "title": "Terbinafine",
+      "smiles": "CC(C)(C)C#C/C=C/CN(C)CC1=CC=CC2=CC=CC=C21",
+      "inchiKey": "DOMXUEMWDBAQBQ-WEVVVXLNSA-N",
+      "formula": "C21H25N",
+      "molecularWeight": 291.4,
+      "retrieved": "2026-10-21"
+    },
+    "2724385": {
+      "title": "Digoxin",
+      "smiles": "C[C@@H]1[C@H]([C@H](C[C@@H](O1)O[C@@H]2[C@H](O[C@H](C[C@@H]2O)O[C@@H]3[C@H](O[C@H](C[C@@H]3O)O[C@H]4CC[C@]5([C@@H](C4)CC[C@@H]6[C@@H]5C[C@H]([C@]7([C@@]6(CC[C@@H]7C8=CC(=O)OC8)O)C)O)C)C)C)O)O",
+      "inchiKey": "LTMHDMANZUZIPE-PUGKRICDSA-N",
+      "formula": "C41H64O14",
+      "molecularWeight": 780.9,
+      "retrieved": "2026-10-21"
+    },
+    "2724431": {
+      "title": "Norcarfentanil",
+      "smiles": "CCC(=O)N(C1=CC=CC=C1)C2(CCNCC2)C(=O)OC",
+      "inchiKey": "HFNFODVRYCEIQL-UHFFFAOYSA-N",
+      "formula": "C16H22N2O3",
+      "molecularWeight": 290.36,
+      "retrieved": "2026-10-21"
+    },
+    "2733526": {
+      "title": "Tamoxifen",
+      "smiles": "CC/C(=C(\\C1=CC=CC=C1)/C2=CC=C(C=C2)OCCN(C)C)/C3=CC=CC=C3",
+      "inchiKey": "NKANXQFJJICGDU-QPLCGJKRSA-N",
+      "formula": "C26H29NO",
+      "molecularWeight": 371.5,
+      "retrieved": "2026-10-21"
+    },
+    "3034396": {
+      "title": "(-)-Mitragynine",
+      "smiles": "CC[C@@H]1CN2CCC3=C([C@@H]2C[C@@H]1/C(=C\\OC)/C(=O)OC)NC4=C3C(=CC=C4)OC",
+      "inchiKey": "LELBFTMXCIIKKX-QVRQZEMUSA-N",
+      "formula": "C23H30N2O4",
+      "molecularWeight": 398.5,
+      "retrieved": "2026-10-21"
+    },
+    "3036919": {
+      "title": "Fluphenazine sulfoxide",
+      "smiles": "C1CN(CCN1CCCN2C3=CC=CC=C3S(=O)C4=C2C=C(C=C4)C(F)(F)F)CCO",
+      "inchiKey": "UFPPOFUTIWYLNR-UHFFFAOYSA-N",
+      "formula": "C22H26F3N3O2S",
+      "molecularWeight": 453.5,
+      "retrieved": "2026-10-21"
+    },
+    "3080846": {
+      "title": "Ethylphenidate",
+      "smiles": "CCOC(=O)C(C1CCCCN1)C2=CC=CC=C2",
+      "inchiKey": "AIVSIRYZIBXTMM-UHFFFAOYSA-N",
+      "formula": "C15H21NO2",
+      "molecularWeight": 247.33,
+      "retrieved": "2026-10-21"
+    },
+    "3083548": {
+      "title": "(-)-Noribogaine",
+      "smiles": "CC[C@H]1C[C@@H]2C[C@@H]3[C@H]1N(C2)CCC4=C3NC5=C4C=C(C=C5)O",
+      "inchiKey": "RAUCDOKTMDOIPF-RYRUWHOVSA-N",
+      "formula": "C19H24N2O",
+      "molecularWeight": 296.4,
+      "retrieved": "2026-10-21"
+    },
+    "3085267": {
+      "title": "Modafinil acid",
+      "smiles": "C1=CC=C(C=C1)C(C2=CC=CC=C2)S(=O)CC(=O)O",
+      "inchiKey": "QARQPIWTMBRJFX-UHFFFAOYSA-N",
+      "formula": "C15H14O3S",
+      "molecularWeight": 274.3,
+      "retrieved": "2026-10-21"
+    },
+    "5280953": {
+      "title": "Harmine",
+      "smiles": "CC1=NC=CC2=C1NC3=C2C=CC(=C3)OC",
+      "inchiKey": "BXNJHAXVSOCGBA-UHFFFAOYSA-N",
+      "formula": "C13H12N2O",
+      "molecularWeight": 212.25,
+      "retrieved": "2026-10-21"
+    },
+    "5284371": {
+      "title": "Codeine",
+      "smiles": "CN1CC[C@]23[C@@H]4[C@H]1CC5=C2C(=C(C=C5)OC)O[C@H]3[C@H](C=C4)O",
+      "inchiKey": "OROGSEYTTFOCAN-DNJOTXNNSA-N",
+      "formula": "C18H21NO3",
+      "molecularWeight": 299.4,
+      "retrieved": "2026-10-21"
+    },
+    "5284569": {
+      "title": "Hydrocodone",
+      "smiles": "CN1CC[C@]23[C@@H]4[C@H]1CC5=C2C(=C(C=C5)OC)O[C@H]3C(=O)CC4",
+      "inchiKey": "LLPOLZWFYMWNKH-CMKMFDCUSA-N",
+      "formula": "C18H21NO3",
+      "molecularWeight": 299.4,
+      "retrieved": "2026-10-21"
+    },
+    "5284570": {
+      "title": "Hydromorphone",
+      "smiles": "CN1CC[C@]23[C@@H]4[C@H]1CC5=C2C(=C(C=C5)O)O[C@H]3C(=O)CC4",
+      "inchiKey": "WVLOADHCBXTIJK-YNHQPCIGSA-N",
+      "formula": "C17H19NO3",
+      "molecularWeight": 285.34,
+      "retrieved": "2026-10-21"
+    },
+    "5284583": {
+      "title": "Levetiracetam",
+      "smiles": "CC[C@@H](C(=O)N)N1CCCC1=O",
+      "inchiKey": "HPHUVLMMVZITSG-LURJTMIESA-N",
+      "formula": "C8H14N2O2",
+      "molecularWeight": 170.21,
+      "retrieved": "2026-10-21"
+    },
+    "5284594": {
+      "title": "Nalmefene",
+      "smiles": "C=C1CC[C@]2([C@H]3CC4=C5[C@]2([C@H]1OC5=C(C=C4)O)CCN3CC6CC6)O",
+      "inchiKey": "WJBLNOPPDWQMCH-MBPVOVBZSA-N",
+      "formula": "C21H25NO3",
+      "molecularWeight": 339.4,
+      "retrieved": "2026-10-21"
+    },
+    "5284596": {
+      "title": "Naloxone",
+      "smiles": "C=CCN1CC[C@]23[C@@H]4C(=O)CC[C@]2([C@H]1CC5=C3C(=C(C=C5)O)O4)O",
+      "inchiKey": "UZHSEJADLWPNLE-GRGSLBFTSA-N",
+      "formula": "C19H21NO4",
+      "molecularWeight": 327.4,
+      "retrieved": "2026-10-21"
+    },
+    "5284603": {
+      "title": "Oxycodone",
+      "smiles": "CN1CC[C@]23[C@@H]4C(=O)CC[C@]2([C@H]1CC5=C3C(=C(C=C5)OC)O4)O",
+      "inchiKey": "BRUQQQPBMZOVGD-XFKAJCMBSA-N",
+      "formula": "C18H21NO4",
+      "molecularWeight": 315.4,
+      "retrieved": "2026-10-21"
+    },
+    "5284604": {
+      "title": "Oxymorphone",
+      "smiles": "CN1CC[C@]23[C@@H]4C(=O)CC[C@]2([C@H]1CC5=C3C(=C(C=C5)O)O4)O",
+      "inchiKey": "UQCNKQCJZOAFTQ-ISWURRPUSA-N",
+      "formula": "C17H19NO4",
+      "molecularWeight": 301.34,
+      "retrieved": "2026-10-21"
+    },
+    "5284627": {
+      "title": "Topiramate",
+      "smiles": "CC1(O[C@@H]2CO[C@@]3([C@H]([C@@H]2O1)OC(O3)(C)C)COS(=O)(=O)N)C",
+      "inchiKey": "KJADKKWYZYXHBB-XBWDGYHZSA-N",
+      "formula": "C12H21NO8S",
+      "molecularWeight": 339.36,
+      "retrieved": "2026-10-21"
+    },
+    "5288826": {
+      "title": "Morphine",
+      "smiles": "CN1CC[C@]23[C@@H]4[C@H]1CC5=C2C(=C(C=C5)O)O[C@H]3[C@H](C=C4)O",
+      "inchiKey": "BQJCRHHNABKAKU-KBQPJGBKSA-N",
+      "formula": "C17H19NO3",
+      "molecularWeight": 285.34,
+      "retrieved": "2026-10-21"
+    },
+    "5310966": {
+      "title": "Varenicline",
+      "smiles": "C1[C@@H]2CNC[C@H]1C3=CC4=NC=CN=C4C=C23",
+      "inchiKey": "JQSHBVHOMNKWFT-DTORHVGOSA-N",
+      "formula": "C13H13N3",
+      "molecularWeight": 211.26,
+      "retrieved": "2026-10-21"
+    },
+    "5324346": {
+      "title": "Fluvoxamine",
+      "smiles": "COCCCC/C(=N\\OCCN)/C1=CC=C(C=C1)C(F)(F)F",
+      "inchiKey": "CJOFXWAVKWHTFT-XSFVSMFZSA-N",
+      "formula": "C15H21F3N2O2",
+      "molecularWeight": 318.33,
+      "retrieved": "2026-10-21"
+    },
+    "5359272": {
+      "title": "Levorphanol",
+      "smiles": "CN1CC[C@]23CCCC[C@H]2[C@H]1CC4=C3C=C(C=C4)O",
+      "inchiKey": "JAQUASYNZVUNQP-USXIJHARSA-N",
+      "formula": "C17H23NO",
+      "molecularWeight": 257.37,
+      "retrieved": "2026-10-21"
+    },
+    "5360515": {
+      "title": "Naltrexone",
+      "smiles": "C1CC1CN2CC[C@]34[C@@H]5C(=O)CC[C@]3([C@H]2CC6=C4C(=C(C=C6)O)O5)O",
+      "inchiKey": "DQCKKXVULJGBQN-XFWGSAIBSA-N",
+      "formula": "C20H23NO4",
+      "molecularWeight": 341.4,
+      "retrieved": "2026-10-21"
+    },
+    "5360621": {
+      "title": "Morphine 6-glucuronide",
+      "smiles": "CN1CC[C@]23[C@@H]4[C@H]1CC5=C2C(=C(C=C5)O)O[C@H]3[C@H](C=C4)O[C@H]6[C@@H]([C@H]([C@@H]([C@H](O6)C(=O)O)O)O)O",
+      "inchiKey": "GNJCUHZOSOYIEC-GAROZEBRSA-N",
+      "formula": "C23H27NO9",
+      "molecularWeight": 461.5,
+      "retrieved": "2026-10-21"
+    },
+    "5360696": {
+      "title": "Dextromethorphan",
+      "smiles": "CN1CC[C@@]23CCCC[C@@H]2[C@@H]1CC4=C3C=C(C=C4)OC",
+      "inchiKey": "MKXZASYAUGDDCJ-NJAFHUGGSA-N",
+      "formula": "C18H25NO",
+      "molecularWeight": 271.4,
+      "retrieved": "2026-10-21"
+    },
+    "5360697": {
+      "title": "Dextrorphan",
+      "smiles": "CN1CC[C@@]23CCCC[C@@H]2[C@@H]1CC4=C3C=C(C=C4)O",
+      "inchiKey": "JAQUASYNZVUNQP-PVAVHDDUSA-N",
+      "formula": "C17H23NO",
+      "molecularWeight": 257.37,
+      "retrieved": "2026-10-21"
+    },
+    "5361092": {
+      "title": "Butorphanol",
+      "smiles": "C1CC[C@]2([C@H]3CC4=C([C@]2(C1)CCN3CC5CCC5)C=C(C=C4)O)O",
+      "inchiKey": "IFKLAQQSCNILHL-QHAWAJNXSA-N",
+      "formula": "C21H29NO2",
+      "molecularWeight": 327.5,
+      "retrieved": "2026-10-21"
+    },
+    "5462328": {
+      "title": "Heroin",
+      "smiles": "CC(=O)O[C@H]1C=C[C@H]2[C@H]3CC4=C5[C@]2([C@H]1OC5=C(C=C4)OC(=O)C)CCN3C",
+      "inchiKey": "GVGLGOZIDCSQPN-PVHGPHFFSA-N",
+      "formula": "C21H23NO5",
+      "molecularWeight": 369.4,
+      "retrieved": "2026-10-21"
+    },
+    "5462507": {
+      "title": "6-Acetylmorphine",
+      "smiles": "CC(=O)O[C@H]1C=C[C@H]2[C@H]3CC4=C5[C@]2([C@H]1OC5=C(C=C4)O)CCN3C",
+      "inchiKey": "JJGYGPZNTOPXGV-SSTWWWIQSA-N",
+      "formula": "C19H21NO4",
+      "molecularWeight": 327.4,
+      "retrieved": "2026-10-21"
+    },
+    "5484286": {
+      "title": "3-Methoxymorphinan",
+      "smiles": "COC1=CC2=C(C[C@@H]3[C@H]4[C@@]2(CCCC4)CCN3)C=C1",
+      "inchiKey": "ILNSWVUXAPSPEH-USXIJHARSA-N",
+      "formula": "C17H23NO",
+      "molecularWeight": 257.37,
+      "retrieved": "2026-10-21"
+    },
+    "5484731": {
+      "title": "(-)-Morphine 3-glucuronide",
+      "smiles": "CN1CC[C@]23[C@@H]4[C@H]1CC5=C2C(=C(C=C5)O[C@H]6[C@@H]([C@H]([C@@H]([C@H](O6)C(=O)O)O)O)O)O[C@H]3[C@H](C=C4)O",
+      "inchiKey": "WAEXKFONHRHFBZ-ZXDZBKESSA-N",
+      "formula": "C23H27NO9",
+      "molecularWeight": 461.5,
+      "retrieved": "2026-10-21"
+    },
+    "5486554": {
+      "title": "6beta-Naltrexol",
+      "smiles": "C1C[C@]2([C@H]3CC4=C5[C@@]2(CCN3CC6CC6)[C@H]([C@@H]1O)OC5=C(C=C4)O)O",
+      "inchiKey": "JLVNEHKORQFVQJ-PYIJOLGTSA-N",
+      "formula": "C20H25NO4",
+      "molecularWeight": 343.4,
+      "retrieved": "2026-10-21"
+    },
+    "5486971": {
+      "title": "Pregabalin",
+      "smiles": "CC(C)C[C@@H](CC(=O)O)CN",
+      "inchiKey": "AYXYPKUFHZROOJ-ZETCQYMHSA-N",
+      "formula": "C8H17NO2",
+      "molecularWeight": 159.23,
+      "retrieved": "2026-10-21"
+    },
+    "5489029": {
+      "title": "Codeine-6-glucuronide",
+      "smiles": "CN1CC[C@]23[C@@H]4[C@H]1CC5=C2C(=C(C=C5)OC)O[C@H]3[C@H](C=C4)O[C@H]6[C@@H]([C@H]([C@@H]([C@H](O6)C(=O)O)O)O)O",
+      "inchiKey": "CRWVOYRJXPDBPM-HSCJLHHPSA-N",
+      "formula": "C24H29NO9",
+      "molecularWeight": 475.5,
+      "retrieved": "2026-10-21"
+    },
+    "5489120": {
+      "title": "Noroxycodone",
+      "smiles": "COC1=C2C3=C(C[C@@H]4[C@]5([C@]3(CCN4)[C@@H](O2)C(=O)CC5)O)C=C1",
+      "inchiKey": "RIKMCJUNPCRFMW-ISWURRPUSA-N",
+      "formula": "C17H19NO4",
+      "molecularWeight": 301.34,
+      "retrieved": "2026-10-21"
+    },
+    "6378383": {
+      "title": "Desmethyltamoxifen",
+      "smiles": "CC/C(=C(\\C1=CC=CC=C1)/C2=CC=C(C=C2)OCCNC)/C3=CC=CC=C3",
+      "inchiKey": "NYDCDZSEEAUOHN-IZHYLOQSSA-N",
+      "formula": "C25H27NO",
+      "molecularWeight": 357.5,
+      "retrieved": "2026-10-21"
+    },
+    "6443233": {
+      "title": "Desmethylterbinafine",
+      "smiles": "CC(C)(C)C#C/C=C/CNCC1=CC=CC2=CC=CC=C21",
+      "inchiKey": "IZJZLXQHMWUCIC-XBXARRHUSA-N",
+      "formula": "C20H23N",
+      "molecularWeight": 277.4,
+      "retrieved": "2026-10-21"
+    },
+    "6460146": {
+      "title": "Modafinil Sulfone",
+      "smiles": "C1=CC=C(C=C1)C(C2=CC=CC=C2)S(=O)(=O)CC(=O)N",
+      "inchiKey": "ZESNOWZYHYRSRY-UHFFFAOYSA-N",
+      "formula": "C15H15NO3S",
+      "molecularWeight": 289.4,
+      "retrieved": "2026-10-21"
+    },
+    "6917779": {
+      "title": "Levomilnacipran",
+      "smiles": "CCN(CC)C(=O)[C@]1(C[C@H]1CN)C2=CC=CC=C2",
+      "inchiKey": "GJJFMKBJSRMPLA-DZGCQCFKSA-N",
+      "formula": "C15H22N2O",
+      "molecularWeight": 246.35,
+      "retrieved": "2026-10-21"
+    },
+    "6918314": {
+      "title": "Vilazodone",
+      "smiles": "C1CN(CCN1CCCCC2=CNC3=C2C=C(C=C3)C#N)C4=CC5=C(C=C4)OC(=C5)C(=O)N",
+      "inchiKey": "SGEGOXDYSFKCPT-UHFFFAOYSA-N",
+      "formula": "C26H27N5O2",
+      "molecularWeight": 441.5,
+      "retrieved": "2026-10-21"
+    },
+    "9690109": {
+      "title": "Armodafinil",
+      "smiles": "C1=CC=C(C=C1)C(C2=CC=CC=C2)[S@](=O)CC(=O)N",
+      "inchiKey": "YFGHCGITMMYXAQ-LJQANCHMSA-N",
+      "formula": "C15H15NO2S",
+      "molecularWeight": 273.4,
+      "retrieved": "2026-10-21"
+    },
+    "9804174": {
+      "title": "Triazoledione",
+      "smiles": "C1CN(CCN1CCCN2C(=O)N(C(=O)N2)CCOC3=CC=CC=C3)C4=CC(=CC=C4)Cl",
+      "inchiKey": "BTNXVMLCKOPOEP-UHFFFAOYSA-N",
+      "formula": "C23H28ClN5O3",
+      "molecularWeight": 458,
+      "retrieved": "2026-10-21"
+    },
+    "9805944": {
+      "title": "N-Desmethyl Loperamide",
+      "smiles": "CNC(=O)C(CCN1CCC(CC1)(C2=CC=C(C=C2)Cl)O)(C3=CC=CC=C3)C4=CC=CC=C4",
+      "inchiKey": "ZMOPTLXEYOVARP-UHFFFAOYSA-N",
+      "formula": "C28H31ClN2O2",
+      "molecularWeight": 463,
+      "retrieved": "2026-10-21"
+    },
+    "9813542": {
+      "title": "Erythrohydrobupropion",
+      "smiles": "C[C@H]([C@H](C1=CC(=CC=C1)Cl)O)NC(C)(C)C",
+      "inchiKey": "NDPTTXIBLSWNSF-BXKDBHETSA-N",
+      "formula": "C13H20ClNO",
+      "molecularWeight": 241.76,
+      "retrieved": "2026-10-21"
+    },
+    "9816910": {
+      "title": "4-Hydroxyatomoxetine",
+      "smiles": "CC1=C(C=CC(=C1)O)O[C@H](CCNC)C2=CC=CC=C2",
+      "inchiKey": "PPXQPRLGNSJNJM-QGZVFWFLSA-N",
+      "formula": "C17H21NO2",
+      "molecularWeight": 271.35,
+      "retrieved": "2026-10-21"
+    },
+    "9834682": {
+      "title": "rel-(alphaR)-3-Chloro-alpha-((1R)-1-((1,1-dimethylethyl)amino)ethyl)benzenemethanol",
+      "smiles": "C[C@@H]([C@H](C1=CC(=CC=C1)Cl)O)NC(C)(C)C",
+      "inchiKey": "NDPTTXIBLSWNSF-JOYOIKCWSA-N",
+      "formula": "C13H20ClNO",
+      "molecularWeight": 241.76,
+      "retrieved": "2026-10-21"
+    },
+    "9838022": {
+      "title": "Tapentadol",
+      "smiles": "CC[C@@H](C1=CC(=CC=C1)O)[C@@H](C)CN(C)C",
+      "inchiKey": "KWTWDQCKEHXFFR-SMDDNHRTSA-N",
+      "formula": "C14H23NO",
+      "molecularWeight": 221.34,
+      "retrieved": "2026-10-21"
+    },
+    "9838803": {
+      "title": "Desmetramadol",
+      "smiles": "CN(C)C[C@H]1CCCC[C@@]1(C2=CC(=CC=C2)O)O",
+      "inchiKey": "UWJUQVWARXYRCG-HIFRSBDPSA-N",
+      "formula": "C15H23NO2",
+      "molecularWeight": 249.35,
+      "retrieved": "2026-10-21"
+    },
+    "9865528": {
+      "title": "Mirabegron",
+      "smiles": "C1=CC=C(C=C1)[C@H](CNCCC2=CC=C(C=C2)NC(=O)CC3=CSC(=N3)N)O",
+      "inchiKey": "PBAPPPCECJKMCM-IBGZPJMESA-N",
+      "formula": "C21H24N4O2S",
+      "molecularWeight": 396.5,
+      "retrieved": "2026-10-21"
+    },
+    "9875401": {
+      "title": "Rivaroxaban",
+      "smiles": "C1COCC(=O)N1C2=CC=C(C=C2)N3C[C@@H](OC3=O)CNC(=O)C4=CC=C(S4)Cl",
+      "inchiKey": "KGFYHTZWPPHNLQ-AWEZNQCLSA-N",
+      "formula": "C19H18ClN3O5S",
+      "molecularWeight": 435.9,
+      "retrieved": "2026-10-21"
+    },
+    "9925873": {
+      "title": "Norcodeine",
+      "smiles": "COC1=C2C3=C(C[C@@H]4[C@H]5[C@]3(CCN4)[C@@H](O2)[C@H](C=C5)O)C=C1",
+      "inchiKey": "HKOIXWVRNLGFOR-KOFBORESSA-N",
+      "formula": "C17H19NO3",
+      "molecularWeight": 285.34,
+      "retrieved": "2026-10-21"
+    },
+    "9966051": {
+      "title": "Vortioxetine",
+      "smiles": "CC1=CC(=C(C=C1)SC2=CC=CC=C2N3CCNCC3)C",
+      "inchiKey": "YQNWZWMKLDQSAC-UHFFFAOYSA-N",
+      "formula": "C18H22N2S",
+      "molecularWeight": 298.4,
+      "retrieved": "2026-10-21"
+    },
+    "10090750": {
+      "title": "Endoxifen",
+      "smiles": "CC/C(=C(\\C1=CC=C(C=C1)O)/C2=CC=C(C=C2)OCCNC)/C3=CC=CC=C3",
+      "inchiKey": "MHJBZVSGOZTKRH-IZHYLOQSSA-N",
+      "formula": "C25H27NO2",
+      "molecularWeight": 373.5,
+      "retrieved": "2026-10-21"
+    },
+    "10103216": {
+      "title": "Phenylethylidenehydrazine",
+      "smiles": "C1=CC=C(C=C1)C/C=N/N",
+      "inchiKey": "RUZSWLOEFLRSGJ-JXMROGBWSA-N",
+      "formula": "C8H10N2",
+      "molecularWeight": 134.18,
+      "retrieved": "2026-10-21"
+    },
+    "10114519": {
+      "title": "Dehydroaripiprazole",
+      "smiles": "C1CN(CCN1CCCCOC2=CC3=C(C=C2)C=CC(=O)N3)C4=C(C(=CC=C4)Cl)Cl",
+      "inchiKey": "CDONPRYEWWPREK-UHFFFAOYSA-N",
+      "formula": "C23H25Cl2N3O2",
+      "molecularWeight": 446.4,
+      "retrieved": "2026-10-21"
+    },
+    "10182969": {
+      "title": "Apixaban",
+      "smiles": "COC1=CC=C(C=C1)N2C3=C(CCN(C3=O)C4=CC=C(C=C4)N5CCCCC5=O)C(=N2)C(=O)N",
+      "inchiKey": "QNZCBYKSOIHPEH-UHFFFAOYSA-N",
+      "formula": "C25H25N5O4",
+      "molecularWeight": 459.5,
+      "retrieved": "2026-10-21"
+    },
+    "10389261": {
+      "title": "N-Demethylivabradine",
+      "smiles": "COC1=C(C=C2CC(=O)N(CCC2=C1)CCCNC[C@H]3CC4=CC(=C(C=C34)OC)OC)OC",
+      "inchiKey": "NMQMGNXUIKUPAF-HXUWFJFHSA-N",
+      "formula": "C26H34N2O5",
+      "molecularWeight": 454.6,
+      "retrieved": "2026-10-21"
+    },
+    "10479418": {
+      "title": "Hydromorphone-3-glucuronide",
+      "smiles": "CN1CC[C@]23[C@@H]4[C@H]1CC5=C2C(=C(C=C5)O[C@H]6[C@@H]([C@H]([C@@H]([C@H](O6)C(=O)O)O)O)O)O[C@H]3C(=O)CC4",
+      "inchiKey": "VLSHIBYUEOPPRX-NSSRKTJTSA-N",
+      "formula": "C23H27NO9",
+      "molecularWeight": 461.5,
+      "retrieved": "2026-10-21"
+    },
+    "10889901": {
+      "title": "(R)-N-Benzyl-2-acetamido-3-hydroxypropionamide",
+      "smiles": "CC(=O)N[C@H](CO)C(=O)NCC1=CC=CC=C1",
+      "inchiKey": "XRKSCJLQKGLSKU-LLVKDONJSA-N",
+      "formula": "C12H16N2O3",
+      "molecularWeight": 236.27,
+      "retrieved": "2026-10-21"
+    },
+    "10927114": {
+      "title": "9-O-Demethylmitragynine",
+      "smiles": "CC[C@@H]1CN2CCC3=C([C@@H]2C[C@@H]1/C(=C\\OC)/C(=O)OC)NC4=C3C(=CC=C4)O",
+      "inchiKey": "IIRZCWUQUBSIPF-XZNUVMSOSA-N",
+      "formula": "C22H28N2O4",
+      "molecularWeight": 384.5,
+      "retrieved": "2026-10-21"
+    },
+    "11148955": {
+      "title": "Alpha-Pyrrolidinopentiophenone",
+      "smiles": "CCCC(C(=O)C1=CC=CC=C1)N2CCCC2",
+      "inchiKey": "YDIIDRWHPFMLGR-UHFFFAOYSA-N",
+      "formula": "C15H21NO",
+      "molecularWeight": 231.33,
+      "retrieved": "2026-10-21"
+    },
+    "11154555": {
+      "title": "Cariprazine",
+      "smiles": "CN(C)C(=O)NC1CCC(CC1)CCN2CCN(CC2)C3=C(C(=CC=C3)Cl)Cl",
+      "inchiKey": "KPWSJANDNDDRMB-UHFFFAOYSA-N",
+      "formula": "C21H32Cl2N4O",
+      "molecularWeight": 427.4,
+      "retrieved": "2026-10-21"
+    },
+    "11255350": {
+      "title": "Desmethylescitalopram",
+      "smiles": "CNCCC[C@@]1(C2=C(CO1)C=C(C=C2)C#N)C3=CC=C(C=C3)F",
+      "inchiKey": "PTJADDMMFYXMMG-IBGZPJMESA-N",
+      "formula": "C19H19FN2O",
+      "molecularWeight": 310.4,
+      "retrieved": "2026-10-21"
+    },
+    "11369918": {
+      "title": "Norquetiapine",
+      "smiles": "C1CN(CCN1)C2=NC3=CC=CC=C3SC4=CC=CC=C42",
+      "inchiKey": "JLOAJISUHPIQOX-UHFFFAOYSA-N",
+      "formula": "C17H17N3S",
+      "molecularWeight": 295.4,
+      "retrieved": "2026-10-21"
+    },
+    "11440685": {
+      "title": "Salvinorin B",
+      "smiles": "C[C@@]12CC[C@H]3C(=O)O[C@@H](C[C@@]3([C@H]1C(=O)[C@H](C[C@H]2C(=O)OC)O)C)C4=COC=C4",
+      "inchiKey": "BLTMVAIOAAGYAR-CEFSSPBYSA-N",
+      "formula": "C21H26O7",
+      "molecularWeight": 390.4,
+      "retrieved": "2026-10-21"
+    },
+    "11597698": {
+      "title": "Lisdexamfetamine",
+      "smiles": "C[C@@H](CC1=CC=CC=C1)NC(=O)[C@H](CCCCN)N",
+      "inchiKey": "VOBHXZCDAVEXEY-JSGCOSHPSA-N",
+      "formula": "C15H25N3O",
+      "molecularWeight": 263.38,
+      "retrieved": "2026-10-21"
+    },
+    "11715688": {
+      "title": "N-Desmethylatomoxetine",
+      "smiles": "CC1=CC=CC=C1O[C@H](CCN)C2=CC=CC=C2",
+      "inchiKey": "QEXPFYRHIYKWEW-MRXNPFEDSA-N",
+      "formula": "C16H19NO",
+      "molecularWeight": 241.33,
+      "retrieved": "2026-10-21"
+    },
+    "11978813": {
+      "title": "Brexpiprazole",
+      "smiles": "C1CN(CCN1CCCCOC2=CC3=C(C=C2)C=CC(=O)N3)C4=C5C=CSC5=CC=C4",
+      "inchiKey": "ZKIAIYBUSXZPLP-UHFFFAOYSA-N",
+      "formula": "C25H27N3O2S",
+      "molecularWeight": 433.6,
+      "retrieved": "2026-10-21"
+    },
+    "12149038": {
+      "title": "N-Desmethyltramadol",
+      "smiles": "CNC[C@H]1CCCC[C@@]1(C2=CC(=CC=C2)OC)O",
+      "inchiKey": "VUMQHLSPUAFKKK-HIFRSBDPSA-N",
+      "formula": "C15H23NO2",
+      "molecularWeight": 249.35,
+      "retrieved": "2026-10-21"
+    },
+    "12562546": {
+      "title": "Bromazolam",
+      "smiles": "CC1=NN=C2N1C3=C(C=C(C=C3)Br)C(=NC2)C4=CC=CC=C4",
+      "inchiKey": "KCEIOBKDDQAYCM-UHFFFAOYSA-N",
+      "formula": "C17H13BrN4",
+      "molecularWeight": 353.2,
+      "retrieved": "2026-10-21"
+    },
+    "13001738": {
+      "title": "Norhydrocodone",
+      "smiles": "COC1=C2C3=C(C[C@@H]4[C@H]5[C@]3(CCN4)[C@@H](O2)C(=O)CC5)C=C1",
+      "inchiKey": "JGORUXKMRLIJSV-YNHQPCIGSA-N",
+      "formula": "C17H19NO3",
+      "molecularWeight": 285.34,
+      "retrieved": "2026-10-21"
+    },
+    "13217486": {
+      "title": "(9S)-6'-Methoxycinchonan-3,9-diol",
+      "smiles": "COC1=CC2=C(C=CN=C2C=C1)[C@@H]([C@H]3C[C@@H]4CCN3C[C@@]4(C=C)O)O",
+      "inchiKey": "BSRUJCFCZKMFMB-LGWHJFRWSA-N",
+      "formula": "C20H24N2O3",
+      "molecularWeight": 340.4,
+      "retrieved": "2026-10-21"
+    },
+    "21123459": {
+      "title": "beta-D-Glucopyranuronic acid, 1-(5-(aminosulfonyl)-4-chloro-2-((2-furanylmethyl)amino)benzoate)",
+      "smiles": "C1=COC(=C1)CNC2=CC(=C(C=C2C(=O)O[C@H]3[C@@H]([C@H]([C@@H]([C@H](O3)C(=O)O)O)O)O)S(=O)(=O)N)Cl",
+      "inchiKey": "RNVHHPUYELVHRE-GLRLOKQVSA-N",
+      "formula": "C18H19ClN2O11S",
+      "molecularWeight": 506.9,
+      "retrieved": "2026-10-21"
+    },
+    "21930924": {
+      "title": "Flubromazolam",
+      "smiles": "CC1=NN=C2N1C3=C(C=C(C=C3)Br)C(=NC2)C4=CC=CC=C4F",
+      "inchiKey": "VXGSZBZQCBNUIP-UHFFFAOYSA-N",
+      "formula": "C17H12BrFN4",
+      "molecularWeight": 371.2,
+      "retrieved": "2026-10-21"
+    },
+    "24965990": {
+      "title": "Suvorexant",
+      "smiles": "C[C@@H]1CCN(CCN1C(=O)C2=C(C=CC(=C2)C)N3N=CC=N3)C4=NC5=C(O4)C=CC(=C5)Cl",
+      "inchiKey": "JYTNQNCOQXFQPK-MRXNPFEDSA-N",
+      "formula": "C23H23ClN6O2",
+      "molecularWeight": 450.9,
+      "retrieved": "2026-10-21"
+    },
+    "44301524": {
+      "title": "7-Hydroxymitragynine",
+      "smiles": "CC[C@@H]1CN2CC[C@]3(C(=NC4=C3C(=CC=C4)OC)[C@@H]2C[C@@H]1/C(=C\\OC)/C(=O)OC)O",
+      "inchiKey": "RYENLSMHLCNXJT-CYXFISRXSA-N",
+      "formula": "C23H30N2O5",
+      "molecularWeight": 414.5,
+      "retrieved": "2026-10-21"
+    },
+    "44301701": {
+      "title": "Mitragynine pseudoindoxyl",
+      "smiles": "CC[C@@H]1CN2CC[C@]3([C@@H]2C[C@@H]1/C(=C\\OC)/C(=O)OC)C(=O)C4=C(N3)C=CC=C4OC",
+      "inchiKey": "BAEJBRCYKACTAA-WGUOAFTMSA-N",
+      "formula": "C23H30N2O5",
+      "molecularWeight": 414.5,
+      "retrieved": "2026-10-21"
+    },
+    "45266826": {
+      "title": "Mephedrone",
+      "smiles": "CC1=CC=C(C=C1)C(=O)C(C)NC",
+      "inchiKey": "YELGFTGWJGBAQU-UHFFFAOYSA-N",
+      "formula": "C11H15NO",
+      "molecularWeight": 177.24,
+      "retrieved": "2026-10-21"
+    },
+    "52911279": {
+      "title": "2-(3-Methoxyphenyl)-2-(ethylamino)cyclohexanone",
+      "smiles": "CCNC1(CCCCC1=O)C2=CC(=CC=C2)OC",
+      "inchiKey": "LPKTWLVEGBNOOX-UHFFFAOYSA-N",
+      "formula": "C15H21NO2",
+      "molecularWeight": 247.33,
+      "retrieved": "2026-10-21"
+    },
+    "54678486": {
+      "title": "Warfarin",
+      "smiles": "CC(=O)CC(C1=CC=CC=C1)C2=C(C3=CC=CC=C3OC2=O)O",
+      "inchiKey": "PJVWKTKQMONHTI-UHFFFAOYSA-N",
+      "formula": "C19H16O4",
+      "molecularWeight": 308.3,
+      "retrieved": "2026-10-21"
+    },
+    "71311610": {
+      "title": "Naloxone-3-glucuronide",
+      "smiles": "C=CCN1CC[C@]23[C@@H]4C(=O)CC[C@]2([C@H]1CC5=C3C(=C(C=C5)O[C@H]6[C@@H]([C@H]([C@@H]([C@H](O6)C(=O)O)O)O)O)O4)O",
+      "inchiKey": "DSRNCSJRHACUJL-JXOQMJNJSA-N",
+      "formula": "C25H29NO10",
+      "molecularWeight": 503.5,
+      "retrieved": "2026-10-21"
+    },
+    "71752323": {
+      "title": "N-Acetyl-9-aminominocycline, (4R)-",
+      "smiles": "CC[C@@H](C1=CC(=CC=C1)O[C@H]2[C@@H]([C@H]([C@@H]([C@H](O2)C(=O)O)O)O)O)[C@@H](C)CN(C)C",
+      "inchiKey": "CTYJDHSTNLOUMT-PJOQTPGLSA-N",
+      "formula": "C20H31NO7",
+      "molecularWeight": 397.5,
+      "retrieved": "2026-10-21"
+    },
+    "76973794": {
+      "title": "Temazepam glucuronide",
+      "smiles": "CN1C2=C(C=C(C=C2)Cl)C(=NC(C1=O)O[C@H]3[C@@H]([C@H]([C@@H]([C@H](O3)C(=O)O)O)O)O)C4=CC=CC=C4",
+      "inchiKey": "KFYGTOURBGCWNQ-RYQNVSPKSA-N",
+      "formula": "C22H21ClN2O8",
+      "molecularWeight": 476.9,
+      "retrieved": "2026-10-21"
+    },
+    "86294073": {
+      "title": "Zuranolone",
+      "smiles": "C[C@]1(CC[C@H]2[C@@H](C1)CC[C@@H]3[C@@H]2CC[C@]4([C@H]3CC[C@@H]4C(=O)CN5C=C(C=N5)C#N)C)O",
+      "inchiKey": "HARRKNSQXBRBGZ-GVKWWOCJSA-N",
+      "formula": "C25H35N3O2",
+      "molecularWeight": 409.6,
+      "retrieved": "2026-10-21"
+    },
+    "91800215": {
+      "title": "Oxymorphone 3-glucuronide",
+      "smiles": "CN1CC[C@]23[C@@H]4C(=O)CC[C@]2([C@H]1CC5=C3C(=C(C=C5)O[C@H]6[C@@H]([C@H]([C@@H]([C@H](O6)C(=O)O)O)O)O)O4)O",
+      "inchiKey": "ILRLBQVIWURYLX-WUDROUKASA-N",
+      "formula": "C23H27NO10",
+      "molecularWeight": 477.5,
+      "retrieved": "2026-10-21"
+    },
+    "92043458": {
+      "title": "Dihydrodigoxin",
+      "smiles": "C[C@@H]1[C@H]([C@H](C[C@@H](O1)O[C@@H]2[C@H](O[C@H](C[C@@H]2O)O[C@@H]3[C@H](O[C@H](C[C@@H]3O)O[C@H]4CC[C@]5([C@@H](C4)CC[C@@H]6[C@@H]5C[C@H]([C@]7([C@@]6(CC[C@@H]7[C@H]8CC(=O)OC8)O)C)O)C)C)C)O)O",
+      "inchiKey": "QYVJGQUFXQMOOE-STPZNEFBSA-N",
+      "formula": "C41H66O14",
+      "molecularWeight": 783,
+      "retrieved": "2026-10-21"
+    },
+    "96359892": {
+      "title": "Clopidogrel Acyl-beta-D-glucuronide",
+      "smiles": "C1CN(CC2=C1SC=C2)[C@@H](C3=CC=CC=C3Cl)C(=O)O[C@H]4[C@@H]([C@H]([C@@H]([C@H](O4)C(=O)O)O)O)O",
+      "inchiKey": "TUBQAJBXTWIXFX-CLCCAKIRSA-N",
+      "formula": "C21H22ClNO8S",
+      "molecularWeight": 483.9,
+      "retrieved": "2026-10-21"
+    },
+    "121465021": {
+      "title": "N-[3-(pyrimidin-2-ylcarbamoyl)thiophen-2-yl]-[1,3]thiazolo[4,5-c]pyridine-2-carboxamide",
+      "smiles": "C1=CN=C(N=C1)NC(=O)C2=C(SC=C2)NC(=O)C3=NC4=C(S3)C=CN=C4",
+      "inchiKey": "AJCHWWGZVVPQDY-UHFFFAOYSA-N",
+      "formula": "C16H10N6O2S2",
+      "molecularWeight": 382.4,
+      "retrieved": "2026-10-21"
+    },
+    "122173988": {
+      "title": "Nalmefene 3-glucuronide",
+      "smiles": "C=C1C=C[C@]2([C@H]3CC4=C5[C@]2([C@H]1OC5=C(C=C4)O[C@H]6[C@@H]([C@H]([C@@H]([C@H](O6)C(=O)O)O)O)O)CCN3CC7CC7)O",
+      "inchiKey": "WVNOWMNWGLCPBW-UEDZHUOVSA-N",
+      "formula": "C27H31NO9",
+      "molecularWeight": 513.5,
+      "retrieved": "2026-10-21"
+    },
+    "135398735": {
+      "title": "Rifampicin",
+      "smiles": "C[C@H]1/C=C/C=C(\\C(=O)NC2=C(C(=C3C(=C2O)C(=C(C4=C3C(=O)[C@](O4)(O/C=C/[C@@H]([C@H]([C@H]([C@@H]([C@@H]([C@@H]([C@H]1O)C)O)C)OC(=O)C)C)OC)C)C)O)O)/C=N/N5CCN(CC5)C)/C",
+      "inchiKey": "JQXXHWHPUNPDRT-WLSIYKJHSA-N",
+      "formula": "C43H58N4O12",
+      "molecularWeight": 822.9,
+      "retrieved": "2026-10-21"
+    },
+    "135398737": {
+      "title": "Clozapine",
+      "smiles": "CN1CCN(CC1)C2=NC3=C(C=CC(=C3)Cl)NC4=CC=CC=C42",
+      "inchiKey": "QZUDBNBUXVUHMW-UHFFFAOYSA-N",
+      "formula": "C18H19ClN4",
+      "molecularWeight": 326.8,
+      "retrieved": "2026-10-21"
+    },
+    "135398744": {
+      "title": "Sildenafil",
+      "smiles": "CCCC1=NN(C2=C1N=C(NC2=O)C3=C(C=CC(=C3)S(=O)(=O)N4CCN(CC4)C)OCC)C",
+      "inchiKey": "BNRNXUUZRGQAQC-UHFFFAOYSA-N",
+      "formula": "C22H30N6O4S",
+      "molecularWeight": 474.6,
+      "retrieved": "2026-10-21"
+    },
+    "135398745": {
+      "title": "Olanzapine",
+      "smiles": "CC1=CC2=C(S1)NC3=CC=CC=C3N=C2N4CCN(CC4)C",
+      "inchiKey": "KVWDHTXUZHCGIO-UHFFFAOYSA-N",
+      "formula": "C17H20N4S",
+      "molecularWeight": 312.4,
+      "retrieved": "2026-10-21"
+    },
+    "135409468": {
+      "title": "N-Desmethylclozapine",
+      "smiles": "C1CN(CCN1)C2=NC3=C(C=CC(=C3)Cl)NC4=CC=CC=C42",
+      "inchiKey": "JNNOSTQEZICQQP-UHFFFAOYSA-N",
+      "formula": "C17H17ClN4",
+      "molecularWeight": 312.8,
+      "retrieved": "2026-10-21"
+    },
+    "135445691": {
+      "title": "clozapine N-oxide",
+      "smiles": "C[N+]1(CCN(CC1)C2=NC3=C(C=CC(=C3)Cl)NC4=CC=CC=C42)[O-]",
+      "inchiKey": "OGUCZBIQSYYWEF-UHFFFAOYSA-N",
+      "formula": "C18H19ClN4O",
+      "molecularWeight": 342.8,
+      "retrieved": "2026-10-21"
+    },
+    "135446209": {
+      "title": "Desmethylolanzapine",
+      "smiles": "CC1=CC2=C(S1)NC3=CC=CC=C3N=C2N4CCNCC4",
+      "inchiKey": "FHPIXVHJEIZKJW-UHFFFAOYSA-N",
+      "formula": "C16H18N4S",
+      "molecularWeight": 298.4,
+      "retrieved": "2026-10-21"
+    },
+    "135455980": {
+      "title": "Desmethylsildenafil",
+      "smiles": "CCCC1=NN(C2=C1N=C(NC2=O)C3=C(C=CC(=C3)S(=O)(=O)N4CCNCC4)OCC)C",
+      "inchiKey": "UZTKBZXHEOVDRL-UHFFFAOYSA-N",
+      "formula": "C21H28N6O4S",
+      "molecularWeight": 460.6,
+      "retrieved": "2026-10-21"
+    },
+    "135465917": {
+      "title": "5-Oxozaleplon",
+      "smiles": "CCN(C1=CC=CC(=C1)C2=CC(=O)NC3=C(C=NN23)C#N)C(=O)C",
+      "inchiKey": "LUFPEMFJYAYYDI-UHFFFAOYSA-N",
+      "formula": "C17H15N5O2",
+      "molecularWeight": 321.33,
+      "retrieved": "2026-10-21"
+    },
+    "135542225": {
+      "title": "25-Desacetylrifampicin",
+      "smiles": "C[C@H]1/C=C/C=C(\\C(=O)NC2=C(C(=C3C(=C2O)C(=C(C4=C3C(=O)[C@](O4)(O/C=C/[C@@H]([C@H]([C@H]([C@@H]([C@@H]([C@@H]([C@H]1O)C)O)C)O)C)OC)C)C)O)O)/C=N/N5CCN(CC5)C)/C",
+      "inchiKey": "KUJZTIJOBQNKDR-OACVHIRKSA-N",
+      "formula": "C41H56N4O11",
+      "molecularWeight": 780.9,
+      "retrieved": "2026-10-21"
+    },
+    "145721979": {
+      "title": "N,N-Diethyl-2-((4-(1-methylethoxy)phenyl)methyl)-5-nitro-1H-benzimidazole-1-ethanamine",
+      "smiles": "CCN(CC)CCN1C2=C(C=C(C=C2)[N+](=O)[O-])N=C1CC3=CC=C(C=C3)OC(C)C",
+      "inchiKey": "OIOQREYBGDAYGT-UHFFFAOYSA-N",
+      "formula": "C23H30N4O3",
+      "molecularWeight": 410.5,
+      "retrieved": "2026-10-21"
+    },
+    "155804661": {
+      "title": "MDMB-4en-PINACA",
+      "smiles": "CC(C)(C)[C@@H](C(=O)OC)NC(=O)C1=NN(C2=CC=CC=C21)CCCC=C",
+      "inchiKey": "LWOCBHBFWNGPGM-QGZVFWFLSA-N",
+      "formula": "C20H27N3O3",
+      "molecularWeight": 357.4,
+      "retrieved": "2026-10-21"
+    },
+    "155907792": {
+      "title": "Adb-butinaca",
+      "smiles": "CCCCN1C2=CC=CC=C2C(=N1)C(=O)N[C@H](C(=O)N)C(C)(C)C",
+      "inchiKey": "GPWADXHYJAZPAX-OAHLLOKOSA-N",
+      "formula": "C18H26N4O2",
+      "molecularWeight": 330.4,
+      "retrieved": "2026-10-21"
+    },
+    "162623899": {
+      "title": "N-Desethylisotonitazene",
+      "smiles": "CCNCCN1C2=C(C=C(C=C2)[N+](=O)[O-])N=C1CC3=CC=C(C=C3)OC(C)C",
+      "inchiKey": "HHBRZWRJZICFRP-UHFFFAOYSA-N",
+      "formula": "C21H26N4O3",
+      "molecularWeight": 382.5,
+      "retrieved": "2026-10-21"
+    },
+    "165361537": {
+      "title": "MDMB-4en-PINACA butanoic acid",
+      "smiles": "CC(C)(C)[C@@H](C(=O)O)NC(=O)C1=NN(C2=CC=CC=C21)CCCC=C",
+      "inchiKey": "PZJJLRYZVOOSGA-MRXNPFEDSA-N",
+      "formula": "C19H25N3O3",
+      "molecularWeight": 343.4,
+      "retrieved": "2026-10-21"
+    },
+    "169490739": {
+      "title": "14-Hydroxyclarithromycin",
+      "smiles": "CC[C@@H]1[C@@]([C@@H]([C@H](C(=O)[C@@H](C[C@@]([C@@H]([C@H]([C@@H]([C@H](C(=O)O1)CO)O[C@H]2C[C@@]([C@H]([C@@H](O2)C)O)(C)OC)C)O[C@H]3[C@@H]([C@H](C[C@H](O3)C)N(C)C)O)(C)OC)C)C)O)(C)O",
+      "inchiKey": "JDKPAXGOJMGSAE-SSUCSANQSA-N",
+      "formula": "C38H69NO14",
+      "molecularWeight": 764,
+      "retrieved": "2026-10-21"
+    }
+  }
+}

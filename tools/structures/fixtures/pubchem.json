@@ -1,0 +1,283 @@
+{
+ "recorded": "2026-10-21",
+ "hits": [
+  {
+   "query": "Methadone",
+   "cids": [
+    4095
+   ]
+  },
+  {
+   "query": "morphine sulfate",
+   "cids": [
+    5288826
+   ]
+  },
+  {
+   "query": "Escitalopram",
+   "cids": [
+    146570
+   ]
+  },
+  {
+   "query": "Citalopram",
+   "cids": [
+    2771
+   ]
+  },
+  {
+   "query": "EDDP",
+   "cids": [
+    28292
+   ]
+  },
+  {
+   "query": "2-ene-VPA",
+   "cids": [
+    6439659,
+    6437068
+   ]
+  },
+  {
+   "query": "Levomethamphetamine",
+   "cids": [
+    36604
+   ]
+  },
+  {
+   "query": "Norfluoxetine",
+   "cids": [
+    4541
+   ]
+  },
+  {
+   "query": "MDEA",
+   "cids": [
+    7767
+   ]
+  },
+  {
+   "query": "MDE",
+   "cids": [
+    105039
+   ]
+  }
+ ],
+ "records": [
+  {
+   "cid": 2771,
+   "title": "Citalopram",
+   "smiles": "CN(C)CCCC1(C2=C(CO1)C=C(C=C2)C#N)C3=CC=C(C=C3)F",
+   "inchiKey": "WSEQXVZVJXJVFP-UHFFFAOYSA-N",
+   "formula": "C20H21FN2O",
+   "molecularWeight": 324.4,
+   "definedAtomStereo": 0,
+   "undefinedAtomStereo": 1,
+   "definedBondStereo": 0,
+   "undefinedBondStereo": 0,
+   "synonyms": [
+    "citalopram",
+    "59729-33-8",
+    "Nitalapram",
+    "Cipram",
+    "Citalopramum"
+   ]
+  },
+  {
+   "cid": 4095,
+   "title": "Methadone",
+   "smiles": "CCC(=O)C(CC(C)N(C)C)(C1=CC=CC=C1)C2=CC=CC=C2",
+   "inchiKey": "USSIQXCVUWKGNF-UHFFFAOYSA-N",
+   "formula": "C21H27NO",
+   "molecularWeight": 309.4,
+   "definedAtomStereo": 0,
+   "undefinedAtomStereo": 1,
+   "definedBondStereo": 0,
+   "undefinedBondStereo": 0,
+   "synonyms": [
+    "methadone",
+    "dl-Methadone",
+    "Diaminon",
+    "Phenadone",
+    "Dolophin"
+   ]
+  },
+  {
+   "cid": 4541,
+   "title": "Norfluoxetine",
+   "smiles": "C1=CC=C(C=C1)C(CCN)OC2=CC=C(C=C2)C(F)(F)F",
+   "inchiKey": "WIQRCHMSJFFONW-UHFFFAOYSA-N",
+   "formula": "C16H16F3NO",
+   "molecularWeight": 295.3,
+   "definedAtomStereo": 0,
+   "undefinedAtomStereo": 1,
+   "definedBondStereo": 0,
+   "undefinedBondStereo": 0,
+   "synonyms": [
+    "Norfluoxetine",
+    "83891-03-6",
+    "Desmethylfluoxetine",
+    "3-phenyl-3-(4-(trifluoromethyl)phenoxy)propan-1-amine",
+    "3-phenyl-3-[4-(trifluoromethyl)phenoxy]propan-1-amine"
+   ]
+  },
+  {
+   "cid": 7767,
+   "title": "N-Methyldiethanolamine",
+   "smiles": "CN(CCO)CCO",
+   "inchiKey": "CRVGTESFCCXCTH-UHFFFAOYSA-N",
+   "formula": "C5H13NO2",
+   "molecularWeight": 119.16,
+   "definedAtomStereo": 0,
+   "undefinedAtomStereo": 0,
+   "definedBondStereo": 0,
+   "undefinedBondStereo": 0,
+   "synonyms": [
+    "N-METHYLDIETHANOLAMINE",
+    "105-59-9",
+    "Methyldiethanolamine",
+    "Methyl diethanolamine",
+    "N-Methylaminodiglycol",
+    "MDEA"
+   ]
+  },
+  {
+   "cid": 28292,
+   "title": "Edifenphos",
+   "smiles": "CCOP(=O)(SC1=CC=CC=C1)SC2=CC=CC=C2",
+   "inchiKey": "AWZOLILCOUMRDG-UHFFFAOYSA-N",
+   "formula": "C14H15O2PS2",
+   "molecularWeight": 310.4,
+   "definedAtomStereo": 0,
+   "undefinedAtomStereo": 0,
+   "definedBondStereo": 0,
+   "undefinedBondStereo": 0,
+   "synonyms": [
+    "Edifenphos",
+    "17109-49-8",
+    "Hinosan",
+    "Ediphenphos",
+    "EDDP (pesticide)",
+    "EDDP"
+   ]
+  },
+  {
+   "cid": 36604,
+   "title": "Levmetamfetamine",
+   "smiles": "C[C@H](CC1=CC=CC=C1)NC",
+   "inchiKey": "MYWUZJCMWCOHBA-SECBINFHSA-N",
+   "formula": "C10H15N",
+   "molecularWeight": 149.23,
+   "definedAtomStereo": 1,
+   "undefinedAtomStereo": 0,
+   "definedBondStereo": 0,
+   "undefinedBondStereo": 0,
+   "synonyms": [
+    "Levmetamfetamine",
+    "L-Methamphetamine",
+    "l-Methylamphetamine",
+    "levomethamphetamine",
+    "R(-)-N-Methylamphetamine"
+   ]
+  },
+  {
+   "cid": 105039,
+   "title": "Methylenedioxyethamphetamine",
+   "smiles": "CCNC(C)CC1=CC2=C(C=C1)OCO2",
+   "inchiKey": "PVXVWWANJIWJOO-UHFFFAOYSA-N",
+   "formula": "C12H17NO2",
+   "molecularWeight": 207.27,
+   "definedAtomStereo": 0,
+   "undefinedAtomStereo": 1,
+   "definedBondStereo": 0,
+   "undefinedBondStereo": 0,
+   "synonyms": [
+    "3,4-Methylenedioxy-N-ethylamphetamine",
+    "82801-81-8",
+    "Methylenedioxyethamphetamine",
+    "N-Ethyl MDA",
+    "3,4-Methylenedioxyethamphetamine",
+    "MDE"
+   ]
+  },
+  {
+   "cid": 146570,
+   "title": "Escitalopram",
+   "smiles": "CN(C)CCC[C@@]1(C2=C(CO1)C=C(C=C2)C#N)C3=CC=C(C=C3)F",
+   "inchiKey": "WSEQXVZVJXJVFP-FQEVSTJZSA-N",
+   "formula": "C20H21FN2O",
+   "molecularWeight": 324.4,
+   "definedAtomStereo": 1,
+   "undefinedAtomStereo": 0,
+   "definedBondStereo": 0,
+   "undefinedBondStereo": 0,
+   "synonyms": [
+    "Escitalopram",
+    "128196-01-0",
+    "(S)-Citalopram",
+    "S(+)-Citalopram",
+    "Cipralex"
+   ]
+  },
+  {
+   "cid": 5288826,
+   "title": "Morphine",
+   "smiles": "CN1CC[C@]23[C@@H]4[C@H]1CC5=C2C(=C(C=C5)O)O[C@H]3[C@H](C=C4)O",
+   "inchiKey": "BQJCRHHNABKAKU-KBQPJGBKSA-N",
+   "formula": "C17H19NO3",
+   "molecularWeight": 285.34,
+   "definedAtomStereo": 5,
+   "undefinedAtomStereo": 0,
+   "definedBondStereo": 0,
+   "undefinedBondStereo": 0,
+   "synonyms": [
+    "morphine",
+    "Morphia",
+    "Morphium",
+    "Morphina",
+    "(-)-Morphine",
+    "(Morphine)",
+    "(-)Morphine sulfate"
+   ]
+  },
+  {
+   "cid": 6437068,
+   "title": "2-propyl-2-pentenoic acid, (E)-",
+   "smiles": "CCC/C(=C\\CC)/C(=O)O",
+   "inchiKey": "ZKNJEOBYOLUGKJ-FNORWQNLSA-N",
+   "formula": "C8H14O2",
+   "molecularWeight": 142.2,
+   "definedAtomStereo": 0,
+   "undefinedAtomStereo": 0,
+   "definedBondStereo": 1,
+   "undefinedBondStereo": 0,
+   "synonyms": [
+    "(E)-2-ene valproic acid",
+    "RefChem:910246",
+    "2-propyl-2-pentenoic acid, (E)-",
+    "33786-47-9",
+    "(E)-2-propylpent-2-enoic acid",
+    "2-Ene-VPA"
+   ]
+  },
+  {
+   "cid": 6439659,
+   "title": "(Z)-2-propylpent-2-enoic acid",
+   "smiles": "CCC/C(=C/CC)/C(=O)O",
+   "inchiKey": "ZKNJEOBYOLUGKJ-ALCCZGGFSA-N",
+   "formula": "C8H14O2",
+   "molecularWeight": 142.2,
+   "definedAtomStereo": 0,
+   "undefinedAtomStereo": 0,
+   "definedBondStereo": 1,
+   "undefinedBondStereo": 0,
+   "synonyms": [
+    "2-Enevalproic acid",
+    "2-propylpent-2-enoic acid",
+    "(Z)-2-propylpent-2-enoic acid",
+    "2-Ene-VPA",
+    "2-ENEVALPROICACID"
+   ]
+  }
+ ]
+}

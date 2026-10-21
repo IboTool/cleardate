@@ -99,6 +99,8 @@ function api(): Plugin {
 
 export default defineConfig({
   root: here,
+  // Serves public/structures/ (the drawings) to the identity section.
+  publicDir: resolve(root, 'public'),
   plugins: [api()],
   server: {
     host: '127.0.0.1',

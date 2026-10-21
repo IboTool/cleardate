@@ -7,7 +7,7 @@ import {
   type RangeType,
 } from './types';
 
-export const SCHEMA_VERSION = 2.2 as const;
+export const SCHEMA_VERSION = 2.3 as const;
 
 export const RANGE_TYPE_LABEL: Record<RangeType, string> = {
   'observed-range': 'observed range',
@@ -48,6 +48,7 @@ export function emptyCompound(id: string, name: string): Compound {
     formedFrom: [],
     clinicalRelevance: 'unknown',
     molecularWeight: null,
+    identity: null,
     kinetics: { mode: 'unknown', halfLifeHours: null, earlyPhase: null, steadyState: null },
     cyp2d6: { substrate: 'unassessed', halfLifeMultiplier: null, inhibitor: 'unassessed', inhibitionType: 'unassessed' },
     qt: { tier: 'unassessed', weight: null, referenceAmountMg: null },
@@ -231,7 +232,7 @@ export function unreviewedSections(e: Reviewable, sections: readonly string[]): 
 const RANGE_KEYS = ['typical', 'min', 'max', 'rangeType', 'cv'];
 const PHEN_KEYS = ['poor', 'intermediate', 'normal', 'ultrarapid'];
 const COMPOUND_KEYS = [
-  'id', 'name', 'aliases', 'isMetabolite', 'formedFrom', 'clinicalRelevance', 'endogenous', 'molecularWeight', 'kinetics', 'cyp2d6', 'qt',
+  'id', 'name', 'aliases', 'isMetabolite', 'formedFrom', 'clinicalRelevance', 'endogenous', 'molecularWeight', 'identity', 'kinetics', 'cyp2d6', 'qt',
   'receptors', 'receptorsAssessed', 'lingeringEffects', 'nonlinearKinetics', 'provenance', 'sourceNotes', 'reviewedDates',
   'source', 'verified', 'verifiedDate',
 ];
@@ -282,6 +283,10 @@ function canonicalCompound(c: Compound): Compound {
       receptors: (c.receptors ?? []).map((r) => sub(r, ['target', 'action'])),
       lingeringEffects: sub(c.lingeringEffects, ['durationDays', 'note']),
       nonlinearKinetics: sub(c.nonlinearKinetics, ['flag', 'note']),
+      identity: c.identity && ordered(
+        { ...c.identity, candidates: (c.identity.candidates ?? []).map((x) => sub(x, ['cid', 'name', 'reason'])) },
+        ['pubchemCid', 'smiles', 'inchiKey', 'formula', 'confidence', 'candidates', 'note'],
+      ),
       provenance: ordered(c.provenance ?? {}, COMPOUND_SECTION_KEYS),
       sourceNotes: ordered(c.sourceNotes ?? {}, COMPOUND_SECTION_KEYS),
       reviewedDates: c.reviewedDates && ordered(c.reviewedDates, COMPOUND_SECTION_KEYS),

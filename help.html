@@ -49,6 +49,7 @@
               <a href="#library">The drug library and its sources</a>
               <ol>
                 <li><a href="#library-view">Browsing the library</a></li>
+                <li><a href="#library-structures">Chemical structures</a></li>
               </ol>
             </li>
             <li><a href="#faq">FAQ</a></li>
@@ -655,6 +656,7 @@
             <li><a href="https://cpicpgx.org/">CPIC</a> and <a href="https://www.clinpgx.org/">ClinPGx</a> for pharmacogenomics.</li>
             <li>The <a href="https://www.guidetopharmacology.org/">IUPHAR/BPS Guide to Pharmacology</a> and the <a href="https://pdsp.unc.edu/databases/kidb.php">PDSP K<sub>i</sub> Database</a> for receptor targets.</li>
             <li>The primary pharmacokinetic literature via <a href="https://pubmed.ncbi.nlm.nih.gov/">PubMed</a>.</li>
+            <li><a href="https://pubchem.ncbi.nlm.nih.gov/">PubChem</a> (NCBI) for chemical identifiers, formulas, molecular weights and structures.</li>
           </ul>
           <h3>Review and verification</h3>
           <p>Each entry is reviewed section by section (half-life, metabolites, CYP2D6, QT, receptors and so on). A section can be confirmed, confirmed as unknown when the data genuinely isn't published, or marked not applicable. An entry is verified only when every section has been reviewed. Where the data is genuinely unpublished, as it is for many metabolites, the tool says so instead of guessing: the entry shows <span class="badge badge-warn">verified — incomplete data</span> and its clear dates are lower bounds.</p>
@@ -683,18 +685,28 @@
               <li>Live counts from the library.</li>
             </ol>
           </figure>
-          <p>A drug's entry shows, in order: its status; <strong>at a glance</strong>, the clear time after a single dose; <strong>lingering effects</strong>, when there are any; its products; the kinetics of the drug and each metabolite; the metabolite tree; safety (CYP2D6, QT, lingering effects, nonlinear kinetics); receptors; and the sources. Unknown values are shown as <em>unknown</em> or <em>unassessed</em>, never left blank.</p>
+          <p>A drug's entry shows, in order: its name, status and chemical structure; <strong>at a glance</strong>, the clear time after a single dose; <strong>lingering effects</strong>, when there are any; its products; the kinetics of the drug and each metabolite; the metabolite tree; safety (CYP2D6, QT, lingering effects, nonlinear kinetics); receptors; and the sources. Unknown values are shown as <em>unknown</em> or <em>unassessed</em>, never left blank.</p>
           <figure class="shot" data-img="library-entry.webp">
-            <div class="shot-frame"><img src="help/img/library-entry.webp" alt="The top of the fluoxetine entry: its name and aliases, the Draft status, an at-a-glance sentence giving the typical clear time after a single dose with its range, a violet Lingering effects panel with fluoxetine's note and the caveat that lingering effects are not part of the clear date, product cards for the oral and weekly delayed-release products, and the fluoxetine half-life shown as a range bar." /></div>
+            <div class="shot-frame"><img src="help/img/library-entry.webp" alt="The top of the fluoxetine entry: its name and aliases, the Draft status, its chemical structure with formula, molecular weight, PubChem link and InChIKey, an at-a-glance sentence giving the typical clear time after a single dose with its range, a violet Lingering effects panel with fluoxetine's note and the caveat that lingering effects are not part of the clear date, product cards for the oral and weekly delayed-release products, and the fluoxetine half-life shown as a range bar." /></div>
             <figcaption>The top of a drug's entry.</figcaption>
             <ol class="callout-list">
               <li>Status: Verified (with its date), Verified — incomplete data, Draft, or No data yet.</li>
+              <li>Chemical structure, with the formula, molecular weight, a link to the PubChem record and the InChIKey (the copy button copies it). See <a href="#library-structures">Chemical structures</a>.</li>
               <li>At a glance: the same simulation as the chart, for one dose of the main product in a normal CYP2D6 metaboliser, using your current clear threshold. Incomplete drugs say “not before” and name the compound without kinetics.</li>
               <li>Lingering effects: effects that outlast the drug itself, such as the weeks needed to make new enzyme after an irreversible MAOI, protracted benzodiazepine withdrawal, or platelet recovery after clopidogrel. Each compound with a note is listed (a metabolite says which compound it is formed from), with its duration in days or “duration not quantified”. The panel appears only when the drug or one of its metabolites has such a note. These effects persist after the drug has cleared and are <em>not</em> part of the clear date; the chart's <a href="#lingering">lingering-effects band</a> shows them only where a duration is recorded.</li>
               <li>Each product: route, formulation, input model and typical dose. “Not set” or “not applied” means the library has no value.</li>
               <li>Half-life range: the band runs from the fastest to the slowest value, the gold tick is the typical value, and the label says how the range was derived. A striped band is an assumed spread around a single published value.</li>
             </ol>
           </figure>
+          <h3 id="library-structures">Chemical structures</h3>
+          <p>Each drug and metabolite is matched to its <a href="https://pubchem.ncbi.nlm.nih.gov/">PubChem</a> record, and its 2D structure is drawn from PubChem's SMILES with <a href="https://www.rdkit.org/">RDKit</a> when the site is built. The app itself never contacts PubChem. The match has a confidence, and a structure is drawn only when the match is good:</p>
+          <ul>
+            <li><strong>Confirmed</strong>: the name is an exact PubChem synonym of a single record, the molecular weight agrees, and any stereochemistry the name states matches.</li>
+            <li><strong>Probable match — pending review</strong>: drawn, but not yet checked by a reviewer. This covers drugs that have a stereoisomer sibling in the library (citalopram and escitalopram, ketamine and esketamine), where the record could be the wrong isomer, and loosely named metabolites such as “hydroxy-” or “desmethyl-” forms.</li>
+            <li><strong>Structure pending confirmation</strong>: not drawn. The name matched more than one record, only an abbreviation matched (abbreviations collide: MDEA also names an industrial solvent), or the stereochemistry or molecular weight didn't agree. The candidate records are listed with links.</li>
+            <li><strong>No single structure</strong>: mixtures such as kavalactones, peptides such as semaglutide, pooled conjugates, and lithium.</li>
+          </ul>
+          <p>Structures are for identification only. They aren't used in any calculation, but where a molecular weight was missing it was filled from PubChem, which lets the chart show more metabolite amounts in the metabolite's own mass.</p>
           <figure class="shot" data-img="library-tree.webp">
             <div class="shot-frame"><img src="help/img/library-tree.webp" alt="The metabolite tree for codeine: codeine on the left, outlined in gold, linked to its metabolites, each box showing whether it is active and its half-life, with the fraction formed on each link." /></div>
             <figcaption>The metabolite tree.</figcaption>
@@ -775,7 +787,7 @@
             <li><strong>For developers</strong>: see the <a href="https://github.com/IboTool/cleardate#readme">repository README</a>.</li>
           </ul>
           <h3>Acknowledgements</h3>
-          <p>The data sources listed under <a href="#library">The drug library and its sources</a>, and these open-source libraries:</p>
+          <p>The data sources listed under <a href="#library">The drug library and its sources</a>, including <a href="https://pubchem.ncbi.nlm.nih.gov/">PubChem</a> (National Center for Biotechnology Information, U.S. National Library of Medicine) for chemical identifiers and SMILES, and these open-source libraries:</p>
           <div class="table-wrap">
             <table class="data-table">
               <thead><tr><th scope="col">Library</th><th scope="col">Used for</th><th scope="col">Licence</th></tr></thead>
@@ -783,6 +795,7 @@
                 <tr><td><a href="https://echarts.apache.org/">Apache ECharts</a> (with ZRender)</td><td>The chart</td><td>Apache-2.0 (ZRender: BSD-3-Clause)</td></tr>
                 <tr><td><a href="https://www.fusejs.io/">Fuse.js</a></td><td>Fuzzy drug search</td><td>Apache-2.0</td></tr>
                 <tr><td><a href="https://github.com/parallax/jsPDF">jsPDF</a></td><td>PDF export</td><td>MIT</td></tr>
+                <tr><td><a href="https://www.rdkit.org/">RDKit</a></td><td>Drawing the chemical structures (when the site is built; not shipped to your browser)</td><td>BSD-3-Clause</td></tr>
                 <tr><td><a href="https://rsms.me/inter/">Inter</a>, via <a href="https://fontsource.org/">Fontsource</a></td><td>Typeface</td><td>SIL Open Font License 1.1</td></tr>
               </tbody>
             </table>

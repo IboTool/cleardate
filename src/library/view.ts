@@ -17,6 +17,7 @@ import {
 } from './data';
 import { lingeringItems, lingeringPanel } from './lingering';
 import { libraryHash, parseLibraryHash } from './route';
+import { structureFigure } from './structure';
 import { extractCitations, PROVENANCE_LABEL } from './sources';
 import { dataStatement, libraryStats, verifiedCountText, type DrugStatus } from './status';
 
@@ -443,13 +444,16 @@ export function createLibraryView(ctx: LibraryCtx): LibraryView {
     return h('div', { class: 'lib-correct' }, muted('Spotted an error? '), sel, a, muted(' Opens a GitHub issue (needs a GitHub account); or email ian@ethovoa.com.'));
   }
 
-  function header(e: Entry, st: DrugStatus, kicker: Node[], date?: string) {
-    return h('div', { class: 'lib-entry-head' },
-      h('button', { type: 'button', class: 'btn btn-ghost btn-sm lib-back', onclick: () => ctx.navigate(null) }, '← All drugs'),
-      h('h2', { class: 'lib-entry-title', tabindex: '-1' }, e.name),
-      e.aliases.length ? h('div', { class: 'lib-aliases' }, 'Also: ', e.aliases.join(', ')) : null,
-      h('div', { class: 'lib-kicker' }, ...kicker),
-      statusBadge(st, date));
+  function header(e: Entry, st: DrugStatus, kicker: Node[], date?: string, structure?: Compound) {
+    const fig = structure ? structureFigure(structure) : null;
+    return h('div', { class: `lib-entry-head${fig ? ' has-struct' : ''}` },
+      h('div', { class: 'lib-entry-head-text' },
+        h('button', { type: 'button', class: 'btn btn-ghost btn-sm lib-back', onclick: () => ctx.navigate(null) }, '← All drugs'),
+        h('h2', { class: 'lib-entry-title', tabindex: '-1' }, e.name),
+        e.aliases.length ? h('div', { class: 'lib-aliases' }, 'Also: ', e.aliases.join(', ')) : null,
+        h('div', { class: 'lib-kicker' }, ...kicker),
+        statusBadge(st, date)),
+      fig);
   }
 
   function drugDetail(d: DrugEntry) {
@@ -464,7 +468,7 @@ export function createLibraryView(ctx: LibraryCtx): LibraryView {
     const cat = m.categories.find((c) => c.id === d.category);
     const draft = !d.state.verified;
     return [
-      header(d, d.state.status, [categoryTag(cat), d.className ? h('span', null, d.className) : null].filter(Boolean) as Node[], verifiedDate),
+      header(d, d.state.status, [categoryTag(cat), d.className ? h('span', null, d.className) : null].filter(Boolean) as Node[], verifiedDate, idx.compounds.get(parentId)),
       section('At a glance',
         h('p', { class: 'lib-glance' }, g.text),
         g.notes.length ? h('p', { class: 'lib-muted lib-small' }, g.notes.join(' ')) : null,
@@ -519,7 +523,7 @@ export function createLibraryView(ctx: LibraryCtx): LibraryView {
     const st = entryStatus(e);
     const hasChildren = (idx.children.get(c.id) ?? []).length > 0;
     return [
-      header(e, st, [h('span', null, 'Metabolite'), h('span', { class: `lib-rel rel-${c.clinicalRelevance}` }, RELEVANCE_TEXT[c.clinicalRelevance])], c.verifiedDate),
+      header(e, st, [h('span', null, 'Metabolite'), h('span', { class: `lib-rel rel-${c.clinicalRelevance}` }, RELEVANCE_TEXT[c.clinicalRelevance])], c.verifiedDate, c),
       section('Where it comes from',
         kv('Formed from', c.formedFrom.length
           ? h('span', null, c.formedFrom.map((f, i) => [i ? ', ' : '', link(f.compound, idx.compounds.get(f.compound)?.name ?? f.compound),

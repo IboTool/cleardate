@@ -253,7 +253,7 @@ describe('validation', () => {
   });
 
   const reviewedAll = (sections: string[]) => Object.fromEntries(sections.map((s) => [s, 'reviewer' as const]));
-  const PARENT_SECTIONS = ['halfLife', 'metabolism', 'molecularWeight', 'cyp2d6', 'qt', 'receptors', 'lingeringEffects', 'nonlinearKinetics'];
+  const PARENT_SECTIONS = ['halfLife', 'metabolism', 'molecularWeight', 'identity', 'cyp2d6', 'qt', 'receptors', 'lingeringEffects', 'nonlinearKinetics'];
 
   it('requires source, date and every section reviewed for verified entries', () => {
     const l = lib();
@@ -261,7 +261,7 @@ describe('validation', () => {
     const msgs = validateLibrary(l).errors.map((e) => e.message).join('\n');
     expect(msgs).toMatch(/source/);
     expect(msgs).toMatch(/verifiedDate/);
-    expect(msgs).toMatch(/not reviewed: metabolism, molecularWeight, cyp2d6, qt, receptors, lingeringEffects, nonlinearKinetics/);
+    expect(msgs).toMatch(/not reviewed: metabolism, molecularWeight, identity, cyp2d6, qt, receptors, lingeringEffects, nonlinearKinetics/);
     l.compounds[0] = { ...l.compounds[0], provenance: reviewedAll(PARENT_SECTIONS), source: 'x', verifiedDate: '2026-01-01' };
     expect(validateLibrary(l).errors).toEqual([]);
   });
@@ -336,9 +336,9 @@ describe('validation', () => {
     // b is inactive with unknown kinetics (excluded), and c is only formed through it.
     expect(p.incomplete).toEqual({ total: 1, unknownRelevanceOnly: 1, active: 0 });
     expect(p.metaboliteRelevance).toEqual({ active: 0, inactive: 1, unknown: 1 });
-    expect(p.sections).toBe(8 + 9 + 9 + 5);
+    expect(p.sections).toBe(9 + 10 + 10 + 5);
     expect(p.sectionsReviewed).toBe(1);
-    expect(p.categories[0]).toMatchObject({ sections: 31, sectionsReviewed: 1, drugs: 1, drugsVerified: 0 });
+    expect(p.categories[0]).toMatchObject({ sections: 34, sectionsReviewed: 1, drugs: 1, drugsVerified: 0 });
     l.compounds[2] = { ...l.compounds[2], clinicalRelevance: 'inactive' };
     p = validateLibrary(l).progress;
     expect(p.incomplete.total).toBe(0);
@@ -380,13 +380,34 @@ describe('validation', () => {
     expect(productSections({ components: [{ ...plain.components[0], administeredAs: 'b' }] })).toContain('conversion');
   });
 
-  it('requires schemaVersion 2.2 and points older files at the right migration', () => {
+  it('requires schemaVersion 2.3 and points older files at the right migration', () => {
     const l = lib() as unknown as Record<string, unknown>;
+    const msg = () => validateLibrary(l as never).errors.map((e) => e.message).join('\n');
     delete l.schemaVersion;
-    expect(validateLibrary(l as never).errors.some((e) => /migrate-v2, then npm run migrate-v2\.1 and npm run migrate-v2\.2/.test(e.message))).toBe(true);
+    expect(msg()).toMatch(/v1 file; run npm run migrate-v2, then migrate-v2\.1, migrate-v2\.2 and migrate-v2\.3/);
     l.schemaVersion = 2;
-    expect(validateLibrary(l as never).errors.some((e) => /v2 file; run npm run migrate-v2\.1, then npm run migrate-v2\.2/.test(e.message))).toBe(true);
+    expect(msg()).toMatch(/v2 file; run npm run migrate-v2\.1, then migrate-v2\.2 and migrate-v2\.3/);
     l.schemaVersion = 2.1;
-    expect(validateLibrary(l as never).errors.some((e) => /v2\.1 file; run npm run migrate-v2\.2/.test(e.message))).toBe(true);
+    expect(msg()).toMatch(/v2\.1 file; run npm run migrate-v2\.2, then migrate-v2\.3/);
+    l.schemaVersion = 2.2;
+    expect(msg()).toMatch(/v2\.2 file; run npm run migrate-v2\.3/);
+  });
+
+  it('checks the 2.3 identity field', () => {
+    const l = lib();
+    const methadone = { pubchemCid: 4095, smiles: 'CCC(=O)C(CC(C)N(C)C)(C1=CC=CC=C1)C2=CC=CC=C2', inchiKey: 'USSIQXCVUWKGNF-UHFFFAOYSA-N', formula: 'C21H27NO' };
+    l.compounds[0].identity = { ...methadone, confidence: 'confirmed', candidates: [], note: '' };
+    l.compounds[1].identity = { pubchemCid: null, smiles: null, inchiKey: null, formula: null, confidence: 'unconfirmed', candidates: [{ cid: 1, name: 'X', reason: 'exact synonym' }], note: '' };
+    l.compounds[2].identity = { pubchemCid: null, smiles: null, inchiKey: null, formula: null, confidence: 'not-applicable', candidates: [], note: 'Mixture of six kavalactones' };
+    expect(validateLibrary(l).errors).toEqual([]);
+
+    delete l.compounds[0].identity;
+    l.compounds[1].identity = { ...methadone, smiles: null, inchiKey: 'methadone', confidence: 'probable', candidates: [], note: '' };
+    l.compounds[2].identity = { ...l.compounds[2].identity!, note: ' ', confidence: 'not-applicable' };
+    const msgs = validateLibrary(l).errors.map((e) => `${e.id}: ${e.message}`).join('\n');
+    expect(msgs).toMatch(/a: identity missing \(use null — run npm run migrate-v2\.3\)/);
+    expect(msgs).toMatch(/b: identity\.inchiKey "methadone" is not a standard InChIKey/);
+    expect(msgs).toMatch(/b: identity: a probable identity needs pubchemCid, smiles, inchiKey and formula/);
+    expect(msgs).toMatch(/c: identity: not-applicable needs the reason in note/);
   });
 });

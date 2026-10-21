@@ -56,7 +56,9 @@ report.status = {
   changed: [...after].filter(([id, s]) => before.get(id) !== s).map(([id, s]) => ({ id, before: before.get(id) ?? '—', after: s })),
 };
 
-const v = validateLibrary(lib);
+// The schema version and identity fields only reach the current schema with migrate-v2.3.
+const all = validateLibrary(lib);
+const v = { ...all, errors: all.errors.filter((e) => !/^(schemaVersion must be|identity missing)/.test(e.message)) };
 console.log(`Compounds ${report.compounds}; products ${report.products}.`);
 console.log(`Prodrugs: ${report.prodrugs.map((p) => `${p.id} → ${p.compound} ×${p.massFactor}`).join(', ')}`);
 console.log(`Zero-order: ${report.zeroOrder.join(', ')}; standard drinks: ${report.drinkProducts.join(', ')}`);

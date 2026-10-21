@@ -511,8 +511,9 @@ const SOURCES: [string, string, string][] = [
   ['NPS Discovery (CFSRE)', 'https://www.npsdiscovery.org', 'Novel opioids, benzodiazepines, stimulants'],
 ];
 
-const SECTIONS: [SectionName | 'metabolism', string, CompoundSection[]][] = [
+const SECTIONS: [SectionName | 'metabolism' | 'identity', string, CompoundSection[]][] = [
   ['basics', 'Basics & aliases', ['molecularWeight']],
+  ['identity', 'Chemical identity (PubChem)', ['identity']],
   ['kinetics', 'Kinetics', ['halfLife']],
   ['metabolism', 'Metabolite links & fractions', ['metabolism']],
   ['relevance', 'Clinical relevance', ['relevance']],
@@ -593,6 +594,51 @@ function edgeCondition(f: Compound['formedFrom'][number], others: Compound[], on
   });
   return h('div', { class: 'sub' }, field('Condition', sel,
     'Conditional links are skipped unless the required compound is in the body while the parent is (e.g. cocaine → cocaethylene with alcohol). They never hold up a clear date.'));
+}
+
+const REVIEWER_CID_NOTE = 'CID set by reviewer';
+
+/** PubChem identity: drawing and identifiers (read-only; filled by npm run structures:lookup), plus setting a different CID. */
+function identitySection(c: Compound): HTMLElement {
+  const box = h('div', { class: 'ed-identity' });
+  const render = () => {
+    const id = c.identity;
+    const lookupCmd = `npm run structures:lookup -- --id ${c.id}`;
+    const setCid = (cid: number) => {
+      c.identity = { pubchemCid: cid, smiles: null, inchiKey: null, formula: null, confidence: 'unconfirmed', candidates: id?.candidates ?? [], note: `${REVIEWER_CID_NOTE} — run ${lookupCmd}, then npm run structures:render.` };
+      c.provenance.identity = null;
+      changed();
+      render();
+    };
+    const cidInput = h('input', { type: 'number', min: '1', step: '1', placeholder: 'PubChem CID', style: 'width:9em' });
+    const kv = (k: string, v: Node | string | null) => h('div', null, h('b', null, `${k}: `), v ?? h('span', { class: 'field-hint' }, '—'));
+    const pubchem = (cid: number) => h('a', { href: `https://pubchem.ncbi.nlm.nih.gov/compound/${cid}`, target: '_blank', rel: 'noopener noreferrer' }, `CID ${cid}`);
+    const drawn = id && (id.confidence === 'confirmed' || id.confidence === 'probable') && id.smiles;
+    box.replaceChildren(
+      !id ? h('p', { class: 'field-hint' }, 'Not looked up yet — run npm run structures:lookup.') : h('div', { class: 'ed-identity-grid' },
+        drawn ? h('img', { src: `/structures/${encodeURIComponent(c.id)}.svg?v=${encodeURIComponent(id.inchiKey ?? '')}`, alt: `Chemical structure of ${c.name}`, class: 'ed-structure' }) : null,
+        h('div', null,
+          kv('Confidence', badge(id.confidence, id.confidence === 'confirmed' ? 'ok' : id.confidence === 'not-applicable' ? 'muted' : 'warn')),
+          kv('CID', id.pubchemCid ? pubchem(id.pubchemCid) : null),
+          kv('Formula', id.formula),
+          kv('InChIKey', id.inchiKey ? h('code', null, id.inchiKey) : null),
+          kv('SMILES', id.smiles ? h('code', { style: 'word-break:break-all' }, id.smiles) : null),
+          id.note ? kv('Note', id.note) : null,
+          id.candidates.length ? h('div', null, h('b', null, 'Candidates:'), h('ul', null, id.candidates.map((x) => h('li', null,
+            pubchem(x.cid), x.name ? ` ${x.name}` : '', h('span', { class: 'field-hint' }, ` — ${x.reason} `),
+            h('button', { class: 'btn btn-ghost btn-sm', type: 'button', onclick: () => setCid(x.cid) }, 'Use this CID'))))) : null)),
+      h('div', { class: 'row' },
+        field('Set a different CID', cidInput),
+        h('button', { class: 'btn btn-sm', type: 'button', onclick: () => {
+          const n = Number(cidInput.value);
+          if (!Number.isInteger(n) || n < 1) return toast('Enter a PubChem CID (a positive whole number).');
+          setCid(n);
+        } }, 'Set CID')),
+      h('p', { class: 'field-hint' }, 'Confirm (review bar) accepts the drawing and identifiers. After setting a CID, save, then run ',
+        h('code', null, lookupCmd), ' and ', h('code', null, 'npm run structures:render'), ' and reload; the entry comes back as probable for you to confirm.'));
+  };
+  render();
+  return box;
 }
 
 function metabolismSection(c: Compound): HTMLElement {
@@ -688,7 +734,7 @@ function compoundCard(node: { c: Compound; depth: number; via: string | null }, 
   card.append(
     ...SECTIONS.filter(([s]) => s !== 'relevance' || c.isMetabolite).map(([s, label, provKeys]) =>
       sectionDetails(c, label, provKeys, s === 'kinetics' || s === 'basics' || s === 'metabolism' || s === 'relevance',
-        s === 'metabolism' ? metabolismSection(c) : compoundSection(c, s, { sourceNotes: true, onChange: (sec) => touched(c, sec) }))),
+        s === 'metabolism' ? metabolismSection(c) : s === 'identity' ? identitySection(c) : compoundSection(c, s, { sourceNotes: true, onChange: (sec) => touched(c, sec) }))),
     sourceField(c),
     issuesBox(c.id),
     verifyToggle(c),
@@ -988,6 +1034,7 @@ function reviewBody(it: ReviewItem): HTMLElement {
   const { e, s } = it;
   if (!isCompound(e)) return productSectionBody(e, s as ProductSection);
   if (s === 'metabolism') return metabolismSection(e);
+  if (s === 'identity') return identitySection(e);
   return compoundSection(e, sectionNameFor[s]!, { sourceNotes: true, onChange: (sec) => touched(e, sec) });
 }
 

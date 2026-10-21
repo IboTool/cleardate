@@ -1,4 +1,4 @@
-// Shared validation for drugs.json (schema v2.1), custom drugs and editor entries.
+// Shared validation for drugs.json (schema v2.3), custom drugs and editor entries.
 // Used by tools/validate-drugs.ts (prebuild), the migrations, the app on load, the wizard and the editor.
 
 import {
@@ -7,7 +7,7 @@ import {
 } from './schema';
 import { planProductTree } from './tree';
 import {
-  CLINICAL_RELEVANCE, COMPOUND_SECTIONS, DOSE_BASES, DOSE_UNITS, FORMULATIONS, INHIBITION_TYPES, INHIBITOR_STRENGTHS, INPUT_TYPES,
+  CLINICAL_RELEVANCE, COMPOUND_SECTIONS, DOSE_BASES, DOSE_UNITS, FORMULATIONS, IDENTITY_CONFIDENCE, INHIBITION_TYPES, INHIBITOR_STRENGTHS, INPUT_TYPES,
   KINETIC_MODES, PHENOTYPES, PROVENANCE_TAGS, PRODUCT_SECTIONS, QT_TIERS, RANGE_TYPES, RECEPTOR_ACTIONS, TRI_STATES,
   type ClinicalRelevance, type Compound, type KineticMode, type Library, type Product, type Provenance,
 } from './types';
@@ -185,6 +185,36 @@ class Checker {
   }
 }
 
+const INCHIKEY_RE = /^[A-Z]{14}-[A-Z]{10}-[A-Z]$/;
+
+/** Schema 2.3 `identity`: null until looked up; a drawn structure needs CID, SMILES, InChIKey and formula. */
+function checkIdentity(c: Obj, k: Checker) {
+  const idn = c.identity;
+  if (idn === undefined) {
+    if (!c.userEntered) k.err('identity missing (use null — run npm run migrate-v2.3)');
+    return;
+  }
+  if (idn === null) return;
+  if (!isObj(idn)) return k.err('identity must be an object or null');
+  if (!oneOf(IDENTITY_CONFIDENCE, idn.confidence)) k.err(`identity.confidence "${String(idn.confidence)}" not one of ${IDENTITY_CONFIDENCE.join(', ')}`);
+  if (idn.pubchemCid !== null && !(Number.isInteger(idn.pubchemCid) && (idn.pubchemCid as number) > 0)) k.err('identity.pubchemCid must be a positive integer or null');
+  for (const f of ['smiles', 'inchiKey', 'formula'] as const)
+    if (idn[f] !== null && (typeof idn[f] !== 'string' || !(idn[f] as string).trim())) k.err(`identity.${f} must be a non-empty string or null`);
+  if (typeof idn.inchiKey === 'string' && !INCHIKEY_RE.test(idn.inchiKey)) k.err(`identity.inchiKey "${idn.inchiKey}" is not a standard InChIKey`);
+  if (typeof idn.note !== 'string') k.err('identity.note must be a string');
+  if (!Array.isArray(idn.candidates)) k.err('identity.candidates must be an array');
+  else if (idn.candidates.some((x) => !isObj(x) || !Number.isInteger(x.cid) || typeof x.name !== 'string' || typeof x.reason !== 'string'))
+    k.err('identity.candidates entries need cid (integer), name and reason');
+  const drawn = idn.confidence === 'confirmed' || idn.confidence === 'probable';
+  if (drawn && (idn.pubchemCid === null || idn.smiles === null || idn.inchiKey === null || idn.formula === null))
+    k.err(`identity: a ${String(idn.confidence)} identity needs pubchemCid, smiles, inchiKey and formula`);
+  if (idn.confidence === 'not-applicable') {
+    if (idn.smiles !== null) k.err('identity: a not-applicable identity has no smiles');
+    if (typeof idn.note === 'string' && !idn.note.trim()) k.err('identity: not-applicable needs the reason in note');
+  }
+  if (idn.confidence === 'unconfirmed' && idn.smiles !== null) k.warn('identity: unconfirmed identity has a SMILES — it is not drawn until confirmed');
+}
+
 function checkCompound(c: Obj, errors: Issue[], warnings: Issue[]) {
   const id = typeof c.id === 'string' ? c.id : '(missing id)';
   const k = new Checker(id, errors, warnings);
@@ -208,6 +238,7 @@ function checkCompound(c: Obj, errors: Issue[], warnings: Issue[]) {
     k.err(`clinicalRelevance "${String(c.clinicalRelevance)}" not one of ${CLINICAL_RELEVANCE.join(', ')}`);
   if (c.endogenous !== undefined && typeof c.endogenous !== 'boolean') k.err('endogenous must be true/false (or absent)');
   k.num(c.molecularWeight, 'molecularWeight', { min: 0, minExclusive: true });
+  checkIdentity(c, k);
 
   const kin = c.kinetics;
   if (!isObj(kin)) k.err('kinetics missing');
@@ -399,9 +430,10 @@ export function validateLibrary(lib: Partial<Library>, opts: ValidateOptions = {
     errors.push({
       id: '(file)',
       message: `schemaVersion must be ${SCHEMA_VERSION}` + (
-        version === undefined ? ' — this looks like a v1 file; run npm run migrate-v2, then npm run migrate-v2.1 and npm run migrate-v2.2'
-          : version === 2 ? ' — this is a v2 file; run npm run migrate-v2.1, then npm run migrate-v2.2'
-            : version === 2.1 ? ' — this is a v2.1 file; run npm run migrate-v2.2' : ''),
+        version === undefined ? ' — this looks like a v1 file; run npm run migrate-v2, then migrate-v2.1, migrate-v2.2 and migrate-v2.3'
+          : version === 2 ? ' — this is a v2 file; run npm run migrate-v2.1, then migrate-v2.2 and migrate-v2.3'
+            : version === 2.1 ? ' — this is a v2.1 file; run npm run migrate-v2.2, then migrate-v2.3'
+              : version === 2.2 ? ' — this is a v2.2 file; run npm run migrate-v2.3' : ''),
     });
   if ((lib as Obj).qtCalibrationNote !== undefined && typeof (lib as Obj).qtCalibrationNote !== 'string')
     errors.push({ id: '(file)', message: 'qtCalibrationNote must be a string' });
