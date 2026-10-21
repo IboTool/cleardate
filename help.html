@@ -454,7 +454,7 @@
 
           <section id="lingering">
             <h3>Lingering effects and receptor overlap</h3>
-            <p>Some drugs have effects that outlast the drug itself, such as receptor down-regulation or depleted transmitters. Where the library records how long these last, the <em>Lingering effects after clearance</em> track shows a fading band from the compound's clear date. Hover for the library's note.</p>
+            <p>Some drugs have effects that outlast the drug itself, such as receptor down-regulation or depleted transmitters. Where the library records how long these last, the <em>Lingering effects after clearance</em> track shows a fading band from the compound's clear date. Hover for the library's note. Every recorded note, with or without a duration, is listed in the drug's <a href="#library-view">Drug Library</a> entry.</p>
             <p>Below the chart, <strong>Receptor overlap at the ibogaine date</strong> lists receptors and transporters hit by compounds from two or more different products still present at the treatment date, with each compound's action.</p>
             <p>Both are qualitative reminders taken from the literature, not modelled effects.</p>
             <figure class="shot" data-img="warnings.webp">
@@ -668,6 +668,7 @@
           <ul>
             <li>Each drug has its own address (for example <code>#library/fluoxetine</code>), so you can bookmark or share an entry. The browser's back and forward buttons move between the entries you've opened.</li>
             <li>Keyboard: <kbd>/</kbd> jumps to the search box, <kbd>↑</kbd> <kbd>↓</kbd> move through the list, <kbd>Enter</kbd> opens a drug.</li>
+            <li>Select the <em>Drug Library</em> title at the top left at any time to go back to the library overview.</li>
             <li>On a narrow screen the list comes first; opening a drug replaces it, with <em>← All drugs</em> to go back.</li>
           </ul>
           <figure class="shot" data-img="library-overview.webp">
@@ -682,13 +683,14 @@
               <li>Live counts from the library.</li>
             </ol>
           </figure>
-          <p>A drug's entry shows, in order: its status; <strong>at a glance</strong>, the clear time after a single dose; its products; the kinetics of the drug and each metabolite; the metabolite tree; safety (CYP2D6, QT, lingering effects, nonlinear kinetics); receptors; and the sources. Unknown values are shown as <em>unknown</em> or <em>unassessed</em>, never left blank.</p>
+          <p>A drug's entry shows, in order: its status; <strong>at a glance</strong>, the clear time after a single dose; <strong>lingering effects</strong>, when there are any; its products; the kinetics of the drug and each metabolite; the metabolite tree; safety (CYP2D6, QT, lingering effects, nonlinear kinetics); receptors; and the sources. Unknown values are shown as <em>unknown</em> or <em>unassessed</em>, never left blank.</p>
           <figure class="shot" data-img="library-entry.webp">
-            <div class="shot-frame"><img src="help/img/library-entry.webp" alt="The top of the fluoxetine entry: its name and aliases, the Draft status, an at-a-glance sentence giving the typical clear time after a single dose with its range, product cards for the oral and weekly delayed-release products, and the fluoxetine half-life shown as a range bar." /></div>
+            <div class="shot-frame"><img src="help/img/library-entry.webp" alt="The top of the fluoxetine entry: its name and aliases, the Draft status, an at-a-glance sentence giving the typical clear time after a single dose with its range, a violet Lingering effects panel with fluoxetine's note and the caveat that lingering effects are not part of the clear date, product cards for the oral and weekly delayed-release products, and the fluoxetine half-life shown as a range bar." /></div>
             <figcaption>The top of a drug's entry.</figcaption>
             <ol class="callout-list">
               <li>Status: Verified (with its date), Verified — incomplete data, Draft, or No data yet.</li>
               <li>At a glance: the same simulation as the chart, for one dose of the main product in a normal CYP2D6 metaboliser, using your current clear threshold. Incomplete drugs say “not before” and name the compound without kinetics.</li>
+              <li>Lingering effects: effects that outlast the drug itself, such as the weeks needed to make new enzyme after an irreversible MAOI, protracted benzodiazepine withdrawal, or platelet recovery after clopidogrel. Each compound with a note is listed (a metabolite says which compound it is formed from), with its duration in days or “duration not quantified”. The panel appears only when the drug or one of its metabolites has such a note. These effects persist after the drug has cleared and are <em>not</em> part of the clear date; the chart's <a href="#lingering">lingering-effects band</a> shows them only where a duration is recorded.</li>
               <li>Each product: route, formulation, input model and typical dose. “Not set” or “not applied” means the library has no value.</li>
               <li>Half-life range: the band runs from the fastest to the slowest value, the gold tick is the typical value, and the label says how the range was derived. A striped band is an assumed spread around a single published value.</li>
             </ol>

@@ -15,6 +15,7 @@ import {
   atAGlance, buildLibraryModel, entryStatus, filterEntries, hoursText, sectionSources, treeLayout,
   type DrugEntry, type Entry, type LibraryModel, type ListQuery, type MetaboliteEntry, type StatusFilter,
 } from './data';
+import { lingeringItems, lingeringPanel } from './lingering';
 import { libraryHash, parseLibraryHash } from './route';
 import { extractCitations, PROVENANCE_LABEL } from './sources';
 import { dataStatement, libraryStats, verifiedCountText, type DrugStatus } from './status';
@@ -94,7 +95,7 @@ export function createLibraryView(ctx: LibraryCtx): LibraryView {
   const titleId = 'lib-title';
   const panel = h('div', { class: 'lib glass', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': titleId },
     h('header', { class: 'lib-head' },
-      h('h2', { id: titleId }, 'Drug Library'),
+      h('h2', { id: titleId }, h('a', { href: libraryHash(null), class: 'lib-home', title: 'Back to the library overview' }, 'Drug Library')),
       h('span', { class: 'lib-sub' }, 'Read-only reference. Nothing here changes your patient’s data.'),
       h('span', { class: 'spacer' }),
       closeBtn),
@@ -469,6 +470,7 @@ export function createLibraryView(ctx: LibraryCtx): LibraryView {
         g.notes.length ? h('p', { class: 'lib-muted lib-small' }, g.notes.join(' ')) : null,
         g.assumptions.length ? h('details', { class: 'lib-assume' }, h('summary', null, `Assumptions (${g.assumptions.length})`), h('ul', null, g.assumptions.map((a) => h('li', null, a)))) : null,
         h('p', { class: 'lib-muted lib-small' }, `Simulated with the app’s own model: one dose of ${d.primary.name}, normal metaboliser, your current settings.`)),
+      lingeringPanel(lingeringItems(idx, compounds), parentId),
       section('Products', h('div', { class: 'lib-cards' }, d.products.map((p) => productCard(p, d)))),
       section('Kinetics', compounds.map((c) => kineticsBlock(c, d.roots.includes(c.id)))),
       section('Metabolites', tree.nodes.length > 1 ? [treeSvg(d.roots, parentId), h('p', { class: 'lib-muted lib-small' }, 'Select a compound to open its entry. Only active (and unknown) compounds count toward the clear date.')] : h('p', { class: 'lib-muted' }, 'No metabolites in the library.')),
@@ -527,6 +529,7 @@ export function createLibraryView(ctx: LibraryCtx): LibraryView {
         h('p', { class: 'lib-muted lib-small' }, c.clinicalRelevance === 'inactive'
           ? 'Classed inactive: plotted faintly if enabled, never counted toward the clear date.'
           : 'Counts toward the clear date of the drugs it is part of.')),
+      lingeringPanel(lingeringItems(idx, [c]), c.id),
       section('Kinetics', kineticsBlock(c, true)),
       hasChildren ? section('Metabolites', treeSvg([c.id], c.id)) : null,
       section('Safety', safetyBlock(c, true)),
