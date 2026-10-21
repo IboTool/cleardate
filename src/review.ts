@@ -2,7 +2,7 @@
 // entry in place; the editor wires them to buttons and keyboard shortcuts.
 
 import {
-  CONFIRMED_UNKNOWN_NOTE, FLAG_PREFIX, NA_NOTE, compoundSections, hasTypical, isConfirmedUnknown, isReviewed, productSections, unreviewedSections,
+  CONFIRMED_UNKNOWN_NOTE, FLAG_PREFIX, NA_NOTE, compoundSections, emptyStrengthEvidence, hasTypical, isConfirmedUnknown, isReviewed, productSections, unreviewedSections,
 } from './schema';
 import type { Compound, CompoundSection, Product, ProductSection } from './types';
 import type { Issue } from './validate';
@@ -164,10 +164,10 @@ export const NA_SECTIONS: readonly Section[] = ['cyp2d6', 'qt', 'receptors', 'li
 export function markNotApplicable(e: Entry, s: Section, date: string): string | null {
   if (!NA_SECTIONS.includes(s)) return `${SECTION_LABEL[s]} can't be marked not applicable.`;
   if (isCompound(e)) {
-    if (s === 'cyp2d6') e.cyp2d6 = { substrate: 'no', halfLifeMultiplier: null, inhibitor: 'none', inhibitionType: 'none' };
+    if (s === 'cyp2d6') e.cyp2d6 = { substrate: 'no', halfLifeMultiplier: null, inhibitor: 'none', inhibitionType: 'none', strengthEvidence: emptyStrengthEvidence() };
     else if (s === 'qt') e.qt = { tier: 'none', weight: null, referenceAmountMg: null };
     else if (s === 'receptors') { e.receptors = []; e.receptorsAssessed = true; }
-    else if (s === 'lingeringEffects') e.lingeringEffects = { durationDays: null, note: '' };
+    else if (s === 'lingeringEffects') e.lingeringEffects = { durationDays: null, origin: 'clearance', note: '' };
     else if (s === 'nonlinearKinetics') e.nonlinearKinetics = { flag: 'no', note: '' };
     else return `${SECTION_LABEL[s]} is not a compound section.`;
   } else {

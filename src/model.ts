@@ -6,12 +6,12 @@
 // A shared metabolite formed from two products appears once per product, in that product's colour.
 
 import { clearFraction, clearTime, expandRegimen, intervalsAbove, simulate, valueAt, type SimCompound, type SimInfusion, type SimRelease } from './pk';
-import { dosedCompoundIds, effectiveRelevance, hasIntrinsicKinetics, isNotModelled, isReviewed, primaryCompound, rangeBounds, type Bounds } from './schema';
+import { dosedCompoundIds, effectiveRelevance, hasIntrinsicKinetics, isNotModelled, isReviewed, primaryCompound, rangeBounds, strengthLabel, type Bounds } from './schema';
 import { fmtDateTime, fmtEvery } from './format';
 import { planProductTree } from './tree';
 import { findCycle } from './validate';
 import type {
-  Compound, CustomDrugs, DoseEntry, DoseUnit, IbogaineDose, IbogaineDoseKind, IbogaineTreatment, InhibitorStrength, Library, Phenotype,
+  Compound, CustomDrugs, DoseEntry, DoseUnit, IbogaineDose, IbogaineDoseKind, IbogaineTreatment, InhibitorStrength, Library, LingeringOrigin, Phenotype,
   PatientPhenotype, PhenotypeMap, Product, QtTier, Session, Settings,
 } from './types';
 
@@ -352,6 +352,8 @@ export interface CypInterval {
   strength: Exclude<InhibitorStrength, 'none' | 'unassessed'>;
   /** Inhibition documented (inhibitionType set) but strength unassessed. */
   strengthUnassessed: boolean;
+  /** Strength as shown: "predicted moderate" for model-derived tiers (schema 2.4 strength basis). */
+  label: string;
   tail: boolean;
   compound: string;
   productKey: string;
@@ -382,6 +384,9 @@ export interface LingeringBand {
   compound: string;
   productKey: string;
   note: string;
+  /** What the recorded duration counts from; the band itself always starts at clearance (or exposure end). */
+  origin: LingeringOrigin;
+  days: number;
 }
 
 export interface ReceptorOverlap {
@@ -1042,7 +1047,8 @@ export function computeScenario(idx: LibraryIndex, session: Session, now: number
       // Unassessed strength counts only when the inhibition itself is documented; then it is at least weak.
       if (strengthUnassessed && inhibitionType !== 'reversible' && inhibitionType !== 'mechanism-based') continue;
       const strength = strengthUnassessed ? 'weak' : inhibitor;
-      const base = { strength, strengthUnassessed, compound: c.compound.name, productKey: r.key } as const;
+      const label = strengthUnassessed ? 'weak' : strengthLabel(c.compound.cyp2d6);
+      const base = { strength, strengthUnassessed, label, compound: c.compound.name, productKey: r.key } as const;
       for (const [a, b] of intervalsAbove(c.runs.typical.times, c.runs.typical.amounts, c.threshold)) {
         cyp.push({ ...base, start: a, end: b, tail: false });
         if (inhibitionType === 'mechanism-based') cyp.push({ ...base, start: b, end: b + recoveryTail, tail: true });
@@ -1097,7 +1103,10 @@ export function computeScenario(idx: LibraryIndex, session: Session, now: number
   const notQuantified = pmUnquantified.length ? `the increase is ${pmNotQuantified(pmUnquantified)}` : '';
   if (cypAtTreatment.inhibited) {
     const who = [
-      by.length ? `Inhibited by: ${by.join(', ')}.` : '',
+      by.length ? `Inhibited by: ${by.map((n) => {
+        const label = atTreatment.find((i) => i.compound === n && !i.strengthUnassessed)!.label;
+        return label.startsWith('predicted') ? `${n} (${label})` : n;
+      }).join(', ')}.` : '',
       byUnassessedStrength.length ? `Inhibition documented, strength unassessed — treated as at least weak: ${byUnassessedStrength.join(', ')}.` : '',
     ].filter(Boolean).join(' ');
     warnings.unshift({
@@ -1112,20 +1121,27 @@ export function computeScenario(idx: LibraryIndex, session: Session, now: number
 
   const qt = computeQt(products, axisStart, Math.max(axisEnd, ...products.map((p) => p.clearAtMax ?? axisEnd)));
 
-  // Lingering effects after clearance.
+  // Lingering effects after clearance. A "last-dose" duration (label washout) counts from the product's last
+  // exposure, so the band runs from clearance to that end and is dropped when the washout ends first.
   const lingering: LingeringBand[] = [];
   for (const r of products) {
+    const lastExposure = Math.max(...r.doses.map((d) => d.end ?? d.time));
     for (const c of r.curves) {
       const le = c.compound.lingeringEffects;
-      if (le.durationDays && le.durationDays > 0 && c.clearAt !== null)
-        lingering.push({ start: c.clearAt, end: c.clearAt + le.durationDays * DAY, compound: c.compound.name, productKey: r.key, note: le.note });
+      const days = le.durationDays;
+      if (!days || days <= 0 || c.clearAt === null) continue;
+      const base = { compound: c.compound.name, productKey: r.key, note: le.note, days };
+      if (le.origin === 'last-dose') {
+        const end = lastExposure + days * DAY;
+        if (end > c.clearAt) lingering.push({ ...base, start: c.clearAt, end, origin: 'last-dose' });
+      } else lingering.push({ ...base, start: c.clearAt, end: c.clearAt + days * DAY, origin: 'clearance' });
     }
     // Not modelled: the lingering band starts at the end of each exposure (v2.2 §3).
     const c = r.status === 'not-modelled' ? idx.compounds.get(primaryCompound(r.product)) : undefined;
     const days = c?.lingeringEffects.durationDays;
     if (c && days && days > 0)
       for (const [start, end] of mergeIntervals(r.doses.map((d) => [d.end ?? d.time, (d.end ?? d.time) + days * DAY])))
-        lingering.push({ start, end, compound: c.name, productKey: r.key, note: c.lingeringEffects.note });
+        lingering.push({ start, end, compound: c.name, productKey: r.key, note: c.lingeringEffects.note, origin: 'last-dose', days });
   }
 
   // Receptor overlap at the ibogaine date: targets hit by compounds from ≥ 2 different products.

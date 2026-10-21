@@ -384,7 +384,7 @@ describe('CYP2D6: inhibitors of unassessed strength', () => {
   });
 
   it('rank below an assessed weak inhibitor in the tooltip', () => {
-    const base = { start: 0, end: 10, tail: false, productKey: 'p' };
+    const base = { start: 0, end: 10, tail: false, productKey: 'p', label: 'weak' };
     const pick = strongestAt([
       { ...base, strength: 'weak', strengthUnassessed: true, compound: 'U' },
       { ...base, strength: 'weak', strengthUnassessed: false, compound: 'W' },

@@ -15,7 +15,8 @@ import {
   atAGlance, buildLibraryModel, entryStatus, filterEntries, hoursText, sectionSources, treeLayout,
   type DrugEntry, type Entry, type LibraryModel, type ListQuery, type MetaboliteEntry, type StatusFilter,
 } from './data';
-import { lingeringItems, lingeringPanel } from './lingering';
+import { inhibitorText, strengthBasisNode } from './cyp';
+import { lingeringDurationText, lingeringItems, lingeringPanel } from './lingering';
 import { libraryHash, parseLibraryHash } from './route';
 import { structureFigure } from './structure';
 import { extractCitations, PROVENANCE_LABEL } from './sources';
@@ -379,18 +380,17 @@ export function createLibraryView(ctx: LibraryCtx): LibraryView {
     const mult = x.halfLifeMultiplier
       ? Object.entries(x.halfLifeMultiplier).filter(([, v]) => typeof v === 'number').map(([k, v]) => `${k} ×${v}`).join(', ')
       : '';
-    const documented = x.inhibitionType === 'reversible' || x.inhibitionType === 'mechanism-based';
-    const inhib = x.inhibitor === 'none' ? 'no'
-      : x.inhibitor === 'unassessed' ? (documented ? `inhibition documented (${x.inhibitionType}), strength unassessed — treated as at least weak` : 'unassessed')
-      : `${x.inhibitor}${documented ? ` (${x.inhibitionType})` : ''}`;
+    const basis = strengthBasisNode(x);
     const tier = c.qt.tier;
+    const le = c.lingeringEffects;
     return h('div', { class: 'lib-card' },
       h('div', { class: 'lib-card-head' }, isSelf ? h('strong', null, c.name) : link(c.id, c.name)),
       kv('CYP2D6 substrate', `${TRI(x.substrate)}${mult ? ` · half-life ${mult}` : ''}`),
-      kv('CYP2D6 inhibitor', inhib),
+      kv('CYP2D6 inhibitor', inhibitorText(x)),
+      basis ? kv('Strength basis', basis) : null,
       kv('QT', h('span', { class: 'lib-qt', style: `--c:${QT_COLORS[tier]}` }, tier === 'unassessed' ? 'unassessed' : tier === 'none' ? 'no known risk' : `${tier} risk`)),
-      kv('Lingering effects', c.lingeringEffects.durationDays !== null || c.lingeringEffects.note
-        ? `${c.lingeringEffects.durationDays !== null ? `~${c.lingeringEffects.durationDays} days after clearance. ` : 'Duration unknown. '}${c.lingeringEffects.note}`
+      kv('Lingering effects', le.durationDays !== null || le.note
+        ? `${le.durationDays !== null ? `${lingeringDurationText(le.durationDays, le.origin)}. ` : 'Duration unknown. '}${le.note}`
         : muted('none recorded')),
       kv('Nonlinear kinetics', `${TRI(c.nonlinearKinetics.flag)}${c.nonlinearKinetics.note ? ` — ${c.nonlinearKinetics.note}` : ''}`));
   }

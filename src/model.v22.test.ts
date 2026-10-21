@@ -140,7 +140,7 @@ describe('not-modelled exposures (§3)', () => {
 
   it('keeps the exposure interval and draws the lingering band after it', () => {
     expect(r.doses).toEqual([{ time: T0, amount: 1, unit: 'session', end: T0 + 2 * HOUR }]);
-    expect(scn.lingering).toEqual([{ start: T0 + 2 * HOUR, end: T0 + 2 * HOUR + 7 * DAY, compound: 'Nitrous_oxide', productKey: 'nitrous_oxide_inhaled', note: 'B12 inactivation' }]);
+    expect(scn.lingering).toEqual([{ start: T0 + 2 * HOUR, end: T0 + 2 * HOUR + 7 * DAY, compound: 'Nitrous_oxide', productKey: 'nitrous_oxide_inhaled', note: 'B12 inactivation', origin: 'last-dose', days: 7 }]);
     expect(scn.warnings.some((w) => w.text.startsWith('Nitrous oxide: not modelled'))).toBe(true);
   });
 

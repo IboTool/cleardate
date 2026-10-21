@@ -6,6 +6,7 @@ import '../../src/styles.css';
 import './editor.css';
 import {
   compoundHasData, emptyCompound, emptyProduct, emptyRange, formatRange, isConfirmedUnknown, isDraft, isFlagged, isReviewed, NA_NOTE, SCHEMA_VERSION, slug,
+  strengthEvidenceText, strengthLabel,
 } from '../../src/schema';
 import {
   confirmSection, flagSection, isCompound, markNotApplicable, markReviewed, NA_SECTIONS, nextIncomplete, SECTION_LABEL, sectionIssues, sectionsOf,
@@ -1059,7 +1060,8 @@ function reviewContext(it: ReviewItem): (Node | null)[] {
   if (s === 'qt' || s === 'cyp2d6')
     out.push(
       h('div', null, h('b', null, 'Half-life: '), hl(e), e.molecularWeight ? ` · MW ${e.molecularWeight}` : ''),
-      h('div', null, h('b', null, 'CYP2D6: '), `substrate ${e.cyp2d6.substrate}, inhibitor ${e.cyp2d6.inhibitor}`),
+      h('div', null, h('b', null, 'CYP2D6: '), `substrate ${e.cyp2d6.substrate}, inhibitor ${strengthLabel(e.cyp2d6)}`,
+        strengthEvidenceText(e.cyp2d6.strengthEvidence) ? ` (${strengthEvidenceText(e.cyp2d6.strengthEvidence)})` : ''),
       e.receptors.length ? h('div', null, h('b', null, 'Receptors: '), e.receptors.map((r) => `${r.target} (${r.action})`).join(', ')) : null);
   return out;
 }

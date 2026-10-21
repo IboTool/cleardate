@@ -47,7 +47,7 @@ describe('review logic', () => {
   it('N/A sets the empty value, reviewer provenance and the N/A note', () => {
     const c = emptyCompound('a', 'A');
     expect(markNotApplicable(c, 'lingeringEffects', D)).toBeNull();
-    expect(c.lingeringEffects).toEqual({ durationDays: null, note: '' });
+    expect(c.lingeringEffects).toEqual({ durationDays: null, origin: 'clearance', note: '' });
     expect(c.sourceNotes.lingeringEffects).toBe('N/A — reviewer');
     expect(isReviewed(c, 'lingeringEffects')).toBe(true);
     expect(markNotApplicable(c, 'halfLife', D)).toMatch(/can't be marked/);

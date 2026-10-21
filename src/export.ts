@@ -7,7 +7,7 @@ import { ageFrom, fmtDate, fmtDateTime, fmtDoseAmount, fmtEvery } from './format
 import { clearStatusText, combinationText, describeIbogaineDose, expandDose, HOUR, IBOGAINE_KIND_LABEL, isRateUnit, isSessionUnit, parseLocal, type LibraryIndex, type ProductResult, type Scenario } from './model';
 import { libraryStats, verifiedCountText } from './library/status';
 import { isDraft } from './schema';
-import type { Session } from './types';
+import type { Session, Settings } from './types';
 import { drugIdOf, verifiedDrugs } from './validate';
 
 export const DISCLAIMER =
@@ -96,7 +96,7 @@ function clearRows(scn: Scenario, session: Session): string[][] {
 const verifiedEntry = (r: ProductResult) => r.product.verified && !r.product.userEntered && r.curves.every((c) => c.compound.verified);
 
 /** Per-product "Assumptions and missing data" lines. */
-export function assumptionLines(scn: Scenario): { product: string; lines: string[] }[] {
+export function assumptionLines(scn: Scenario, s?: Settings): { product: string; lines: string[] }[] {
   const out: { product: string; lines: string[] }[] = [];
   for (const r of scn.products) {
     const lines: string[] = [];
@@ -114,6 +114,8 @@ export function assumptionLines(scn: Scenario): { product: string; lines: string
     if (r.unassessed.qt.length) lines.push(`QT liability unassessed: ${r.unassessed.qt.join(', ')}.`);
     if (r.unassessed.cyp2d6.length) lines.push(`CYP2D6 inhibition unassessed: ${r.unassessed.cyp2d6.join(', ')}.`);
     if (r.unassessed.receptors.length) lines.push(`Receptor targets unassessed: ${r.unassessed.receptors.join(', ')}.`);
+    for (const b of scn.lingering.filter((x) => x.productKey === r.key && x.origin === 'last-dose' && r.status !== 'not-modelled'))
+      lines.push(`Lingering effect of ${b.compound}: ${b.days} days after the last dose (label washout)${s ? `, until ${fmtDateTime(b.end, s)}` : ''}; not part of the clear date.`);
     if (lines.length) out.push({ product: r.name, lines });
   }
   return out;
@@ -226,7 +228,7 @@ export async function exportPdf(scn: Scenario, session: Session, idx: LibraryInd
   doc.text('Assumptions and missing data', M, y);
   y += 14;
   doc.setFontSize(8.5);
-  const groups = assumptionLines(scn);
+  const groups = assumptionLines(scn, s);
   if (!groups.length) {
     doc.setFont('helvetica', 'normal');
     doc.text('None — every value used came from the library without assumptions.', M, y);
