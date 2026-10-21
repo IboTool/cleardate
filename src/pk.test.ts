@@ -314,7 +314,7 @@ describe('validation', () => {
       ...l.compounds[0],
       clinicalRelevance: 'inactive',
       kinetics: { ...intrinsic(15), earlyPhase: { fraction: null, halfLifeHours: { typical: 2, min: null, max: null, rangeType: 'single-value', cv: null } }, steadyState: { afterDays: null, halfLifeHours: { typical: 22, min: null, max: null, rangeType: 'single-value', cv: null } } },
-      cyp2d6: { substrate: 'yes', halfLifeMultiplier: null, inhibitor: 'none', inhibitionType: 'none' },
+      cyp2d6: { ...l.compounds[0].cyp2d6, substrate: 'yes', inhibitor: 'none', inhibitionType: 'none' },
       sourceNotes: { cyp2d6: '[checked] CPIC substrate. Inhibition not assessed.' },
     };
     const r = validateLibrary(l);
@@ -380,17 +380,42 @@ describe('validation', () => {
     expect(productSections({ components: [{ ...plain.components[0], administeredAs: 'b' }] })).toContain('conversion');
   });
 
-  it('requires schemaVersion 2.3 and points older files at the right migration', () => {
+  it('requires schemaVersion 2.4 and points older files at the right migration', () => {
     const l = lib() as unknown as Record<string, unknown>;
     const msg = () => validateLibrary(l as never).errors.map((e) => e.message).join('\n');
     delete l.schemaVersion;
-    expect(msg()).toMatch(/v1 file; run npm run migrate-v2, then migrate-v2\.1, migrate-v2\.2 and migrate-v2\.3/);
+    expect(msg()).toMatch(/v1 file; run npm run migrate-v2, then migrate-v2\.1, migrate-v2\.2, migrate-v2\.3 and migrate-v2\.4/);
     l.schemaVersion = 2;
-    expect(msg()).toMatch(/v2 file; run npm run migrate-v2\.1, then migrate-v2\.2 and migrate-v2\.3/);
+    expect(msg()).toMatch(/v2 file; run npm run migrate-v2\.1, then migrate-v2\.2, migrate-v2\.3 and migrate-v2\.4/);
     l.schemaVersion = 2.1;
-    expect(msg()).toMatch(/v2\.1 file; run npm run migrate-v2\.2, then migrate-v2\.3/);
+    expect(msg()).toMatch(/v2\.1 file; run npm run migrate-v2\.2, then migrate-v2\.3 and migrate-v2\.4/);
     l.schemaVersion = 2.2;
-    expect(msg()).toMatch(/v2\.2 file; run npm run migrate-v2\.3/);
+    expect(msg()).toMatch(/v2\.2 file; run npm run migrate-v2\.3, then migrate-v2\.4/);
+    l.schemaVersion = 2.3;
+    expect(msg()).toMatch(/v2\.3 file; run npm run migrate-v2\.4/);
+  });
+
+  it('checks the 2.4 strength evidence and lingering origin', () => {
+    const l = lib();
+    const [a, b, c] = l.compounds;
+    a.cyp2d6 = { ...a.cyp2d6, inhibitor: 'moderate', inhibitionType: 'reversible', strengthEvidence: { basis: 'clinical-aucr', probe: 'desipramine', regimen: '20 mg/day', aucRatio: 1.82, citation: null } };
+    b.cyp2d6 = { ...b.cyp2d6, inhibitor: 'strong', inhibitionType: 'reversible' };
+    c.lingeringEffects = { durationDays: null, origin: 'last-dose', note: 'washout' };
+    let r = validateLibrary(l);
+    expect(r.errors).toEqual([]);
+    const w = r.warnings.map((x) => `${x.id}: ${x.message}`).join('\n');
+    expect(w).toMatch(/a: cyp2d6\.inhibitor is moderate but its AUC ratio 1\.82 maps to weak/);
+    expect(w).toMatch(/b: cyp2d6\.inhibitor is strong but no strength basis is recorded/);
+    expect(w).toMatch(/c: lingeringEffects\.origin is "last-dose" but no duration is set/);
+
+    a.cyp2d6.strengthEvidence!.aucRatio = 0;
+    (b.cyp2d6 as Record<string, unknown>).strengthEvidence = undefined;
+    (c.lingeringEffects as Record<string, unknown>).origin = 'first-dose';
+    r = validateLibrary(l);
+    const e = r.errors.map((x) => `${x.id}: ${x.message}`).join('\n');
+    expect(e).toMatch(/a: cyp2d6\.strengthEvidence\.aucRatio/);
+    expect(e).toMatch(/b: cyp2d6\.strengthEvidence missing \(run npm run migrate-v2\.4\)/);
+    expect(e).toMatch(/c: lingeringEffects\.origin "first-dose" not one of clearance, last-dose/);
   });
 
   it('checks the 2.3 identity field', () => {

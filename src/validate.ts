@@ -1,14 +1,14 @@
-// Shared validation for drugs.json (schema v2.3), custom drugs and editor entries.
+// Shared validation for drugs.json (schema v2.4), custom drugs and editor entries.
 // Used by tools/validate-drugs.ts (prebuild), the migrations, the app on load, the wizard and the editor.
 
 import {
-  compoundHasData, compoundSections, dosedCompoundIds, effectiveRelevance, hasIntrinsicKinetics, INHIBITOR_NOT_ASSESSED_RE,
+  aucrTier, compoundHasData, compoundSections, dosedCompoundIds, effectiveRelevance, hasIntrinsicKinetics, INHIBITOR_NOT_ASSESSED_RE,
   isConfirmedUnknown, isFlagged, isReviewed, primaryCompound, productSections, SCHEMA_VERSION, unreviewedSections,
 } from './schema';
 import { planProductTree } from './tree';
 import {
   CLINICAL_RELEVANCE, COMPOUND_SECTIONS, DOSE_BASES, DOSE_UNITS, FORMULATIONS, IDENTITY_CONFIDENCE, INHIBITION_TYPES, INHIBITOR_STRENGTHS, INPUT_TYPES,
-  KINETIC_MODES, PHENOTYPES, PROVENANCE_TAGS, PRODUCT_SECTIONS, QT_TIERS, RANGE_TYPES, RECEPTOR_ACTIONS, TRI_STATES,
+  KINETIC_MODES, LINGERING_ORIGINS, PHENOTYPES, PROVENANCE_TAGS, PRODUCT_SECTIONS, QT_TIERS, RANGE_TYPES, RECEPTOR_ACTIONS, STRENGTH_BASES, TRI_STATES,
   type ClinicalRelevance, type Compound, type KineticMode, type Library, type Product, type Provenance,
 } from './types';
 
@@ -187,6 +187,25 @@ class Checker {
 
 const INCHIKEY_RE = /^[A-Z]{14}-[A-Z]{10}-[A-Z]$/;
 
+/** Schema 2.4 `cyp2d6.strengthEvidence`: what a weak / moderate / strong tier rests on. */
+function checkStrengthEvidence(c: Obj, cyp: Obj, known: boolean, k: Checker) {
+  const ev = cyp.strengthEvidence;
+  if (ev === undefined) {
+    if (!c.userEntered) k.err('cyp2d6.strengthEvidence missing (run npm run migrate-v2.4)');
+    return;
+  }
+  if (!isObj(ev)) return k.err('cyp2d6.strengthEvidence must be an object');
+  if (ev.basis !== null && !oneOf(STRENGTH_BASES, ev.basis)) k.err(`cyp2d6.strengthEvidence.basis "${String(ev.basis)}" not one of ${STRENGTH_BASES.join(', ')}`);
+  for (const f of ['probe', 'regimen', 'citation'] as const)
+    if (ev[f] !== null && typeof ev[f] !== 'string') k.err(`cyp2d6.strengthEvidence.${f} must be text or null`);
+  k.num(ev.aucRatio, 'cyp2d6.strengthEvidence.aucRatio', { min: 0, minExclusive: true });
+  if (known && !ev.basis) k.warn(`cyp2d6.inhibitor is ${String(cyp.inhibitor)} but no strength basis is recorded`);
+  if (known && (ev.basis === 'clinical-aucr' || ev.basis === 'model-estimate') && typeof ev.aucRatio === 'number' && ev.aucRatio > 0) {
+    const tier = aucrTier(ev.aucRatio);
+    if (tier !== cyp.inhibitor) k.warn(`cyp2d6.inhibitor is ${String(cyp.inhibitor)} but its AUC ratio ${ev.aucRatio} maps to ${tier}`);
+  }
+}
+
 /** Schema 2.3 `identity`: null until looked up; a drawn structure needs CID, SMILES, InChIKey and formula. */
 function checkIdentity(c: Obj, k: Checker) {
   const idn = c.identity;
@@ -299,6 +318,7 @@ function checkCompound(c: Obj, errors: Issue[], warnings: Issue[]) {
     const note = isObj(c.sourceNotes) && typeof c.sourceNotes.cyp2d6 === 'string' ? c.sourceNotes.cyp2d6 : '';
     if (cyp.inhibitor === 'none' && INHIBITOR_NOT_ASSESSED_RE.test(note))
       k.warn('cyp2d6.inhibitor is "none" but the cyp2d6 note says inhibition was not assessed — should it be "unassessed"?');
+    checkStrengthEvidence(c, cyp, strong, k);
   }
   const qt = c.qt;
   if (!isObj(qt)) k.err('qt missing');
@@ -316,8 +336,15 @@ function checkCompound(c: Obj, errors: Issue[], warnings: Issue[]) {
   if (typeof c.receptorsAssessed !== 'boolean') k.err('receptorsAssessed must be true/false');
   else if (!c.receptorsAssessed && Array.isArray(c.receptors) && c.receptors.length) k.warn('receptors are listed but receptorsAssessed is false');
   const le = c.lingeringEffects;
-  if (!isObj(le) || typeof le.note !== 'string') k.err('lingeringEffects needs durationDays and note');
-  else k.num(le.durationDays, 'lingeringEffects.durationDays', { min: 0, minExclusive: true });
+  if (!isObj(le) || typeof le.note !== 'string') k.err('lingeringEffects needs durationDays, origin and note');
+  else {
+    k.num(le.durationDays, 'lingeringEffects.durationDays', { min: 0, minExclusive: true });
+    if (le.origin === undefined) {
+      if (!c.userEntered) k.err('lingeringEffects.origin missing (run npm run migrate-v2.4)');
+    } else if (!oneOf(LINGERING_ORIGINS, le.origin)) k.err(`lingeringEffects.origin "${String(le.origin)}" not one of ${LINGERING_ORIGINS.join(', ')}`);
+    else if (le.origin === 'last-dose' && le.durationDays == null)
+      k.warn('lingeringEffects.origin is "last-dose" but no duration is set');
+  }
   const nl = c.nonlinearKinetics;
   if (!isObj(nl) || !oneOf(TRI_STATES, nl.flag) || typeof nl.note !== 'string') k.err(`nonlinearKinetics needs flag (${TRI_STATES.join('/')}) and note`);
   k.provenance(c.provenance, COMPOUND_SECTIONS);
@@ -430,10 +457,11 @@ export function validateLibrary(lib: Partial<Library>, opts: ValidateOptions = {
     errors.push({
       id: '(file)',
       message: `schemaVersion must be ${SCHEMA_VERSION}` + (
-        version === undefined ? ' — this looks like a v1 file; run npm run migrate-v2, then migrate-v2.1, migrate-v2.2 and migrate-v2.3'
-          : version === 2 ? ' — this is a v2 file; run npm run migrate-v2.1, then migrate-v2.2 and migrate-v2.3'
-            : version === 2.1 ? ' — this is a v2.1 file; run npm run migrate-v2.2, then migrate-v2.3'
-              : version === 2.2 ? ' — this is a v2.2 file; run npm run migrate-v2.3' : ''),
+        version === undefined ? ' — this looks like a v1 file; run npm run migrate-v2, then migrate-v2.1, migrate-v2.2, migrate-v2.3 and migrate-v2.4'
+          : version === 2 ? ' — this is a v2 file; run npm run migrate-v2.1, then migrate-v2.2, migrate-v2.3 and migrate-v2.4'
+            : version === 2.1 ? ' — this is a v2.1 file; run npm run migrate-v2.2, then migrate-v2.3 and migrate-v2.4'
+              : version === 2.2 ? ' — this is a v2.2 file; run npm run migrate-v2.3, then migrate-v2.4'
+                : version === 2.3 ? ' — this is a v2.3 file; run npm run migrate-v2.4' : ''),
     });
   if ((lib as Obj).qtCalibrationNote !== undefined && typeof (lib as Obj).qtCalibrationNote !== 'string')
     errors.push({ id: '(file)', message: 'qtCalibrationNote must be a string' });

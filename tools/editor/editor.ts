@@ -1337,12 +1337,13 @@ async function boot() {
   const body = await res.json();
   const version = body.library?.schemaVersion;
   if (version !== SCHEMA_VERSION) {
-    const v2 = version === 2;
+    const steps = [['migrate-v2', undefined], ['migrate-v2.1', 2], ['migrate-v2.2', 2.1], ['migrate-v2.3', 2.2], ['migrate-v2.4', 2.3]] as const;
+    const from = steps.findIndex(([, v]) => v === version);
+    const todo = steps.slice(from < 0 ? 0 : from).map(([cmd]) => h('code', null, `npm run ${cmd}`));
     main.replaceChildren(h('div', { class: 'ed-empty glass' },
       h('h2', null, `drugs.json is in an older format (schema ${version ?? 1})`),
-      h('p', null, 'Stop the editor and run ',
-        ...(v2 ? [h('code', null, 'npm run migrate-v2.1')] : [h('code', null, 'npm run migrate-v2'), ', then ', h('code', null, 'npm run migrate-v2.1')]),
-        '. Each step backs up the file to backups/ and writes a report in docs/. Then start the editor again.')));
+      h('p', null, 'Stop the editor and run ', ...todo.flatMap((c, i) => (i ? [', then ', c] : [c])),
+        '. Each step backs up the file to backups/. Then start the editor again.')));
     renderTop();
     return;
   }

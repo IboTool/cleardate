@@ -14,7 +14,7 @@
 import { appendFileSync, existsSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { serializeLibrary } from '../../src/schema';
+import { SCHEMA_VERSION, serializeLibrary } from '../../src/schema';
 import type { Compound, Identity, IdentityConfidence, Library } from '../../src/types';
 import { validateLibrary } from '../../src/validate';
 import { capStereoSiblings, isAbbreviation, matchIdentity, nameVariants, normName, type MatchResult, type NameHit, type PubchemRecord } from './match';
@@ -149,7 +149,7 @@ function todo(rows: Row[]): string {
 async function main() {
   const raw = readFileSync(DRUGS, 'utf8');
   const lib = JSON.parse(raw) as Library;
-  if (lib.schemaVersion !== 2.3) throw new Error(`expected schemaVersion 2.3, found ${lib.schemaVersion} (run npm run migrate-v2.3 first)`);
+  if (lib.schemaVersion !== SCHEMA_VERSION) throw new Error(`expected schemaVersion ${SCHEMA_VERSION}, found ${lib.schemaVersion} (run the migrations first)`);
   const byId = new Map(lib.compounds.map((c) => [c.id, c]));
   const unknown = ids.filter((id) => !byId.has(id));
   if (unknown.length) throw new Error(`no compound with id ${unknown.join(', ')}`);

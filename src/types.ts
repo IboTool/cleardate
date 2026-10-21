@@ -1,5 +1,6 @@
-// Schema v2.3 for public/drugs.json and for the in-browser session (docs/ClearDate_Spec_v2.md, the
-// v2.1 / v2.2 deltas, and the structures addendum docs/ClearDate_Structures_Prompt.md). Unknown numbers are `null`, never 0. Safety enums have an explicit "unassessed" value.
+// Schema v2.4 for public/drugs.json and for the in-browser session (docs/ClearDate_Spec_v2.md, the
+// v2.1 / v2.2 deltas, the structures addendum docs/ClearDate_Structures_Prompt.md, and 2.4: lingering-effects
+// origin and CYP2D6 strength evidence). Unknown numbers are `null`, never 0. Safety enums have an explicit "unassessed" value.
 
 export const QT_TIERS = ['unassessed', 'none', 'conditional', 'possible', 'known'] as const;
 export const INHIBITOR_STRENGTHS = ['unassessed', 'none', 'weak', 'moderate', 'strong'] as const;
@@ -27,6 +28,10 @@ export const COMPOUND_SECTIONS = [
   'halfLife', 'metabolism', 'relevance', 'molecularWeight', 'identity', 'cyp2d6', 'qt', 'receptors', 'lingeringEffects', 'nonlinearKinetics',
 ] as const;
 export const IDENTITY_CONFIDENCE = ['confirmed', 'probable', 'unconfirmed', 'not-applicable'] as const;
+/** What a CYP2D6 inhibitor strength rests on (schema 2.4). `model-estimate` tiers are shown as "predicted". */
+export const STRENGTH_BASES = ['clinical-aucr', 'fda-category', 'label', 'model-estimate'] as const;
+/** When a lingering-effects duration starts: the compound's clear date, or the last dose (label washouts). */
+export const LINGERING_ORIGINS = ['clearance', 'last-dose'] as const;
 /** `conversion` applies to prodrug products only (a component with administeredAs or massFactor). */
 export const PRODUCT_SECTIONS = ['class', 'aliases', 'components', 'conversion', 'input', 'typicalDose'] as const;
 
@@ -48,6 +53,20 @@ export type ClinicalRelevance = (typeof CLINICAL_RELEVANCE)[number];
 export type CompoundSection = (typeof COMPOUND_SECTIONS)[number];
 export type ProductSection = (typeof PRODUCT_SECTIONS)[number];
 export type IdentityConfidence = (typeof IDENTITY_CONFIDENCE)[number];
+export type StrengthBasis = (typeof STRENGTH_BASES)[number];
+export type LingeringOrigin = (typeof LINGERING_ORIGINS)[number];
+
+/** The evidence behind a CYP2D6 inhibitor strength, so a reviewer can revise it without reconstructing it. */
+export interface StrengthEvidence {
+  basis: StrengthBasis | null;
+  /** Probe substrate of the AUC ratio (e.g. desipramine). */
+  probe: string | null;
+  /** Inhibitor dose and duration studied (e.g. "20 mg/day for 21 days"). */
+  regimen: string | null;
+  /** Probe AUC with ÷ without the inhibitor. */
+  aucRatio: number | null;
+  citation: string | null;
+}
 
 /** A PubChem compound considered for an identity that couldn't be confirmed. */
 export interface IdentityCandidate {
@@ -144,12 +163,15 @@ export interface Compound {
     halfLifeMultiplier: PhenotypeMap | null;
     inhibitor: InhibitorStrength;
     inhibitionType: InhibitionType;
+    /** Schema 2.4. Optional only for session custom drugs saved before 2.4. */
+    strengthEvidence?: StrengthEvidence;
   };
   qt: { tier: QtTier; weight: number | null; referenceAmountMg: number | null };
   receptors: Receptor[];
   /** false = the list hasn't been researched (an empty list is not "no targets"). */
   receptorsAssessed: boolean;
-  lingeringEffects: { durationDays: number | null; note: string };
+  /** `origin` (schema 2.4) is optional only for session custom drugs saved before 2.4; missing = "clearance". */
+  lingeringEffects: { durationDays: number | null; origin?: LingeringOrigin; note: string };
   nonlinearKinetics: { flag: TriState; note: string };
   provenance: ProvenanceMap<CompoundSection>;
   sourceNotes: Partial<Record<CompoundSection, string>> & Record<string, string>;
@@ -209,7 +231,7 @@ export interface Product {
 }
 
 export interface Library {
-  schemaVersion: 2.3;
+  schemaVersion: 2.4;
   /** The scale QT weights are calibrated on (editor's QT calibration view). */
   qtCalibrationNote?: string;
   categories: Category[];

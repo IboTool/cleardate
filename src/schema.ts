@@ -4,10 +4,12 @@
 import {
   COMPOUND_SECTIONS, PRODUCT_SECTIONS,
   type ClinicalRelevance, type Compound, type CompoundSection, type Library, type PhenotypeMap, type Product, type ProductSection, type Range,
-  type RangeType,
+  type RangeType, type StrengthBasis, type StrengthEvidence,
 } from './types';
 
-export const SCHEMA_VERSION = 2.3 as const;
+export const SCHEMA_VERSION = 2.4 as const;
+
+export const emptyStrengthEvidence = (): StrengthEvidence => ({ basis: null, probe: null, regimen: null, aucRatio: null, citation: null });
 
 export const RANGE_TYPE_LABEL: Record<RangeType, string> = {
   'observed-range': 'observed range',
@@ -50,11 +52,11 @@ export function emptyCompound(id: string, name: string): Compound {
     molecularWeight: null,
     identity: null,
     kinetics: { mode: 'unknown', halfLifeHours: null, earlyPhase: null, steadyState: null },
-    cyp2d6: { substrate: 'unassessed', halfLifeMultiplier: null, inhibitor: 'unassessed', inhibitionType: 'unassessed' },
+    cyp2d6: { substrate: 'unassessed', halfLifeMultiplier: null, inhibitor: 'unassessed', inhibitionType: 'unassessed', strengthEvidence: emptyStrengthEvidence() },
     qt: { tier: 'unassessed', weight: null, referenceAmountMg: null },
     receptors: [],
     receptorsAssessed: false,
-    lingeringEffects: { durationDays: null, note: '' },
+    lingeringEffects: { durationDays: null, origin: 'clearance', note: '' },
     nonlinearKinetics: { flag: 'unassessed', note: '' },
     provenance: {},
     sourceNotes: {},
@@ -200,6 +202,33 @@ export function effectiveRelevance(c: Pick<Compound, 'id' | 'isMetabolite' | 'cl
 /** CYP2D6 note says inhibition was never assessed (v2.1 migration and validator). */
 export const INHIBITOR_NOT_ASSESSED_RE = /inhibit[^.]*?(unassessed|not assessed|pending|not established|unconfirmed)/i;
 
+// ---------- CYP2D6 strength evidence (schema 2.4) ----------
+
+/** Probe-substrate AUC ratio → strength (FDA thresholds: weak 1.25–<2, moderate 2–<5, strong ≥5). */
+export function aucrTier(ratio: number): 'none' | 'weak' | 'moderate' | 'strong' {
+  return ratio >= 5 ? 'strong' : ratio >= 2 ? 'moderate' : ratio >= 1.25 ? 'weak' : 'none';
+}
+
+export const STRENGTH_BASIS_LABEL: Record<StrengthBasis, string> = {
+  'clinical-aucr': 'clinical probe AUC ratio',
+  'fda-category': 'FDA category',
+  label: 'product label',
+  'model-estimate': 'model prediction',
+};
+
+/** The strength as shown to users: model-derived tiers read "predicted moderate" / "predicted strong". */
+export function strengthLabel(cyp: Pick<Compound['cyp2d6'], 'inhibitor' | 'strengthEvidence'>): string {
+  const known = cyp.inhibitor === 'weak' || cyp.inhibitor === 'moderate' || cyp.inhibitor === 'strong';
+  return known && cyp.strengthEvidence?.basis === 'model-estimate' ? `predicted ${cyp.inhibitor}` : cyp.inhibitor;
+}
+
+/** One line of evidence, e.g. "clinical probe AUC ratio: desipramine AUC ×2.00, 20 mg/day for 21 days". Empty when nothing is recorded. */
+export function strengthEvidenceText(ev: StrengthEvidence | null | undefined): string {
+  if (!ev?.basis) return '';
+  const auc = ev.aucRatio != null ? `${ev.probe ? `${ev.probe} ` : ''}AUC ×${ev.aucRatio.toFixed(2)}` : ev.probe ?? '';
+  return `${STRENGTH_BASIS_LABEL[ev.basis]}${[auc, ev.regimen].filter(Boolean).length ? ': ' : ''}${[auc, ev.regimen].filter(Boolean).join(', ')}`;
+}
+
 // ---------- review state (editor workflow, validator) ----------
 
 export const CONFIRMED_UNKNOWN_NOTE = 'Confirmed unknown — reviewer';
@@ -278,10 +307,13 @@ function canonicalCompound(c: Compound): Compound {
         },
         ['mode', 'halfLifeHours', 'zeroOrderRateMgPerKgPerHour', 'notModelledReason', 'earlyPhase', 'steadyState'],
       ),
-      cyp2d6: cyp && ordered({ ...cyp, halfLifeMultiplier: phen(cyp.halfLifeMultiplier) }, ['substrate', 'halfLifeMultiplier', 'inhibitor', 'inhibitionType']),
+      cyp2d6: cyp && ordered(
+        { ...cyp, halfLifeMultiplier: phen(cyp.halfLifeMultiplier), strengthEvidence: sub(cyp.strengthEvidence, ['basis', 'probe', 'regimen', 'aucRatio', 'citation']) },
+        ['substrate', 'halfLifeMultiplier', 'inhibitor', 'inhibitionType', 'strengthEvidence'],
+      ),
       qt: sub(c.qt, ['tier', 'weight', 'referenceAmountMg']),
       receptors: (c.receptors ?? []).map((r) => sub(r, ['target', 'action'])),
-      lingeringEffects: sub(c.lingeringEffects, ['durationDays', 'note']),
+      lingeringEffects: sub(c.lingeringEffects, ['durationDays', 'origin', 'note']),
       nonlinearKinetics: sub(c.nonlinearKinetics, ['flag', 'note']),
       identity: c.identity && ordered(
         { ...c.identity, candidates: (c.identity.candidates ?? []).map((x) => sub(x, ['cid', 'name', 'reason'])) },

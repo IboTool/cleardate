@@ -15,7 +15,7 @@ export interface V23Report {
 export function migrateLibraryV23(src: unknown): { lib: Library; report: V23Report; skipped: boolean } {
   const version = (src as { schemaVersion?: unknown }).schemaVersion;
   const lib = src as Library;
-  if (version === 2.3) return { lib, report: { compounds: lib.compounds.length, identityAdded: 0 }, skipped: true };
+  if (typeof version === 'number' && version >= 2.3) return { lib, report: { compounds: lib.compounds.length, identityAdded: 0 }, skipped: true };
   if (version !== 2.2) throw new Error(`expected a schemaVersion 2.2 library, found ${String(version)} (run npm run migrate-v2.2 first)`);
   const out = clone(lib);
   let identityAdded = 0;
