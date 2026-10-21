@@ -4,13 +4,13 @@
 import '@fontsource-variable/inter';
 import '../../src/styles.css';
 import './editor.css';
-import { compoundHasData, emptyCompound, emptyProduct, emptyRange, hasIntrinsicKinetics, isDraft, slug } from '../../src/schema';
+import { compoundHasData, emptyCompound, emptyProduct, emptyRange, hasIntrinsicKinetics, isDraft, SCHEMA_VERSION, slug } from '../../src/schema';
 import { validateLibrary, type Issue, type ValidationResult } from '../../src/validate';
 import {
-  DOSE_BASES, DOSE_UNITS, FORMULATIONS, INPUT_TYPES, PHENOTYPES, PROVENANCE_TAGS,
+  DOSE_BASES, DOSE_UNITS, FORMULATIONS, INPUT_TYPES, PROVENANCE_TAGS,
   type Compound, type CompoundSection, type Formulation, type InputType, type Library, type Product, type ProductSection, type Provenance,
 } from '../../src/types';
-import { compoundSection, nullableNumber, rangeInputs, type SectionName } from '../../src/ui/compoundForm';
+import { compoundSection, nullableNumber, phenotypeInputs, rangeInputs, type SectionName } from '../../src/ui/compoundForm';
 import { append, badge, field, h, select, textInput, toast } from '../../src/ui/dom';
 import { categoryColor } from '../../src/ui/picker';
 import { productId, type Candidate, type CandidatesFile } from '../init-lib';
@@ -338,6 +338,7 @@ const SECTIONS: [SectionName | 'metabolism', string, CompoundSection[]][] = [
   ['basics', 'Basics & aliases', ['molecularWeight']],
   ['kinetics', 'Kinetics', ['halfLife']],
   ['metabolism', 'Metabolite links & fractions', ['metabolism']],
+  ['relevance', 'Clinical relevance', ['relevance']],
   ['cyp2d6', 'CYP2D6', ['cyp2d6']],
   ['qt', 'QT', ['qt']],
   ['receptors', 'Receptors', ['receptors']],
@@ -396,10 +397,7 @@ function edgeMultiplier(f: Compound['formedFrom'][number], onChange: () => void)
   const render = () => {
     const m = f.cyp2d6Multiplier;
     row.hidden = !m;
-    row.replaceChildren(...(m ? PHENOTYPES.map((p) => field(p, h('input', {
-      type: 'number', step: 'any', min: '0', value: String(m[p]),
-      oninput: (e: Event) => { const v = Number((e.target as HTMLInputElement).value); m[p] = v >= 0 ? v : 1; onChange(); },
-    }))) : []));
+    row.replaceChildren(...(m ? [...phenotypeInputs(m, true, onChange), h('div', { class: 'field-hint' }, '0 = not formed in that phenotype (e.g. codeine → morphine in poor metabolisers). Unknown phenotypes are assumed ×1 and labelled.')] : []));
   };
   on.addEventListener('change', () => {
     f.cyp2d6Multiplier = on.checked ? { poor: 1, intermediate: 1, normal: 1, ultrarapid: 1 } : null;
@@ -500,8 +498,8 @@ function compoundCard(node: { c: Compound; depth: number; via: string | null }, 
   const notes = st.queue!.compounds.find((x) => x.id === c.id)?.notes;
   if (notes?.length) card.append(h('div', { class: 'ed-note' }, ...notes.map((n) => h('div', null, 'ℹ ', n))));
   card.append(
-    ...SECTIONS.map(([s, label, provKeys]) =>
-      h('details', { class: 'ed-sec', open: s === 'kinetics' || s === 'basics' || s === 'metabolism' },
+    ...SECTIONS.filter(([s]) => s !== 'relevance' || c.isMetabolite).map(([s, label, provKeys]) =>
+      h('details', { class: 'ed-sec', open: s === 'kinetics' || s === 'basics' || s === 'metabolism' || s === 'relevance' },
         h('summary', null, label, h('span', { class: 'prov-chips' }, ...provKeys.map((k) => provChip(c, k)))),
         s === 'metabolism' ? metabolismSection(c) : compoundSection(c, s, { sourceNotes: true, onChange: (sec) => touched(c, sec) }))),
     sourceField(c),
@@ -776,10 +774,14 @@ async function boot() {
     return;
   }
   const body = await res.json();
-  if (body.library?.schemaVersion !== 2) {
+  const version = body.library?.schemaVersion;
+  if (version !== SCHEMA_VERSION) {
+    const v2 = version === 2;
     main.replaceChildren(h('div', { class: 'ed-empty glass' },
-      h('h2', null, 'drugs.json is in the old (v1) format'),
-      h('p', null, 'Stop the editor and run ', h('code', null, 'npm run migrate-v2'), '. It backs up the file to drugs.v1-backup.json, converts it, and writes docs/migration_v2_report.md. Then start the editor again.')));
+      h('h2', null, `drugs.json is in an older format (schema ${version ?? 1})`),
+      h('p', null, 'Stop the editor and run ',
+        ...(v2 ? [h('code', null, 'npm run migrate-v2.1')] : [h('code', null, 'npm run migrate-v2'), ', then ', h('code', null, 'npm run migrate-v2.1')]),
+        '. Each step backs up the file to backups/ and writes a report in docs/. Then start the editor again.')));
     renderTop();
     return;
   }

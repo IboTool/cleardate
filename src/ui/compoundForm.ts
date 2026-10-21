@@ -2,14 +2,14 @@
 // Sections mutate the compound in place and call onChange with the provenance section that was edited.
 // Unknown numbers are null: every numeric field has an "unknown" checkbox.
 
-import { emptyRange } from '../schema';
+import { emptyRange, isRangeOnly, rangeTypical } from '../schema';
 import {
-  INHIBITION_TYPES, INHIBITOR_STRENGTHS, KINETIC_MODES, PHENOTYPES, QT_TIERS, RANGE_TYPES, RECEPTOR_ACTIONS, TRI_STATES,
-  type Compound, type CompoundSection, type PhenotypeMap, type Range, type RangeType,
+  CLINICAL_RELEVANCE, INHIBITION_TYPES, INHIBITOR_STRENGTHS, KINETIC_MODES, PHENOTYPES, QT_TIERS, RANGE_TYPES, RECEPTOR_ACTIONS, TRI_STATES,
+  type ClinicalRelevance, type Compound, type CompoundSection, type PhenotypeMap, type Range, type RangeType,
 } from '../types';
 import { field, h, select, textInput } from './dom';
 
-export type SectionName = 'basics' | 'kinetics' | 'cyp2d6' | 'qt' | 'receptors' | 'lingering' | 'source';
+export type SectionName = 'basics' | 'kinetics' | 'relevance' | 'cyp2d6' | 'qt' | 'receptors' | 'lingering' | 'source';
 
 export interface SectionOpts {
   /** Show a free-text source note under each section (stored in sourceNotes). */
@@ -19,7 +19,13 @@ export interface SectionOpts {
 }
 
 const NOTE_KEY: Partial<Record<SectionName, CompoundSection>> = {
-  kinetics: 'halfLife', cyp2d6: 'cyp2d6', qt: 'qt', receptors: 'receptors', lingering: 'lingeringEffects',
+  kinetics: 'halfLife', relevance: 'relevance', cyp2d6: 'cyp2d6', qt: 'qt', receptors: 'receptors', lingering: 'lingeringEffects',
+};
+
+const RELEVANCE_LABEL: Record<ClinicalRelevance, string> = {
+  active: 'active — counts toward the clear date',
+  inactive: 'inactive — plotted faintly, never holds up the clear date',
+  unknown: 'unknown — counts until classified',
 };
 
 function sourceNote(c: Compound, section: SectionName, o: SectionOpts) {
@@ -95,10 +101,24 @@ export function rangeInputs(get: () => Range | null, set: (r: Range | null) => v
     });
     body.replaceChildren(
       h('div', { class: 'row' }, ...nums.map(({ k, el }) => field(k, el)),
-        unitScale ? field('unit', select(unit, ['hours', 'days'] as const, (u) => { unit = u; nums.forEach((n) => n.el.refresh()); })) : null),
+        unitScale ? field('unit', select(unit, ['hours', 'days'] as const, (u) => { unit = u; nums.forEach((n) => n.el.refresh()); hint(); })) : null),
       h('div', { class: 'row' }, field('Range type', rt), field('CV (SD/mean)', cv, 'Only for range type "CV"; otherwise the app assumes a spread when a bound is missing.')),
+      midpoint,
     );
+    hint();
   };
+  // Range-only evidence (e.g. a label's "43–60 days"): typical stays unknown and the app uses the geometric midpoint.
+  const midpoint = h('div', { class: 'field-hint' });
+  const hint = () => {
+    const r = get();
+    const t = rangeTypical(r);
+    const fmt = (v: number) => `${+(v / factor()).toPrecision(3)} ${unit}`;
+    midpoint.textContent = !r || r.typical !== null || r.min === null || r.max === null ? ''
+      : isRangeOnly(r) ? `Range only — the app uses the geometric midpoint √(min × max) = ${fmt(t!)}, labelled “assumed midpoint of reported range”.`
+      : 'Range only: set the range type to “observed range” or “range of cohort means” so the midpoint can be used.';
+  };
+  body.addEventListener('input', hint);
+  body.addEventListener('change', hint);
   unknown.addEventListener('change', () => {
     set(unknown.checked ? null : emptyRange());
     onChange();
@@ -110,16 +130,26 @@ export function rangeInputs(get: () => Range | null, set: (r: Range | null) => v
     body);
 }
 
+/**
+ * One input per phenotype. A phenotype left unknown is absent from the map (the app assumes ×1 and labels it).
+ * Formation multipliers may be 0 (not formed in that phenotype); half-life multipliers must stay > 0.
+ */
+export function phenotypeInputs(m: PhenotypeMap, allowZero: boolean, onChange: () => void): HTMLElement[] {
+  return PHENOTYPES.map((p) => field(p, nullableNumber(m[p] ?? null, (v) => {
+    if (v === null) delete m[p];
+    else if (v > 0 || (allowZero && v === 0)) m[p] = v;
+    else return;
+    onChange();
+  }, { min: '0' })));
+}
+
 function phenotypeMap(get: () => PhenotypeMap | null, set: (m: PhenotypeMap | null) => void, onChange: () => void, label: string): HTMLElement {
   const unknown = h('input', { type: 'checkbox', checked: get() === null });
   const row = h('div', { class: 'row' });
   const render = () => {
     const m = get();
     row.hidden = m === null;
-    row.replaceChildren(...(m ? PHENOTYPES.map((p) => field(p, h('input', {
-      type: 'number', step: 'any', min: '0', value: String(m[p]),
-      oninput: (e: Event) => { const v = Number((e.target as HTMLInputElement).value); m[p] = v > 0 ? v : 1; onChange(); },
-    }))) : []));
+    row.replaceChildren(...(m ? phenotypeInputs(m, false, onChange) : []));
   };
   unknown.addEventListener('change', () => {
     set(unknown.checked ? null : { poor: 1, intermediate: 1, normal: 1, ultrarapid: 1 });
@@ -187,6 +217,13 @@ export function compoundSection(c: Compound, section: SectionName, o: SectionOpt
           'Free base. Needed to show metabolites in mg of the metabolite.'));
     case 'kinetics':
       return h('div', { class: 'form-section' }, kineticsInputs(c, () => ch('halfLife')), sourceNote(c, section, o));
+    case 'relevance':
+      return h('div', { class: 'form-section' },
+        c.isMetabolite
+          ? field('Clinical relevance', select(c.clinicalRelevance, CLINICAL_RELEVANCE.map((r) => [r, RELEVANCE_LABEL[r]] as [string, string]), (v) => { c.clinicalRelevance = v as ClinicalRelevance; ch('relevance'); }),
+              'Does this metabolite contribute pharmacological activity, toxicity or a withdrawal-relevant effect at the amounts formed? A metabolite that a product doses directly is always treated as active.')
+          : h('p', { class: 'field-hint' }, 'Parent compound — always treated as active.'),
+        sourceNote(c, section, o));
     case 'cyp2d6': {
       const cy = c.cyp2d6;
       const mult = phenotypeMap(() => cy.halfLifeMultiplier, (m) => (cy.halfLifeMultiplier = m), () => ch('cyp2d6'), 'Half-life multiplier by phenotype (normal = 1)');
