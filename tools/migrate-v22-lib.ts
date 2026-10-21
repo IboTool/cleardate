@@ -130,7 +130,7 @@ export function migrateLibraryV22(input: unknown): { lib: Library; report: V22Re
   if (problems.length) throw new MigrationStop(problems);
 
   const lib = clone(src);
-  lib.schemaVersion = 2.2;
+  (lib as { schemaVersion: number }).schemaVersion = 2.2;
   const note = (e: Compound | Product, s: string, text: string) => {
     const notes = e.sourceNotes as Record<string, string>;
     const prev = notes[s] ?? '';

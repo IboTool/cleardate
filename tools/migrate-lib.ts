@@ -9,7 +9,7 @@ import {
 import { applyProductRules, type ProductChange } from './product-rules';
 
 /** Compound sections as they were in schema 2 (`relevance` arrived in 2.1). */
-const COMPOUND_SECTIONS = CURRENT_COMPOUND_SECTIONS.filter((s) => s !== 'relevance');
+const COMPOUND_SECTIONS = CURRENT_COMPOUND_SECTIONS.filter((s) => s !== 'relevance' && s !== 'identity');
 /** Product sections as they were in schema 2 (`conversion` arrived in 2.2). */
 const PRODUCT_SECTIONS = CURRENT_PRODUCT_SECTIONS.filter((s) => s !== 'conversion');
 

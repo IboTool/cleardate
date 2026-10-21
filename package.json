@@ -16,6 +16,7 @@
     "migrate-v2": "tsx tools/migrate-v2.ts",
     "migrate-v2.1": "tsx tools/migrate-v2.1.ts",
     "migrate-v2.2": "tsx tools/migrate-v2.2.ts",
+    "migrate-v2.3": "tsx tools/migrate-v2.3.ts",
     "editor": "vite --config tools/editor/vite.config.ts",
     "screenshots": "tsx tools/screenshots.ts"
   },

@@ -313,7 +313,7 @@ export function treeLayout(idx: LibraryIndex, roots: string[]): { nodes: TreeNod
 
 export const COMPOUND_SECTION_LABEL: Record<string, string> = {
   halfLife: 'Half-life', metabolism: 'Metabolism', relevance: 'Clinical relevance', molecularWeight: 'Molecular weight',
-  cyp2d6: 'CYP2D6', qt: 'QT', receptors: 'Receptors', lingeringEffects: 'Lingering effects', nonlinearKinetics: 'Nonlinear kinetics',
+  identity: 'Chemical identity', cyp2d6: 'CYP2D6', qt: 'QT', receptors: 'Receptors', lingeringEffects: 'Lingering effects', nonlinearKinetics: 'Nonlinear kinetics',
 };
 export const PRODUCT_SECTION_LABEL: Record<string, string> = {
   class: 'Class', aliases: 'Names and aliases', components: 'Components', conversion: 'Prodrug conversion', input: 'Input model', typicalDose: 'Typical dose',

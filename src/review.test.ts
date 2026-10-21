@@ -55,7 +55,7 @@ describe('review logic', () => {
 
   it('Verify is blocked while any section is unreviewed; the validator errors on a verified entry with an unreviewed section', () => {
     const c = { ...emptyCompound('a', 'A'), kinetics: intrinsic(5), source: 'label' };
-    for (const s of ['halfLife', 'metabolism', 'molecularWeight', 'cyp2d6', 'qt', 'receptors', 'lingeringEffects'] as const)
+    for (const s of ['halfLife', 'metabolism', 'molecularWeight', 'identity', 'cyp2d6', 'qt', 'receptors', 'lingeringEffects'] as const)
       if (confirmSection(c, s, D)) confirmSection(c, s, D, true);
     expect(verifyBlockers(c, [])).toEqual(['review 1 section (Nonlinear kinetics)']);
     c.verified = true;

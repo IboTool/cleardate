@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2.2,
+  "schemaVersion": 2.3,
   "categories": [
     {
       "id": "opioids",
@@ -62,6 +62,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -130,6 +131,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -198,6 +200,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -277,6 +280,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -345,6 +349,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -424,6 +429,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -495,6 +501,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -569,6 +576,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "formation-limited",
         "halfLifeHours": null,
@@ -631,6 +639,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -699,6 +708,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -767,6 +777,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -835,6 +846,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -903,6 +915,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -971,6 +984,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -1033,6 +1047,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -1112,6 +1127,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -1186,6 +1202,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -1254,6 +1271,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -1322,6 +1340,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -1396,6 +1415,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -1464,6 +1484,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -1532,6 +1553,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -1600,6 +1622,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -1668,6 +1691,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -1736,6 +1760,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -1804,6 +1829,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -1878,6 +1904,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -1946,6 +1973,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -2014,6 +2042,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -2082,6 +2111,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -2150,6 +2180,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -2218,6 +2249,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -2286,6 +2318,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -2354,6 +2387,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -2418,6 +2452,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "not-modelled",
         "halfLifeHours": null,
@@ -2487,6 +2522,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -2561,6 +2597,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -2631,6 +2668,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -2714,6 +2752,7 @@
       ],
       "clinicalRelevance": "inactive",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -2782,6 +2821,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -2852,6 +2892,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -2931,6 +2972,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -3010,6 +3052,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -3078,6 +3121,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -3152,6 +3196,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -3220,6 +3265,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -3291,6 +3337,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": 414.5,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -3364,6 +3411,7 @@
       ],
       "clinicalRelevance": "inactive",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -3432,6 +3480,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -3515,6 +3564,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -3589,6 +3639,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -3657,6 +3708,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -3725,6 +3777,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -3793,6 +3846,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -3859,6 +3913,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -3931,6 +3986,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -4002,6 +4058,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -4078,6 +4135,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -4161,6 +4219,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -4252,6 +4311,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -4341,6 +4401,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -4432,6 +4493,7 @@
       ],
       "clinicalRelevance": "inactive",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -4496,6 +4558,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -4573,6 +4636,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -4658,6 +4722,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -4733,6 +4798,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -4808,6 +4874,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -4886,6 +4953,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -4961,6 +5029,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -5040,6 +5109,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -5110,6 +5180,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -5185,6 +5256,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -5266,6 +5338,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -5345,6 +5418,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -5420,6 +5494,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": 467.6,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -5499,6 +5574,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -5564,6 +5640,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -5645,6 +5722,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -5720,6 +5798,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": 327.46,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -5797,6 +5876,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -5876,6 +5956,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -5950,6 +6031,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -6025,6 +6107,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -6113,6 +6196,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -6187,6 +6271,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -6255,6 +6340,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -6330,6 +6416,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -6413,6 +6500,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -6488,6 +6576,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -6571,6 +6660,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -6646,6 +6736,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -6721,6 +6812,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -6800,6 +6892,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -6875,6 +6968,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -6954,6 +7048,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -7029,6 +7124,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -7104,6 +7200,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -7179,6 +7276,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -7271,6 +7369,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -7346,6 +7445,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -7421,6 +7521,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -7495,6 +7596,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -7574,6 +7676,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -7638,6 +7741,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -7702,6 +7806,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -7794,6 +7899,7 @@
       ],
       "clinicalRelevance": "inactive",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -7865,6 +7971,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -7936,6 +8043,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -8023,6 +8131,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": 299.36,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -8102,6 +8211,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -8170,6 +8280,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -8244,6 +8355,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -8308,6 +8420,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -8391,6 +8504,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -8465,6 +8579,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -8535,6 +8650,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -8612,6 +8728,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -8679,6 +8796,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -8762,6 +8880,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -8835,6 +8954,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -8909,6 +9029,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -8997,6 +9118,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -9071,6 +9193,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -9141,6 +9264,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -9228,6 +9352,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -9296,6 +9421,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -9370,6 +9496,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -9443,6 +9570,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -9516,6 +9644,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -9603,6 +9732,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -9671,6 +9801,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -9759,6 +9890,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "formation-limited",
         "halfLifeHours": null,
@@ -9831,6 +9963,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -9911,6 +10044,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": 271.4,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -9998,6 +10132,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -10073,6 +10208,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -10152,6 +10288,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -10226,6 +10363,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -10299,6 +10437,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -10369,6 +10508,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -10448,6 +10588,7 @@
       ],
       "clinicalRelevance": "inactive",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -10512,6 +10653,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -10587,6 +10729,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -10666,6 +10809,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -10745,6 +10889,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -10824,6 +10969,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -10894,6 +11040,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -10973,6 +11120,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -11037,6 +11185,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -11112,6 +11261,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -11188,6 +11338,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -11279,6 +11430,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -11358,6 +11510,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -11437,6 +11590,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -11522,6 +11676,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -11596,6 +11751,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -11660,6 +11816,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -11748,6 +11905,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -11816,6 +11974,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -11886,6 +12045,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -11965,6 +12125,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -12038,6 +12199,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -12113,6 +12275,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -12188,6 +12351,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -12263,6 +12427,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -12338,6 +12503,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "zero-order",
         "halfLifeHours": null,
@@ -12425,6 +12591,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -12489,6 +12656,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -12568,6 +12736,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -12644,6 +12813,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": 336.47,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -12719,6 +12889,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -12792,6 +12963,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -12867,6 +13039,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -12942,6 +13115,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -13026,6 +13200,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -13109,6 +13284,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -13173,6 +13349,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -13248,6 +13425,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -13332,6 +13510,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -13411,6 +13590,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -13475,6 +13655,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": 171.24,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -13550,6 +13731,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -13627,6 +13809,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -13703,6 +13886,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -13778,6 +13962,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -13857,6 +14042,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -13936,6 +14122,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -14000,6 +14187,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -14079,6 +14267,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -14143,6 +14332,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": 369.41,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -14222,6 +14412,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -14290,6 +14481,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -14358,6 +14550,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -14426,6 +14619,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -14490,6 +14684,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -14566,6 +14761,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": 299.36,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -14647,6 +14843,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": 285.34,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -14728,6 +14925,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -14802,6 +15000,7 @@
       ],
       "clinicalRelevance": "inactive",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -14870,6 +15069,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -14938,6 +15138,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -15017,6 +15218,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -15087,6 +15289,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -15166,6 +15369,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -15245,6 +15449,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -15319,6 +15524,7 @@
       ],
       "clinicalRelevance": "inactive",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -15387,6 +15593,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -15455,6 +15662,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -15542,6 +15750,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -15610,6 +15819,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -15675,6 +15885,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -15751,6 +15962,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -15831,6 +16043,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": 310.4,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -15911,6 +16124,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -15984,6 +16198,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -16048,6 +16263,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -16129,6 +16345,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -16225,6 +16442,7 @@
       "clinicalRelevance": "active",
       "endogenous": true,
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -16289,6 +16507,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -16362,6 +16581,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -16431,6 +16651,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -16515,6 +16736,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -16591,6 +16813,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -16657,6 +16880,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -16732,6 +16956,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -16807,6 +17032,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "not-modelled",
         "halfLifeHours": null,
@@ -16872,6 +17098,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -16947,6 +17174,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -17035,6 +17263,7 @@
       ],
       "clinicalRelevance": "inactive",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -17099,6 +17328,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -17178,6 +17408,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -17257,6 +17488,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -17340,6 +17572,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -17419,6 +17652,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -17496,6 +17730,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": 257.37,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -17583,6 +17818,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -17655,6 +17891,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -17730,6 +17967,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -17800,6 +18038,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -17870,6 +18109,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -17954,6 +18194,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": 477.04,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -18029,6 +18270,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -18108,6 +18350,7 @@
       ],
       "clinicalRelevance": "inactive",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -18178,6 +18421,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -18259,6 +18503,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -18334,6 +18579,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -18430,6 +18676,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -18515,6 +18762,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -18602,6 +18850,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -18682,6 +18931,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -18763,6 +19013,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -18848,6 +19099,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -18921,6 +19173,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -18985,6 +19238,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -19056,6 +19310,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -19136,6 +19391,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": 247.33,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -19212,6 +19468,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -19299,6 +19556,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -19375,6 +19633,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -19451,6 +19710,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -19524,6 +19784,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -19592,6 +19853,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -19658,6 +19920,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": 309.4,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -19744,6 +20007,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -19831,6 +20095,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -19901,6 +20166,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -19980,6 +20246,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -20064,6 +20331,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -20137,6 +20405,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -20212,6 +20481,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -20287,6 +20557,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -20366,6 +20637,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -20441,6 +20713,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -20532,6 +20805,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": 398.5,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -20620,6 +20894,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -20684,6 +20959,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -20759,6 +21035,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -20843,6 +21120,7 @@
       ],
       "clinicalRelevance": "inactive",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -20916,6 +21194,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -20990,6 +21269,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -21067,6 +21347,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": 285.34,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -21157,6 +21438,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -21233,6 +21515,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -21308,6 +21591,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -21391,6 +21675,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -21466,6 +21751,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -21545,6 +21831,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -21619,6 +21906,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -21687,6 +21975,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -21755,6 +22044,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -21829,6 +22119,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -21908,6 +22199,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -21976,6 +22268,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -22044,6 +22337,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -22112,6 +22406,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -22180,6 +22475,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -22248,6 +22544,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -22337,6 +22634,7 @@
       ],
       "clinicalRelevance": "inactive",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -22405,6 +22703,7 @@
       ],
       "clinicalRelevance": "inactive",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -22473,6 +22772,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -22552,6 +22852,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -22626,6 +22927,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -22700,6 +23002,7 @@
       ],
       "clinicalRelevance": "inactive",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -22773,6 +23076,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -22844,6 +23148,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": 339.43,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -22923,6 +23228,7 @@
       ],
       "clinicalRelevance": "inactive",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -22987,6 +23293,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": 327.37,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -23066,6 +23373,7 @@
       ],
       "clinicalRelevance": "inactive",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -23131,6 +23439,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": 341.4,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -23210,6 +23519,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -23274,6 +23584,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -23351,6 +23662,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -23435,6 +23747,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -23512,6 +23825,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "not-modelled",
         "halfLifeHours": null,
@@ -23590,6 +23904,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -23658,6 +23973,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -23741,6 +24057,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -23815,6 +24132,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -23883,6 +24201,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -23957,6 +24276,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -24035,6 +24355,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -24114,6 +24435,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -24211,6 +24533,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -24285,6 +24608,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -24364,6 +24688,7 @@
       ],
       "clinicalRelevance": "inactive",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -24432,6 +24757,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -24511,6 +24837,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -24579,6 +24906,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": 296.4,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -24662,6 +24990,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -24730,6 +25059,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -24809,6 +25139,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -24883,6 +25214,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -24951,6 +25283,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -25019,6 +25352,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -25093,6 +25427,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -25178,6 +25513,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -25265,6 +25601,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -25333,6 +25670,7 @@
       ],
       "clinicalRelevance": "inactive",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -25407,6 +25745,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -25475,6 +25814,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -25543,6 +25883,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -25615,6 +25956,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -25694,6 +26036,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -25758,6 +26101,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -25841,6 +26185,7 @@
       ],
       "clinicalRelevance": "inactive",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -25905,6 +26250,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -25984,6 +26330,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -26054,6 +26401,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -26140,6 +26488,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -26219,6 +26568,7 @@
       ],
       "clinicalRelevance": "inactive",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -26283,6 +26633,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -26361,6 +26712,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": 315.36,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -26442,6 +26794,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": 301.34,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -26521,6 +26874,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -26589,6 +26943,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -26663,6 +27018,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -26737,6 +27093,7 @@
       ],
       "clinicalRelevance": "inactive",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -26811,6 +27168,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -26894,6 +27252,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -26964,6 +27323,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -27052,6 +27412,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -27117,6 +27478,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -27192,6 +27554,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": 285.42,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -27271,6 +27634,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -27348,6 +27712,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -27423,6 +27788,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -27498,6 +27864,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -27577,6 +27944,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -27645,6 +28013,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -27714,6 +28083,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -27789,6 +28159,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -27872,6 +28243,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -27940,6 +28312,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -28010,6 +28383,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -28085,6 +28459,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": 159.23,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -28158,6 +28533,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -28233,6 +28609,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -28316,6 +28693,7 @@
       ],
       "clinicalRelevance": "inactive",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -28380,6 +28758,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -28459,6 +28838,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -28534,6 +28914,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -28613,6 +28994,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -28692,6 +29074,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -28757,6 +29140,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -28821,6 +29205,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -28898,6 +29283,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -28962,6 +29348,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -29039,6 +29426,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -29118,6 +29506,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -29197,6 +29586,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -29262,6 +29652,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -29337,6 +29728,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -29422,6 +29814,7 @@
       ],
       "clinicalRelevance": "inactive",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -29492,6 +29885,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -29567,6 +29961,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -29646,6 +30041,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -29714,6 +30110,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -29783,6 +30180,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -29862,6 +30260,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -29927,6 +30326,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -30013,6 +30413,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -30088,6 +30489,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -30164,6 +30566,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -30239,6 +30642,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -30318,6 +30722,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -30397,6 +30802,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -30461,6 +30867,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -30540,6 +30947,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -30615,6 +31023,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": 221.34,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -30698,6 +31107,7 @@
       ],
       "clinicalRelevance": "inactive",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -30768,6 +31178,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -30847,6 +31258,7 @@
       ],
       "clinicalRelevance": "inactive",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "formation-limited",
         "halfLifeHours": null,
@@ -30911,6 +31323,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -30990,6 +31403,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -31064,6 +31478,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -31138,6 +31553,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -31208,6 +31624,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -31293,6 +31710,7 @@
       ],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -31369,6 +31787,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": 436.95,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -31445,6 +31864,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -31524,6 +31944,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -31599,6 +32020,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -31686,6 +32108,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": 263.38,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -31773,6 +32196,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -31843,6 +32267,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -31922,6 +32347,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -32005,6 +32431,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -32084,6 +32511,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -32158,6 +32586,7 @@
       ],
       "clinicalRelevance": "inactive",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "unknown",
         "halfLifeHours": null,
@@ -32223,6 +32652,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -32294,6 +32724,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -32369,6 +32800,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -32448,6 +32880,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -32532,6 +32965,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -32611,6 +33045,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -32702,6 +33137,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -32775,6 +33211,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -32850,6 +33287,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -32925,6 +33363,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -33004,6 +33443,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -33077,6 +33517,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -33161,6 +33602,7 @@
       ],
       "clinicalRelevance": "unknown",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
@@ -33231,6 +33673,7 @@
       "formedFrom": [],
       "clinicalRelevance": "active",
       "molecularWeight": null,
+      "identity": null,
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
