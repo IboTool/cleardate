@@ -103,6 +103,11 @@ h3 { font-size: 11.5px; text-transform: uppercase; letter-spacing: .08em; color:
 .row > * { flex: 1; min-width: 70px; }
 .row.tight { margin-top: 10px; gap: 6px; }
 .row.tight > * { flex: 0 0 auto; }
+.row > .icon-btn { flex: 0 0 auto; min-width: 0; }
+.row:has(> .field > .field-hint) { align-items: flex-start; }
+.row > .field:has(> .nullable) { min-width: 150px; }
+.row > .field:has(> select) { min-width: fit-content; }
+.row > .field:has(> input[type='text']) { min-width: 140px; }
 input, select, textarea {
   width: 100%; background: rgba(0, 0, 0, 0.28); border: 1px solid var(--border-strong); border-radius: 9px;
   padding: 7px 9px; outline: none; transition: border-color .15s, box-shadow .15s;
@@ -111,6 +116,7 @@ input:focus, select:focus, textarea:focus { border-color: rgba(124, 156, 255, 0.
 input[type='checkbox'] { width: auto; accent-color: var(--accent); }
 select option { background: var(--panel-solid); }
 input[type='datetime-local'], input[type='date'] { color-scheme: dark; }
+.row > .field:has(input[type='datetime-local']) { min-width: 230px; }
 textarea { resize: vertical; }
 textarea.code { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 12px; }
 .check { display: flex; gap: 8px; align-items: center; cursor: pointer; color: var(--text); }
@@ -218,12 +224,12 @@ mark { background: rgba(124, 156, 255, 0.28); color: #fff; border-radius: 3px; p
 .met-node { border-left: 2px solid rgba(124, 156, 255, 0.3); padding: 6px 0 6px 12px; display: grid; gap: 8px; }
 .met-head { display: flex; gap: 8px; align-items: flex-end; flex-wrap: wrap; }
 .met-head > input { flex: 2; min-width: 160px; }
-.met-head .field { flex: 0 0 120px; }
+.met-head .field { flex: 0 0 170px; }
 .met-depth { font-size: 10px; color: var(--accent); border: 1px solid rgba(124, 156, 255, 0.4); border-radius: 6px; padding: 2px 5px; align-self: center; }
 .met-link { flex: 2; align-self: center; }
 .met-body { display: grid; gap: 8px; }
 .met-add { display: flex; gap: 8px; flex-wrap: wrap; }
-.met-add select { flex: 1; min-width: 200px; }
+.met-add select { flex: 1; min-width: 260px; }
 .hl-row { display: grid; gap: 4px; }
 .hl-head { display: flex; align-items: center; gap: 10px; }
 .range-body { display: grid; gap: 4px; }
@@ -238,8 +244,10 @@ mark { background: rgba(124, 156, 255, 0.28); color: #fff; border-radius: 3px; p
 .k-dot { display: inline-block; width: 18px; height: 0; border-top: 2px dotted var(--muted); margin-left: 6px; }
 .receptor-list { display: grid; gap: 6px; }
 .receptor-row > input { flex: 2; }
-.ib-row { align-items: flex-end; }
-.ib-label { flex: 0 0 70px !important; font-weight: 600; color: var(--gold); padding-bottom: 8px; }
+.ib-row { align-items: flex-start; }
+.ib-label { flex: 0 0 70px !important; font-weight: 600; color: var(--gold); padding-top: 26px; }
+.ib-row > .icon-btn { margin-top: 22px; }
+.ib-spacer { visibility: hidden; }
 .boosters { display: grid; gap: 8px; }
 
 .toast { position: fixed; bottom: 22px; left: 50%; transform: translate(-50%, 20px); opacity: 0; transition: all .25s ease; z-index: 200; padding: 10px 16px; max-width: 90vw; }

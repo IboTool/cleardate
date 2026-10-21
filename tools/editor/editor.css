@@ -102,7 +102,10 @@ html, body { overflow-x: hidden; }
 .rv-note a, .qt-note a { color: var(--accent); }
 .rv-context { padding: 8px 10px; }
 .rv-actions { display: flex; align-items: center; gap: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+.ed-main { grid-template-columns: minmax(0, 1fr); }
+.ed-main > .ed-priority { display: block; overflow-x: auto; }
 .qt-table td { vertical-align: middle; }
+.qt-table select { min-width: 120px; }
 .qt-table .nullable input { width: 80px; }
 .qt-note { max-width: 360px; font-size: 12px; color: var(--muted); }
 .qt-note summary { cursor: pointer; }

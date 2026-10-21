@@ -716,7 +716,9 @@ function openIbogaineForm() {
       h('span', { class: 'ib-label' }, label),
       field('mg', numberInput(d.mg, (v) => { d.mg = v; upd(); }, { min: '0' }), mgkg),
       field('Time', t),
-      onRemove ? h('button', { class: 'icon-btn', type: 'button', title: 'Remove', onclick: onRemove }, '✕') : null);
+      onRemove
+        ? h('button', { class: 'icon-btn', type: 'button', title: 'Remove', onclick: onRemove }, '✕')
+        : h('span', { class: 'icon-btn ib-spacer', 'aria-hidden': 'true' }, '✕'));
   };
   const boostersEl = h('div', { class: 'boosters' });
   const renderBoosters = () =>
