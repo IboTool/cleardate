@@ -5,7 +5,7 @@ import * as echarts from './echarts';
 import type { EChartsOption, CustomSeriesRenderItemAPI, CustomSeriesRenderItemParams, SeriesOption } from 'echarts';
 import { fmtAmount, fmtAxis, fmtDateTime } from './format';
 import { valueAt } from './pk';
-import { DAY, isRateUnit, pmNotQuantified, strongestAt, toMg, type CompoundCurve, type CypInterval, type ProductResult, type QtLane, type Scenario } from './model';
+import { DAY, IBOGAINE_KIND_LABEL, isRateUnit, pmNotQuantified, strongestAt, toMg, type CompoundCurve, type CypInterval, type ProductResult, type QtLane, type Scenario } from './model';
 import type { QtTier, Session, Settings } from './types';
 
 export type Theme = 'dark' | 'light';
@@ -327,7 +327,9 @@ export function buildChartOption(scn: Scenario, session: Session, o: ChartOpts):
   type Marker = { t: number; kind: 'today' | 'ibogaine' | 'booster' };
   const markers: Marker[] = [{ t: scn.now, kind: 'today' }];
   if (scn.ibogaineAt !== null) markers.push({ t: scn.ibogaineAt, kind: 'ibogaine' });
-  for (const t of scn.ibogaineDoseTimes) if (t !== scn.ibogaineAt) markers.push({ t, kind: 'booster' });
+  for (const t of new Set(scn.ibogaineEvents.map((e) => e.time))) if (t !== scn.ibogaineAt) markers.push({ t, kind: 'booster' });
+  const firstKind = scn.ibogaineEvents[0]?.kind;
+  const ibLabel = firstKind && firstKind !== 'flood' ? `Ibogaine · ${IBOGAINE_KIND_LABEL[firstKind].toLowerCase()}` : 'Ibogaine';
   grids.forEach((_, gi) => {
     series.push({
       type: 'custom',
@@ -356,7 +358,7 @@ export function buildChartOption(scn: Scenario, session: Session, o: ChartOpts):
               type: 'text',
               x: x + 6,
               y: cs.y + 4,
-              style: { text: 'Ibogaine', fill: P.ibogaine, font: '600 11px Inter Variable, Inter, system-ui, sans-serif' },
+              style: { text: ibLabel, fill: P.ibogaine, font: '600 11px Inter Variable, Inter, system-ui, sans-serif' },
             });
         } else if (m.kind === 'booster') {
           children.push({ type: 'line', shape: { x1: x, y1: cs.y, x2: x, y2: cs.y + cs.height }, style: { stroke: hexToRgba('#e8c36a', 0.5), lineWidth: 1, lineDash: [3, 3] } });

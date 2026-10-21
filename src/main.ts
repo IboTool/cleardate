@@ -8,8 +8,8 @@ import { exportPdf, exportPng, download, DISCLAIMER } from './export';
 import { ageFrom, fmtDate, fmtDateTime, fmtEvery } from './format';
 import { dateTimeInput } from './ui/datetime';
 import {
-  buildIndex, clearStatusText, combinationText, componentIds, computeScenario, convertUnit, displayName, expandDose, findIbogaineProduct,
-  IBOGAINE_KEY, isRateUnit, mergeLibraries, missingKinetics, parseLocal, productColors, productDataStatus, productHasData, toLocalInput, toMg, withCustom,
+  buildIndex, clearStatusText, combinationText, componentIds, computeScenario, convertUnit, describeIbogaineDose, displayName, expandDose,
+  expandIbogaine, findIbogaineProduct, IBOGAINE_KEY, IBOGAINE_KIND_LABEL, isRateUnit, mergeLibraries, missingKinetics, parseLocal, productColors, productDataStatus, productHasData, toLocalInput, toMg, withCustom,
   DAY, HOUR, type LibraryIndex, type ProductResult, type Scenario,
 } from './model';
 import { primaryCompound, SCHEMA_VERSION } from './schema';
@@ -17,7 +17,7 @@ import { buildRecords, ProductSearch } from './search';
 import {
   clearStoredSession, emptySession, loadSession, normaliseSession, patientFileName, resolveCustomClashes, saveSession,
 } from './state';
-import type { CustomDrugs, DoseEntry, IbogaineTreatment, Library, Product, Session } from './types';
+import { IBOGAINE_DOSE_KINDS, type CustomDrugs, type DoseEntry, type IbogaineDose, type IbogaineDoseKind, type IbogaineTreatment, type Library, type Product, type Session } from './types';
 import { validateLibrary } from './validate';
 import { replacementsFor } from '../tools/product-rules';
 import { $, append, badge, field, h, modal, numberInput, select, textInput, toast } from './ui/dom';
@@ -122,7 +122,7 @@ root.append(
     h('div', { class: 'wordmark' }, 'Clear', h('span', null, 'Date')),
     savedEl,
     h('span', { class: 'spacer' }),
-    h('button', { class: 'btn btn-gold', type: 'button', onclick: () => openIbogaineForm() }, '✦ Ibogaine treatment'),
+    h('button', { class: 'btn btn-gold', type: 'button', onclick: () => openIbogaineForm() }, '✦ Ibogaine'),
     h('button', { class: 'btn btn-ghost', type: 'button', onclick: () => { app.zoom = null; renderChart(false); } }, 'Reset view'),
     h('div', { class: 'btn-group' },
       h('button', { class: 'btn btn-ghost', type: 'button', onclick: () => exportPng(app.scn, app.session, currentZoom()) }, 'PNG'),
@@ -507,15 +507,18 @@ function renderDoseList() {
       })));
   }
   const ib = app.session.ibogaine;
-  if (ib)
+  if (ib) {
+    const lines = [...ib.doses].sort((a, b) => parseLocal(a.time) - parseLocal(b.time)).map((d) => describeIbogaineDose(d, S()));
     groups.unshift(h('div', { class: 'dose-group' },
-      h('div', { class: 'dose-cat', style: '--c:#e8c36a' }, 'Planned ibogaine'),
+      h('div', { class: 'dose-cat', style: '--c:#e8c36a' }, 'Ibogaine'),
       h('div', { class: 'dose-item ib' },
         h('span', { class: 'swatch', style: '--c:#e8c36a' }),
         h('div', { class: 'dose-main' },
-          h('div', { class: 'dose-name' }, `Flood ${ib.flood.mg || '—'} mg`),
-          h('div', { class: 'dose-sub' }, ib.flood.time ? fmtDateTime(parseLocal(ib.flood.time), S()) : '—', ib.boosters.length ? ` · ${ib.boosters.length} booster(s)` : '')),
+          ...lines.map((x, i) => h('div', { class: i ? 'ib-line' : 'ib-line first' },
+            h('div', { class: 'dose-name' }, x.what),
+            h('div', { class: 'dose-sub' }, x.when)))),
         h('div', { class: 'dose-actions' }, h('button', { class: 'icon-btn', type: 'button', title: 'Edit', onclick: () => openIbogaineForm() }, '✎')))));
+  }
   doseListEl.replaceChildren(...(groups.length ? groups : [h('div', { class: 'empty' }, 'No doses entered.')]));
 }
 
@@ -524,7 +527,7 @@ function renderDosesTab() {
     h('div', { class: 'section' }, picker.el, doseFormEl,
       h('div', { class: 'row tight' },
         h('button', { class: 'btn btn-ghost btn-sm', type: 'button', onclick: () => launchWizard('') }, '+ Add custom drug'),
-        h('button', { class: 'btn btn-ghost btn-sm', type: 'button', onclick: () => openIbogaineForm() }, '✦ Ibogaine treatment'))),
+        h('button', { class: 'btn btn-ghost btn-sm', type: 'button', onclick: () => openIbogaineForm() }, '✦ Ibogaine'))),
     h('div', { class: 'section' }, h('h3', null, 'Entered doses'), doseListEl),
   );
   renderDoseForm();
@@ -714,44 +717,85 @@ function deleteCustom(p: Product) {
 
 function openIbogaineForm() {
   const ib: IbogaineTreatment = structuredClone(app.session.ibogaine) ?? {
-    flood: { mg: 0, time: toLocalInput(Math.ceil((Date.now() + 14 * DAY) / HOUR) * HOUR) },
-    boosters: [],
+    doses: [{ id: uid(), kind: 'flood', mg: 0, time: toLocalInput(Math.ceil((Date.now() + 14 * DAY) / HOUR) * HOUR) }],
   };
   const w = () => app.session.patient.weightKg;
   const noData = !productHasData(app.idx, findIbogaineProduct(app.idx));
-  const doseRow = (d: { mg: number; time: string }, label: string, onRemove?: () => void) => {
+  const kindOptions = IBOGAINE_DOSE_KINDS.map((k) => [k, IBOGAINE_KIND_LABEL[k]] as [IbogaineDoseKind, string]);
+  const doseCard = (d: IbogaineDose) => {
     const mgkg = h('span', { class: 'mgkg' });
     const upd = () => (mgkg.textContent = w() > 0 && d.mg > 0 ? `${(d.mg / w()).toFixed(1)} mg/kg` : w() > 0 ? '' : 'set weight in Patient tab for mg/kg');
     upd();
-    const t = dateTimeInput(d.time, (v) => (d.time = v), S(), { name: 'time' });
-    return h('div', { class: 'row ib-row' },
-      h('span', { class: 'ib-label' }, label),
-      field('mg', numberInput(d.mg, (v) => { d.mg = v; upd(); }, { min: '0' }), mgkg),
-      field('Time', t),
-      onRemove
-        ? h('button', { class: 'icon-btn', type: 'button', title: 'Remove', onclick: onRemove }, '✕')
-        : h('span', { class: 'icon-btn ib-spacer', 'aria-hidden': 'true' }, '✕'));
+    const count = h('span', { class: 'field-hint' });
+    const updCount = () => {
+      const n = d.repeat ? expandIbogaine({ doses: [{ ...d, mg: 1 }] }).length : 0;
+      count.textContent = d.repeat ? (n ? `${n} doses` : 'Check the interval and end date') : '';
+    };
+    const repeatBox = h('div', { class: 'row ib-repeat' });
+    const timeField = field('Time', dateTimeInput(d.time, (v) => { d.time = v; updCount(); }, S(), { name: 'time' }));
+    const renderRepeat = () => {
+      const r = d.repeat;
+      repeatBox.hidden = !r;
+      timeField.querySelector('.field-label')!.textContent = r ? 'First dose' : 'Time';
+      if (!r) return repeatBox.replaceChildren();
+      repeatBox.replaceChildren(
+        field('Every', numberInput(r.every, (v) => { r.every = v; updCount(); }, { min: '0', name: 'every' })),
+        field('Unit', select(r.unit, ['hours', 'days'] as const, (v) => { r.unit = v; updCount(); })),
+        field('Until', dateTimeInput(r.until, (v) => { r.until = v; updCount(); }, S(), { name: 'until' }), count));
+      updCount();
+    };
+    const repeatToggle = h('input', { type: 'checkbox', checked: !!d.repeat });
+    repeatToggle.addEventListener('change', () => {
+      const start = parseLocal(d.time);
+      d.repeat = repeatToggle.checked
+        ? { every: d.kind === 'microdose' ? 2 : 24, unit: d.kind === 'microdose' ? 'days' : 'hours', until: toLocalInput((Number.isFinite(start) ? start : Date.now()) + 28 * DAY) }
+        : null;
+      renderRepeat();
+    });
+    renderRepeat();
+    return h('div', { class: 'ib-dose' },
+      h('div', { class: 'row ib-row' },
+        field('Type', select(d.kind, kindOptions, (v) => { d.kind = v; }, { name: 'kind' })),
+        field('mg', numberInput(d.mg, (v) => { d.mg = v; upd(); }, { min: '0', name: 'mg' }), mgkg),
+        timeField,
+        h('button', { class: 'icon-btn', type: 'button', title: 'Remove this dose', onclick: () => {
+          ib.doses = ib.doses.filter((x) => x !== d);
+          renderDoses();
+        } }, '✕')),
+      h('label', { class: 'check ib-repeat-toggle' }, repeatToggle, 'Repeat (e.g. microdosing)'),
+      repeatBox);
   };
-  const boostersEl = h('div', { class: 'boosters' });
-  const renderBoosters = () =>
-    boostersEl.replaceChildren(
-      ...ib.boosters.map((b, i) => doseRow(b, `Booster ${i + 1}`, () => { ib.boosters.splice(i, 1); renderBoosters(); })),
+  const NEXT: Record<IbogaineDoseKind, [IbogaineDoseKind, number]> = {
+    test: ['flood', 3], flood: ['booster', 12], booster: ['booster', 12], microdose: ['microdose', 24], other: ['other', 6],
+  };
+  const dosesEl = h('div', { class: 'ib-doses' });
+  const renderDoses = () =>
+    dosesEl.replaceChildren(
+      ...ib.doses.map(doseCard),
       h('button', { class: 'btn btn-ghost btn-sm', type: 'button', onclick: () => {
-        const last = ib.boosters[ib.boosters.length - 1] ?? ib.flood;
-        ib.boosters.push({ mg: 0, time: toLocalInput((parseLocal(last.time) || Date.now()) + 6 * HOUR) });
-        renderBoosters();
-      } }, '+ Add booster'));
-  renderBoosters();
-  const m = modal('Ibogaine treatment', h('div', { class: 'form-section' },
-    h('p', { class: 'field-hint' }, 'The flood dose time is the planned treatment date (bold marker). Projected ibogaine and noribogaine are plotted forward; if CYP2D6 is likely inhibited at that time, the projection uses the poor-metaboliser multiplier; where the library has none, the curve is unadjusted and labelled “not quantified”.'),
-    noData ? h('div', { class: 'warning info' }, 'ℹ Ibogaine has no half-life data in the library yet — only the date marker will be shown.') : null,
-    doseRow(ib.flood, 'Flood'),
-    boostersEl,
+        const last = [...ib.doses].sort((a, b) => parseLocal(b.time) - parseLocal(a.time))[0];
+        const [kind, gap] = last ? NEXT[last.kind] : (['flood', 0] as const);
+        const from = last ? parseLocal(last.repeat?.until ?? last.time) : Math.ceil((Date.now() + 14 * DAY) / HOUR) * HOUR;
+        ib.doses.push({ id: uid(), kind, mg: 0, time: toLocalInput((Number.isFinite(from) ? from : Date.now()) + gap * HOUR) });
+        renderDoses();
+      } }, '+ Add dose'));
+  renderDoses();
+  const m = modal('Ibogaine', h('div', { class: 'form-section' },
+    h('p', { class: 'field-hint' }, 'Enter every ibogaine dose: test doses, flood, boosters or microdoses. The first dose, whatever its type, is the treatment date (bold marker) that clear dates are measured against. Projected ibogaine and noribogaine are plotted forward; if CYP2D6 is likely inhibited at any dose, the projection uses the poor-metaboliser multiplier; where the library has none, the curve is unadjusted and labelled “not quantified”.'),
+    noData ? h('div', { class: 'warning info' }, 'ℹ Ibogaine has no half-life data in the library yet — only the dose markers will be shown.') : null,
+    dosesEl,
     h('div', { class: 'wizard-foot' },
-      app.session.ibogaine ? h('button', { class: 'btn btn-danger', type: 'button', onclick: () => { app.session.ibogaine = null; m.close(); commit('doses'); } }, 'Remove treatment') : null,
+      app.session.ibogaine ? h('button', { class: 'btn btn-danger', type: 'button', onclick: () => { app.session.ibogaine = null; m.close(); commit('doses'); } }, 'Remove all ibogaine doses') : null,
       h('span', { class: 'spacer' }),
       h('button', { class: 'btn btn-primary', type: 'button', onclick: () => {
-        if (!Number.isFinite(parseLocal(ib.flood.time))) return toast('Set the flood dose time.');
+        if (!ib.doses.length) return toast('Add at least one dose, or use Remove all ibogaine doses.');
+        for (const [i, d] of ib.doses.entries()) {
+          const name = `${IBOGAINE_KIND_LABEL[d.kind]} (row ${i + 1})`;
+          if (!(d.mg > 0)) return toast(`${name}: enter the amount in mg.`);
+          if (!Number.isFinite(parseLocal(d.time))) return toast(`${name}: enter the date and time.`);
+          if (d.repeat && !expandIbogaine({ doses: [d] }).length) return toast(`${name}: check the repeat interval and end date.`);
+        }
+        ib.doses.sort((a, b) => parseLocal(a.time) - parseLocal(b.time));
         app.session.ibogaine = ib;
         m.close();
         commit('doses');

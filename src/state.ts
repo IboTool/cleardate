@@ -64,7 +64,7 @@ export function normaliseSession(input: Partial<Session> | Record<string, unknow
     version: 2,
     patient: { ...d.patient, ...(raw.patient ?? {}) },
     doses: Array.isArray(raw.doses) ? raw.doses.map((x) => ({ ...x, unit: x.unit ?? 'mg' })) : [],
-    ibogaine: raw.ibogaine ?? null,
+    ibogaine: Array.isArray(raw.ibogaine?.doses) && raw.ibogaine.doses.length ? raw.ibogaine : null,
     custom: {
       compounds: (raw.custom?.compounds ?? []).map((c) => ({
         ...c,

@@ -4,7 +4,7 @@ import * as echarts from './echarts';
 import type { jsPDF as JsPDF } from 'jspdf';
 import { buildChartOption } from './chart';
 import { ageFrom, fmtDate, fmtDateTime, fmtEvery } from './format';
-import { clearStatusText, combinationText, expandDose, isRateUnit, type LibraryIndex, type ProductResult, type Scenario } from './model';
+import { clearStatusText, combinationText, describeIbogaineDose, expandDose, IBOGAINE_KIND_LABEL, isRateUnit, parseLocal, type LibraryIndex, type ProductResult, type Scenario } from './model';
 import { isDraft } from './schema';
 import type { Session } from './types';
 
@@ -185,10 +185,9 @@ export async function exportPdf(scn: Scenario, session: Session, idx: LibraryInd
   table('Doses', ['Product', 'Amount', 'When'], doseRows(session, idx), [tw * 0.38, tw * 0.12, tw * 0.5]);
   if (session.ibogaine) {
     const ib = session.ibogaine;
-    table('Planned ibogaine', ['Dose', 'mg', 'Time'], [
-      ['Flood', String(ib.flood.mg), ib.flood.time ? fmtDateTime(new Date(ib.flood.time).getTime(), s) : '—'],
-      ...ib.boosters.map((b, i) => [`Booster ${i + 1}`, String(b.mg), b.time ? fmtDateTime(new Date(b.time).getTime(), s) : '—']),
-    ], [tw * 0.38, tw * 0.12, tw * 0.5]);
+    table('Ibogaine (the first dose is the treatment date)', ['Dose', 'mg', 'When'],
+      [...ib.doses].sort((a, b) => parseLocal(a.time) - parseLocal(b.time)).map((d) => [IBOGAINE_KIND_LABEL[d.kind], String(d.mg), describeIbogaineDose(d, s).when]),
+      [tw * 0.38, tw * 0.12, tw * 0.5]);
   }
   table(`Clear dates (below ${s.clearHalfLives} half-lives ≈ ${(100 * Math.pow(2, -s.clearHalfLives)).toFixed(1)}% of peak, parent and all metabolites)`,
     ['Product', 'Clear (typical)', 'Clear (slowest in range)'], clearRows(scn, session), [tw * 0.3, tw * 0.45, tw * 0.25]);

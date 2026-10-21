@@ -152,9 +152,9 @@ async function main() {
 
     const chartWrap = page.locator('.chart-wrap');
     const side = page.locator('aside.side');
-    const ib = scenario.session as { ibogaine: { flood: { time: string }; boosters: { time: string }[] } };
-    const ibAt = `${ib.ibogaine.flood.time}Z`;
-    const boosterAt = `${ib.ibogaine.boosters[0].time}Z`;
+    const ib = scenario.session as { ibogaine: { doses: { time: string }[] } };
+    const ibAt = `${ib.ibogaine.doses[0].time}Z`;
+    const boosterAt = `${ib.ibogaine.doses[1].time}Z`;
     const todayAt = `${scenario.today}Z`;
 
     console.log('Overview');
@@ -315,7 +315,7 @@ async function main() {
 
     const list = side.locator('.section', { hasText: 'Entered doses' });
     await shot(page, 'dose-list', pad(await box(list), 2), [
-      await textEnd(list.locator('.dose-group').first().locator('.dose-name')),
+      await textEnd(list.locator('.dose-group').first().locator('.dose-name').first()),
       await textEnd(list.locator('.dose-clear').nth(1)),
       above(await box(list.locator('button[title=Edit]').nth(1))),
       above(await box(list.locator('button[title=Delete]').nth(1))),
@@ -326,10 +326,10 @@ async function main() {
     await settle(page, 300);
     const modal = page.locator('.modal');
     await shot(page, 'ibogaine-form', pad(await box(modal), 2), [
-      corner(await box(modal.locator('.ib-row').first().locator('input[type=number]'))),
-      await textEnd(modal.locator('.ib-row').first().locator('.mgkg')),
-      corner(await box(modal.locator('.ib-row').nth(1).locator('.dt-text'))),
-      corner(await box(modal.getByRole('button', { name: '+ Add booster' }))),
+      corner(await box(modal.locator('.ib-dose').first().locator('select'))),
+      await textEnd(modal.locator('.ib-dose').first().locator('.mgkg')),
+      corner(await box(modal.locator('.ib-dose').nth(1).locator('.ib-repeat-toggle input'))),
+      corner(await box(modal.getByRole('button', { name: '+ Add dose' }))),
     ]);
     await modal.locator('.modal-head .icon-btn').click();
     await settle(page, 200);

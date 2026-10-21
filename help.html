@@ -132,7 +132,7 @@
               </figure>
             </li>
             <li>
-              <strong>Set the ibogaine treatment.</strong> Press <em>✦ Ibogaine treatment</em>, enter the flood dose and its date and time, add any boosters, and save. The flood time is the date everything else is measured against.
+              <strong>Set the ibogaine treatment.</strong> Press <em>✦ Ibogaine</em>, enter each planned dose (test dose, flood, boosters or microdoses) with its date and time, and save. The first dose is the date everything else is measured against.
             </li>
             <li>
               <strong>Read the chart and the statuses.</strong> Each product in the legend shows its clear date or status. Hover over the chart for details at any moment. Read every “Incomplete” and “with assumptions” status. See <a href="#statuses">Clear statuses</a>.
@@ -143,7 +143,7 @@
             <li>
               <strong>Export a record.</strong> <em>PDF</em> creates a report with the chart, the doses, the clear dates, every assumption and the warnings. <em>PNG</em> saves an image of the chart.
               <figure class="shot inline" data-img="header-controls.webp">
-                <div class="shot-frame"><img src="help/img/header-controls.webp" alt="The buttons at the top right of ClearDate: Ibogaine treatment, Reset view, PNG, PDF, Save file, Load file and Help." /></div>
+                <div class="shot-frame"><img src="help/img/header-controls.webp" alt="The buttons at the top right of ClearDate: Ibogaine, Reset view, PNG, PDF, Save file, Load file and Help." /></div>
                 <figcaption>The controls at the top of the app.</figcaption>
                 <ol class="callout-list">
                   <li>Plan the ibogaine treatment.</li>
@@ -296,17 +296,19 @@
 
           <section id="ibogaine">
             <h3>The ibogaine treatment</h3>
-            <p>Open it with <em>✦ Ibogaine treatment</em> at the top of the app or under the search box.</p>
+            <p>Open it with <em>✦ Ibogaine</em> at the top of the app or under the search box. Enter every planned ibogaine dose: a test dose, a flood, boosters, microdoses, or any mix of them. A session with only boosters or only microdoses is fine.</p>
             <ul>
-              <li><strong>Flood dose</strong>: amount in mg and date and time. This is the planned treatment date: the bold gold line on the chart and the time every warning is checked against. A new treatment starts 14 days from now.</li>
-              <li><strong>Boosters</strong>: <em>+ Add booster</em> adds one 6 hours after the previous dose. They appear as thin dashed gold lines.</li>
+              <li><strong>Each dose</strong> has a type (Test dose, Flood, Booster, Microdose or Other), an amount in mg, and a date and time. A new form starts with one flood 14 days from now.</li>
+              <li><strong>The first dose is the treatment date</strong>, whatever its type. It is the bold gold line on the chart and the time every warning is checked against, so a test dose given before the flood moves the date earlier. When the first dose isn't a flood, the line is labelled with its type (for example “Ibogaine · test dose”). Later doses appear as thin dashed gold lines.</li>
+              <li><strong>Repeat</strong> turns one row into a series, for example a 4 mg microdose every 2 days until a given date. The row shows how many doses that makes.</li>
+              <li><em>+ Add dose</em> adds the next dose after the last one: a flood 3 hours after a test dose, a booster 12 hours after a flood or booster, the next microdose a day later.</li>
               <li><strong>mg/kg</strong> is shown in gold under each amount when the patient's weight is set.</li>
               <li><strong>Projected ibogaine and noribogaine</strong> are plotted forward from the doses once the library has their kinetics. Until then only the date markers are shown, and a note says so. If CYP2D6 is likely inhibited at the treatment time, the projection uses the poor-metaboliser values and is labelled “poor-metaboliser adjusted”. If the library has no poor-metaboliser values for ibogaine, it is labelled “poor-metaboliser effect not quantified” instead (see <a href="#cyp2d6">CYP2D6 track</a>).</li>
-              <li><em>Remove treatment</em> deletes it.</li>
+              <li><em>Remove all ibogaine doses</em> clears the treatment.</li>
             </ul>
             <figure class="shot narrow" data-img="ibogaine-form.webp">
-              <div class="shot-frame"><img src="help/img/ibogaine-form.webp" alt="The Ibogaine treatment dialog: an explanation, a flood dose of 1300 mg with its mg/kg value and time, a 200 mg booster 12 hours later, an Add booster button, and Remove treatment and Save buttons." /></div>
-              <figcaption>The ibogaine treatment dialog.</figcaption>
+              <div class="shot-frame"><img src="help/img/ibogaine-form.webp" alt="The Ibogaine dialog: an explanation, a 1300 mg flood with its mg/kg value and time, a 200 mg booster 12 hours later, each with a Repeat checkbox, an Add dose button, and Remove all ibogaine doses and Save buttons." /></div>
+              <figcaption>The Ibogaine dialog.</figcaption>
               <ol class="callout-list">
                 <li>Flood dose in mg.</li>
                 <li>mg/kg, from the patient's weight.</li>
@@ -322,7 +324,7 @@
             <ul>
               <li><strong>Lines</strong>: a solid line for each drug taken; dashed lines for its metabolites, lighter and more finely dashed for each further step in the chain.</li>
               <li><strong>Bands</strong>: the shaded area around a line runs from the fastest to the slowest clearance in the published range. The line is the typical value.</li>
-              <li><strong>Today</strong> is a dotted line; the <strong>ibogaine treatment</strong> is a bold gold line, with boosters as thin dashed gold lines.</li>
+              <li><strong>Today</strong> is a dotted line; the <strong>first ibogaine dose</strong> is a bold gold line, with later doses as thin dashed gold lines.</li>
               <li><strong>Clear ticks</strong> along the bottom mark each product's clear date: “✓ name”, “✓ name*” for “with assumptions”, and a hollow, dashed “≥ name (incomplete)” for a lower bound.</li>
             </ul>
             <figure class="shot" data-img="chart-main.webp">
@@ -330,7 +332,7 @@
               <figcaption>The main chart.</figcaption>
               <ol class="callout-list">
                 <li>Today.</li>
-                <li>The ibogaine flood dose.</li>
+                <li>The first ibogaine dose (here the flood).</li>
                 <li>A booster.</li>
                 <li>A drug taken (solid line) with its range band.</li>
                 <li>A metabolite (dashed line).</li>
@@ -404,7 +406,7 @@
               <li>A bar is drawn while an inhibiting compound is above its clear threshold, coloured by strength: yellow for weak, orange for moderate, red for strong.</li>
               <li>A <strong>hatched yellow</strong> band along the bottom of the track means <em>inhibition documented, strength unassessed</em>: the literature says the compound inhibits CYP2D6 (reversibly or mechanism-based), but how strongly hasn't been entered yet. It is treated as at least weak.</li>
               <li><strong>Reversible</strong> inhibition ends when the inhibitor clears. <strong>Mechanism-based</strong> inhibition destroys the enzyme, so a fading <em>recovery tail</em> follows while it is resynthesised. The tail lasts the clear threshold × the CYP2D6 recovery half-life (by default 5.5 × 51 h, about 12 days). The recovery half-life is set in <a href="#settings">Settings</a>.</li>
-              <li>If inhibition overlaps the flood dose or a booster, a red warning says <em>“CYP2D6 likely inhibited at treatment”</em> and names the drugs; inhibitors of unassessed strength are named separately, as “treated as at least weak”. The ibogaine projection then uses poor-metaboliser values.</li>
+              <li>If inhibition overlaps any ibogaine dose, a red warning says <em>“CYP2D6 likely inhibited at treatment”</em> and names the drugs; inhibitors of unassessed strength are named separately, as “treated as at least weak”. The ibogaine projection then uses poor-metaboliser values.</li>
               <li>If the library has no poor-metaboliser half-life multiplier for ibogaine, the projection can't be adjusted. The curve is then the unadjusted one, labelled <em>“poor-metaboliser effect not quantified”</em>, and the warning says the exposure increase is <em>“not quantified — no phenotype data for Ibogaine”</em>. The same applies when the patient's phenotype is poor. The caveat also appears in the tooltip and in the PDF's Assumptions and missing data.</li>
               <li>If a compound still present at the ibogaine date hasn't been assessed for CYP2D6 inhibition at all, an amber warning lists it. Unassessed is not the same as “no inhibition”.</li>
               <li>When no inhibitor is present, the track reads “— none”.</li>

@@ -74,8 +74,10 @@
       }
     ],
     "ibogaine": {
-      "flood": { "mg": 1300, "time": "2026-11-16T10:00" },
-      "boosters": [{ "mg": 200, "time": "2026-11-16T22:00" }]
+      "doses": [
+        { "id": "flood", "kind": "flood", "mg": 1300, "time": "2026-11-16T10:00" },
+        { "id": "booster", "kind": "booster", "mg": 200, "time": "2026-11-16T22:00" }
+      ]
     },
     "custom": { "compounds": [], "products": [], "links": [] },
     "settings": {

@@ -190,11 +190,14 @@ mark { background: rgba(124, 156, 255, 0.28); color: #fff; border-radius: 3px; p
 .k-dot { display: inline-block; width: 18px; height: 0; border-top: 2px dotted var(--muted); margin-left: 6px; }
 .receptor-list { display: grid; gap: 6px; }
 .receptor-row > input { flex: 2; }
+.ib-doses { display: grid; gap: 10px; justify-items: start; }
+.ib-dose { display: grid; gap: 8px; width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-left: 3px solid var(--gold); border-radius: 10px; background: rgba(232, 195, 106, 0.03); }
 .ib-row { align-items: flex-start; }
-.ib-label { flex: 0 0 70px !important; font-weight: 600; color: var(--gold); padding-top: 26px; }
+.ib-row > .field:first-child { flex: 0 0 130px; }
 .ib-row > .icon-btn { margin-top: 22px; }
-.ib-spacer { visibility: hidden; }
-.boosters { display: grid; gap: 8px; }
+.ib-repeat-toggle { font-size: 12.5px; color: var(--muted); }
+.ib-repeat .field:nth-child(-n+2) { flex: 0 0 90px; }
+.dose-item.ib .dose-main { display: grid; gap: 6px; }
 
 .toast { position: fixed; bottom: 22px; left: 50%; transform: translate(-50%, 20px); opacity: 0; transition: all .25s ease; z-index: 200; padding: 10px 16px; max-width: 90vw; }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }

@@ -7,11 +7,12 @@
 
 import { clearFraction, clearTime, expandRegimen, intervalsAbove, simulate, valueAt, type SimCompound, type SimInfusion, type SimRelease } from './pk';
 import { dosedCompoundIds, effectiveRelevance, hasIntrinsicKinetics, isReviewed, primaryCompound, rangeBounds, type Bounds } from './schema';
+import { fmtDateTime, fmtEvery } from './format';
 import { planProductTree } from './tree';
 import { findCycle } from './validate';
 import type {
-  Compound, CustomDrugs, DoseEntry, DoseUnit, InhibitorStrength, Library, Phenotype, PatientPhenotype, PhenotypeMap,
-  Product, QtTier, Session, Settings,
+  Compound, CustomDrugs, DoseEntry, DoseUnit, IbogaineDose, IbogaineDoseKind, IbogaineTreatment, InhibitorStrength, Library, Phenotype,
+  PatientPhenotype, PhenotypeMap, Product, QtTier, Session, Settings,
 } from './types';
 
 export const HOUR = 3600_000;
@@ -190,6 +191,49 @@ export function expandDose(d: DoseEntry, defaultDurationHours?: number | null): 
   return expandRegimen({ amount: d.amount, everyHours, start: 0, end: (end - start) / HOUR }).map((x) => ev(start + x.time * HOUR));
 }
 
+export const IBOGAINE_KIND_LABEL: Record<IbogaineDoseKind, string> = {
+  test: 'Test dose', flood: 'Flood', booster: 'Booster', microdose: 'Microdose', other: 'Other',
+};
+
+export interface IbogaineEvent {
+  time: number;
+  mg: number;
+  kind: IbogaineDoseKind;
+  doseId: string;
+}
+
+/** "Microdose 4 mg · every 2 days · 16/11/2026 08:00 → 14/12/2026 08:00 (14×)". */
+export function describeIbogaineDose(d: IbogaineDose, s: Pick<Settings, 'dateOrder' | 'hour12'>): { what: string; when: string } {
+  const what = `${IBOGAINE_KIND_LABEL[d.kind]} ${d.mg > 0 ? +d.mg.toFixed(2) : '—'} mg`;
+  const t = parseLocal(d.time);
+  const at = Number.isFinite(t) ? fmtDateTime(t, s) : '—';
+  if (!d.repeat) return { what, when: at };
+  const until = parseLocal(d.repeat.until);
+  const n = expandIbogaine({ doses: [d] }).length;
+  return { what, when: `${fmtEvery(d.repeat.every, d.repeat.unit)} · ${at} → ${Number.isFinite(until) ? fmtDateTime(until, s) : '—'} (${n}×)` };
+}
+
+/** Every ibogaine dose event (repeats expanded), sorted by time. Doses without an amount or a valid time are left out. */
+export function expandIbogaine(ib: IbogaineTreatment | null): IbogaineEvent[] {
+  if (!ib) return [];
+  const out: IbogaineEvent[] = [];
+  for (const d of ib.doses) {
+    const start = parseLocal(d.time);
+    if (!(d.mg > 0) || !Number.isFinite(start)) continue;
+    const ev = (time: number) => ({ time, mg: d.mg, kind: d.kind, doseId: d.id });
+    const r = d.repeat;
+    if (!r) {
+      out.push(ev(start));
+      continue;
+    }
+    const until = parseLocal(r.until);
+    if (!Number.isFinite(until)) continue;
+    const everyHours = r.every * (r.unit === 'days' ? 24 : 1);
+    for (const x of expandRegimen({ amount: d.mg, everyHours, start: 0, end: (until - start) / HOUR })) out.push(ev(start + x.time * HOUR));
+  }
+  return out.sort((a, b) => a.time - b.time);
+}
+
 /** Longest continuous dosing span (days): consecutive doses / applications ≤ 48 h apart. */
 export function continuousDays(events: DoseEvent[]): number {
   const iv = events.map((e) => [e.time, e.end ?? e.time] as [number, number]).sort((a, b) => a[0] - b[0]);
@@ -328,15 +372,16 @@ export interface Scenario {
   axisStart: number;
   axisEnd: number;
   now: number;
+  /** The first ibogaine dose of any kind: the treatment date everything is measured against. */
   ibogaineAt: number | null;
-  ibogaineDoseTimes: number[];
+  ibogaineEvents: IbogaineEvent[];
   cyp: CypInterval[];
   /** `by`: inhibitors of known strength; `byUnassessedStrength`: documented inhibitors of unassessed strength (counted as weak). */
   cypAtTreatment: { inhibited: boolean; by: string[]; byUnassessedStrength: string[]; unassessed: string[] };
   qt: QtResult;
   lingering: LingeringBand[];
   overlaps: ReceptorOverlap[];
-  /** Compounds present at the flood dose whose receptor list hasn't been researched. */
+  /** Compounds present at the first ibogaine dose whose receptor list hasn't been researched. */
   receptorsUnassessedAtTreatment: string[];
   warnings: Warning[];
 }
@@ -773,9 +818,9 @@ export function computeScenario(idx: LibraryIndex, session: Session, now: number
     byProduct.set(d.productId, [...(byProduct.get(d.productId) ?? []), ...ev]);
   }
 
-  const ib = session.ibogaine;
-  const ibTimes = ib ? [ib.flood, ...ib.boosters].map((x) => parseLocal(x.time)).filter(Number.isFinite) : [];
-  const ibogaineAt = ib && Number.isFinite(parseLocal(ib.flood.time)) ? parseLocal(ib.flood.time) : null;
+  const ibEvents = expandIbogaine(session.ibogaine);
+  const ibTimes = ibEvents.map((e) => e.time);
+  const ibogaineAt = ibTimes.length ? ibTimes[0] : null;
   const allDoseTimes = [...byProduct.values()].flat().flatMap((d) => (d.end ? [d.time, d.end] : [d.time]));
   const earliest = Math.min(...allDoseTimes, ...ibTimes, now);
   const lastDose = Math.max(...allDoseTimes, now);
@@ -835,12 +880,10 @@ export function computeScenario(idx: LibraryIndex, session: Session, now: number
   // Projected ibogaine + noribogaine.
   const projectAsPoor = cypAtTreatment.inhibited || session.patient.phenotype === 'poor';
   let pmUnquantified: string[] = [];
-  if (ib) {
+  if (ibEvents.length) {
     const p = findIbogaineProduct(idx);
-    const doses = [ib.flood, ...ib.boosters]
-      .map((x) => ({ time: parseLocal(x.time), amount: x.mg, unit: 'mg' as DoseUnit }))
-      .filter((d) => Number.isFinite(d.time) && d.amount > 0);
-    if (doses.length && productHasData(idx, p)) {
+    const doses = ibEvents.map((e) => ({ time: e.time, amount: e.mg, unit: 'mg' as DoseUnit }));
+    if (productHasData(idx, p)) {
       const r = simulateProduct(
         idx,
         {
@@ -858,8 +901,8 @@ export function computeScenario(idx: LibraryIndex, session: Session, now: number
       if (r.missing.length) warnings.push({ level: 'warn', text: `Ibogaine projection incomplete — missing kinetics for: ${r.missing.join(', ')}.` });
       products.push(r);
       collectCyp(r);
-    } else if (doses.length) {
-      warnings.push({ level: 'info', text: 'Ibogaine has no half-life data in the library yet — only the treatment date is shown.' });
+    } else {
+      warnings.push({ level: 'info', text: 'Ibogaine has no half-life data in the library yet — only the dose markers are shown.' });
     }
   }
 
@@ -877,7 +920,7 @@ export function computeScenario(idx: LibraryIndex, session: Session, now: number
     warnings.unshift({ level: 'danger', text: `Poor CYP2D6 metaboliser — ibogaine exposure may be increased, but ${notQuantified}.` });
   }
   if (cypUnassessed.length)
-    warnings.push({ level: 'warn', text: `CYP2D6 inhibition unassessed for compounds present at the ibogaine date: ${cypUnassessed.join(', ')}.` });
+    warnings.push({ level: 'warn', text: `CYP2D6 inhibition unassessed for compounds present at the first ibogaine dose: ${cypUnassessed.join(', ')}.` });
 
   const qt = computeQt(products, axisStart, Math.max(axisEnd, ...products.map((p) => p.clearAtMax ?? axisEnd)));
 
@@ -922,24 +965,25 @@ export function computeScenario(idx: LibraryIndex, session: Session, now: number
   const userEntered = used.filter((e) => e.userEntered).length;
   if (unverified) warnings.push({ level: 'info', text: `${unverified} plotted entr${unverified === 1 ? 'y uses' : 'ies use'} unverified library data.` });
   if (userEntered) warnings.push({ level: 'info', text: `${userEntered} plotted entr${userEntered === 1 ? 'y is' : 'ies are'} user-entered (not from the shared library).` });
+  const firstDose = ibEvents.length ? `the first ibogaine dose (${IBOGAINE_KIND_LABEL[ibEvents[0].kind].toLowerCase()})` : '';
   for (const r of products) {
     if (r.isIbogaine) continue;
     if (r.status === 'incomplete') {
-      const overlapping = ibogaineAt !== null && (r.clearAt === null || r.clearAt > ibogaineAt - 0);
+      const overlapping = ibogaineAt !== null && (r.clearAt === null || r.clearAt > ibogaineAt);
       warnings.push({
         level: 'warn',
         text: ibogaineAt !== null
-          ? `${r.name}: clear date incomplete — missing kinetics for ${r.missing.join(', ')}. Can't confirm it is clear by the ibogaine date${overlapping ? ' (the computable parts are not clear yet)' : ''}.`
+          ? `${r.name}: clear date incomplete — missing kinetics for ${r.missing.join(', ')}. Can't confirm it is clear by ${firstDose}${overlapping ? ' (the computable parts are not clear yet)' : ''}.`
           : `${r.name}: clear date incomplete — missing kinetics for ${r.missing.join(', ')}.`,
       });
     } else if (ibogaineAt !== null && (r.clearAt === null || r.clearAt > ibogaineAt))
-      warnings.push({ level: 'warn', text: `${r.name} is not clear by the planned ibogaine date (typical estimate).` });
+      warnings.push({ level: 'warn', text: `${r.name} is not clear by ${firstDose} (typical estimate).` });
   }
   if (products.some((r) => r.curves.some((c) => c.formationLimited)))
     warnings.push({ level: 'info', text: 'Some conjugates are plotted as tracking their parent (formation-limited). They can accumulate in renal impairment.' });
 
   return {
-    products, axisStart, axisEnd, now, ibogaineAt, ibogaineDoseTimes: ibTimes, cyp, cypAtTreatment, qt, lingering, overlaps,
+    products, axisStart, axisEnd, now, ibogaineAt, ibogaineEvents: ibEvents, cyp, cypAtTreatment, qt, lingering, overlaps,
     receptorsUnassessedAtTreatment, warnings,
   };
 }

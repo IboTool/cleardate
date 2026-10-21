@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { buildIndex, computeScenario, HOUR, strongestAt, toLocalInput, type Scenario } from './model';
+import { buildIndex, computeScenario, describeIbogaineDose, expandIbogaine, HOUR, strongestAt, toLocalInput, type Scenario } from './model';
 import { curveVisible } from './chart';
 import { assumptionLines } from './export';
 import { valueAt } from './pk';
 import { emptyCompound, emptyProduct, SCHEMA_VERSION } from './schema';
 import { emptySession, normaliseSession } from './state';
-import type { Compound, Library, Product, Session } from './types';
+import type { Compound, IbogaineDose, Library, Product, Session } from './types';
 
 const T0 = new Date('2026-01-01T08:00').getTime();
 const at = (h: number) => toLocalInput(T0 + h * HOUR);
@@ -300,7 +300,7 @@ describe('CYP2D6: poor-metaboliser projection without phenotype data', () => {
     compound('inh', 10, { cyp2d6: cyp({ inhibitor: inhibitor ? 'strong' : 'none', inhibitionType: inhibitor ? 'reversible' : 'none' }) }),
   ], [emptyProduct('ibogaine_oral', 'Ibogaine (Oral)', 'ibogaine', 'Oral', 'x'), emptyProduct('inh_oral', 'Inh (Oral)', 'inh', 'Oral', 'x')]);
   const scenario = (l: Library, patch: (s: Session) => void = () => {}) =>
-    run(l, [{ productId: 'inh_oral', amount: 20 }], (s) => { s.ibogaine = { flood: { mg: 1000, time: at(12) }, boosters: [] }; patch(s); });
+    run(l, [{ productId: 'inh_oral', amount: 20 }], (s) => { s.ibogaine = { doses: [{ id: 'f', kind: 'flood', mg: 1000, time: at(12) }] }; patch(s); });
   const ib = (scn: Scenario) => scn.products.find((p) => p.isIbogaine)!;
   const danger = (scn: Scenario) => scn.warnings.filter((w) => w.level === 'danger').map((w) => w.text);
 
@@ -351,7 +351,7 @@ describe('CYP2D6: inhibitors of unassessed strength', () => {
     compound('meth', 10, { cyp2d6: { substrate: 'unassessed', halfLifeMultiplier: null, inhibitor: 'unassessed', inhibitionType } }),
   ], [emptyProduct('meth_oral', 'Meth (Oral)', 'meth', 'Oral', 'x')]);
   const scenario = (l: Library) =>
-    run(l, [{ productId: 'meth_oral', amount: 60 }], (s) => { s.ibogaine = { flood: { mg: 1000, time: at(24) }, boosters: [] }; });
+    run(l, [{ productId: 'meth_oral', amount: 60 }], (s) => { s.ibogaine = { doses: [{ id: 'f', kind: 'flood', mg: 1000, time: at(24) }] }; });
 
   it('appear on the track while above the clear threshold, counted as at least weak', () => {
     const scn = scenario(lib('reversible'));
@@ -380,7 +380,7 @@ describe('CYP2D6: inhibitors of unassessed strength', () => {
     const scn = scenario(lib('unassessed'));
     expect(scn.cyp).toEqual([]);
     expect(scn.cypAtTreatment).toMatchObject({ inhibited: false, unassessed: ['Meth'] });
-    expect(scn.warnings.some((x) => x.text === 'CYP2D6 inhibition unassessed for compounds present at the ibogaine date: Meth.')).toBe(true);
+    expect(scn.warnings.some((x) => x.text === 'CYP2D6 inhibition unassessed for compounds present at the first ibogaine dose: Meth.')).toBe(true);
   });
 
   it('rank below an assessed weak inhibitor in the tooltip', () => {
@@ -390,6 +390,54 @@ describe('CYP2D6: inhibitors of unassessed strength', () => {
       { ...base, strength: 'weak', strengthUnassessed: false, compound: 'W' },
     ], 5);
     expect(pick?.compound).toBe('W');
+  });
+});
+
+describe('ibogaine doses', () => {
+  const lib = () => library([compound('ibogaine', 7), compound('slow', 48)],
+    [emptyProduct('ibogaine_oral', 'Ibogaine (Oral)', 'ibogaine', 'Oral', 'x'), emptyProduct('slow_oral', 'Slow (Oral)', 'slow', 'Oral', 'x')]);
+  const withDoses = (doses: IbogaineDose[]) => run(lib(), [{ productId: 'slow_oral', amount: 10 }], (s) => { s.ibogaine = { doses }; });
+  const ib = (scn: Scenario) => scn.products.find((p) => p.isIbogaine)!;
+
+  it('accept a booster on its own, with no flood', () => {
+    const scn = withDoses([{ id: 'b', kind: 'booster', mg: 200, time: at(100) }]);
+    expect(scn.ibogaineAt).toBe(T0 + 100 * HOUR);
+    expect(ib(scn).doses).toHaveLength(1);
+  });
+
+  it('measure clear dates against the first dose of any kind', () => {
+    const scn = withDoses([
+      { id: 'f', kind: 'flood', mg: 1000, time: at(103) },
+      { id: 't', kind: 'test', mg: 50, time: at(100) },
+    ]);
+    expect(scn.ibogaineAt).toBe(T0 + 100 * HOUR);
+    expect(scn.ibogaineEvents.map((e) => e.kind)).toEqual(['test', 'flood']);
+    expect(scn.warnings.map((w) => w.text)).toContain('Slow is not clear by the first ibogaine dose (test dose) (typical estimate).');
+  });
+
+  it('expand repeated doses, e.g. microdosing every 2 days for 4 weeks', () => {
+    const d: IbogaineDose = { id: 'm', kind: 'microdose', mg: 4, time: at(0), repeat: { every: 2, unit: 'days', until: at(28 * 24) } };
+    const ev = expandIbogaine({ doses: [d] });
+    expect(ev).toHaveLength(15);
+    expect(ev[1].time - ev[0].time).toBe(48 * HOUR);
+    expect(ev.every((e) => e.mg === 4 && e.kind === 'microdose')).toBe(true);
+    expect(ib(withDoses([d])).doses).toHaveLength(15);
+  });
+
+  it('skip doses without an amount or a valid time', () => {
+    expect(expandIbogaine({ doses: [
+      { id: 'a', kind: 'flood', mg: 0, time: at(0) },
+      { id: 'b', kind: 'booster', mg: 100, time: '' },
+      { id: 'c', kind: 'microdose', mg: 4, time: at(0), repeat: { every: 0, unit: 'days', until: at(48) } },
+    ] })).toEqual([]);
+  });
+
+  it('describe each dose in the user’s date format', () => {
+    const s = { dateOrder: 'dmy', hour12: false } as const;
+    expect(describeIbogaineDose({ id: 't', kind: 'test', mg: 50, time: '2026-11-16T08:00' }, s))
+      .toEqual({ what: 'Test dose 50 mg', when: '16/11/2026 08:00' });
+    expect(describeIbogaineDose({ id: 'm', kind: 'microdose', mg: 4, time: '2026-11-16T08:00', repeat: { every: 2, unit: 'days', until: '2026-11-22T08:00' } }, s))
+      .toEqual({ what: 'Microdose 4 mg', when: 'every 2 days · 16/11/2026 08:00 → 22/11/2026 08:00 (4×)' });
   });
 });
 

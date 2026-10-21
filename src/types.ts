@@ -200,14 +200,22 @@ export interface DoseEntry {
   durationHours?: number;
 }
 
+export const IBOGAINE_DOSE_KINDS = ['test', 'flood', 'booster', 'microdose', 'other'] as const;
+export type IbogaineDoseKind = (typeof IBOGAINE_DOSE_KINDS)[number];
+
 export interface IbogaineDose {
+  id: string;
+  kind: IbogaineDoseKind;
   mg: number;
+  /** The dose time; for a repeated dose, the first one. ISO local datetime. */
   time: string;
+  /** Repeated (e.g. microdosing): every N hours/days from `time` until `until`. */
+  repeat?: { every: number; unit: 'hours' | 'days'; until: string } | null;
 }
 
+/** Ibogaine doses of any kind. The first dose (by time) is the treatment date everything is measured against. */
 export interface IbogaineTreatment {
-  flood: IbogaineDose;
-  boosters: IbogaineDose[];
+  doses: IbogaineDose[];
 }
 
 export interface Patient {
