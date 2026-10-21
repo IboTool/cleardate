@@ -26,6 +26,7 @@ export const defaultSettings = (): Settings => ({
   cypRecoveryHalfLifeHours: 51,
   assumedCv: 0.3,
   unknownAsFormationLimited: false,
+  standardDrinkGrams: 14,
   clinicName: '',
   demoData: false,
 });

@@ -64,8 +64,9 @@ export function migrateLibraryV21(input: unknown, opts: V21Options): { lib: Libr
     inhibitorReset: [],
     productChanges: [],
   };
-  if (src?.schemaVersion === 2.1) return { lib: src as Library, report, skipped: true };
-  if (src?.schemaVersion !== 2) throw new Error(`expected a schemaVersion 2 library, found ${String(src?.schemaVersion)} (run npm run migrate-v2 first)`);
+  const version = src?.schemaVersion as number | undefined;
+  if (typeof version === 'number' && version >= 2.1) return { lib: src as Library, report, skipped: true };
+  if (version !== 2) throw new Error(`expected a schemaVersion 2 library, found ${String(version)} (run npm run migrate-v2 first)`);
 
   // Check before changing anything.
   const hits = inhibitorResetHits(src.compounds);
@@ -77,7 +78,7 @@ export function migrateLibraryV21(input: unknown, opts: V21Options): { lib: Libr
   }
 
   const lib = clone(src) as Library;
-  lib.schemaVersion = 2.1;
+  (lib as { schemaVersion: number }).schemaVersion = 2.1;
 
   report.productChanges = applyV21ProductRules(lib, { annotate: true });
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { clearFraction, clearTime, CycleError, expandRegimen, simulate, topoOrder, valueAt, type SimCompound } from './pk';
-import { emptyCompound, emptyProduct, SCHEMA_VERSION } from './schema';
+import { emptyCompound, emptyProduct, productSections, SCHEMA_VERSION } from './schema';
 import { findCycle, fractionSums, validateLibrary } from './validate';
 import type { Library } from './types';
 
@@ -344,11 +344,49 @@ describe('validation', () => {
     expect(p.incomplete.total).toBe(0);
   });
 
-  it('requires schemaVersion 2.1 and points older files at the right migration', () => {
+  it('checks the v2.2 fields: prodrug components, zero-order, not-modelled, endogenous, conditional edges', () => {
+    const l = lib();
+    const rate = { typical: null, min: null, max: null, rangeType: null, cv: null };
+    l.compounds.push({ ...emptyCompound('ethanol', 'Ethanol'), kinetics: { mode: 'zero-order', halfLifeHours: null, earlyPhase: null, steadyState: null, zeroOrderRateMgPerKgPerHour: rate } });
+    l.compounds.push({ ...emptyCompound('n2o', 'N2O'), kinetics: { mode: 'not-modelled', halfLifeHours: null, earlyPhase: null, steadyState: null, notModelledReason: 'Exhaled within minutes' } });
+    l.compounds[1] = { ...l.compounds[1], endogenous: true, formedFrom: [{ ...l.compounds[1].formedFrom[0], condition: { requiresCompound: 'ethanol' } }] };
+    l.products.push({ ...emptyProduct('a_oral', 'A (Oral)', 'b', 'Oral', 'opioids'), components: [{ compound: 'b', ratio: 1, saltFactor: null, bioavailability: null, administeredAs: 'a', massFactor: 0.7 }] });
+    l.products.push({ ...emptyProduct('n2o_inhaled', 'N2O (Inhaled)', 'n2o', 'Inhaled', 'opioids'), doseUnit: 'session', input: { type: 'zero-order', releaseHalfLifeHours: null, defaultDurationHours: null } });
+    l.products.push({ ...emptyProduct('ethanol_oral', 'Ethanol (Oral)', 'ethanol', 'Oral', 'opioids'), doseUnit: 'standard drinks' });
+    let r = validateLibrary(l);
+    expect(r.errors).toEqual([]);
+    expect(r.progress.notModelled).toBe(1);
+    expect(r.progress.modes).toMatchObject({ 'zero-order': 1, 'not-modelled': 1 });
+
+    l.compounds[3].kinetics = { ...l.compounds[3].kinetics, zeroOrderRateMgPerKgPerHour: undefined };
+    l.compounds[4].kinetics = { ...l.compounds[4].kinetics, notModelledReason: ' ' };
+    l.compounds[1] = { ...l.compounds[1], endogenous: 'yes' as never, formedFrom: [{ ...l.compounds[1].formedFrom[0], condition: { requiresCompound: 'beer' } }] };
+    l.products[0].components[0] = { ...l.products[0].components[0], administeredAs: 'nope', massFactor: 2.5 };
+    l.products[1] = { ...l.products[1], components: [{ compound: 'a', ratio: 1, saltFactor: null, bioavailability: null }] };
+    r = validateLibrary(l);
+    const msgs = r.errors.map((e) => `${e.id}: ${e.message}`).join('\n');
+    expect(msgs).toMatch(/ethanol: zero-order kinetics need kinetics\.zeroOrderRateMgPerKgPerHour/);
+    expect(msgs).toMatch(/n2o: not-modelled kinetics need kinetics\.notModelledReason/);
+    expect(msgs).toMatch(/b: endogenous must be true\/false/);
+    expect(msgs).toMatch(/b: formedFrom a: condition requires unknown compound "beer"/);
+    expect(msgs).toMatch(/a_oral: component b: massFactor \(2\.5\) must be ≤ 2/);
+    expect(msgs).toMatch(/a_oral: component b: administeredAs "nope" does not exist/);
+    expect(msgs).toMatch(/n2o_inhaled: exposure sessions .* only for products whose primary compound is not-modelled/);
+  });
+
+  it('counts the conversion section for prodrug products only', () => {
+    const plain = emptyProduct('a_oral', 'A (Oral)', 'a', 'Oral', 'opioids');
+    expect(productSections(plain)).not.toContain('conversion');
+    expect(productSections({ components: [{ ...plain.components[0], administeredAs: 'b' }] })).toContain('conversion');
+  });
+
+  it('requires schemaVersion 2.2 and points older files at the right migration', () => {
     const l = lib() as unknown as Record<string, unknown>;
     delete l.schemaVersion;
-    expect(validateLibrary(l as never).errors.some((e) => /migrate-v2, then npm run migrate-v2\.1/.test(e.message))).toBe(true);
+    expect(validateLibrary(l as never).errors.some((e) => /migrate-v2, then npm run migrate-v2\.1 and npm run migrate-v2\.2/.test(e.message))).toBe(true);
     l.schemaVersion = 2;
-    expect(validateLibrary(l as never).errors.some((e) => /v2 file; run npm run migrate-v2\.1/.test(e.message))).toBe(true);
+    expect(validateLibrary(l as never).errors.some((e) => /v2 file; run npm run migrate-v2\.1, then npm run migrate-v2\.2/.test(e.message))).toBe(true);
+    l.schemaVersion = 2.1;
+    expect(validateLibrary(l as never).warnings.some((e) => /run npm run migrate-v2\.2/.test(e.message))).toBe(true);
   });
 });

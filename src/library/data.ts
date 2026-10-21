@@ -300,7 +300,7 @@ export const COMPOUND_SECTION_LABEL: Record<string, string> = {
   cyp2d6: 'CYP2D6', qt: 'QT', receptors: 'Receptors', lingeringEffects: 'Lingering effects', nonlinearKinetics: 'Nonlinear kinetics',
 };
 export const PRODUCT_SECTION_LABEL: Record<string, string> = {
-  class: 'Class', aliases: 'Names and aliases', components: 'Components', input: 'Input model', typicalDose: 'Typical dose',
+  class: 'Class', aliases: 'Names and aliases', components: 'Components', conversion: 'Prodrug conversion', input: 'Input model', typicalDose: 'Typical dose',
 };
 
 export interface SectionSource {
@@ -315,7 +315,7 @@ export interface SectionSource {
 
 /** Each review section of a compound or product with its note and (drafts only) provenance marker. */
 export function sectionSources(e: Compound | Product, kind: 'compound' | 'product'): SectionSource[] {
-  const keys = kind === 'compound' ? compoundSections(e as Compound) : productSections();
+  const keys = kind === 'compound' ? compoundSections(e as Compound) : productSections(e as Product);
   const labels = kind === 'compound' ? COMPOUND_SECTION_LABEL : PRODUCT_SECTION_LABEL;
   return keys.map((key) => {
     const tag = provenanceOf(e.provenance?.[key as keyof typeof e.provenance] as string | null);

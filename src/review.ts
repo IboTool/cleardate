@@ -11,17 +11,17 @@ export type Entry = Compound | Product;
 export type Section = CompoundSection | ProductSection;
 
 export const isCompound = (e: Entry): e is Compound => 'kinetics' in e;
-export const sectionsOf = (e: Entry): Section[] => (isCompound(e) ? compoundSections(e) : productSections());
+export const sectionsOf = (e: Entry): Section[] => (isCompound(e) ? compoundSections(e) : productSections(e));
 
 export const SECTION_LABEL: Record<Section, string> = {
   halfLife: 'Kinetics', metabolism: 'Metabolite links & fractions', relevance: 'Clinical relevance', molecularWeight: 'Molecular weight',
   cyp2d6: 'CYP2D6', qt: 'QT', receptors: 'Receptors', lingeringEffects: 'Lingering effects', nonlinearKinetics: 'Nonlinear kinetics',
-  class: 'Class', aliases: 'Aliases', components: 'Components', input: 'Input model (release)', typicalDose: 'Typical dose',
+  class: 'Class', aliases: 'Aliases', components: 'Components', conversion: 'Prodrug conversion', input: 'Input model (release)', typicalDose: 'Typical dose',
 };
 
 /** Which validator messages belong to which section (messages start with the field path). */
 const ISSUE_RE: Record<Section, RegExp> = {
-  halfLife: /^(kinetics|earlyPhase\/steadyState|formation-limited compound)/,
+  halfLife: /^(kinetics|earlyPhase\/steadyState|formation-limited compound|zero-order kinetics|not-modelled kinetics|zeroOrderRate|notModelledReason|endogenous|verified zero-order)/,
   metabolism: /^(formedFrom|known metabolite fractions|cycle in formedFrom|isMetabolite|has formedFrom)/,
   relevance: /^clinicalRelevance/,
   molecularWeight: /^molecularWeight/,
@@ -32,8 +32,9 @@ const ISSUE_RE: Record<Section, RegExp> = {
   nonlinearKinetics: /^nonlinearKinetics/,
   class: /^class/,
   aliases: /^(aliases|alias ")/,
-  components: /^component/,
-  input: /^(input|zero-order input|doseUnit)/,
+  components: /^component (?!.*(administeredAs|massFactor))/,
+  conversion: /^component .*(administeredAs|massFactor)/,
+  input: /^(input|zero-order input|doseUnit|exposure sessions)/,
   typicalDose: /^typicalDose/,
 };
 
@@ -48,6 +49,8 @@ export function unknownParts(e: Entry, s: Section): string[] {
     switch (s) {
       case 'halfLife':
         if (k.mode === 'unknown') out.push('kinetic mode');
+        if (k.mode === 'zero-order' && !hasTypical(k.zeroOrderRateMgPerKgPerHour)) out.push('zero-order elimination rate');
+        if (k.mode === 'not-modelled' && !k.notModelledReason?.trim()) out.push('reason it is not modelled');
         if (k.mode !== 'intrinsic') break;
         if (!hasTypical(k.halfLifeHours)) out.push('half-life');
         if (k.earlyPhase && k.earlyPhase.fraction === null) out.push('early-phase fraction');
@@ -94,6 +97,9 @@ export function unknownParts(e: Entry, s: Section): string[] {
         break;
       case 'components':
         for (const c of e.components) if (c.bioavailability === null) out.push(`bioavailability of ${c.compound}`);
+        break;
+      case 'conversion':
+        for (const c of e.components) if (c.administeredAs && c.massFactor == null) out.push(`mass factor ${c.administeredAs} → ${c.compound}`);
         break;
       case 'input':
         if (e.input.type === 'first-order-release' && !hasTypical(e.input.releaseHalfLifeHours)) out.push('release half-life');
@@ -178,6 +184,8 @@ export function verifyBlockers(e: Entry, errors: Issue[]): string[] {
   if (isCompound(e)) {
     if (e.isMetabolite && e.clinicalRelevance === 'unknown') out.push('classify clinical relevance (active or inactive)');
     if (e.kinetics.mode === 'unknown' && !isConfirmedUnknown(e, 'halfLife')) out.push('enter the kinetics, or “Confirm as unknown”');
+    if (e.kinetics.mode === 'zero-order' && !hasTypical(e.kinetics.zeroOrderRateMgPerKgPerHour) && !isConfirmedUnknown(e, 'halfLife'))
+      out.push('enter the zero-order rate, or “Confirm as unknown”');
   }
   return out;
 }

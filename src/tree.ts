@@ -1,10 +1,10 @@
-// What can be simulated in a product's compound tree, and what holds up its clear date (spec v2.1 §1).
+// What can be simulated in a product's compound tree, and what holds up its clear date (spec v2.1 §1, v2.2 §2–4).
 // Shared by the scenario model and the validator's progress report so both always agree.
 
-import { effectiveRelevance, hasIntrinsicKinetics } from './schema';
+import { effectiveRelevance, hasIntrinsicKinetics, hasZeroOrderRate, isReviewed } from './schema';
 import type { ClinicalRelevance, Compound } from './types';
 
-export type SimKind = 'intrinsic' | 'formation-limited';
+export type SimKind = 'intrinsic' | 'formation-limited' | 'zero-order';
 
 export interface MissingCompound {
   id: string;
@@ -27,6 +27,10 @@ export interface TreePlan {
   missing: MissingCompound[];
   /** Inactive compounds with unknown kinetics: not simulated and excluded from the clear date. */
   excluded: string[];
+  /** Endogenous compounds with unknown kinetics and reviewed relevance: not simulated, never block (v2.2 §4). */
+  endogenous: string[];
+  /** Compounds with kinetics mode "not-modelled" (a component: the product is "Not modelled"). */
+  notModelled: string[];
 }
 
 export function planProductTree(
@@ -64,14 +68,24 @@ export function planProductTree(
   const assumedFormationLimited = new Set<string>();
   const missing: MissingCompound[] = [];
   const excluded: string[] = [];
-  // Not simulated, and already accounted for by an "Incomplete" entry upstream (or itself).
+  const endogenous: string[] = [];
+  const notModelled: string[] = [];
+  // Not simulated, and already accounted for by an "Incomplete" / "Not modelled" entry upstream (or itself).
   const counted = new Set<string>();
+  const ownKind = (c: Compound): SimKind | null =>
+    hasZeroOrderRate(c) ? 'zero-order' : c.kinetics.mode === 'intrinsic' && hasIntrinsicKinetics(c) ? 'intrinsic' : null;
   for (const id of topo) {
     const c = compounds.get(id);
     if (!c) continue;
     const relevance = effectiveRelevance(c, dosed);
+    if (c.kinetics.mode === 'not-modelled') {
+      notModelled.push(id);
+      counted.add(id);
+      continue;
+    }
     if (roots.includes(id)) {
-      if (hasIntrinsicKinetics(c)) included.set(id, 'intrinsic');
+      const kind = ownKind(c);
+      if (kind) included.set(id, kind);
       else {
         missing.push({ id, relevance: 'active' });
         counted.add(id);
@@ -79,27 +93,33 @@ export function planProductTree(
       continue;
     }
     const ps = parents.get(id) ?? [];
+    const skipEndogenous = () => {
+      if (!c.endogenous || !isReviewed(c, 'relevance')) return false;
+      endogenous.push(id);
+      return true;
+    };
     if (!ps.some((p) => included.has(p))) {
       // Downstream of something that can't be simulated.
       if (relevance === 'inactive') continue;
       if (ps.some((p) => counted.has(p))) counted.add(id);
-      else {
+      else if (!skipEndogenous()) {
         missing.push({ id, relevance, via: ps.find((p) => excluded.includes(p)) ?? ps[0] });
         counted.add(id);
       }
       continue;
     }
     const mode = c.kinetics.mode;
-    if (mode === 'intrinsic' && hasIntrinsicKinetics(c)) included.set(id, 'intrinsic');
+    const kind = ownKind(c);
+    if (kind) included.set(id, kind);
     else if (mode === 'formation-limited') included.set(id, 'formation-limited');
     else if (mode === 'unknown' && unknownAsFL) {
       included.set(id, 'formation-limited');
       assumedFormationLimited.add(id);
     } else if (relevance === 'inactive') excluded.push(id);
-    else {
+    else if (!skipEndogenous()) {
       missing.push({ id, relevance });
       counted.add(id);
     }
   }
-  return { tree, topo, parents, included, assumedFormationLimited, missing, excluded };
+  return { tree, topo, parents, included, assumedFormationLimited, missing, excluded, endogenous, notModelled };
 }
