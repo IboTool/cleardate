@@ -1711,7 +1711,7 @@
       ],
       "molecularWeight": null,
       "kinetics": {
-        "mode": "formation-limited",
+        "mode": "unknown",
         "halfLifeHours": null,
         "earlyPhase": null,
         "steadyState": null
@@ -1738,7 +1738,7 @@
         "note": ""
       },
       "provenance": {
-        "halfLife": "estimate",
+        "halfLife": "gap",
         "metabolism": null,
         "molecularWeight": null,
         "cyp2d6": null,
@@ -1748,7 +1748,7 @@
         "nonlinearKinetics": null
       },
       "sourceNotes": {
-        "halfLife": "Auto-assigned by migration: conjugate assumed formation-limited. Review.",
+        "halfLife": "[gap] V2 audit of 4_hydroxyduloxetine_glucuronide: automatic conjugate-name heuristic is insufficient to establish clearance faster than formation in humans, or the simulation assumption of one-tenth of the fastest parent half-life. No compound-specific paired human parent/metabolite clearance evidence confirmed in this pass. Reverted formation-limited to unknown; numeric kinetics null. This does not exclude formation-limited disposition. Renal impairment can materially alter conjugate clearance. Original formedFrom topology preserved.",
         "metabolism": "",
         "molecularWeight": "",
         "cyp2d6": "",
@@ -1757,7 +1757,7 @@
         "lingeringEffects": "",
         "nonlinearKinetics": ""
       },
-      "source": "",
+      "source": "DRAFT — AI-prepopulated, unverified. ",
       "verified": false,
       "verifiedDate": ""
     },
@@ -2673,8 +2673,8 @@
         "mode": "intrinsic",
         "halfLifeHours": {
           "typical": 13,
-          "min": 13,
-          "max": 13,
+          "min": null,
+          "max": null,
           "rangeType": "single-value",
           "cv": null
         },
@@ -2718,7 +2718,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[checked] DailyMed naltrexone oral tablet, Clinical Pharmacology: metabolite mean 13 h. Only mean provided in reviewed passage; all three equal. Vivitrol label gives release-limited 5-10 days after depot; that is not intrinsic metabolite clearance.",
+        "halfLife": "[checked] DailyMed naltrexone oral tablet, Clinical Pharmacology: metabolite mean 13 h. Only mean provided in reviewed passage; all three equal. Vivitrol label gives release-limited 5-10 days after depot; that is not intrinsic metabolite clearance. V2 representation-only correction: single-value bounds are null; calculated mean +/- 2 SD is explicitly mean-2sd. Underlying prior-session source/value provenance retained; no new measurement inferred.",
         "metabolism": "[gap] Candidate formedFrom links retained. No defensible quantitative formation fraction retrieved; each unchanged zero means unknown, not evidence of absent formation.",
         "molecularWeight": "[gap] Free-base PubChem molecular weight not confirmed for this compound; zero retained.",
         "cyp2d6": "[gap] Clinically meaningful CYP2D6 substrate/inhibitor status not established in this pass; false/none are unassessed defaults. All multipliers remain 1: no phenotype data.",
@@ -3962,7 +3962,7 @@
       ],
       "molecularWeight": null,
       "kinetics": {
-        "mode": "formation-limited",
+        "mode": "unknown",
         "halfLifeHours": null,
         "earlyPhase": null,
         "steadyState": null
@@ -3989,7 +3989,7 @@
         "note": ""
       },
       "provenance": {
-        "halfLife": "estimate",
+        "halfLife": "gap",
         "metabolism": null,
         "molecularWeight": null,
         "cyp2d6": null,
@@ -3999,7 +3999,7 @@
         "nonlinearKinetics": null
       },
       "sourceNotes": {
-        "halfLife": "Auto-assigned by migration: conjugate assumed formation-limited. Review.",
+        "halfLife": "[gap] V2 audit of apap_glucuronide_sulfate: automatic conjugate-name heuristic is insufficient to establish clearance faster than formation in humans, or the simulation assumption of one-tenth of the fastest parent half-life. No compound-specific paired human parent/metabolite clearance evidence confirmed in this pass. Reverted formation-limited to unknown; numeric kinetics null. This does not exclude formation-limited disposition. Renal impairment can materially alter conjugate clearance. Original formedFrom topology preserved.",
         "metabolism": "",
         "molecularWeight": "",
         "cyp2d6": "",
@@ -4008,7 +4008,7 @@
         "lingeringEffects": "",
         "nonlinearKinetics": ""
       },
-      "source": "",
+      "source": "DRAFT — AI-prepopulated, unverified. ",
       "verified": false,
       "verifiedDate": ""
     },
@@ -4805,7 +4805,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[checked] Primary healthy-volunteer sublingual study under naltrexone block, https://pubmed.ncbi.nlm.nih.gov/14563545/, abstract: approximately 26 h, range 9-69 h. DailyMed sublingual label, Clinical Pharmacology: mean values 31-35 h across studies (not an individual range); wider primary-study range retained. Selected study conditions and dose/formulation differ from routine maintenance; this compound value represents SL disposition and cannot be assumed to describe all routes.",
+        "halfLife": "[checked] Primary healthy-volunteer sublingual study under naltrexone block, https://pubmed.ncbi.nlm.nih.gov/14563545/, abstract: approximately 26 h, range 9-69 h. DailyMed sublingual label, Clinical Pharmacology: mean values 31-35 h across studies (not an individual range); wider primary-study range retained. Selected study conditions and dose/formulation differ from routine maintenance; this compound value represents SL disposition and cannot be assumed to describe all routes. V2 representation-only correction: single-value bounds are null; calculated mean +/- 2 SD is explicitly mean-2sd. Underlying prior-session source/value provenance retained; no new measurement inferred.",
         "metabolism": "[gap] Candidate formedFrom links retained. No defensible quantitative formation fraction retrieved; each unchanged zero means unknown, not evidence of absent formation.",
         "molecularWeight": "[checked] PubChem Buprenorphine compound record, Molecular Weight: 467.6 g/mol, free base/neutral parent; value read in retrieved PubChem record during session. [recall] Conventional dosing basis: hydrochloride for SL/buccal; labels may express buprenorphine-moiety content; transdermal/depot formulations differ. Check actual label mass basis and salt/hydrate conversion; neutral/free-base MW is not a conversion of the entered dose.",
         "cyp2d6": "[checked] DailyMed buprenorphine sublingual label Clinical Pharmacology reports in vitro CYP2D6 inhibition by parent and norbuprenorphine but expects no significant interaction at therapeutic plasma levels. No clinical FDA-strength category inferred from in vitro potency. [gap] Clinical inhibitor classification remains none/unassessed; substrate status not established; multipliers 1: no phenotype data.",
@@ -4832,7 +4832,7 @@
       ],
       "molecularWeight": null,
       "kinetics": {
-        "mode": "formation-limited",
+        "mode": "unknown",
         "halfLifeHours": null,
         "earlyPhase": null,
         "steadyState": null
@@ -4859,7 +4859,7 @@
         "note": ""
       },
       "provenance": {
-        "halfLife": "estimate",
+        "halfLife": "gap",
         "metabolism": "gap",
         "molecularWeight": "gap",
         "cyp2d6": "gap",
@@ -4869,7 +4869,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[gap] No compound-specific terminal elimination half-life in healthy adults retrieved; zero is missing data, not instantaneous elimination. Auto-assigned by migration: conjugate assumed formation-limited. Review.",
+        "halfLife": "[gap] V2 audit of buprenorphine_3_glucuronide: automatic conjugate-name heuristic is insufficient to establish clearance faster than formation in humans, or the simulation assumption of one-tenth of the fastest parent half-life. No compound-specific paired human parent/metabolite clearance evidence confirmed in this pass. Reverted formation-limited to unknown; numeric kinetics null. This does not exclude formation-limited disposition. Renal impairment can materially alter conjugate clearance. Original formedFrom topology preserved.",
         "metabolism": "[gap] Candidate formedFrom links retained. No defensible quantitative formation fraction retrieved; each unchanged zero means unknown, not evidence of absent formation.",
         "molecularWeight": "[gap] Free-base PubChem molecular weight not confirmed for this compound; zero retained.",
         "cyp2d6": "[gap] Clinically meaningful CYP2D6 substrate/inhibitor status not established in this pass; false/none are unassessed defaults. All multipliers remain 1: no phenotype data.",
@@ -5014,8 +5014,8 @@
         "mode": "intrinsic",
         "halfLifeHours": {
           "typical": 4.8,
-          "min": 4.8,
-          "max": 4.8,
+          "min": null,
+          "max": null,
           "rangeType": "single-value",
           "cv": null
         },
@@ -5063,7 +5063,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[checked] DailyMed butorphanol injection, Clinical Pharmacology: healthy comparator mean 4.8 h in hepatic impairment study; a different renal-impairment comparator is 5.8 h. These are different cohort means, not a subject range. All three use the selected 4.8 h IV comparator; IN kinetics need separate review.",
+        "halfLife": "[checked] DailyMed butorphanol injection, Clinical Pharmacology: healthy comparator mean 4.8 h in hepatic impairment study; a different renal-impairment comparator is 5.8 h. These are different cohort means, not a subject range. All three use the selected 4.8 h IV comparator; IN kinetics need separate review. V2 representation-only correction: single-value bounds are null; calculated mean +/- 2 SD is explicitly mean-2sd. Underlying prior-session source/value provenance retained; no new measurement inferred.",
         "metabolism": "[gap] Candidate formedFrom links retained. No defensible quantitative formation fraction retrieved; each unchanged zero means unknown, not evidence of absent formation.",
         "molecularWeight": "[recall] PubChem Butorphanol compound record, Molecular Weight: 327.46 g/mol, free base/neutral parent; value recalled, not confirmed from the compound page during session. [recall] Conventional dosing basis: tartrate preparations. Check actual label mass basis and salt/hydrate conversion; neutral/free-base MW is not a conversion of the entered dose.",
         "cyp2d6": "[gap] Clinically meaningful CYP2D6 substrate/inhibitor status not established in this pass; false/none are unassessed defaults. All multipliers remain 1: no phenotype data.",
@@ -6492,7 +6492,7 @@
       ],
       "molecularWeight": null,
       "kinetics": {
-        "mode": "formation-limited",
+        "mode": "unknown",
         "halfLifeHours": null,
         "earlyPhase": null,
         "steadyState": null
@@ -6519,7 +6519,7 @@
         "note": ""
       },
       "provenance": {
-        "halfLife": "estimate",
+        "halfLife": "gap",
         "metabolism": null,
         "molecularWeight": null,
         "cyp2d6": null,
@@ -6529,7 +6529,7 @@
         "nonlinearKinetics": null
       },
       "sourceNotes": {
-        "halfLife": "Auto-assigned by migration: conjugate assumed formation-limited. Review.",
+        "halfLife": "[gap] V2 audit of clopidogrel_acyl_glucuronide: automatic conjugate-name heuristic is insufficient to establish clearance faster than formation in humans, or the simulation assumption of one-tenth of the fastest parent half-life. No compound-specific paired human parent/metabolite clearance evidence confirmed in this pass. Reverted formation-limited to unknown; numeric kinetics null. This does not exclude formation-limited disposition. Renal impairment can materially alter conjugate clearance. Original formedFrom topology preserved.",
         "metabolism": "",
         "molecularWeight": "",
         "cyp2d6": "",
@@ -6538,7 +6538,7 @@
         "lingeringEffects": "",
         "nonlinearKinetics": ""
       },
-      "source": "",
+      "source": "DRAFT — AI-prepopulated, unverified. ",
       "verified": false,
       "verifiedDate": ""
     },
@@ -6864,8 +6864,8 @@
         "mode": "intrinsic",
         "halfLifeHours": {
           "typical": 3,
-          "min": 3,
-          "max": 3,
+          "min": null,
+          "max": null,
           "rangeType": "single-value",
           "cv": null
         },
@@ -6909,7 +6909,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[checked] DailyMed codeine sulfate, 12.3: approximate plasma half-life 3 h, no range in reviewed passage; all three equal. Label describes steady state within 48 h during 15 mg every 4 h for five days. Do not transfer its broad metabolite statement to each metabolite as an independently measured value.",
+        "halfLife": "[checked] DailyMed codeine sulfate, 12.3: approximate plasma half-life 3 h, no range in reviewed passage; all three equal. Label describes steady state within 48 h during 15 mg every 4 h for five days. Do not transfer its broad metabolite statement to each metabolite as an independently measured value. V2 representation-only correction: single-value bounds are null; calculated mean +/- 2 SD is explicitly mean-2sd. Underlying prior-session source/value provenance retained; no new measurement inferred.",
         "metabolism": "[gap] Candidate formedFrom links retained. No defensible quantitative formation fraction retrieved; each unchanged zero means unknown, not evidence of absent formation.",
         "molecularWeight": "[recall] PubChem Codeine compound record, Molecular Weight: 299.36 g/mol, free base/neutral parent; value recalled, not confirmed from the compound page during session. [recall] Conventional dosing basis: sulfate or phosphate salts depending on product. Check actual label mass basis and salt/hydrate conversion; neutral/free-base MW is not a conversion of the entered dose.",
         "cyp2d6": "[checked] DailyMed label Clinical Pharmacology describes CYP2D6 O-demethylation to morphine (major activation pathway). https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=010905f9-3bcb-4b50-9fe8-a3ad0010f14c [gap] No usable PM/IM/UM versus NM parent half-life/AUC ratios extracted; all multipliers 1: no phenotype data. Inhibitor none is unassessed, not a claim of absence. A change in parent half-life does not model altered metabolite formation.",
@@ -6936,7 +6936,7 @@
       ],
       "molecularWeight": null,
       "kinetics": {
-        "mode": "formation-limited",
+        "mode": "unknown",
         "halfLifeHours": null,
         "earlyPhase": null,
         "steadyState": null
@@ -6963,7 +6963,7 @@
         "note": ""
       },
       "provenance": {
-        "halfLife": "estimate",
+        "halfLife": "gap",
         "metabolism": "estimate",
         "molecularWeight": "gap",
         "cyp2d6": "gap",
@@ -6973,7 +6973,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[gap] No compound-specific terminal elimination half-life in healthy adults retrieved; zero is missing data, not instantaneous elimination. Auto-assigned by migration: conjugate assumed formation-limited. Review.",
+        "halfLife": "[gap] V2 audit of codeine_6_glucuronide: automatic conjugate-name heuristic is insufficient to establish clearance faster than formation in humans, or the simulation assumption of one-tenth of the fastest parent half-life. No compound-specific paired human parent/metabolite clearance evidence confirmed in this pass. Reverted formation-limited to unknown; numeric kinetics null. This does not exclude formation-limited disposition. Renal impairment can materially alter conjugate clearance. Original formedFrom topology preserved.",
         "metabolism": "[estimate] codeine -> codeine_6_glucuronide: Midpoint of 70-80% conjugation reported in DailyMed codeine 12.3; dose-based metabolism used as a provisional systemic branch. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=010905f9-3bcb-4b50-9fe8-a3ad0010f14c",
         "molecularWeight": "[gap] Free-base PubChem molecular weight not confirmed for this compound; zero retained.",
         "cyp2d6": "[gap] Clinically meaningful CYP2D6 substrate/inhibitor status not established in this pass; false/none are unassessed defaults. All multipliers remain 1: no phenotype data.",
@@ -8469,8 +8469,8 @@
         "mode": "intrinsic",
         "halfLifeHours": {
           "typical": 2.4,
-          "min": 2.4,
-          "max": 2.4,
+          "min": null,
+          "max": null,
           "rangeType": "single-value",
           "cv": null
         },
@@ -8522,7 +8522,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[checked] Primary human CYP2D6 study abstract, https://pubmed.ncbi.nlm.nih.gov/8841152/: median 2.4 h in extensive metabolizers, 19.1 h in poor metabolizers, 5.6 h with quinidine in extensive metabolizers. No subject range retrieved: all three set to NM/EM median 2.4. Quinidine-combination DailyMed label reviewed for context; combination half-life is not used as intrinsic clearance.",
+        "halfLife": "[checked] Primary human CYP2D6 study abstract, https://pubmed.ncbi.nlm.nih.gov/8841152/: median 2.4 h in extensive metabolizers, 19.1 h in poor metabolizers, 5.6 h with quinidine in extensive metabolizers. No subject range retrieved: all three set to NM/EM median 2.4. Quinidine-combination DailyMed label reviewed for context; combination half-life is not used as intrinsic clearance. V2 representation-only correction: single-value bounds are null; calculated mean +/- 2 SD is explicitly mean-2sd. Underlying prior-session source/value provenance retained; no new measurement inferred.",
         "metabolism": "[gap] Candidate formedFrom links retained. No defensible quantitative formation fraction retrieved; each unchanged zero means unknown, not evidence of absent formation.",
         "molecularWeight": "[recall] PubChem Dextromethorphan compound record, Molecular Weight: 271.4 g/mol, free base/neutral parent; value recalled, not confirmed from the compound page during session. [recall] Conventional dosing basis: hydrobromide preparations; polistirex formulations also exist. Check actual label mass basis and salt/hydrate conversion; neutral/free-base MW is not a conversion of the entered dose.",
         "cyp2d6": "[checked] CYP2D6 study abstract https://pubmed.ncbi.nlm.nih.gov/8841152/ gives PM median half-life 19.1 h and EM 2.4 h, ratio about 7.96. [gap] No label/CPIC phenotype-specific ratio confirmed; all multipliers retained at 1 per source restriction (no phenotype data from permitted sources). Do not treat this default as equivalent clearance across phenotypes; no IM/UM ratio retrieved. Inhibitor none unassessed.",
@@ -10756,7 +10756,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[checked] DailyMed fentanyl citrate injection 12.3 gives terminal 219 minutes (3.65 h). DailyMed fentanyl transdermal label 12.3 describes comparator IV-infusion apparent half-life about 7 h, range 3-12 h. Wider envelope 3-12 retained, selected typical 3.65 h from injection label. Protocol/phase differences mean this is not one homogeneous healthy cohort; reviewer must reconcile. Repeated illicit exposure not represented. https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1ed25b2c-334e-4021-ada1-3396f07630dc ; https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=e15a7e9b-8025-49dd-9a6d-bafcccf1959f",
+        "halfLife": "[checked] DailyMed fentanyl citrate injection 12.3 gives terminal 219 minutes (3.65 h). DailyMed fentanyl transdermal label 12.3 describes comparator IV-infusion apparent half-life about 7 h, range 3-12 h. Wider envelope 3-12 retained, selected typical 3.65 h from injection label. Protocol/phase differences mean this is not one homogeneous healthy cohort; reviewer must reconcile. Repeated illicit exposure not represented. https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1ed25b2c-334e-4021-ada1-3396f07630dc ; https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=e15a7e9b-8025-49dd-9a6d-bafcccf1959f V2 representation-only correction: single-value bounds are null; calculated mean +/- 2 SD is explicitly mean-2sd. Underlying prior-session source/value provenance retained; no new measurement inferred.",
         "metabolism": "[gap] Candidate formedFrom links retained. No defensible quantitative formation fraction retrieved; each unchanged zero means unknown, not evidence of absent formation.",
         "molecularWeight": "[recall] PubChem Fentanyl compound record, Molecular Weight: 336.47 g/mol, free base/neutral parent; value recalled, not confirmed from the compound page during session. [recall] Conventional dosing basis: citrate for injection/buccal preparations; transdermal fentanyl basis differs. Check actual label mass basis and salt/hydrate conversion; neutral/free-base MW is not a conversion of the entered dose.",
         "cyp2d6": "[gap] Clinically meaningful CYP2D6 substrate/inhibitor status not established in this pass; false/none are unassessed defaults. All multipliers remain 1: no phenotype data.",
@@ -11325,7 +11325,7 @@
       ],
       "molecularWeight": null,
       "kinetics": {
-        "mode": "formation-limited",
+        "mode": "unknown",
         "halfLifeHours": null,
         "earlyPhase": null,
         "steadyState": null
@@ -11352,7 +11352,7 @@
         "note": ""
       },
       "provenance": {
-        "halfLife": "estimate",
+        "halfLife": "gap",
         "metabolism": null,
         "molecularWeight": null,
         "cyp2d6": null,
@@ -11362,7 +11362,7 @@
         "nonlinearKinetics": null
       },
       "sourceNotes": {
-        "halfLife": "Auto-assigned by migration: conjugate assumed formation-limited. Review.",
+        "halfLife": "[gap] V2 audit of furosemide_glucuronide: automatic conjugate-name heuristic is insufficient to establish clearance faster than formation in humans, or the simulation assumption of one-tenth of the fastest parent half-life. No compound-specific paired human parent/metabolite clearance evidence confirmed in this pass. Reverted formation-limited to unknown; numeric kinetics null. This does not exclude formation-limited disposition. Renal impairment can materially alter conjugate clearance. Original formedFrom topology preserved.",
         "metabolism": "",
         "molecularWeight": "",
         "cyp2d6": "",
@@ -11371,7 +11371,7 @@
         "lingeringEffects": "",
         "nonlinearKinetics": ""
       },
-      "source": "",
+      "source": "DRAFT — AI-prepopulated, unverified. ",
       "verified": false,
       "verifiedDate": ""
     },
@@ -11950,8 +11950,8 @@
         "mode": "intrinsic",
         "halfLifeHours": {
           "typical": 0.05,
-          "min": 0.05,
-          "max": 0.05,
+          "min": null,
+          "max": null,
           "rangeType": "single-value",
           "cv": null
         },
@@ -11995,7 +11995,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[checked] EUDA Heroin drug profile, Pharmacology: plasma half-life about 3 minutes (3/60=0.05 h), with rapid conversion to 6-MAM then morphine. Single approximate value; all three equal. Profile is an agency summary, not a reviewed primary PK experiment.",
+        "halfLife": "[checked] EUDA Heroin drug profile, Pharmacology: plasma half-life about 3 minutes (3/60=0.05 h), with rapid conversion to 6-MAM then morphine. Single approximate value; all three equal. Profile is an agency summary, not a reviewed primary PK experiment. V2 representation-only correction: single-value bounds are null; calculated mean +/- 2 SD is explicitly mean-2sd. Underlying prior-session source/value provenance retained; no new measurement inferred.",
         "metabolism": "[gap] Candidate formedFrom links retained. No defensible quantitative formation fraction retrieved; each unchanged zero means unknown, not evidence of absent formation.",
         "molecularWeight": "[recall] PubChem Heroin compound record, Molecular Weight: 369.41 g/mol, free base/neutral parent; value recalled, not confirmed from the compound page during session. [recall] Conventional dosing basis: variable illicit free base or hydrochloride; no assumed dose basis. Check actual label mass basis and salt/hydrate conversion; neutral/free-base MW is not a conversion of the entered dose.",
         "cyp2d6": "[gap] Clinically meaningful CYP2D6 substrate/inhibitor status not established in this pass; false/none are unassessed defaults. All multipliers remain 1: no phenotype data.",
@@ -12340,7 +12340,7 @@
           "typical": 3.8,
           "min": 3.2,
           "max": 4.4,
-          "rangeType": "observed-range",
+          "rangeType": "mean-2sd",
           "cv": null
         },
         "earlyPhase": null,
@@ -12383,7 +12383,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[estimate] DailyMed hydrocodone/acetaminophen, Clinical Pharmacology, Hydrocodone: five adult men after single 10 mg oral dose, mean 3.8 +/- 0.3 h. Bounds calculated as mean +/- 2 SD (3.2-4.4), not an observed range. Assumes reported dispersion is SD; reviewer confirm original study. Oral IR combination evidence does not characterize ER.",
+        "halfLife": "[estimate] DailyMed hydrocodone/acetaminophen, Clinical Pharmacology, Hydrocodone: five adult men after single 10 mg oral dose, mean 3.8 +/- 0.3 h. Bounds calculated as mean +/- 2 SD (3.2-4.4), not an observed range. Assumes reported dispersion is SD; reviewer confirm original study. Oral IR combination evidence does not characterize ER. V2 representation-only correction: single-value bounds are null; calculated mean +/- 2 SD is explicitly mean-2sd. Underlying prior-session source/value provenance retained; no new measurement inferred.",
         "metabolism": "[gap] Candidate formedFrom links retained. No defensible quantitative formation fraction retrieved; each unchanged zero means unknown, not evidence of absent formation.",
         "molecularWeight": "[recall] PubChem Hydrocodone compound record, Molecular Weight: 299.36 g/mol, free base/neutral parent; value recalled, not confirmed from the compound page during session. [recall] Conventional dosing basis: bitartrate preparations. Check actual label mass basis and salt/hydrate conversion; neutral/free-base MW is not a conversion of the entered dose.",
         "cyp2d6": "[checked] DailyMed label Clinical Pharmacology describes CYP2D6 O-demethylation to hydromorphone (minor pathway relative to CYP3A4). https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=82b7fd34-02ac-434a-be38-a1f0ec4f3e50 [gap] No usable PM/IM/UM versus NM parent half-life/AUC ratios extracted; all multipliers 1: no phenotype data. Inhibitor none is unassessed, not a claim of absence. A change in parent half-life does not model altered metabolite formation.",
@@ -12415,8 +12415,8 @@
         "mode": "intrinsic",
         "halfLifeHours": {
           "typical": 2.3,
-          "min": 2.3,
-          "max": 2.3,
+          "min": null,
+          "max": null,
           "rangeType": "single-value",
           "cv": null
         },
@@ -12460,7 +12460,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[checked] DailyMed Dilaudid, 12.3 Elimination: IV terminal half-life about 2.3 h. Single estimate, all three equal. Oral tablet mean 2.6 h (18% CV), oral liquid 2.8 h (20% CV); these are route/formulation means, not an observed individual range.",
+        "halfLife": "[checked] DailyMed Dilaudid, 12.3 Elimination: IV terminal half-life about 2.3 h. Single estimate, all three equal. Oral tablet mean 2.6 h (18% CV), oral liquid 2.8 h (20% CV); these are route/formulation means, not an observed individual range. V2 representation-only correction: single-value bounds are null; calculated mean +/- 2 SD is explicitly mean-2sd. Underlying prior-session source/value provenance retained; no new measurement inferred.",
         "metabolism": "[gap] Candidate formedFrom links retained. No defensible quantitative formation fraction retrieved; each unchanged zero means unknown, not evidence of absent formation.",
         "molecularWeight": "[recall] PubChem Hydromorphone compound record, Molecular Weight: 285.34 g/mol, free base/neutral parent; value recalled, not confirmed from the compound page during session. [recall] Conventional dosing basis: hydrochloride preparations. Check actual label mass basis and salt/hydrate conversion; neutral/free-base MW is not a conversion of the entered dose.",
         "cyp2d6": "[gap] Clinically meaningful CYP2D6 substrate/inhibitor status not established in this pass; false/none are unassessed defaults. All multipliers remain 1: no phenotype data.",
@@ -12489,7 +12489,7 @@
       ],
       "molecularWeight": null,
       "kinetics": {
-        "mode": "formation-limited",
+        "mode": "unknown",
         "halfLifeHours": null,
         "earlyPhase": null,
         "steadyState": null
@@ -12516,7 +12516,7 @@
         "note": ""
       },
       "provenance": {
-        "halfLife": "estimate",
+        "halfLife": "gap",
         "metabolism": "estimate",
         "molecularWeight": "gap",
         "cyp2d6": "gap",
@@ -12526,7 +12526,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[gap] No compound-specific terminal elimination half-life in healthy adults retrieved; zero is missing data, not instantaneous elimination. Auto-assigned by migration: conjugate assumed formation-limited. Review.",
+        "halfLife": "[gap] V2 audit of hydromorphone_3_glucuronide: automatic conjugate-name heuristic is insufficient to establish clearance faster than formation in humans, or the simulation assumption of one-tenth of the fastest parent half-life. No compound-specific paired human parent/metabolite clearance evidence confirmed in this pass. Reverted formation-limited to unknown; numeric kinetics null. This does not exclude formation-limited disposition. Renal impairment can materially alter conjugate clearance. Original formedFrom topology preserved.",
         "metabolism": "[estimate] hydromorphone -> hydromorphone_3_glucuronide: Conservative proxy based on DailyMed Dilaudid 12.3 description of >95% dose metabolized to H3G along with minor reduction products; not a directly measured systemic branch. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d6b40e39-a57e-402c-b4f6-7041e832f837",
         "molecularWeight": "[gap] Free-base PubChem molecular weight not confirmed for this compound; zero retained.",
         "cyp2d6": "[gap] Clinically meaningful CYP2D6 substrate/inhibitor status not established in this pass; false/none are unassessed defaults. All multipliers remain 1: no phenotype data.",
@@ -12748,8 +12748,8 @@
         "mode": "intrinsic",
         "halfLifeHours": {
           "typical": 18,
-          "min": 18,
-          "max": 18,
+          "min": null,
+          "max": null,
           "rangeType": "single-value",
           "cv": null
         },
@@ -12788,7 +12788,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[checked] DailyMed butorphanol injection, Clinical Pharmacology: metabolite elimination about 18 h and accumulation at steady state. One approximate value only; all three equal.",
+        "halfLife": "[checked] DailyMed butorphanol injection, Clinical Pharmacology: metabolite elimination about 18 h and accumulation at steady state. One approximate value only; all three equal. V2 representation-only correction: single-value bounds are null; calculated mean +/- 2 SD is explicitly mean-2sd. Underlying prior-session source/value provenance retained; no new measurement inferred.",
         "metabolism": "[gap] Candidate formedFrom links retained. No defensible quantitative formation fraction retrieved; each unchanged zero means unknown, not evidence of absent formation.",
         "molecularWeight": "[gap] Free-base PubChem molecular weight not confirmed for this compound; zero retained.",
         "cyp2d6": "[gap] Clinically meaningful CYP2D6 substrate/inhibitor status not established in this pass; false/none are unassessed defaults. All multipliers remain 1: no phenotype data.",
@@ -14423,7 +14423,7 @@
       ],
       "molecularWeight": null,
       "kinetics": {
-        "mode": "formation-limited",
+        "mode": "unknown",
         "halfLifeHours": null,
         "earlyPhase": null,
         "steadyState": null
@@ -14450,7 +14450,7 @@
         "note": ""
       },
       "provenance": {
-        "halfLife": "estimate",
+        "halfLife": "gap",
         "metabolism": null,
         "molecularWeight": null,
         "cyp2d6": null,
@@ -14460,7 +14460,7 @@
         "nonlinearKinetics": null
       },
       "sourceNotes": {
-        "halfLife": "Auto-assigned by migration: conjugate assumed formation-limited. Review.",
+        "halfLife": "[gap] V2 audit of lamotrigine_2_n_glucuronide: automatic conjugate-name heuristic is insufficient to establish clearance faster than formation in humans, or the simulation assumption of one-tenth of the fastest parent half-life. No compound-specific paired human parent/metabolite clearance evidence confirmed in this pass. Reverted formation-limited to unknown; numeric kinetics null. This does not exclude formation-limited disposition. Renal impairment can materially alter conjugate clearance. Original formedFrom topology preserved.",
         "metabolism": "",
         "molecularWeight": "",
         "cyp2d6": "",
@@ -14469,7 +14469,7 @@
         "lingeringEffects": "",
         "nonlinearKinetics": ""
       },
-      "source": "",
+      "source": "DRAFT — AI-prepopulated, unverified. ",
       "verified": false,
       "verifiedDate": ""
     },
@@ -14866,7 +14866,7 @@
       ],
       "molecularWeight": null,
       "kinetics": {
-        "mode": "formation-limited",
+        "mode": "unknown",
         "halfLifeHours": null,
         "earlyPhase": null,
         "steadyState": null
@@ -14893,7 +14893,7 @@
         "note": ""
       },
       "provenance": {
-        "halfLife": "estimate",
+        "halfLife": "gap",
         "metabolism": "gap",
         "molecularWeight": "gap",
         "cyp2d6": "gap",
@@ -14903,7 +14903,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[gap] No compound-specific terminal elimination half-life in healthy adults retrieved; zero is missing data, not instantaneous elimination. Auto-assigned by migration: conjugate assumed formation-limited. Review.",
+        "halfLife": "[gap] V2 audit of levorphanol_3_glucuronide: automatic conjugate-name heuristic is insufficient to establish clearance faster than formation in humans, or the simulation assumption of one-tenth of the fastest parent half-life. No compound-specific paired human parent/metabolite clearance evidence confirmed in this pass. Reverted formation-limited to unknown; numeric kinetics null. This does not exclude formation-limited disposition. Renal impairment can materially alter conjugate clearance. Original formedFrom topology preserved.",
         "metabolism": "[gap] Candidate formedFrom links retained. No defensible quantitative formation fraction retrieved; each unchanged zero means unknown, not evidence of absent formation.",
         "molecularWeight": "[gap] Free-base PubChem molecular weight not confirmed for this compound; zero retained.",
         "cyp2d6": "[gap] Clinically meaningful CYP2D6 substrate/inhibitor status not established in this pass; false/none are unassessed defaults. All multipliers remain 1: no phenotype data.",
@@ -15222,7 +15222,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[checked] DailyMed loperamide capsule, Clinical Pharmacology/Pharmacokinetics: apparent elimination mean 10.8 h, reported range 9.1-14.4 h. Therapeutic-dose data do not characterize high-dose misuse.",
+        "halfLife": "[checked] DailyMed loperamide capsule, Clinical Pharmacology/Pharmacokinetics: apparent elimination mean 10.8 h, reported range 9.1-14.4 h. Therapeutic-dose data do not characterize high-dose misuse. V2 representation-only correction: single-value bounds are null; calculated mean +/- 2 SD is explicitly mean-2sd. Underlying prior-session source/value provenance retained; no new measurement inferred.",
         "metabolism": "[gap] Candidate formedFrom links retained. No defensible quantitative formation fraction retrieved; each unchanged zero means unknown, not evidence of absent formation.",
         "molecularWeight": "[recall] PubChem Loperamide compound record, Molecular Weight: 477.04 g/mol, free base/neutral parent; value recalled, not confirmed from the compound page during session. [recall] Conventional dosing basis: hydrochloride preparations. Check actual label mass basis and salt/hydrate conversion; neutral/free-base MW is not a conversion of the entered dose.",
         "cyp2d6": "[checked] DailyMed loperamide Clinical Pharmacology: CYP2C8/3A4 predominant; CYP2D6 and 2B6 minor in vitro. Substrate false represents no established clinically meaningful CYP2D6 pathway here. [gap] Multipliers all 1: no phenotype data; inhibitor classification unassessed.",
@@ -15309,7 +15309,7 @@
       ],
       "molecularWeight": null,
       "kinetics": {
-        "mode": "formation-limited",
+        "mode": "unknown",
         "halfLifeHours": null,
         "earlyPhase": null,
         "steadyState": null
@@ -15336,7 +15336,7 @@
         "note": ""
       },
       "provenance": {
-        "halfLife": "estimate",
+        "halfLife": "gap",
         "metabolism": null,
         "molecularWeight": null,
         "cyp2d6": null,
@@ -15346,7 +15346,7 @@
         "nonlinearKinetics": null
       },
       "sourceNotes": {
-        "halfLife": "Auto-assigned by migration: conjugate assumed formation-limited. Review.",
+        "halfLife": "[gap] V2 audit of lorazepam_glucuronide: automatic conjugate-name heuristic is insufficient to establish clearance faster than formation in humans, or the simulation assumption of one-tenth of the fastest parent half-life. No compound-specific paired human parent/metabolite clearance evidence confirmed in this pass. Reverted formation-limited to unknown; numeric kinetics null. This does not exclude formation-limited disposition. Renal impairment can materially alter conjugate clearance. Original formedFrom topology preserved.",
         "metabolism": "",
         "molecularWeight": "",
         "cyp2d6": "",
@@ -15355,7 +15355,7 @@
         "lingeringEffects": "",
         "nonlinearKinetics": ""
       },
-      "source": "",
+      "source": "DRAFT — AI-prepopulated, unverified. ",
       "verified": false,
       "verifiedDate": ""
     },
@@ -15630,8 +15630,14 @@
       ],
       "molecularWeight": null,
       "kinetics": {
-        "mode": "unknown",
-        "halfLifeHours": null,
+        "mode": "intrinsic",
+        "halfLifeHours": {
+          "typical": 7.2,
+          "min": null,
+          "max": null,
+          "rangeType": "cv",
+          "cv": 0.79166667
+        },
         "earlyPhase": null,
         "steadyState": null
       },
@@ -15662,7 +15668,7 @@
         "note": ""
       },
       "provenance": {
-        "halfLife": "gap",
+        "halfLife": "estimate",
         "metabolism": "gap",
         "molecularWeight": "gap",
         "cyp2d6": "gap",
@@ -15672,7 +15678,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[gap] Primary study abstract https://pubmed.ncbi.nlm.nih.gov/2341111/: mean 7.2 +/- 5.7 h; mean minus 2 SD is negative, so cannot encode requested positive bounds without an arbitrary truncation. Another primary study abstract https://pubmed.ncbi.nlm.nih.gov/2096105/ gives healthy control 4.9 +/- 1.7 h (renal patients 14.2 +/- 9.3 h). Numeric triple left 0 pending observed range/full-text reconciliation; renal-patient values not used as healthy bounds.",
+        "halfLife": "[estimate] Prior-session primary-study abstract transcription reports MC5 mean 7.2 +/- SD 5.7 h in healthy volunteers, https://pubmed.ncbi.nlm.nih.gov/2341111/. Source page was not recoverable this v2 session. CV=5.7/7.2=0.79166667, min/max null; avoids negative mean-minus-2SD without clipping. Different healthy controls in https://pubmed.ncbi.nlm.nih.gov/2096105/ were 4.9 +/- 1.7 h; renal-patient values excluded. Recheck original healthy-cohort data before accepting this provisional transcription-derived CV.",
         "metabolism": "[gap] Candidate formedFrom links retained. No defensible quantitative formation fraction retrieved; each unchanged zero means unknown, not evidence of absent formation.",
         "molecularWeight": "[gap] Free-base PubChem molecular weight not confirmed for this compound; zero retained.",
         "cyp2d6": "[gap] Clinically meaningful CYP2D6 substrate/inhibitor status not established in this pass; false/none are unassessed defaults. All multipliers remain 1: no phenotype data.",
@@ -16579,14 +16585,23 @@
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
-          "typical": 22.2,
-          "min": 8,
-          "max": 59,
-          "rangeType": "observed-range",
+          "typical": 54.8,
+          "min": null,
+          "max": null,
+          "rangeType": "single-value",
           "cv": null
         },
         "earlyPhase": null,
-        "steadyState": null
+        "steadyState": {
+          "afterDays": null,
+          "halfLifeHours": {
+            "typical": 22.2,
+            "min": 8,
+            "max": 59,
+            "rangeType": "observed-range",
+            "cv": null
+          }
+        }
       },
       "cyp2d6": {
         "substrate": "unassessed",
@@ -16615,7 +16630,7 @@
         "note": ""
       },
       "provenance": {
-        "halfLife": "checked",
+        "halfLife": "recall",
         "metabolism": "gap",
         "molecularWeight": "checked",
         "cyp2d6": "gap",
@@ -16625,7 +16640,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[checked] DailyMed methadone label, Clinical Pharmacology 12.3: multiple-dose range 8-59 h. Typical 22.2 h is the chronic-treatment estimate in the primary study abstract, Methadone in man: pharmacokinetic and excretion studies in acute and chronic treatment, https://pubmed.ncbi.nlm.nih.gov/1149368/ (retrieved search abstract). Same study reports acute primary 14.3 h and secondary 54.8 h. Typical is a selected chronic-study estimate, not a pooled healthy-adult mean; clinical maintenance cohort differs from healthy volunteers. Reviewer must resolve cohort and sampling differences.",
+        "halfLife": "[recall] Prior checked draft transcribed acute primary 14.3 h, acute secondary terminal 54.8 h, chronic single-exponential 22.2 h from Methadone in man: pharmacokinetic and excretion studies in acute and chronic treatment, https://pubmed.ncbi.nlm.nih.gov/1149368/. Source abstract could not be recovered in this v2 session; values retained provisionally as recall, not newly checked. Acute terminal now 54.8 single-value; chronic 22.2 with prior label multiple-dose range 8-59. afterDays null: no defensible switching threshold extracted. This mixed study/label range is not one homogeneous cohort and maintenance population is not healthy volunteers. No early dose fraction or arbitrary time-to-adaptation invented.",
         "metabolism": "[gap] Candidate formedFrom links retained. No defensible quantitative formation fraction retrieved; each unchanged zero means unknown, not evidence of absent formation.",
         "molecularWeight": "[checked] PubChem Methadone compound record, Molecular Weight: 309.4 g/mol, free base/neutral parent; value read in retrieved PubChem record during session. [recall] Conventional dosing basis: oral hydrochloride salt. Check actual label mass basis and salt/hydrate conversion; neutral/free-base MW is not a conversion of the entered dose.",
         "cyp2d6": "[gap] DailyMed label names several metabolic enzymes including CYP2D6, but this does not establish a clinically meaningful CYP2D6 fraction. Substrate false and inhibitor none retained pending review of clinical pathway and FDA classification; not evidence of no interaction. Multipliers 1: no phenotype data. CYP2B6 effects cannot be represented by CYP2D6 multipliers.",
@@ -17714,13 +17729,22 @@
       "kinetics": {
         "mode": "intrinsic",
         "halfLifeHours": {
-          "typical": 2,
-          "min": 2,
-          "max": 15,
-          "rangeType": "observed-range",
+          "typical": 15,
+          "min": null,
+          "max": null,
+          "rangeType": "single-value",
           "cv": null
         },
-        "earlyPhase": null,
+        "earlyPhase": {
+          "fraction": null,
+          "halfLifeHours": {
+            "typical": 2,
+            "min": null,
+            "max": null,
+            "rangeType": "single-value",
+            "cv": null
+          }
+        },
         "steadyState": null
       },
       "cyp2d6": {
@@ -17751,7 +17775,7 @@
       },
       "provenance": {
         "halfLife": "checked",
-        "metabolism": "estimate",
+        "metabolism": "gap",
         "molecularWeight": "recall",
         "cyp2d6": "gap",
         "qt": "gap",
@@ -17760,8 +17784,8 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[checked] DailyMed morphine sulfate tablet, 12.3 Excretion: effective terminal IV half-life about 2 h; about 15 h terminal phase with longer sampling in some studies. Wider envelope 2-15 h retained, typical 2 h is the label effective terminal estimate, not the longer sampled terminal phase. This is a material definition conflict for a terminal-clearance model; reviewer should select a consistent phase.",
-        "metabolism": "[estimate] codeine -> morphine: Midpoint of 5-10% conversion reported in DailyMed codeine 12.3. CYP2D6 dependent; fixed branch is not phenotype-invariant. Other incoming edge from 6-MAM remains 0/unknown. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=010905f9-3bcb-4b50-9fe8-a3ad0010f14c",
+        "halfLife": "[checked] DailyMed morphine sulfate tablet, 12.3 Excretion: approximately 15 h terminal phase with extended sampling, versus about 2 h effective early disposition. These are separate phases, not a 2-15 h subject range. Terminal typical 15 and early typical 2, single-value bounds null. Source does not quantify share of dose in fast pool: earlyPhase.fraction left null, not the illustrative 0.9 in the spec. Early phase is unresolved for simulation until that fraction is supplied. https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=5178907d-3695-3666-e054-00144ff88e88",
+        "metabolism": "[gap] V2 formation-phenotype review: CPIC text reports 96% lower mean morphine AUC in PM compared with a combined NM/IM comparator; it is not a complete NM-normalized PM/IM/NM/UM formation-fraction map. cyp2d6Multiplier remains null rather than inventing the missing phenotype values. https://cpicpgx.org/content/guideline/publication/opioids/2020/CPIC_opioids_PREPRINT.pdf Prior base-fraction evidence retained unchanged: [estimate] codeine -> morphine: Midpoint of 5-10% conversion reported in DailyMed codeine 12.3. CYP2D6 dependent; fixed branch is not phenotype-invariant. Other incoming edge from 6-MAM remains 0/unknown. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=010905f9-3bcb-4b50-9fe8-a3ad0010f14c",
         "molecularWeight": "[recall] PubChem Morphine compound record, Molecular Weight: 285.34 g/mol, free base/neutral parent; value recalled, not confirmed from the compound page during session. [recall] Conventional dosing basis: sulfate preparations. Check actual label mass basis and salt/hydrate conversion; neutral/free-base MW is not a conversion of the entered dose.",
         "cyp2d6": "[gap] Clinically meaningful CYP2D6 substrate/inhibitor status not established in this pass; false/none are unassessed defaults. All multipliers remain 1: no phenotype data.",
         "qt": "[gap] CredibleMeds not accessed; none is an unassessed schema default, not evidence of no QT/TdP risk. Weight 0 reserved for reviewer.",
@@ -17789,7 +17813,7 @@
       ],
       "molecularWeight": null,
       "kinetics": {
-        "mode": "formation-limited",
+        "mode": "unknown",
         "halfLifeHours": null,
         "earlyPhase": null,
         "steadyState": null
@@ -17816,7 +17840,7 @@
         "note": ""
       },
       "provenance": {
-        "halfLife": "estimate",
+        "halfLife": "gap",
         "metabolism": "estimate",
         "molecularWeight": "gap",
         "cyp2d6": "gap",
@@ -17826,7 +17850,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[gap] No compound-specific terminal elimination half-life in healthy adults retrieved; zero is missing data, not instantaneous elimination. Auto-assigned by migration: conjugate assumed formation-limited. Review.",
+        "halfLife": "[gap] V2 audit of morphine_3_glucuronide: automatic conjugate-name heuristic is insufficient to establish clearance faster than formation in humans, or the simulation assumption of one-tenth of the fastest parent half-life. No compound-specific paired human parent/metabolite clearance evidence confirmed in this pass. Reverted formation-limited to unknown; numeric kinetics null. This does not exclude formation-limited disposition. Renal impairment can materially alter conjugate clearance. Original formedFrom topology preserved.",
         "metabolism": "[estimate] morphine -> morphine_3_glucuronide: DailyMed morphine label 12.3 reports about 50% M3G; used as approximate elimination branch. Dose recovery/first-pass metabolism need not equal systemic formation fraction. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=67b3273e-af71-4dac-8e49-8bc134d4c591",
         "molecularWeight": "[gap] Free-base PubChem molecular weight not confirmed for this compound; zero retained.",
         "cyp2d6": "[gap] Clinically meaningful CYP2D6 substrate/inhibitor status not established in this pass; false/none are unassessed defaults. All multipliers remain 1: no phenotype data.",
@@ -17855,7 +17879,7 @@
       ],
       "molecularWeight": null,
       "kinetics": {
-        "mode": "formation-limited",
+        "mode": "unknown",
         "halfLifeHours": null,
         "earlyPhase": null,
         "steadyState": null
@@ -17887,7 +17911,7 @@
         "note": ""
       },
       "provenance": {
-        "halfLife": "estimate",
+        "halfLife": "gap",
         "metabolism": "estimate",
         "molecularWeight": "gap",
         "cyp2d6": "gap",
@@ -17897,7 +17921,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[gap] No compound-specific terminal elimination half-life in healthy adults retrieved; zero is missing data, not instantaneous elimination. Auto-assigned by migration: conjugate assumed formation-limited. Review.",
+        "halfLife": "[gap] V2 audit of morphine_6_glucuronide: automatic conjugate-name heuristic is insufficient to establish clearance faster than formation in humans, or the simulation assumption of one-tenth of the fastest parent half-life. No compound-specific paired human parent/metabolite clearance evidence confirmed in this pass. Reverted formation-limited to unknown; numeric kinetics null. This does not exclude formation-limited disposition. Renal impairment can materially alter conjugate clearance. Original formedFrom topology preserved.",
         "metabolism": "[estimate] morphine -> morphine_6_glucuronide: DailyMed morphine label 12.3 reports about 15% M6G; same systemic-versus-dose-recovery limitation. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=67b3273e-af71-4dac-8e49-8bc134d4c591",
         "molecularWeight": "[gap] Free-base PubChem molecular weight not confirmed for this compound; zero retained.",
         "cyp2d6": "[gap] Clinically meaningful CYP2D6 substrate/inhibitor status not established in this pass; false/none are unassessed defaults. All multipliers remain 1: no phenotype data.",
@@ -19271,10 +19295,10 @@
         "mode": "intrinsic",
         "halfLifeHours": {
           "typical": 11.4,
-          "min": 11.4,
-          "max": 11.4,
-          "rangeType": "single-value",
-          "cv": null
+          "min": null,
+          "max": null,
+          "rangeType": "cv",
+          "cv": 0.208
         },
         "earlyPhase": null,
         "steadyState": null
@@ -19316,7 +19340,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[checked] DailyMed OPVEE, 12.3: healthy adult terminal mean 11.4 h after 2.7 mg IN, CV 20.8%. No observed min/max reported; all three use the published mean rather than treating CV as an observed range. IV/IM route must be reviewed separately.",
+        "halfLife": "[checked] DailyMed OPVEE 12.3: healthy adults after 2.7 mg IN, terminal mean 11.4 h, CV 20.8% (0.208); rangeType cv, min/max null. This is IN nalmefene, not an IV/IM-specific study. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=999a4269-9e54-4801-b2ac-2a7276f0b94f",
         "metabolism": "[gap] Candidate formedFrom links retained. No defensible quantitative formation fraction retrieved; each unchanged zero means unknown, not evidence of absent formation.",
         "molecularWeight": "[recall] PubChem Nalmefene compound record, Molecular Weight: 339.43 g/mol, free base/neutral parent; value recalled, not confirmed from the compound page during session. [recall] Conventional dosing basis: hydrochloride preparations, OPVEE strength expressed as nalmefene moiety. Check actual label mass basis and salt/hydrate conversion; neutral/free-base MW is not a conversion of the entered dose.",
         "cyp2d6": "[gap] Clinically meaningful CYP2D6 substrate/inhibitor status not established in this pass; false/none are unassessed defaults. All multipliers remain 1: no phenotype data.",
@@ -19343,7 +19367,7 @@
       ],
       "molecularWeight": null,
       "kinetics": {
-        "mode": "formation-limited",
+        "mode": "unknown",
         "halfLifeHours": null,
         "earlyPhase": null,
         "steadyState": null
@@ -19370,7 +19394,7 @@
         "note": ""
       },
       "provenance": {
-        "halfLife": "estimate",
+        "halfLife": "gap",
         "metabolism": "gap",
         "molecularWeight": "gap",
         "cyp2d6": "gap",
@@ -19380,7 +19404,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[gap] No compound-specific terminal elimination half-life in healthy adults retrieved; zero is missing data, not instantaneous elimination. Auto-assigned by migration: conjugate assumed formation-limited. Review.",
+        "halfLife": "[gap] V2 audit of nalmefene_3_glucuronide: automatic conjugate-name heuristic is insufficient to establish clearance faster than formation in humans, or the simulation assumption of one-tenth of the fastest parent half-life. No compound-specific paired human parent/metabolite clearance evidence confirmed in this pass. Reverted formation-limited to unknown; numeric kinetics null. This does not exclude formation-limited disposition. Renal impairment can materially alter conjugate clearance. Original formedFrom topology preserved.",
         "metabolism": "[gap] Candidate formedFrom links retained. No defensible quantitative formation fraction retrieved; each unchanged zero means unknown, not evidence of absent formation.",
         "molecularWeight": "[gap] Free-base PubChem molecular weight not confirmed for this compound; zero retained.",
         "cyp2d6": "[gap] Clinically meaningful CYP2D6 substrate/inhibitor status not established in this pass; false/none are unassessed defaults. All multipliers remain 1: no phenotype data.",
@@ -19451,7 +19475,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[checked] DailyMed naloxone injection, Clinical Pharmacology: adult serum mean 64 minutes and reported range 30-81 minutes; divided by 60 to hours. IN and combination SL kinetics differ and are not covered by this IV-based value.",
+        "halfLife": "[checked] DailyMed naloxone injection, Clinical Pharmacology: adult serum mean 64 minutes and reported range 30-81 minutes; divided by 60 to hours. IN and combination SL kinetics differ and are not covered by this IV-based value. V2 representation-only correction: single-value bounds are null; calculated mean +/- 2 SD is explicitly mean-2sd. Underlying prior-session source/value provenance retained; no new measurement inferred.",
         "metabolism": "[gap] Candidate formedFrom links retained. No defensible quantitative formation fraction retrieved; each unchanged zero means unknown, not evidence of absent formation.",
         "molecularWeight": "[recall] PubChem Naloxone compound record, Molecular Weight: 327.37 g/mol, free base/neutral parent; value recalled, not confirmed from the compound page during session. [recall] Conventional dosing basis: hydrochloride preparations; device strength may express naloxone moiety. Check actual label mass basis and salt/hydrate conversion; neutral/free-base MW is not a conversion of the entered dose.",
         "cyp2d6": "[gap] Clinically meaningful CYP2D6 substrate/inhibitor status not established in this pass; false/none are unassessed defaults. All multipliers remain 1: no phenotype data.",
@@ -19478,7 +19502,7 @@
       ],
       "molecularWeight": null,
       "kinetics": {
-        "mode": "formation-limited",
+        "mode": "unknown",
         "halfLifeHours": null,
         "earlyPhase": null,
         "steadyState": null
@@ -19505,7 +19529,7 @@
         "note": ""
       },
       "provenance": {
-        "halfLife": "estimate",
+        "halfLife": "gap",
         "metabolism": "gap",
         "molecularWeight": "gap",
         "cyp2d6": "gap",
@@ -19515,7 +19539,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[gap] No compound-specific terminal elimination half-life in healthy adults retrieved; zero is missing data, not instantaneous elimination. Auto-assigned by migration: conjugate assumed formation-limited. Review.",
+        "halfLife": "[gap] V2 audit of naloxone_3_glucuronide: automatic conjugate-name heuristic is insufficient to establish clearance faster than formation in humans, or the simulation assumption of one-tenth of the fastest parent half-life. No compound-specific paired human parent/metabolite clearance evidence confirmed in this pass. Reverted formation-limited to unknown; numeric kinetics null. This does not exclude formation-limited disposition. Renal impairment can materially alter conjugate clearance. Original formedFrom topology preserved.",
         "metabolism": "[gap] Candidate formedFrom links retained. No defensible quantitative formation fraction retrieved; each unchanged zero means unknown, not evidence of absent formation.",
         "molecularWeight": "[gap] Free-base PubChem molecular weight not confirmed for this compound; zero retained.",
         "cyp2d6": "[gap] Clinically meaningful CYP2D6 substrate/inhibitor status not established in this pass; false/none are unassessed defaults. All multipliers remain 1: no phenotype data.",
@@ -19542,8 +19566,8 @@
         "mode": "intrinsic",
         "halfLifeHours": {
           "typical": 4,
-          "min": 4,
-          "max": 4,
+          "min": null,
+          "max": null,
           "rangeType": "single-value",
           "cv": null
         },
@@ -19587,7 +19611,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[checked] DailyMed naltrexone oral tablet, Clinical Pharmacology: mean 4 h. No healthy-adult range supplied in reviewed passage; all three set to 4. Excludes depot kinetics.",
+        "halfLife": "[checked] DailyMed naltrexone oral tablet, Clinical Pharmacology: mean 4 h. No healthy-adult range supplied in reviewed passage; all three set to 4. Excludes depot kinetics. V2 representation-only correction: single-value bounds are null; calculated mean +/- 2 SD is explicitly mean-2sd. Underlying prior-session source/value provenance retained; no new measurement inferred.",
         "metabolism": "[gap] Candidate formedFrom links retained. No defensible quantitative formation fraction retrieved; each unchanged zero means unknown, not evidence of absent formation.",
         "molecularWeight": "[checked] PubChem Naltrexone compound record, Molecular Weight: 341.4 g/mol, free base/neutral parent; value read in retrieved PubChem record during session. [recall] Conventional dosing basis: hydrochloride oral tablets; depot labeled as naltrexone. Check actual label mass basis and salt/hydrate conversion; neutral/free-base MW is not a conversion of the entered dose.",
         "cyp2d6": "[gap] Clinically meaningful CYP2D6 substrate/inhibitor status not established in this pass; false/none are unassessed defaults. All multipliers remain 1: no phenotype data.",
@@ -20837,7 +20861,7 @@
       ],
       "molecularWeight": null,
       "kinetics": {
-        "mode": "formation-limited",
+        "mode": "unknown",
         "halfLifeHours": null,
         "earlyPhase": null,
         "steadyState": null
@@ -20864,7 +20888,7 @@
         "note": ""
       },
       "provenance": {
-        "halfLife": "estimate",
+        "halfLife": "gap",
         "metabolism": null,
         "molecularWeight": null,
         "cyp2d6": null,
@@ -20874,7 +20898,7 @@
         "nonlinearKinetics": null
       },
       "sourceNotes": {
-        "halfLife": "Auto-assigned by migration: conjugate assumed formation-limited. Review.",
+        "halfLife": "[gap] V2 audit of noribogaine_glucuronide: automatic conjugate-name heuristic is insufficient to establish clearance faster than formation in humans, or the simulation assumption of one-tenth of the fastest parent half-life. No compound-specific paired human parent/metabolite clearance evidence confirmed in this pass. Reverted formation-limited to unknown; numeric kinetics null. This does not exclude formation-limited disposition. Renal impairment can materially alter conjugate clearance. Original formedFrom topology preserved.",
         "metabolism": "",
         "molecularWeight": "",
         "cyp2d6": "",
@@ -20883,7 +20907,7 @@
         "lingeringEffects": "",
         "nonlinearKinetics": ""
       },
-      "source": "",
+      "source": "DRAFT — AI-prepopulated, unverified. ",
       "verified": false,
       "verifiedDate": ""
     },
@@ -21678,7 +21702,7 @@
           "typical": 7.4,
           "min": 4.6,
           "max": 10.2,
-          "rangeType": "observed-range",
+          "rangeType": "mean-2sd",
           "cv": null
         },
         "earlyPhase": null,
@@ -21721,8 +21745,8 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[estimate] DailyMed tramadol IR, 12.3 Elimination: racemic M1 terminal mean 7.4 +/- 1.4 h. Bounds mean +/- 2 SD; not an observed range, and no separate enantiomer kinetics represented.",
-        "metabolism": "[gap] Candidate formedFrom links retained. No defensible quantitative formation fraction retrieved; each unchanged zero means unknown, not evidence of absent formation.",
+        "halfLife": "[estimate] DailyMed tramadol IR, 12.3 Elimination: racemic M1 terminal mean 7.4 +/- 1.4 h. Bounds mean +/- 2 SD; not an observed range, and no separate enantiomer kinetics represented. V2 representation-only correction: single-value bounds are null; calculated mean +/- 2 SD is explicitly mean-2sd. Underlying prior-session source/value provenance retained; no new measurement inferred.",
+        "metabolism": "[gap] V2 formation-phenotype review: CPIC text reports postoperative median (+)-M1 AUC 0 (range 0-11) in PM versus 67 (17-118) in NM. This enantiomer-specific patient exposure ratio is not racemic systemic formation fraction; a full IM/UM map is not supplied. cyp2d6Multiplier remains null rather than inventing the missing phenotype values. https://cpicpgx.org/content/guideline/publication/opioids/2020/CPIC_opioids_PREPRINT.pdf Prior base-fraction evidence retained unchanged: [gap] Candidate formedFrom links retained. No defensible quantitative formation fraction retrieved; each unchanged zero means unknown, not evidence of absent formation.",
         "molecularWeight": "[gap] Free-base PubChem molecular weight not confirmed for this compound; zero retained.",
         "cyp2d6": "[gap] Clinically meaningful CYP2D6 substrate/inhibitor status not established in this pass; false/none are unassessed defaults. All multipliers remain 1: no phenotype data.",
         "qt": "[gap] CredibleMeds not accessed; none is an unassessed schema default, not evidence of no QT/TdP risk. Weight 0 reserved for reviewer.",
@@ -21872,7 +21896,7 @@
       ],
       "molecularWeight": null,
       "kinetics": {
-        "mode": "formation-limited",
+        "mode": "unknown",
         "halfLifeHours": null,
         "earlyPhase": null,
         "steadyState": null
@@ -21899,7 +21923,7 @@
         "note": ""
       },
       "provenance": {
-        "halfLife": "estimate",
+        "halfLife": "gap",
         "metabolism": null,
         "molecularWeight": null,
         "cyp2d6": null,
@@ -21909,7 +21933,7 @@
         "nonlinearKinetics": null
       },
       "sourceNotes": {
-        "halfLife": "Auto-assigned by migration: conjugate assumed formation-limited. Review.",
+        "halfLife": "[gap] V2 audit of olanzapine_10_glucuronide: automatic conjugate-name heuristic is insufficient to establish clearance faster than formation in humans, or the simulation assumption of one-tenth of the fastest parent half-life. No compound-specific paired human parent/metabolite clearance evidence confirmed in this pass. Reverted formation-limited to unknown; numeric kinetics null. This does not exclude formation-limited disposition. Renal impairment can materially alter conjugate clearance. Original formedFrom topology preserved.",
         "metabolism": "",
         "molecularWeight": "",
         "cyp2d6": "",
@@ -21918,7 +21942,7 @@
         "lingeringEffects": "",
         "nonlinearKinetics": ""
       },
-      "source": "",
+      "source": "DRAFT — AI-prepopulated, unverified. ",
       "verified": false,
       "verifiedDate": ""
     },
@@ -22191,7 +22215,7 @@
       ],
       "molecularWeight": null,
       "kinetics": {
-        "mode": "formation-limited",
+        "mode": "unknown",
         "halfLifeHours": null,
         "earlyPhase": null,
         "steadyState": null
@@ -22218,7 +22242,7 @@
         "note": ""
       },
       "provenance": {
-        "halfLife": "estimate",
+        "halfLife": "gap",
         "metabolism": null,
         "molecularWeight": null,
         "cyp2d6": null,
@@ -22228,7 +22252,7 @@
         "nonlinearKinetics": null
       },
       "sourceNotes": {
-        "halfLife": "Auto-assigned by migration: conjugate assumed formation-limited. Review.",
+        "halfLife": "[gap] V2 audit of oxazepam_glucuronide: automatic conjugate-name heuristic is insufficient to establish clearance faster than formation in humans, or the simulation assumption of one-tenth of the fastest parent half-life. No compound-specific paired human parent/metabolite clearance evidence confirmed in this pass. Reverted formation-limited to unknown; numeric kinetics null. This does not exclude formation-limited disposition. Renal impairment can materially alter conjugate clearance. Original formedFrom topology preserved.",
         "metabolism": "",
         "molecularWeight": "",
         "cyp2d6": "",
@@ -22237,7 +22261,7 @@
         "lingeringEffects": "",
         "nonlinearKinetics": ""
       },
-      "source": "",
+      "source": "DRAFT — AI-prepopulated, unverified. ",
       "verified": false,
       "verifiedDate": ""
     },
@@ -22385,8 +22409,14 @@
       ],
       "molecularWeight": 301.34,
       "kinetics": {
-        "mode": "unknown",
-        "halfLifeHours": null,
+        "mode": "intrinsic",
+        "halfLifeHours": {
+          "typical": 7.25,
+          "min": null,
+          "max": null,
+          "rangeType": "cv",
+          "cv": 0.60689655
+        },
         "earlyPhase": null,
         "steadyState": null
       },
@@ -22417,7 +22447,7 @@
         "note": ""
       },
       "provenance": {
-        "halfLife": "gap",
+        "halfLife": "estimate",
         "metabolism": "gap",
         "molecularWeight": "recall",
         "cyp2d6": "gap",
@@ -22427,7 +22457,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[gap] DailyMed oxymorphone IR 12.3 Table 3 reports single-dose means +/- SD: 5 mg 7.25 +/- 4.40 h, 10 mg 7.78 +/- 3.58 h, 20 mg 9.43 +/- 3.36 h; prose gives 9-11 h. Five-mg mean minus 2 SD is negative. Choosing only the other cohorts would omit that uncertainty. All three numbers left 0 pending observed positive range/full-text reconciliation rather than clipping or inventing a pooled typical. https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=dcb5b5d2-7d0a-497a-8f1e-3b96fd43320b&version=17",
+        "halfLife": "[estimate] DailyMed oxymorphone IR 12.3 Table 3 checked this session: 5 mg single-dose mean 7.25 +/- SD 4.40 h, 10 mg 7.78 +/- 3.58, 20 mg 9.43 +/- 3.36; prose 9-11 h. Selected 5 mg cohort mean 7.25, CV=4.40/7.25=0.60689655. min/max null; lognormal band is a modeling assumption, not observed subject limits. No pooled mean invented or negative bound clipped; alternative cohort means remain a conflict for review. https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=22c7652a-aa16-4fa8-89d9-517e69059068",
         "metabolism": "[gap] Candidate formedFrom links retained. No defensible quantitative formation fraction retrieved; each unchanged zero means unknown, not evidence of absent formation.",
         "molecularWeight": "[recall] PubChem Oxymorphone compound record, Molecular Weight: 301.34 g/mol, free base/neutral parent; value recalled, not confirmed from the compound page during session. [recall] Conventional dosing basis: hydrochloride preparations. Check actual label mass basis and salt/hydrate conversion; neutral/free-base MW is not a conversion of the entered dose.",
         "cyp2d6": "[gap] Clinically meaningful CYP2D6 substrate/inhibitor status not established in this pass; false/none are unassessed defaults. All multipliers remain 1: no phenotype data.",
@@ -22454,7 +22484,7 @@
       ],
       "molecularWeight": null,
       "kinetics": {
-        "mode": "formation-limited",
+        "mode": "unknown",
         "halfLifeHours": null,
         "earlyPhase": null,
         "steadyState": null
@@ -22481,7 +22511,7 @@
         "note": ""
       },
       "provenance": {
-        "halfLife": "estimate",
+        "halfLife": "gap",
         "metabolism": "gap",
         "molecularWeight": "gap",
         "cyp2d6": "gap",
@@ -22491,7 +22521,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[gap] No compound-specific terminal elimination half-life in healthy adults retrieved; zero is missing data, not instantaneous elimination. Auto-assigned by migration: conjugate assumed formation-limited. Review.",
+        "halfLife": "[gap] V2 audit of oxymorphone_3_glucuronide: automatic conjugate-name heuristic is insufficient to establish clearance faster than formation in humans, or the simulation assumption of one-tenth of the fastest parent half-life. No compound-specific paired human parent/metabolite clearance evidence confirmed in this pass. Reverted formation-limited to unknown; numeric kinetics null. This does not exclude formation-limited disposition. Renal impairment can materially alter conjugate clearance. Original formedFrom topology preserved.",
         "metabolism": "[gap] Candidate formedFrom links retained. No defensible quantitative formation fraction retrieved; each unchanged zero means unknown, not evidence of absent formation.",
         "molecularWeight": "[gap] Free-base PubChem molecular weight not confirmed for this compound; zero retained.",
         "cyp2d6": "[gap] Clinically meaningful CYP2D6 substrate/inhibitor status not established in this pass; false/none are unassessed defaults. All multipliers remain 1: no phenotype data.",
@@ -23077,7 +23107,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[checked] DailyMed pentazocine/naloxone oral tablets, Clinical Pharmacology: 24 normal volunteers, mean plasma elimination 3.6 h, reported range 1.5-10 h. Combination context retained; label does not establish a generic maintenance dose.",
+        "halfLife": "[checked] DailyMed pentazocine/naloxone oral tablets, Clinical Pharmacology: 24 normal volunteers, mean plasma elimination 3.6 h, reported range 1.5-10 h. Combination context retained; label does not establish a generic maintenance dose. V2 representation-only correction: single-value bounds are null; calculated mean +/- 2 SD is explicitly mean-2sd. Underlying prior-session source/value provenance retained; no new measurement inferred.",
         "metabolism": "[gap] Candidate formedFrom links retained. No defensible quantitative formation fraction retrieved; each unchanged zero means unknown, not evidence of absent formation.",
         "molecularWeight": "[recall] PubChem Pentazocine compound record, Molecular Weight: 285.42 g/mol, free base/neutral parent; value recalled, not confirmed from the compound page during session. [recall] Conventional dosing basis: hydrochloride oral combination preparations. Check actual label mass basis and salt/hydrate conversion; neutral/free-base MW is not a conversion of the entered dose.",
         "cyp2d6": "[gap] Clinically meaningful CYP2D6 substrate/inhibitor status not established in this pass; false/none are unassessed defaults. All multipliers remain 1: no phenotype data.",
@@ -24264,7 +24294,7 @@
       ],
       "molecularWeight": null,
       "kinetics": {
-        "mode": "formation-limited",
+        "mode": "unknown",
         "halfLifeHours": null,
         "earlyPhase": null,
         "steadyState": null
@@ -24291,7 +24321,7 @@
         "note": ""
       },
       "provenance": {
-        "halfLife": "estimate",
+        "halfLife": "gap",
         "metabolism": null,
         "molecularWeight": null,
         "cyp2d6": null,
@@ -24301,7 +24331,7 @@
         "nonlinearKinetics": null
       },
       "sourceNotes": {
-        "halfLife": "Auto-assigned by migration: conjugate assumed formation-limited. Review.",
+        "halfLife": "[gap] V2 audit of psilocin_o_glucuronide: automatic conjugate-name heuristic is insufficient to establish clearance faster than formation in humans, or the simulation assumption of one-tenth of the fastest parent half-life. No compound-specific paired human parent/metabolite clearance evidence confirmed in this pass. Reverted formation-limited to unknown; numeric kinetics null. This does not exclude formation-limited disposition. Renal impairment can materially alter conjugate clearance. Original formedFrom topology preserved.",
         "metabolism": "",
         "molecularWeight": "",
         "cyp2d6": "",
@@ -24310,7 +24340,7 @@
         "lingeringEffects": "",
         "nonlinearKinetics": ""
       },
-      "source": "",
+      "source": "DRAFT — AI-prepopulated, unverified. ",
       "verified": false,
       "verifiedDate": ""
     },
@@ -25859,8 +25889,8 @@
         "mode": "intrinsic",
         "halfLifeHours": {
           "typical": 4,
-          "min": 4,
-          "max": 4,
+          "min": null,
+          "max": null,
           "rangeType": "single-value",
           "cv": null
         },
@@ -25908,7 +25938,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[checked] DailyMed tapentadol IR, 12.3 Excretion: average terminal half-life 4 h following oral administration. No range in reviewed passage; all three equal. Combined IR/ER product requires review before ER use.",
+        "halfLife": "[checked] DailyMed tapentadol IR, 12.3 Excretion: average terminal half-life 4 h following oral administration. No range in reviewed passage; all three equal. Combined IR/ER product requires review before ER use. V2 representation-only correction: single-value bounds are null; calculated mean +/- 2 SD is explicitly mean-2sd. Underlying prior-session source/value provenance retained; no new measurement inferred.",
         "metabolism": "[gap] Candidate formedFrom links retained. No defensible quantitative formation fraction retrieved; each unchanged zero means unknown, not evidence of absent formation.",
         "molecularWeight": "[recall] PubChem Tapentadol compound record, Molecular Weight: 221.34 g/mol, free base/neutral parent; value recalled, not confirmed from the compound page during session. [recall] Conventional dosing basis: hydrochloride preparations. Check actual label mass basis and salt/hydrate conversion; neutral/free-base MW is not a conversion of the entered dose.",
         "cyp2d6": "[checked] DailyMed tapentadol 12.3: only 2% hydroxy-tapentadol via CYP2D6; predominantly conjugation. Substrate false reflects lack of a clinically meaningful CYP2D6 clearance pathway in this label. [gap] All multipliers 1: no phenotype data. FDA inhibitor classification not established.",
@@ -25935,7 +25965,7 @@
       ],
       "molecularWeight": null,
       "kinetics": {
-        "mode": "formation-limited",
+        "mode": "unknown",
         "halfLifeHours": null,
         "earlyPhase": null,
         "steadyState": null
@@ -25962,7 +25992,7 @@
         "note": ""
       },
       "provenance": {
-        "halfLife": "estimate",
+        "halfLife": "gap",
         "metabolism": "estimate",
         "molecularWeight": "gap",
         "cyp2d6": "gap",
@@ -25972,7 +26002,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[gap] No compound-specific terminal elimination half-life in healthy adults retrieved; zero is missing data, not instantaneous elimination. Auto-assigned by migration: conjugate assumed formation-limited. Review.",
+        "halfLife": "[gap] V2 audit of tapentadol_o_glucuronide: automatic conjugate-name heuristic is insufficient to establish clearance faster than formation in humans, or the simulation assumption of one-tenth of the fastest parent half-life. No compound-specific paired human parent/metabolite clearance evidence confirmed in this pass. Reverted formation-limited to unknown; numeric kinetics null. This does not exclude formation-limited disposition. Renal impairment can materially alter conjugate clearance. Original formedFrom topology preserved.",
         "metabolism": "[estimate] tapentadol -> tapentadol_o_glucuronide: DailyMed tapentadol 12.3 reports urinary recovery of 55% O-glucuronide; provisional proxy, not direct systemic formation probability. https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=863f3fd3-1e8d-41b0-855f-8f9a29237cda",
         "molecularWeight": "[gap] Free-base PubChem molecular weight not confirmed for this compound; zero retained.",
         "cyp2d6": "[gap] Clinically meaningful CYP2D6 substrate/inhibitor status not established in this pass; false/none are unassessed defaults. All multipliers remain 1: no phenotype data.",
@@ -26065,7 +26095,7 @@
       ],
       "molecularWeight": null,
       "kinetics": {
-        "mode": "formation-limited",
+        "mode": "unknown",
         "halfLifeHours": null,
         "earlyPhase": null,
         "steadyState": null
@@ -26092,7 +26122,7 @@
         "note": ""
       },
       "provenance": {
-        "halfLife": "estimate",
+        "halfLife": "gap",
         "metabolism": null,
         "molecularWeight": null,
         "cyp2d6": null,
@@ -26102,7 +26132,7 @@
         "nonlinearKinetics": null
       },
       "sourceNotes": {
-        "halfLife": "Auto-assigned by migration: conjugate assumed formation-limited. Review.",
+        "halfLife": "[gap] V2 audit of temazepam_glucuronide: automatic conjugate-name heuristic is insufficient to establish clearance faster than formation in humans, or the simulation assumption of one-tenth of the fastest parent half-life. No compound-specific paired human parent/metabolite clearance evidence confirmed in this pass. Reverted formation-limited to unknown; numeric kinetics null. This does not exclude formation-limited disposition. Renal impairment can materially alter conjugate clearance. Original formedFrom topology preserved.",
         "metabolism": "",
         "molecularWeight": "",
         "cyp2d6": "",
@@ -26111,7 +26141,7 @@
         "lingeringEffects": "",
         "nonlinearKinetics": ""
       },
-      "source": "",
+      "source": "DRAFT — AI-prepopulated, unverified. ",
       "verified": false,
       "verifiedDate": ""
     },
@@ -26507,7 +26537,7 @@
           "typical": 2.5,
           "min": 0.3,
           "max": 4.7,
-          "rangeType": "observed-range",
+          "rangeType": "mean-2sd",
           "cv": null
         },
         "earlyPhase": null,
@@ -26550,7 +26580,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[estimate] Primary 12-healthy-volunteer crossover study abstract https://pubmed.ncbi.nlm.nih.gov/2341111/: mean 2.5 +/- 1.1 h, bounds mean +/- 2 SD. No applicability established for supratherapeutic nonprescription products.",
+        "halfLife": "[estimate] Primary 12-healthy-volunteer crossover study abstract https://pubmed.ncbi.nlm.nih.gov/2341111/: mean 2.5 +/- 1.1 h, bounds mean +/- 2 SD. No applicability established for supratherapeutic nonprescription products. V2 representation-only correction: single-value bounds are null; calculated mean +/- 2 SD is explicitly mean-2sd. Underlying prior-session source/value provenance retained; no new measurement inferred.",
         "metabolism": "[gap] Candidate formedFrom links retained. No defensible quantitative formation fraction retrieved; each unchanged zero means unknown, not evidence of absent formation.",
         "molecularWeight": "[recall] PubChem Tianeptine compound record, Molecular Weight: 436.95 g/mol, free base/neutral parent; value recalled, not confirmed from the compound page during session. [recall] Conventional dosing basis: sodium in conventional prescription products; nonprescription products may differ. Check actual label mass basis and salt/hydrate conversion; neutral/free-base MW is not a conversion of the entered dose.",
         "cyp2d6": "[gap] Clinically meaningful CYP2D6 substrate/inhibitor status not established in this pass; false/none are unassessed defaults. All multipliers remain 1: no phenotype data.",
@@ -26759,7 +26789,7 @@
           "typical": 6.3,
           "min": 3.5,
           "max": 9.1,
-          "rangeType": "observed-range",
+          "rangeType": "mean-2sd",
           "cv": null
         },
         "earlyPhase": null,
@@ -26810,7 +26840,7 @@
         "nonlinearKinetics": "gap"
       },
       "sourceNotes": {
-        "halfLife": "[estimate] DailyMed tramadol IR, 12.3 Elimination: racemic tramadol terminal mean 6.3 +/- 1.4 h, bounds mean +/- 2 SD. Multiple dosing increases the approximate half-life from 6 to 7 h; 6.3 h retained as explicitly quantified single-dose mean; not an ER profile.",
+        "halfLife": "[estimate] DailyMed tramadol IR, 12.3 Elimination: racemic tramadol terminal mean 6.3 +/- 1.4 h, bounds mean +/- 2 SD. Multiple dosing increases the approximate half-life from 6 to 7 h; 6.3 h retained as explicitly quantified single-dose mean; not an ER profile. V2 representation-only correction: single-value bounds are null; calculated mean +/- 2 SD is explicitly mean-2sd. Underlying prior-session source/value provenance retained; no new measurement inferred.",
         "metabolism": "[gap] Candidate formedFrom links retained. No defensible quantitative formation fraction retrieved; each unchanged zero means unknown, not evidence of absent formation.",
         "molecularWeight": "[recall] PubChem Tramadol compound record, Molecular Weight: 263.38 g/mol, free base/neutral parent; value recalled, not confirmed from the compound page during session. [recall] Conventional dosing basis: hydrochloride preparations. Check actual label mass basis and salt/hydrate conversion; neutral/free-base MW is not a conversion of the entered dose.",
         "cyp2d6": "[checked] DailyMed label Clinical Pharmacology describes CYP2D6 O-demethylation to M1 (clinically relevant activation pathway). https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1261c32e-1b8c-75a8-e063-6294a90af461 [gap] No usable PM/IM/UM versus NM parent half-life/AUC ratios extracted; all multipliers 1: no phenotype data. Inhibitor none is unassessed, not a claim of absence. A change in parent half-life does not model altered metabolite formation.",
@@ -28427,7 +28457,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] No release-limited override entered for this route; absence is not confirmation that the intrinsic parent value applies to every formulation.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set; nonprescription recreational, illicit or novel-product dose intentionally 0. No prescription combination dose mapped to this generic product."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://pubmed.ncbi.nlm.nih.gov/38474495/",
@@ -29826,7 +29856,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] DailyMed Belbuca 12.3: multiple-dose mean 27.6 +/- 11.2 h. Recorded for review, not assumed to prove release-limited elimination; no apparent override entered. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=bc2b7a3d-72cf-497c-95b0-ba2b71f63c64",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set: no single usual adult maintenance dose established for this generic route. Do not substitute an initiation dose, PRN dose or maximum daily dose."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/downloadpdffile.cfm?setId=248524c6-4c8b-a450-e063-6394a90a81ef",
@@ -29872,12 +29902,14 @@
         "basis": "maintenance"
       },
       "provenance": {
-        "components": "recall"
+        "components": "gap",
+        "input": "gap"
       },
       "sourceNotes": {
-        "components": "[recall] Fixed-ratio 4:1 buprenorphine:naloxone (Suboxone, Zubsolv). Bioavailability of sublingual naloxone is very low; reviewer to set."
+        "components": "[gap] DailyMed SUBOXONE film 16 states labeled 8 mg/2 mg content is free base (8.64 mg buprenorphine HCl and 2.44 mg naloxone HCl dihydrate), so no additional salt correction is applied (saltFactor null). EMA Suboxone scientific discussion, Absorption: naloxone SL tablet approximately 3% bioavailable; solution studies give 7-9%, buprenorphine solution about 40-42%. DailyMed 12.3 documents film/tablet exposure differences. This generic product includes Suboxone/Zubsolv without dosage-form/strength identity; both component bioavailability values remain null rather than borrowing solution or tablet data for all forms. Null does not mean complete absorption. https://www.ema.europa.eu/en/documents/scientific-discussion/suboxone-epar-scientific-discussion_en.pdf ; https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8a5edcf9-828c-4f97-b671-268ab13a8ecd",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes."
       },
-      "source": "",
+      "source": "DRAFT — AI-prepopulated, unverified. ",
       "verified": false,
       "verifiedDate": ""
     },
@@ -29923,7 +29955,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] Checked DailyMed 12.3: Sublocade 43-60 days (1032-1440 h), Brixadi weekly 3-5 days (72-120 h), Brixadi monthly 19-26 days (456-624 h). Different products, not a population range; no blended override entered. Must resolve product identity before plotting depot. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=6189fb21-9432-45f8-8481-0bfaf3ccde95 ; https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5d8a8fd0-8619-422a-a664-d1d2e8970f48 Split from buprenorphine_sc_depot_sublocade_brixadi by migration; release half-life is product-specific.",
+        "input": "[gap] Specific DailyMed product label 12.3 checked: apparent terminal 19-26 days (456-624 h), explicitly controlled by depot release/erosion. No unique mean/median reported in the reviewed passage; releaseHalfLifeHours left null rather than presenting a midpoint as a mean. The current validator rejects non-null bounds with null typical, so range-only evidence is recorded here. A calibrated release constant may approximate the apparent tail only when release is slower than intrinsic elimination. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5d8a8fd0-8619-422a-a664-d1d2e8970f48",
         "typicalDose": "[gap] Reviewer to set: Sublocade, weekly Brixadi and monthly Brixadi are combined in one candidate route and have different regimens; no defensible shared dose."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/downloadpdffile.cfm?setId=248524c6-4c8b-a450-e063-6394a90a81ef",
@@ -29972,7 +30004,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] Checked DailyMed 12.3: Sublocade 43-60 days (1032-1440 h), Brixadi weekly 3-5 days (72-120 h), Brixadi monthly 19-26 days (456-624 h). Different products, not a population range; no blended override entered. Must resolve product identity before plotting depot. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=6189fb21-9432-45f8-8481-0bfaf3ccde95 ; https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5d8a8fd0-8619-422a-a664-d1d2e8970f48 Split from buprenorphine_sc_depot_sublocade_brixadi by migration; release half-life is product-specific.",
+        "input": "[gap] Specific DailyMed product label 12.3 checked: apparent terminal 3-5 days (72-120 h), explicitly controlled by depot release/erosion. No unique mean/median reported in the reviewed passage; releaseHalfLifeHours left null rather than presenting a midpoint as a mean. The current validator rejects non-null bounds with null typical, so range-only evidence is recorded here. A calibrated release constant may approximate the apparent tail only when release is slower than intrinsic elimination. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5d8a8fd0-8619-422a-a664-d1d2e8970f48",
         "typicalDose": "[gap] Reviewer to set: Sublocade, weekly Brixadi and monthly Brixadi are combined in one candidate route and have different regimens; no defensible shared dose."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/downloadpdffile.cfm?setId=248524c6-4c8b-a450-e063-6394a90a81ef",
@@ -30021,7 +30053,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] Checked DailyMed 12.3: Sublocade 43-60 days (1032-1440 h), Brixadi weekly 3-5 days (72-120 h), Brixadi monthly 19-26 days (456-624 h). Different products, not a population range; no blended override entered. Must resolve product identity before plotting depot. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=6189fb21-9432-45f8-8481-0bfaf3ccde95 ; https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5d8a8fd0-8619-422a-a664-d1d2e8970f48 Split from buprenorphine_sc_depot_sublocade_brixadi by migration; release half-life is product-specific.",
+        "input": "[gap] Specific DailyMed product label 12.3 checked: apparent terminal 43-60 days (1032-1440 h), explicitly controlled by depot release/erosion. No unique mean/median reported in the reviewed passage; releaseHalfLifeHours left null rather than presenting a midpoint as a mean. The current validator rejects non-null bounds with null typical, so range-only evidence is recorded here. A calibrated release constant may approximate the apparent tail only when release is slower than intrinsic elimination. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=6189fb21-9432-45f8-8481-0bfaf3ccde95",
         "typicalDose": "[gap] Reviewer to set: Sublocade, weekly Brixadi and monthly Brixadi are combined in one candidate route and have different regimens; no defensible shared dose."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/downloadpdffile.cfm?setId=248524c6-4c8b-a450-e063-6394a90a81ef",
@@ -30076,7 +30108,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] No release-limited override entered for this route; absence is not confirmation that the intrinsic parent value applies to every formulation.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[checked] DailyMed buprenorphine sublingual label, Dosage and Administration: recommended target 16 mg once daily (buprenorphine moiety); adult OUD maintenance context. Review salt-versus-moiety dosing basis before mg conversion. https://dailymed.nlm.nih.gov/dailymed/downloadpdffile.cfm?setId=248524c6-4c8b-a450-e063-6394a90a81ef"
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/downloadpdffile.cfm?setId=248524c6-4c8b-a450-e063-6394a90a81ef",
@@ -30113,7 +30145,7 @@
       "input": {
         "type": "zero-order",
         "releaseHalfLifeHours": null,
-        "defaultDurationHours": 72
+        "defaultDurationHours": 168
       },
       "typicalDose": {
         "amount": null,
@@ -30124,14 +30156,14 @@
         "class": "recall",
         "aliases": "checked",
         "components": null,
-        "input": "gap",
+        "input": "checked",
         "typicalDose": "gap"
       },
       "sourceNotes": {
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[checked] DailyMed Butrans 12.3: apparent terminal half-life approximately 26 h after patch removal; single value all three equal. Concentrations first decrease about 50% within 10-24 h. Post-removal value does not model continuous on-patch input. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=794aa355-66de-41b8-aedf-f2c40f6bc664 v1 apparent half-life 26 h (26–26 h) ≈ intrinsic half-life; not converted to a release half-life to avoid double-counting. Review.",
+        "input": "[checked] DailyMed BUTRANS 2.1 and 12.3 confirms continuous delivery in micrograms/hour for 7 days: defaultDurationHours corrected 72 -> 168. Post-removal apparent terminal ~26 h is similar to the selected 26 h compound SL terminal estimate; it cannot identify a separate skin-release constant, so releaseHalfLifeHours null to avoid double-counting. Route-specific intrinsic kinetics remain unresolved. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=794aa355-66de-41b8-aedf-f2c40f6bc664",
         "typicalDose": "[gap] Reviewer to set; patch label uses micrograms/hour and individualized titration, not one mg bolus. Total patch content must not be treated as delivered dose."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/downloadpdffile.cfm?setId=248524c6-4c8b-a450-e063-6394a90a81ef",
@@ -30377,7 +30409,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] No release-limited override entered for this route; absence is not confirmation that the intrinsic parent value applies to every formulation.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set: no single usual adult maintenance dose established for this generic route. Do not substitute an initiation dose, PRN dose or maximum daily dose."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9822ca3f-aee2-46e5-8a96-495400e65d10",
@@ -30426,7 +30458,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] No release-limited override entered for this route; absence is not confirmation that the intrinsic parent value applies to every formulation.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set: no single usual adult maintenance dose established for this generic route. Do not substitute an initiation dose, PRN dose or maximum daily dose."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9822ca3f-aee2-46e5-8a96-495400e65d10",
@@ -30718,7 +30750,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] No release-limited override entered for this route; absence is not confirmation that the intrinsic parent value applies to every formulation.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set; nonprescription recreational, illicit or novel-product dose intentionally 0. No prescription combination dose mapped to this generic product."
       },
       "source": "DRAFT — AI-prepopulated, unverified. No suitable human label source retrieved; candidate routes retained.",
@@ -31849,7 +31881,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] No release-limited override entered for this route; absence is not confirmation that the intrinsic parent value applies to every formulation.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set: no single usual adult maintenance dose established for this generic route. Do not substitute an initiation dose, PRN dose or maximum daily dose."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=010905f9-3bcb-4b50-9fe8-a3ad0010f14c",
@@ -32302,7 +32334,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] No release-limited override entered for this route; absence is not confirmation that the intrinsic parent value applies to every formulation.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set; nonprescription recreational, illicit or novel-product dose intentionally 0. No prescription combination dose mapped to this generic product."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://pubmed.ncbi.nlm.nih.gov/8841152/",
@@ -33770,7 +33802,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] No release-limited override entered for this route; absence is not confirmation that the intrinsic parent value applies to every formulation.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set: no single usual adult maintenance dose established for this generic route. Do not substitute an initiation dose, PRN dose or maximum daily dose."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1ed25b2c-334e-4021-ada1-3396f07630dc",
@@ -33820,7 +33852,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] No release-limited override entered for this route; absence is not confirmation that the intrinsic parent value applies to every formulation.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set; nonprescription recreational, illicit or novel-product dose intentionally 0. No prescription combination dose mapped to this generic product."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1ed25b2c-334e-4021-ada1-3396f07630dc",
@@ -33870,7 +33902,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] No release-limited override entered for this route; absence is not confirmation that the intrinsic parent value applies to every formulation.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set: no single usual adult maintenance dose established for this generic route. Do not substitute an initiation dose, PRN dose or maximum daily dose."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1ed25b2c-334e-4021-ada1-3396f07630dc",
@@ -33903,8 +33935,8 @@
         "type": "zero-order",
         "releaseHalfLifeHours": {
           "typical": 23.5,
-          "min": 23.5,
-          "max": 23.5,
+          "min": null,
+          "max": null,
           "rangeType": "single-value",
           "cv": null
         },
@@ -33926,7 +33958,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[checked] DailyMed fentanyl transdermal system 12.3 Specific Populations: healthy adults age 18-45 mean half-life 23.5 h after 72-hour application, compared with elderly mean 34.4 h (excluded from healthy-younger-adult reference). Only a cohort mean, no individual range in reviewed passage; all three equal 23.5. Label also reports 20-27 h for average 50% decline after patch removal; that range of averages is not an observed individual range. On-patch continuous input not represented by instantaneous dosing. https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=e15a7e9b-8025-49dd-9a6d-bafcccf1959f Migrated from v1 apparent half-life; treated as release half-life (flip-flop approximation). Review.",
+        "input": "[estimate] Migration retained 23.5 h young-adult post-patch apparent terminal half-life as a first-order skin-release proxy, with 72 h wear and micrograms/hour rate. Normalize rangeType single-value and min/max null. This is a flip-flop approximation, not a measured independent release constant; adding the intrinsic elimination compartment can distort the tail. Prior label evidence retained, not rechecked in this v2 session. Reviewer should calibrate against full PK profile. https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=e15a7e9b-8025-49dd-9a6d-bafcccf1959f",
         "typicalDose": "[gap] Reviewer to set; patch dosing is a rate in micrograms/hour, not a single mg maintenance bolus."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1ed25b2c-334e-4021-ada1-3396f07630dc; DailyMed fentanyl transdermal system 12.3",
@@ -35055,7 +35087,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] No release-limited override entered for this route; absence is not confirmation that the intrinsic parent value applies to every formulation.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set; nonprescription recreational, illicit or novel-product dose intentionally 0. No prescription combination dose mapped to this generic product."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://d9www.euda.europa.eu/publications/drug-profiles/heroin_en?page=1",
@@ -35104,7 +35136,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] No release-limited override entered for this route; absence is not confirmation that the intrinsic parent value applies to every formulation.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set; nonprescription recreational, illicit or novel-product dose intentionally 0. No prescription combination dose mapped to this generic product."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://d9www.euda.europa.eu/publications/drug-profiles/heroin_en?page=1",
@@ -35153,7 +35185,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] No release-limited override entered for this route; absence is not confirmation that the intrinsic parent value applies to every formulation.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set; nonprescription recreational, illicit or novel-product dose intentionally 0. No prescription combination dose mapped to this generic product."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://d9www.euda.europa.eu/publications/drug-profiles/heroin_en?page=1",
@@ -35252,7 +35284,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] Combined IR/ER route retained unchanged; distinct formulation kinetics cannot be represented by one override. No midpoint or blended apparent half-life entered. Split from hydrocodone_oral_ir_er by migration.",
+        "input": "[gap] V2 split product reviewed: hydrocodone_oral_er. No independently identified formulation-specific release half-life established. An ER apparent elimination half-life or dosing interval is not automatically the first-order release constant. Leave null; do not borrow the IR or another brand value. Input type/formulation preserved from migration.",
         "typicalDose": "[gap] Reviewer to set: no single usual adult maintenance dose established for this generic route. Do not substitute an initiation dose, PRN dose or maximum daily dose."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=82b7fd34-02ac-434a-be38-a1f0ec4f3e50",
@@ -35302,7 +35334,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] Combined IR/ER route retained unchanged; distinct formulation kinetics cannot be represented by one override. No midpoint or blended apparent half-life entered. Split from hydrocodone_oral_ir_er by migration.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set: no single usual adult maintenance dose established for this generic route. Do not substitute an initiation dose, PRN dose or maximum daily dose."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=82b7fd34-02ac-434a-be38-a1f0ec4f3e50",
@@ -35351,7 +35383,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] No release-limited override entered for this route; absence is not confirmation that the intrinsic parent value applies to every formulation.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set: no single usual adult maintenance dose established for this generic route. Do not substitute an initiation dose, PRN dose or maximum daily dose."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d6b40e39-a57e-402c-b4f6-7041e832f837",
@@ -35400,7 +35432,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] No release-limited override entered for this route; absence is not confirmation that the intrinsic parent value applies to every formulation.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set: no single usual adult maintenance dose established for this generic route. Do not substitute an initiation dose, PRN dose or maximum daily dose."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d6b40e39-a57e-402c-b4f6-7041e832f837",
@@ -35845,7 +35877,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] No release-limited override entered for this route; absence is not confirmation that the intrinsic parent value applies to every formulation.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set; nonprescription recreational, illicit or novel-product dose intentionally 0. No prescription combination dose mapped to this generic product."
       },
       "source": "DRAFT — AI-prepopulated, unverified. No suitable human label source retrieved; candidate routes retained.",
@@ -36785,7 +36817,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] No release-limited override entered for this route; absence is not confirmation that the intrinsic parent value applies to every formulation.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set: no single usual adult maintenance dose established for this generic route. Do not substitute an initiation dose, PRN dose or maximum daily dose."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=113a713f-830b-481c-bfa6-d44e3ac27f80",
@@ -37030,7 +37062,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] No release-limited override entered for this route; absence is not confirmation that the intrinsic parent value applies to every formulation. Renamed from loperamide_oral_incl_high_dose_misuse by migration.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set: combined therapeutic oral and high-dose-misuse route has no single meaningful maintenance dose; no misuse dose populated."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f422ade5-8395-40e4-e053-2a95a90a4044",
@@ -37623,7 +37655,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] No release-limited override entered for this route; absence is not confirmation that the intrinsic parent value applies to every formulation.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set: no single usual adult maintenance dose established for this generic route. Do not substitute an initiation dose, PRN dose or maximum daily dose."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b31d1308-28c3-43f4-e0a6-2f3ed76b8975",
@@ -37673,7 +37705,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] No release-limited override entered for this route; absence is not confirmation that the intrinsic parent value applies to every formulation.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set: no single usual adult maintenance dose established for this generic route. Do not substitute an initiation dose, PRN dose or maximum daily dose."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b31d1308-28c3-43f4-e0a6-2f3ed76b8975",
@@ -37924,7 +37956,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] No release-limited override entered for this route; absence is not confirmation that the intrinsic parent value applies to every formulation.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] DailyMed methadone, 2.7: common OUD maintenance range 80-120 mg/day. No unique usual dose provided; 0 retained rather than inventing a midpoint. Analgesia dosing differs. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=6da7501b-b881-4bc7-891a-74214a00a3ac"
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=6da7501b-b881-4bc7-891a-74214a00a3ac",
@@ -38915,7 +38947,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] No release-limited override entered for this route; absence is not confirmation that the intrinsic parent value applies to every formulation.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set; nonprescription recreational, illicit or novel-product dose intentionally 0. No prescription combination dose mapped to this generic product."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://pubmed.ncbi.nlm.nih.gov/38474495/",
@@ -39062,7 +39094,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] No release-limited override entered for this route; absence is not confirmation that the intrinsic parent value applies to every formulation.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set: no single usual adult maintenance dose established for this generic route. Do not substitute an initiation dose, PRN dose or maximum daily dose."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=67b3273e-af71-4dac-8e49-8bc134d4c591",
@@ -39111,7 +39143,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] Combined IR/ER route retained unchanged; distinct formulation kinetics cannot be represented by one override. No midpoint or blended apparent half-life entered. Split from morphine_oral_ir_er by migration.",
+        "input": "[gap] V2 split product reviewed: morphine_oral_er. No independently identified formulation-specific release half-life established. An ER apparent elimination half-life or dosing interval is not automatically the first-order release constant. Leave null; do not borrow the IR or another brand value. Input type/formulation preserved from migration.",
         "typicalDose": "[gap] Reviewer to set: no single usual adult maintenance dose established for this generic route. Do not substitute an initiation dose, PRN dose or maximum daily dose."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=67b3273e-af71-4dac-8e49-8bc134d4c591",
@@ -39160,7 +39192,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] Combined IR/ER route retained unchanged; distinct formulation kinetics cannot be represented by one override. No midpoint or blended apparent half-life entered. Split from morphine_oral_ir_er by migration.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set: no single usual adult maintenance dose established for this generic route. Do not substitute an initiation dose, PRN dose or maximum daily dose."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=67b3273e-af71-4dac-8e49-8bc134d4c591",
@@ -39308,7 +39340,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] No release-limited override entered for this route; absence is not confirmation that the intrinsic parent value applies to every formulation.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set; rescue antagonist has no usual maintenance dose. Label rescue-device amount is not a maintenance dose; combined routes and combination products need separate review."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=999a4269-9e54-4801-b2ac-2a7276f0b94f",
@@ -39358,7 +39390,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] No release-limited override entered for this route; absence is not confirmation that the intrinsic parent value applies to every formulation.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set; rescue antagonist has no usual maintenance dose. Label rescue-device amount is not a maintenance dose; combined routes and combination products need separate review."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=999a4269-9e54-4801-b2ac-2a7276f0b94f",
@@ -39407,7 +39439,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] No release-limited override entered for this route; absence is not confirmation that the intrinsic parent value applies to every formulation.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set; rescue antagonist has no usual maintenance dose. Label rescue-device amount is not a maintenance dose; combined routes and combination products need separate review."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=b598c237-032d-4bb5-0e92-50eabd863dac&type=display",
@@ -39456,7 +39488,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] No release-limited override entered for this route; absence is not confirmation that the intrinsic parent value applies to every formulation.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set; rescue antagonist has no usual maintenance dose. Label rescue-device amount is not a maintenance dose; combined routes and combination products need separate review."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=b598c237-032d-4bb5-0e92-50eabd863dac&type=display",
@@ -39506,7 +39538,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] DailyMed Vivitrol 12.3: 5-10 days (120-240 h), polymer-erosion dependent; no unique mean/median provided. Override deliberately left absent, because arbitrary midpoint would violate the requested typical definition. This product must not inherit oral 4 h as a valid depot simulation. Reviewer must select a representative value from product PK data.",
+        "input": "[gap] Specific DailyMed product label 12.3 checked: apparent terminal 5-10 days (120-240 h), explicitly controlled by depot release/erosion. No unique mean/median reported in the reviewed passage; releaseHalfLifeHours left null rather than presenting a midpoint as a mean. The current validator rejects non-null bounds with null typical, so range-only evidence is recorded here. A calibrated release constant may approximate the apparent tail only when release is slower than intrinsic elimination. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=cd11c435-b0f0-4bb9-ae78-60f101f3703f",
         "typicalDose": "[checked] DailyMed Vivitrol, 2: 380 mg IM every 4 weeks or once monthly; per injection, not per day. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=cd11c435-b0f0-4bb9-ae78-60f101f3703f"
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=57e8b767-54c2-dfa3-e063-6394a90ae6c2; Vivitrol label https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=cd11c435-b0f0-4bb9-ae78-60f101f3703f",
@@ -39556,7 +39588,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] No release-limited override entered for this route; absence is not confirmation that the intrinsic parent value applies to every formulation.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[checked] DailyMed naltrexone tablet, Dosage and Administration/Treatment of Alcoholism: 50 mg once daily for most patients. Labeled tablet dose basis must be reviewed against free-base MW. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=57e8b767-54c2-dfa3-e063-6394a90ae6c2"
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=57e8b767-54c2-dfa3-e063-6394a90ae6c2",
@@ -40445,7 +40477,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] Combined IR/ER route retained unchanged; distinct formulation kinetics cannot be represented by one override. No midpoint or blended apparent half-life entered. Split from oxycodone_oral_ir_er by migration.",
+        "input": "[gap] V2 split product reviewed: oxycodone_oral_er. No independently identified formulation-specific release half-life established. An ER apparent elimination half-life or dosing interval is not automatically the first-order release constant. Leave null; do not borrow the IR or another brand value. Input type/formulation preserved from migration.",
         "typicalDose": "[gap] Reviewer to set: no single usual adult maintenance dose established for this generic route. Do not substitute an initiation dose, PRN dose or maximum daily dose."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=3245cd2f-8ad0-b755-e063-6394a90a603c&type=display",
@@ -40497,7 +40529,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] Combined IR/ER route retained unchanged; distinct formulation kinetics cannot be represented by one override. No midpoint or blended apparent half-life entered. Split from oxycodone_oral_ir_er by migration.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set: no single usual adult maintenance dose established for this generic route. Do not substitute an initiation dose, PRN dose or maximum daily dose."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=3245cd2f-8ad0-b755-e063-6394a90a603c&type=display",
@@ -40546,7 +40578,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] No release-limited override entered for this route; absence is not confirmation that the intrinsic parent value applies to every formulation.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set: no single usual adult maintenance dose established for this generic route. Do not substitute an initiation dose, PRN dose or maximum daily dose."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=dcb5b5d2-7d0a-497a-8f1e-3b96fd43320b&version=17",
@@ -41001,7 +41033,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] No release-limited override entered for this route; absence is not confirmation that the intrinsic parent value applies to every formulation.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set: no single usual adult maintenance dose established for this generic route. Do not substitute an initiation dose, PRN dose or maximum daily dose."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=a28450a0-ac93-4235-b9a6-58cdf24773cb",
@@ -43207,7 +43239,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] Combined IR/ER route retained unchanged; distinct formulation kinetics cannot be represented by one override. No midpoint or blended apparent half-life entered. Split from tapentadol_oral_ir_er by migration.",
+        "input": "[gap] V2 split product reviewed: tapentadol_oral_er. No independently identified formulation-specific release half-life established. An ER apparent elimination half-life or dosing interval is not automatically the first-order release constant. Leave null; do not borrow the IR or another brand value. Input type/formulation preserved from migration.",
         "typicalDose": "[gap] Reviewer to set: no single usual adult maintenance dose established for this generic route. Do not substitute an initiation dose, PRN dose or maximum daily dose."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=863f3fd3-1e8d-41b0-855f-8f9a29237cda",
@@ -43256,7 +43288,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] Combined IR/ER route retained unchanged; distinct formulation kinetics cannot be represented by one override. No midpoint or blended apparent half-life entered. Split from tapentadol_oral_ir_er by migration.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set: no single usual adult maintenance dose established for this generic route. Do not substitute an initiation dose, PRN dose or maximum daily dose."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=863f3fd3-1e8d-41b0-855f-8f9a29237cda",
@@ -43455,7 +43487,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] No release-limited override entered for this route; absence is not confirmation that the intrinsic parent value applies to every formulation.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set; nonprescription recreational, illicit or novel-product dose intentionally 0. No prescription combination dose mapped to this generic product."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://pubmed.ncbi.nlm.nih.gov/2341111/",
@@ -43702,7 +43734,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] Combined IR/ER route retained unchanged; distinct formulation kinetics cannot be represented by one override. No midpoint or blended apparent half-life entered. Split from tramadol_oral_ir_er by migration.",
+        "input": "[gap] V2 split product reviewed: tramadol_oral_er. No independently identified formulation-specific release half-life established. An ER apparent elimination half-life or dosing interval is not automatically the first-order release constant. Leave null; do not borrow the IR or another brand value. Input type/formulation preserved from migration.",
         "typicalDose": "[gap] Reviewer to set: no single usual adult maintenance dose established for this generic route. Do not substitute an initiation dose, PRN dose or maximum daily dose."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1261c32e-1b8c-75a8-e063-6294a90af461",
@@ -43751,7 +43783,7 @@
         "class": "[recall] Short pharmacological class from standard pharmacology; verify target efficacy and formulation.",
         "aliases": "[checked] Original aliases copied unchanged from tools/candidates.json. Brand/formulation specificity is unreviewed; alias presence does not establish interchangeability.",
         "components": "",
-        "input": "[gap] Combined IR/ER route retained unchanged; distinct formulation kinetics cannot be represented by one override. No midpoint or blended apparent half-life entered. Split from tramadol_oral_ir_er by migration.",
+        "input": "[gap] V2 input review: migration bolus representation retained for this generic route. No distinct early-dose fraction or release compartment identified in this pass; no positive claim of instantaneous absorption. Formulation/unit not independently confirmed unless specified in components or prior product notes.",
         "typicalDose": "[gap] Reviewer to set: no single usual adult maintenance dose established for this generic route. Do not substitute an initiation dose, PRN dose or maximum daily dose."
       },
       "source": "DRAFT — AI-prepopulated, unverified. https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=1261c32e-1b8c-75a8-e063-6294a90af461",

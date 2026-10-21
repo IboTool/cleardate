@@ -9,7 +9,7 @@ Client-side drug clearance visualiser for ibogaine-clinic intake. Reference use 
 | `docs/ClearDate_Cursor_Prompt.md` | The full build spec (v1). Give this to Cursor. |
 | `docs/ClearDate_Spec_v2.md` | Delta spec for the v2 data model and kinetics (implemented). |
 | `docs/migration_v2_report.md` | What `npm run migrate-v2` changed in `public/drugs.json`, and what to review. |
-| `start-cleardate.bat` / `stop-cleardate.bat` | Windows launchers: start the app and open the browser / stop it. |
+| `start-cleardate.bat` / `start-editor.bat` / `stop-cleardate.bat` | Windows launchers: start the app / the data editor and open the browser; stop both. |
 | `docs/ClearDate_Candidate_Drug_List.md` | Human-readable candidate list (213 rows, by category). |
 | `docs/ClearDate_Data_Sources.pdf` | Where to find each value, with links. |
 | `tools/candidates.json` | Machine-readable work queue: 9 categories, 227 drugs, 443 compounds with metabolite links. Structure only — no PK values. |
@@ -44,7 +44,9 @@ Rows that combine several drugs or contain metabolite chains are handled by the 
 
 Double-click **`start-cleardate.bat`**. It runs `npm install` the first time, starts the dev server in a window titled *ClearDate server* (port 5173), waits until it answers and opens http://localhost:5173/ in the default browser. If the server is already running it just opens the browser.
 
-Double-click **`stop-cleardate.bat`** to stop it. It kills whatever is listening on ports 5173 (app), 5174 (data editor) and 4173 (`npm run preview`). Closing the *ClearDate server* window works too.
+Double-click **`start-editor.bat`** to start the local data editor for reviewing `drugs.json` (http://127.0.0.1:5174, window *ClearDate editor*) the same way. Afterwards, run `tools\push-drugs.bat` to publish your edits.
+
+Double-click **`stop-cleardate.bat`** to stop the app and the editor. It kills whatever is listening on ports 5173 (app), 5174 (data editor) and 4173 (`npm run preview`). Closing the *ClearDate server* window works too.
 
 ## Commands
 
