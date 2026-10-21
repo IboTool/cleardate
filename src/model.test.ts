@@ -117,6 +117,123 @@ describe('clear status', () => {
   });
 });
 
+describe('v2.1: clinical relevance', () => {
+  const lib = (relevance: Compound['clinicalRelevance'], reviewed = false) => library([
+    compound('p', 4),
+    metabolite('m', 'p', 0.5, null, {
+      clinicalRelevance: relevance,
+      reviewedDates: reviewed ? { relevance: '2026-10-01' } : {},
+      provenance: reviewed ? { relevance: 'reviewer' } : { relevance: 'recall' },
+    }),
+  ], [emptyProduct('p_oral', 'P (Oral)', 'p', 'Oral', 'x')]);
+
+  it('an inactive metabolite with unknown kinetics is ignored; an unknown-relevance one makes the product Incomplete', () => {
+    const unknown = run(lib('unknown'), [{ productId: 'p_oral', amount: 100 }]);
+    expect(unknown.products[0].status).toBe('incomplete');
+    expect(unknown.products[0].missing).toEqual(['M']);
+
+    const reviewed = run(lib('inactive', true), [{ productId: 'p_oral', amount: 100 }]);
+    expect(reviewed.products[0].status).toBe('clear');
+    expect(reviewed.products[0].missing).toEqual([]);
+    expect(reviewed.products[0].excluded.join()).toMatch(/M: inactive metabolite, kinetics unknown — excluded from clear date/);
+
+    const draft = run(lib('inactive'), [{ productId: 'p_oral', amount: 100 }]);
+    expect(draft.products[0].status).toBe('assumptions');
+    expect(draft.products[0].assumptions.join()).toMatch(/excluded as inactive \(unreviewed classification\)/);
+  });
+
+  it('an inactive metabolite that outlasts the parent is plotted but does not hold up the clear date', () => {
+    const l = library([compound('p', 4), metabolite('m', 'p', 0.5, 100, { clinicalRelevance: 'inactive' })], [emptyProduct('p_oral', 'P (Oral)', 'p', 'Oral', 'x')]);
+    const scn = run(l, [{ productId: 'p_oral', amount: 100 }]);
+    const m = curve(scn, 'm');
+    expect(m.inactive).toBe(true);
+    expect(m.clearAt!).toBeGreaterThan(curve(scn, 'p').clearAt!);
+    expect(scn.products[0].clearAt).toBe(curve(scn, 'p').clearAt);
+    expect(scn.products[0].status).toBe('assumptions');
+  });
+
+  it('a parent is always treated as active even if marked inactive', () => {
+    const l = library([compound('p', 4, { clinicalRelevance: 'inactive' })], [emptyProduct('p_oral', 'P (Oral)', 'p', 'Oral', 'x')]);
+    const scn = run(l, [{ productId: 'p_oral', amount: 100 }]);
+    expect(curve(scn, 'p').inactive).toBe(false);
+    expect(scn.products[0].clearAt).toBe(curve(scn, 'p').clearAt);
+  });
+});
+
+describe('v2.1: partial data', () => {
+  const hl = (typical: number | null, min: number | null, max: number | null) => ({ typical, min, max, rangeType: 'observed-range' as const, cv: null });
+  const one = (k: Compound['kinetics']) => library([compound('p', null, { kinetics: k })], [emptyProduct('p_oral', 'P (Oral)', 'p', 'Oral', 'x')]);
+
+  it('a range-only range derives the geometric midpoint and labels it', () => {
+    const ranged = run(one({ mode: 'intrinsic', halfLifeHours: hl(null, 4, 16), earlyPhase: null, steadyState: null }), [{ productId: 'p_oral', amount: 100 }]);
+    const explicit = run(one({ mode: 'intrinsic', halfLifeHours: hl(8, 4, 16), earlyPhase: null, steadyState: null }), [{ productId: 'p_oral', amount: 100 }]);
+    expect(curve(ranged, 'p').clearAt).toBeCloseTo(curve(explicit, 'p').clearAt!, -3);
+    expect(curve(ranged, 'p').clearAtMax).toBeCloseTo(curve(explicit, 'p').clearAtMax!, -3);
+    expect(ranged.products[0].assumptions.join()).toMatch(/assumed midpoint of reported range on P half-life/);
+    expect(ranged.products[0].status).toBe('assumptions');
+  });
+
+  it('earlyPhase with fraction null gives the same curve as no early phase', () => {
+    const none = run(one({ mode: 'intrinsic', halfLifeHours: hl(20, 20, 20), earlyPhase: null, steadyState: null }), [{ productId: 'p_oral', amount: 100 }]);
+    const partial = run(one({ mode: 'intrinsic', halfLifeHours: hl(20, 20, 20), earlyPhase: { fraction: null, halfLifeHours: hl(2, 2, 2) }, steadyState: null }), [{ productId: 'p_oral', amount: 100 }]);
+    expect(curve(partial, 'p').runs.typical.amounts).toEqual(curve(none, 'p').runs.typical.amounts);
+    expect(curve(partial, 'p').clearAt).toBe(curve(none, 'p').clearAt);
+    expect(partial.products[0].assumptions.join()).toMatch(/P: early phase ignored \(fraction unknown\) — conservative/);
+  });
+
+  it('steadyState.afterDays null with a regimen uses the later of the two clear dates', () => {
+    const k = (ss: boolean): Compound['kinetics'] => ({ mode: 'intrinsic', halfLifeHours: hl(10, 10, 10), earlyPhase: null, steadyState: ss ? { afterDays: null, halfLifeHours: hl(30, 30, 30) } : null });
+    const doses = [0, 24].map((h) => ({ productId: 'p_oral', amount: 10, h }));
+    const single = run(one(k(false)), doses);
+    const unknownOnset = run(one(k(true)), doses);
+    const steadyOnly = run(one({ mode: 'intrinsic', halfLifeHours: hl(30, 30, 30), earlyPhase: null, steadyState: null }), doses);
+    expect(unknownOnset.products[0].clearAt).toBe(steadyOnly.products[0].clearAt);
+    expect(unknownOnset.products[0].clearAt!).toBeGreaterThan(single.products[0].clearAt!);
+    expect(unknownOnset.products[0].assumptions.join()).toMatch(/steady-state onset unknown — later of single-dose and steady-state clearance used/);
+
+    const oneDose = run(one(k(true)), [{ productId: 'p_oral', amount: 10 }]);
+    expect(oneDose.products[0].clearAt).toBe(run(one(k(false)), [{ productId: 'p_oral', amount: 10 }]).products[0].clearAt);
+    expect(oneDose.products[0].assumptions.join()).not.toMatch(/steady-state/);
+  });
+});
+
+describe('v2.1: zero formation multipliers', () => {
+  const lib = (morphineHl: number | null) => library([
+    compound('codeine', 3),
+    { ...metabolite('morphine', 'codeine', 0.1, morphineHl, { clinicalRelevance: 'active' }), formedFrom: [{ compound: 'codeine', fraction: 0.1, cyp2d6Multiplier: { poor: 0, normal: 1 } }] },
+  ], [emptyProduct('codeine_oral', 'Codeine (Oral)', 'codeine', 'Oral', 'x')]);
+  const as = (phen: Session['patient']['phenotype']) => (s: Session) => { s.patient.phenotype = phen; };
+
+  it("removes the branch from the curve and from clear status for the patient's phenotype", () => {
+    const pm = run(lib(100), [{ productId: 'codeine_oral', amount: 60 }], as('poor'));
+    expect(curve(pm, 'morphine')).toBeUndefined();
+    expect(pm.products[0].clearAt).toBe(curve(pm, 'codeine').clearAt);
+    expect(pm.products[0].notes).toContain('Morphine: not formed in poor metabolisers');
+    expect(pm.products[0].status).toBe('clear');
+
+    const unknownKinetics = run(lib(null), [{ productId: 'codeine_oral', amount: 60 }], as('poor'));
+    expect(unknownKinetics.products[0].status).toBe('clear');
+    expect(unknownKinetics.products[0].missing).toEqual([]);
+
+    const nm = run(lib(100), [{ productId: 'codeine_oral', amount: 60 }], as('normal'));
+    expect(curve(nm, 'morphine')).toBeDefined();
+    expect(nm.products[0].clearAt!).toBeGreaterThan(curve(nm, 'codeine').clearAt!);
+  });
+
+  it('labels a missing phenotype in a partial map as assumed ×1', () => {
+    const um = run(lib(100), [{ productId: 'codeine_oral', amount: 60 }], as('ultrarapid'));
+    expect(um.products[0].assumptions.join()).toMatch(/formation multiplier from Codeine for ultrarapid metabolisers unknown — assumed ×1/);
+  });
+
+  it('with unknown phenotype the poor-metaboliser edge of the band drops the branch only in that run', () => {
+    const u = run(lib(100), [{ productId: 'codeine_oral', amount: 60 }], as('unknown'));
+    const m = curve(u, 'morphine');
+    expect(m.formed).toEqual({ min: true, typical: true, max: false });
+    expect(u.products[0].notes).toContain('Morphine: not formed in poor metabolisers');
+    expect(u.products[0].clearAt!).toBeGreaterThan(curve(u, 'codeine').clearAt!);
+  });
+});
+
 describe('QT display', () => {
   it('disables the summed load when any lane lacks calibration', () => {
     const l = library([

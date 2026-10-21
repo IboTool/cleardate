@@ -6,11 +6,12 @@
 // A shared metabolite formed from two products appears once per product, in that product's colour.
 
 import { clearFraction, clearTime, expandRegimen, intervalsAbove, simulate, valueAt, type SimCompound, type SimInfusion, type SimRelease } from './pk';
-import { hasIntrinsicKinetics, primaryCompound, rangeBounds, type Bounds } from './schema';
+import { dosedCompoundIds, effectiveRelevance, hasIntrinsicKinetics, isReviewed, primaryCompound, rangeBounds, type Bounds } from './schema';
+import { planProductTree } from './tree';
 import { findCycle } from './validate';
 import type {
   Compound, CustomDrugs, DoseEntry, DoseUnit, InhibitorStrength, Library, Phenotype, PatientPhenotype, PhenotypeMap,
-  Product, QtTier, Range, Session, Settings,
+  Product, QtTier, Session, Settings,
 } from './types';
 
 export const HOUR = 3600_000;
@@ -31,6 +32,8 @@ export interface LibraryIndex {
   compounds: Map<string, Compound>;
   products: Map<string, Product>;
   children: Map<string, Edge[]>;
+  /** Compounds some product doses directly (always clinically active). */
+  dosed: Set<string>;
   /** Load-time problems shown to the user (fractions > 1, cycles). */
   loadWarnings: string[];
 }
@@ -97,7 +100,7 @@ export function buildIndex(lib: Library): LibraryIndex {
       loadWarnings.push(`Metabolite fractions formed from ${compounds.get(src)?.name ?? src} sum to ${sum.toFixed(2)} (> 1); scaled down to 1 for the simulation.`);
     }
   }
-  return { lib, compounds, products, children, loadWarnings };
+  return { lib, compounds, products, children, dosed: dosedCompoundIds(lib.products), loadWarnings };
 }
 
 /** Components and every downstream compound with depth (components = 0), in breadth-first order. */
@@ -119,19 +122,13 @@ export const componentIds = (p: Product) => p.components.map((c) => c.compound);
 export const productHasData = (idx: LibraryIndex, p: Product) => hasIntrinsicKinetics(idx.compounds.get(primaryCompound(p)));
 
 /**
- * Compounds reachable from the product that can't be simulated: `unknown` kinetics (unless the
- * setting treats them as formation-limited) or a component without a half-life.
+ * Compounds reachable from the product that can't be simulated and hold up its clear date:
+ * active or unknown-relevance compounds with `unknown` kinetics (unless the setting treats them as
+ * formation-limited), or a component without a half-life. Inactive ones never count (spec v2.1 §1).
  */
 export function missingKinetics(idx: LibraryIndex, p: Product, unknownAsFL: boolean): string[] {
-  const roots = componentIds(p);
-  const out: string[] = [];
-  for (const n of productTree(idx, roots)) {
-    const c = idx.compounds.get(n.id);
-    if (!c) continue;
-    if (n.depth === 0 ? !hasIntrinsicKinetics(c) : c.kinetics.mode === 'unknown' && !unknownAsFL) out.push(c.id);
-    else if (n.depth > 0 && c.kinetics.mode === 'intrinsic' && !hasIntrinsicKinetics(c)) out.push(c.id);
-  }
-  return out;
+  const childrenOf = (id: string) => (idx.children.get(id) ?? []).map((e) => e.id);
+  return planProductTree(idx.compounds, childrenOf, componentIds(p), idx.dosed, unknownAsFL).missing.map((m) => m.id);
 }
 
 export type DataStatus = 'no-data' | 'incomplete' | 'ok';
@@ -227,14 +224,20 @@ export interface CompoundCurve {
   runs: Record<RunName, Run>;
   peak: number;
   threshold: number;
-  clearAt: number | null; // typical run; null = beyond simulated window
+  clearAt: number | null; // typical run; null = beyond simulated window (or not formed in that run)
   clearAtMax: number | null;
+  /** Formed at all in each run (a zero CYP2D6 formation multiplier removes the branch). */
+  formed: Record<RunName, boolean>;
+  /** clinicalRelevance "inactive": plotted (fainter, hidden by default) but never holds up the clear date. */
+  inactive: boolean;
   /** Multiply amounts by this to get mg of this compound; null when molecular weights are missing. */
   mgFactor: number | null;
   /** Downstream of an unknown fraction: plotted as % of own peak ("amount unknown — timing only"). */
   normalized: boolean;
   /** Labels for every assumption behind this curve (tooltips, export). */
   assumptions: string[];
+  /** Facts that aren't assumptions, e.g. "not formed in poor metabolisers". */
+  notes: string[];
   formationLimited: boolean;
 }
 
@@ -257,6 +260,10 @@ export interface ProductResult {
   missing: string[];
   /** Product-level assumption labels (union of the curves' plus input-level ones). */
   assumptions: string[];
+  /** Reviewed inactive metabolites left out of the clear date (shown, but not an assumption). */
+  excluded: string[];
+  /** Curve notes, e.g. "not formed in poor metabolisers". */
+  notes: string[];
   /** Amounts are on an administered basis (bioavailability not applied for some component). */
   administered: boolean;
   /** Compounds with qt / cyp2d6 / receptors still unassessed (export section). */
@@ -341,13 +348,32 @@ function phenotypeFor(phen: PatientPhenotype, run: RunName): Phenotype {
   return run === 'min' ? 'ultrarapid' : run === 'max' ? 'poor' : 'normal';
 }
 
+/** A phenotype's multiplier from a (possibly partial) map. Missing phenotypes count as 1, flagged as assumed. */
+function phenValue(m: PhenotypeMap, phen: Phenotype): { value: number; assumed: boolean } {
+  const v = m[phen];
+  if (typeof v === 'number' && v >= 0) return { value: v, assumed: false };
+  return { value: 1, assumed: phen !== 'normal' };
+}
+
 /** Half-life multiplier for a CYP2D6 substrate in a given run. */
-function hlMultiplier(c: Compound, phen: PatientPhenotype, run: RunName): number {
+function hlMultiplier(c: Compound, phen: PatientPhenotype, run: RunName): { value: number; assumedFor: Phenotype[] } {
   const m = c.cyp2d6.substrate === 'yes' ? c.cyp2d6.halfLifeMultiplier : null;
-  if (!m) return 1;
-  if (phen !== 'unknown') return m[phen] || 1;
-  const edges = [m.poor || 1, m.ultrarapid || 1];
-  return run === 'min' ? Math.min(...edges) : run === 'max' ? Math.max(...edges) : m.normal || 1;
+  if (!m) return { value: 1, assumedFor: [] };
+  const get = (p: Phenotype) => {
+    const r = phenValue(m, p);
+    return { value: r.value > 0 ? r.value : 1, assumed: r.assumed };
+  };
+  if (phen !== 'unknown') {
+    const r = get(phen);
+    return { value: r.value, assumedFor: r.assumed ? [phen] : [] };
+  }
+  if (run === 'typical') {
+    const r = get('normal');
+    return { value: r.value, assumedFor: [] };
+  }
+  const edges = (['poor', 'ultrarapid'] as const).map((p) => ({ p, ...get(p) }));
+  const pick = run === 'min' ? edges.reduce((a, b) => (b.value < a.value ? b : a)) : edges.reduce((a, b) => (b.value > a.value ? b : a));
+  return { value: pick.value, assumedFor: pick.assumed ? [pick.p] : [] };
 }
 
 interface SimRequest {
@@ -358,6 +384,8 @@ interface SimRequest {
   color: string;
   doses: DoseEvent[];
   phenotype: PatientPhenotype;
+  /** Repeated dosing: a regimen entry, two or more doses, a patch/infusion or a depot (spec v2.1 §3). */
+  repeated: boolean;
 }
 
 interface Ctx {
@@ -369,12 +397,24 @@ interface Ctx {
 
 const pct = (v: number) => `${Math.round(v * 100)}%`;
 
+type Variant = 'single' | 'steady';
+interface Params {
+  terminal: Bounds;
+  early: { fraction: number; hl: Bounds } | null;
+}
+
 function simulateProduct(idx: LibraryIndex, req: SimRequest, ctx: Ctx, warnings: Warning[]): ProductResult {
   const { product } = req;
   const s = ctx.settings;
   const roots = componentIds(product);
-  const tree = productTree(idx, roots);
+  // A branch with a zero formation multiplier in every run is not formed at all: it leaves the tree (and the clear status).
+  const runPhens = [...new Set(RUNS.map((r) => phenotypeFor(req.phenotype, r)))];
+  const notFormed = (e: Edge) => !!e.multiplier && runPhens.every((p) => e.multiplier![p] === 0);
+  const childrenOf = (id: string) => (idx.children.get(id) ?? []).filter((e) => !notFormed(e)).map((e) => e.id);
+  const plan = planProductTree(idx.compounds, childrenOf, roots, idx.dosed, s.unknownAsFormationLimited);
+  const { tree, topo, parents, included } = plan;
   const rootOf = new Map(tree.map((n) => [n.id, n]));
+  const name = (id: string) => idx.compounds.get(id)?.name ?? id;
   const productAssumptions = new Set<string>();
   const curveAssumptions = new Map<string, Set<string>>();
   const assume = (id: string | null, text: string) => {
@@ -385,54 +425,33 @@ function simulateProduct(idx: LibraryIndex, req: SimRequest, ctx: Ctx, warnings:
     }
     productAssumptions.add(text);
   };
+  const productNotes = new Set<string>();
+  const curveNotes = new Map<string, Set<string>>();
+  const note = (id: string, text: string) => {
+    curveNotes.set(id, (curveNotes.get(id) ?? new Set<string>()).add(text));
+    productNotes.add(text);
+  };
+  const excludedNotes: string[] = [];
+  /** Inactive compounds don't hold up the clear date; how that is labelled depends on whether the classification was reviewed. */
+  const excludeInactive = (id: string, kineticsUnknown: boolean) => {
+    const c = idx.compounds.get(id)!;
+    if (isReviewed(c, 'relevance'))
+      excludedNotes.push(`${c.name}: inactive metabolite${kineticsUnknown ? ', kinetics unknown' : ''} — excluded from clear date`);
+    else assume(kineticsUnknown ? null : id, `${c.name}: excluded as inactive (unreviewed classification)${kineticsUnknown ? ' — kinetics unknown' : ''}`);
+  };
 
-  // Steady state applies when this product has been dosed continuously for afterDays.
-  const runDays = continuousDays(req.doses);
+  const missing = plan.missing.map((m) => (m.via ? `${name(m.id)} (formed only via ${name(m.via)}, whose kinetics are unknown)` : name(m.id)));
+  for (const id of plan.excluded) excludeInactive(id, true);
+  const inactive = new Set([...included.keys()].filter((id) => effectiveRelevance(idx.compounds.get(id)!, idx.dosed) === 'inactive'));
 
-  // Decide what can be simulated, parents first (Kahn's algorithm over the reachable subgraph).
-  const inTree = new Set(tree.map((n) => n.id));
-  const parents = new Map<string, string[]>();
-  for (const id of inTree) for (const e of idx.children.get(id) ?? []) if (inTree.has(e.id)) parents.set(e.id, [...(parents.get(e.id) ?? []), id]);
-  const indeg = new Map([...inTree].map((id) => [id, (parents.get(id) ?? []).length]));
-  const queue = [...inTree].filter((id) => indeg.get(id) === 0);
-  const topo: string[] = [];
-  while (queue.length) {
-    const id = queue.shift()!;
-    topo.push(id);
-    for (const e of idx.children.get(id) ?? []) if (inTree.has(e.id)) {
-      indeg.set(e.id, indeg.get(e.id)! - 1);
-      if (indeg.get(e.id) === 0) queue.push(e.id);
-    }
-  }
-
-  type Kind = 'intrinsic' | 'formation-limited';
-  const included = new Map<string, Kind>();
+  // Formation-limited tracking and normalized (timing-only) curves.
   const normalized = new Set<string>();
-  const missing: string[] = [];
-  const steadyUsed = new Set<string>();
   for (const id of topo) {
-    const c = idx.compounds.get(id);
-    if (!c) continue;
-    const isRoot = roots.includes(id);
+    if (!included.has(id) || roots.includes(id)) continue;
+    const c = idx.compounds.get(id)!;
+    if (plan.assumedFormationLimited.has(id)) assume(id, `${c.name}: kinetics unknown — assumed formation-limited`);
+    else if (included.get(id) === 'formation-limited') assume(id, `${c.name}: tracks parent (formation-limited)`);
     const fedBy = (parents.get(id) ?? []).filter((p) => included.has(p));
-    if (isRoot) {
-      if (hasIntrinsicKinetics(c)) included.set(id, 'intrinsic');
-      else missing.push(c.name);
-      continue;
-    }
-    if (!fedBy.length) continue; // downstream of something missing
-    const mode = c.kinetics.mode;
-    if (mode === 'intrinsic' && hasIntrinsicKinetics(c)) included.set(id, 'intrinsic');
-    else if (mode === 'formation-limited') {
-      included.set(id, 'formation-limited');
-      assume(id, `${c.name}: tracks parent (formation-limited)`);
-    } else if (mode === 'unknown' && s.unknownAsFormationLimited) {
-      included.set(id, 'formation-limited');
-      assume(id, `${c.name}: kinetics unknown — assumed formation-limited`);
-    } else {
-      missing.push(c.name);
-      continue;
-    }
     const nullEdge = fedBy.some((p) => (idx.children.get(p) ?? []).some((e) => e.id === id && e.fraction === null));
     if (nullEdge || fedBy.some((p) => normalized.has(p))) {
       normalized.add(id);
@@ -441,41 +460,60 @@ function simulateProduct(idx: LibraryIndex, req: SimRequest, ctx: Ctx, warnings:
   }
   const order = topo.filter((id) => included.has(id));
 
-  // Per-run parameters.
-  const bound = (r: Range | null | undefined, what: string, id: string | null): Bounds | null => {
-    const b = rangeBounds(r, s.assumedCv);
-    if (b?.assumed) assume(id, `assumed spread (CV ${pct(s.assumedCv)}) on ${what}`);
-    return b;
+  // Per-run parameters. Bounds are labelled (assumed spread, range midpoint) only where they are used.
+  const runDays = continuousDays(req.doses);
+  const labelBounds = (b: Bounds, what: string, id: string | null) => {
+    if (b.assumed) assume(id, `assumed spread (CV ${pct(s.assumedCv)}) on ${what}`);
+    if (b.midpoint) assume(id, `assumed midpoint of reported range on ${what}`);
   };
   const anyRelease = product.input.type !== 'bolus';
-  const releaseB = anyRelease ? bound(product.input.releaseHalfLifeHours, `${product.name} release half-life`, null) : null;
+  const releaseB = anyRelease ? rangeBounds(product.input.releaseHalfLifeHours, s.assumedCv) : null;
+  if (releaseB) labelBounds(releaseB, `${product.name} release half-life`, null);
   if (product.input.type === 'first-order-release' && !releaseB)
     assume(null, 'release half-life unknown — simulated as immediate release');
 
-  const params = new Map<string, { terminal: Bounds; early: { fraction: number; hl: Bounds } | null }>();
+  const params = new Map<string, Record<Variant, Params>>();
+  let dual = false;
   for (const id of order) {
     if (included.get(id) !== 'intrinsic') continue;
     const c = idx.compounds.get(id)!;
     const k = c.kinetics;
+    const terminal = rangeBounds(k.halfLifeHours, s.assumedCv)!;
+    let early: Params['early'] = null;
+    const ep = k.earlyPhase;
+    if (ep) {
+      const epB = rangeBounds(ep.halfLifeHours, s.assumedCv);
+      if (ep.fraction != null && ep.fraction > 0 && ep.fraction < 1 && epB) {
+        early = { fraction: ep.fraction, hl: epB };
+        labelBounds(epB, `${c.name} early-phase half-life`, id);
+      } else assume(id, `${c.name}: early phase ignored (${ep.fraction == null ? 'fraction' : 'half-life'} unknown) — conservative`);
+    }
+    const single: Params = { terminal, early };
     const ss = k.steadyState;
-    if (ss && ss.afterDays && runDays >= ss.afterDays) {
-      const b = bound(ss.halfLifeHours, `${c.name} steady-state half-life`, id);
-      if (b) {
-        steadyUsed.add(id);
-        assume(id, `${c.name}: steady-state half-life used (dosed ≥ ${ss.afterDays} days)`);
-        params.set(id, { terminal: b, early: null });
-        continue;
+    const ssB = ss ? rangeBounds(ss.halfLifeHours, s.assumedCv) : null;
+    let steady: Params | null = null;
+    if (ss && ssB) {
+      if (ss.afterDays != null && ss.afterDays > 0) {
+        if (runDays >= ss.afterDays) {
+          assume(id, `${c.name}: steady-state half-life used (dosed ≥ ${ss.afterDays} days)`);
+          labelBounds(ssB, `${c.name} steady-state half-life`, id);
+          params.set(id, { single: { terminal: ssB, early: null }, steady: { terminal: ssB, early: null } });
+          continue;
+        }
+      } else if (req.repeated) {
+        steady = { terminal: ssB, early: null };
+        dual = true;
+        assume(id, `${c.name}: steady-state onset unknown — later of single-dose and steady-state clearance used`);
+        labelBounds(ssB, `${c.name} steady-state half-life`, id);
       }
     }
-    const terminal = bound(k.halfLifeHours, `${c.name} half-life`, id)!;
-    const ep = k.earlyPhase;
-    const epB = ep && ep.fraction && ep.fraction > 0 && ep.fraction < 1 ? bound(ep.halfLifeHours, `${c.name} early-phase half-life`, id) : null;
-    params.set(id, { terminal, early: epB ? { fraction: ep!.fraction!, hl: epB } : null });
+    labelBounds(terminal, `${c.name} half-life`, id);
+    params.set(id, { single, steady: steady ?? single });
   }
 
-  const sims = {} as Record<RunName, ReturnType<typeof simulate>>;
   const h = (ms: number) => (ms - ctx.t0) / HOUR;
-  for (const run of RUNS) {
+  const notFormedIn = new Map<string, Set<Phenotype>>();
+  const simulateRun = (run: RunName, variant: Variant) => {
     const phen = phenotypeFor(req.phenotype, run);
     const hl = new Map<string, number>();
     const list: SimCompound[] = [];
@@ -484,23 +522,33 @@ function simulateProduct(idx: LibraryIndex, req: SimRequest, ctx: Ctx, warnings:
       let terminal: number;
       let early: SimCompound['earlyPhase'] = null;
       if (included.get(id) === 'intrinsic') {
-        const pr = params.get(id)!;
+        const pr = params.get(id)![variant];
         const m = hlMultiplier(c, req.phenotype, run);
-        terminal = pr.terminal[run] * m;
-        if (pr.early) early = { fraction: pr.early.fraction, halfLifeHours: pr.early.hl[run] * m };
+        for (const p of m.assumedFor) assume(id, `${c.name}: CYP2D6 half-life multiplier for ${p} metabolisers unknown — assumed ×1`);
+        terminal = pr.terminal[run] * m.value;
+        if (pr.early) early = { fraction: pr.early.fraction, halfLifeHours: pr.early.hl[run] * m.value };
       } else {
         // Formation-limited: one-tenth of the fastest feeding parent's effective half-life.
         const ps = (parents.get(id) ?? []).filter((p) => hl.has(p)).map((p) => hl.get(p)!);
         terminal = Math.min(...ps) / 10;
       }
       hl.set(id, terminal);
-      // Effective formation fractions (unknown → 1) with the CYP2D6 formation multiplier.
+      // Effective formation fractions (unknown → 1) with the CYP2D6 formation multiplier (0 = not formed).
       const edges = (idx.children.get(id) ?? []).filter((e) => included.has(e.id));
-      const eff = edges.map((e) => ({ id: e.id, known: e.fraction !== null, fraction: (e.fraction ?? 1) * (e.multiplier ? e.multiplier[phen] ?? 1 : 1) }));
+      const eff = edges.map((e) => {
+        let mult = 1;
+        if (e.multiplier) {
+          const r = phenValue(e.multiplier, phen);
+          mult = r.value;
+          if (r.assumed) assume(e.id, `${name(e.id)}: CYP2D6 formation multiplier from ${c.name} for ${phen} metabolisers unknown — assumed ×1`);
+          if (mult === 0) notFormedIn.set(e.id, (notFormedIn.get(e.id) ?? new Set<Phenotype>()).add(phen));
+        }
+        return { id: e.id, known: e.fraction !== null, fraction: (e.fraction ?? 1) * mult };
+      });
       const knownSum = eff.filter((e) => e.known).reduce((a, e) => a + e.fraction, 0);
       if (knownSum > 1 + 1e-9) {
         for (const e of eff) if (e.known) e.fraction /= knownSum;
-        if (run === 'typical')
+        if (run === 'typical' && variant === 'single')
           warnings.push({ level: 'warn', text: `${req.name}: CYP2D6-adjusted fractions formed from ${c.name} exceed 1; scaled down proportionally.` });
       }
       list.push({ id, halfLifeHours: terminal, earlyPhase: early, children: eff.map((e) => ({ id: e.id, fraction: e.fraction })), quasiSteady: included.get(id) === 'formation-limited' });
@@ -522,49 +570,97 @@ function simulateProduct(idx: LibraryIndex, req: SimRequest, ctx: Ctx, warnings:
         else bolus.push({ time: h(d.time), compoundId: target, amount: mg });
       }
     }
-    sims[run] = simulate(list, bolus, {
+    return simulate(list, bolus, {
       start: Math.min(...req.doses.map((d) => h(d.time))),
       minEnd: h(ctx.minEndMs),
       maxEnd: h(ctx.maxEndMs),
       releases,
       infusions,
     });
-  }
+  };
 
   const frac = clearFraction(s.clearHalfLives);
+  type Sim = ReturnType<typeof simulate>;
+  const toRun = (sim: Sim, id: string): Run => ({ times: sim.times.map((x) => ctx.t0 + x * HOUR), amounts: sim.amounts[id] });
+  const clearOf = (sim: Sim, id: string): number | null => {
+    const pk = sim.peaks[id];
+    if (!(pk > 0)) return null;
+    const r = toRun(sim, id);
+    const v = clearTime(r.times, r.amounts, pk * frac);
+    return v === -Infinity ? r.times[0] : v;
+  };
+  /** Latest clear time over the compounds that count (active / unknown relevance, formed in this run). null = beyond the window. */
+  const productClear = (sim: Sim): number | null => {
+    let latest = -Infinity;
+    for (const id of order) {
+      if (inactive.has(id) || !(sim.peaks[id] > 0)) continue;
+      const t = clearOf(sim, id);
+      if (t === null) return null;
+      latest = Math.max(latest, t);
+    }
+    return latest === -Infinity ? null : latest;
+  };
+  /** x clears later than y (null = beyond the simulated window, i.e. latest). */
+  const isLater = (x: number | null, y: number | null) => (x === null ? y !== null : y !== null && x > y);
+
+  // With an unknown steady-state onset, both kinetics run; the band spans both (earlier min, later typical/max).
+  const sims = {} as Record<RunName, Sim>;
+  for (const run of RUNS) {
+    const single = simulateRun(run, 'single');
+    if (!dual) {
+      sims[run] = single;
+      continue;
+    }
+    const steady = simulateRun(run, 'steady');
+    const steadyLater = isLater(productClear(steady), productClear(single));
+    sims[run] = run === 'min' ? (steadyLater ? single : steady) : steadyLater ? steady : single;
+  }
+
+  for (const n of tree)
+    for (const e of idx.children.get(n.id) ?? []) if (notFormed(e)) for (const p of runPhens) notFormedIn.set(e.id, (notFormedIn.get(e.id) ?? new Set<Phenotype>()).add(p));
+  for (const [id, phens] of notFormedIn) for (const p of phens) note(id, `${name(id)}: not formed in ${p} metabolisers`);
+
   const curves: CompoundCurve[] = [];
   for (const node of tree) {
     if (!included.has(node.id)) continue;
-    const c = idx.compounds.get(node.id)!;
-    const mk = (run: RunName): Run => ({ times: sims[run].times.map((x) => ctx.t0 + x * HOUR), amounts: sims[run].amounts[node.id] });
-    const runsOut = { min: mk('min'), typical: mk('typical'), max: mk('max') };
-    const peak = sims.typical.peaks[node.id];
-    const threshold = peak * frac;
-    const ct = (r: Run, pk: number) => {
-      if (!(pk > 0)) return null;
-      const v = clearTime(r.times, r.amounts, pk * frac);
-      return v === -Infinity ? r.times[0] : v;
-    };
-    const root = idx.compounds.get(rootOf.get(node.id)!.root);
+    const id = node.id;
+    const formed = { min: sims.min.peaks[id] > 0, typical: sims.typical.peaks[id] > 0, max: sims.max.peaks[id] > 0 };
+    if (!formed.min && !formed.typical && !formed.max) continue; // branch not formed for this phenotype
+    const c = idx.compounds.get(id)!;
+    const peak = formed.typical ? sims.typical.peaks[id] : Math.max(sims.min.peaks[id] || 0, sims.max.peaks[id] || 0);
+    const root = idx.compounds.get(rootOf.get(id)!.root);
     const mwR = root?.molecularWeight ?? null;
     const mwC = c.molecularWeight;
     curves.push({
-      key: `${req.key}:${node.id}`,
+      key: `${req.key}:${id}`,
       productKey: req.key,
       compound: c,
       depth: node.depth,
-      runs: runsOut,
+      runs: { min: toRun(sims.min, id), typical: toRun(sims.typical, id), max: toRun(sims.max, id) },
       peak,
-      threshold,
-      clearAt: ct(runsOut.typical, peak),
-      clearAtMax: ct(runsOut.max, sims.max.peaks[node.id]),
+      threshold: peak * frac,
+      clearAt: formed.typical ? clearOf(sims.typical, id) : null,
+      clearAtMax: formed.max ? clearOf(sims.max, id) : null,
+      formed,
       mgFactor: node.depth === 0 ? 1 : mwR && mwC ? mwC / mwR : null,
-      normalized: normalized.has(node.id),
-      assumptions: [...(curveAssumptions.get(node.id) ?? [])],
-      formationLimited: included.get(node.id) === 'formation-limited',
+      normalized: normalized.has(id),
+      inactive: inactive.has(id),
+      assumptions: [...(curveAssumptions.get(id) ?? [])],
+      notes: [...(curveNotes.get(id) ?? [])],
+      formationLimited: included.get(id) === 'formation-limited',
     });
   }
-  const maxOf = (vals: (number | null)[]) => (vals.some((v) => v === null) ? null : Math.max(...(vals as number[])));
+  const counting = curves.filter((c) => !c.inactive);
+  const maxOf = (vals: (number | null)[]) => (vals.some((v) => v === null) ? null : vals.length ? Math.max(...(vals as number[])) : null);
+  const clearAt = maxOf(counting.filter((c) => c.formed.typical).map((c) => c.clearAt));
+  const clearAtMax = maxOf(counting.filter((c) => c.formed.max).map((c) => c.clearAtMax));
+  // An inactive compound that would have cleared later than the product is an exclusion that changed the date.
+  for (const c of curves)
+    if (c.inactive && c.formed.max && (clearAtMax === null || c.clearAtMax === null || c.clearAtMax > clearAtMax)) {
+      excludeInactive(c.compound.id, false);
+      c.assumptions = [...(curveAssumptions.get(c.compound.id) ?? [])];
+    }
+
   const latest = [...req.doses].sort((a, b) => b.time - a.time)[0] ?? null;
   const usedCompounds = curves.map((c) => c.compound);
   return {
@@ -576,11 +672,13 @@ function simulateProduct(idx: LibraryIndex, req: SimRequest, ctx: Ctx, warnings:
     doses: req.doses,
     latest,
     curves,
-    clearAt: curves.length ? maxOf(curves.map((c) => c.clearAt)) : null,
-    clearAtMax: curves.length ? maxOf(curves.map((c) => c.clearAtMax)) : null,
+    clearAt,
+    clearAtMax,
     status: missing.length ? 'incomplete' : productAssumptions.size ? 'assumptions' : 'clear',
     missing,
     assumptions: [...productAssumptions],
+    excluded: excludedNotes,
+    notes: [...productNotes],
     administered: product.components.some((c) => c.bioavailability === null),
     unassessed: {
       qt: usedCompounds.filter((c) => c.qt.tier === 'unassessed').map((c) => c.name),
@@ -629,6 +727,9 @@ export function computeScenario(idx: LibraryIndex, session: Session, now: number
 
   // Group doses by product.
   const byProduct = new Map<string, DoseEvent[]>();
+  const hasRegimen = new Set(session.doses.filter((d) => d.kind === 'regimen').map((d) => d.productId));
+  const repeated = (p: Product, doses: DoseEvent[]) =>
+    hasRegimen.has(p.id) || doses.length >= 2 || doses.some((d) => d.end !== undefined) || p.input.type !== 'bolus';
   for (const d of session.doses) {
     const p = idx.products.get(d.productId);
     if (!p) {
@@ -663,7 +764,7 @@ export function computeScenario(idx: LibraryIndex, session: Session, now: number
     }
     products.push(simulateProduct(
       idx,
-      { key: pid, product: p, name: displayName(p), isIbogaine: false, color: colors.get(pid)!, doses, phenotype: session.patient.phenotype },
+      { key: pid, product: p, name: displayName(p), isIbogaine: false, color: colors.get(pid)!, doses, phenotype: session.patient.phenotype, repeated: repeated(p, doses) },
       ctx, warnings,
     ));
   }
@@ -712,7 +813,7 @@ export function computeScenario(idx: LibraryIndex, session: Session, now: number
         idx,
         {
           key: IBOGAINE_KEY, product: p, name: 'Ibogaine (projected)', isIbogaine: true, color: IBOGAINE_COLOR, doses,
-          phenotype: cypAtTreatment.inhibited ? 'poor' : session.patient.phenotype,
+          phenotype: cypAtTreatment.inhibited ? 'poor' : session.patient.phenotype, repeated: repeated(p, doses),
         },
         ctx, warnings,
       );
