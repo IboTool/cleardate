@@ -1,22 +1,30 @@
 // "Add custom drug" wizard. Session-only: entries go into the autosave and patient files,
 // never anywhere else. No network lookups of any kind.
 
-import { emptyCompound, emptyProduct, serializeLibrary, slug } from '../schema';
+import { applyInputRule } from '../../tools/product-rules';
+import { emptyCompound, emptyProduct, emptyRange, SCHEMA_VERSION, serializeLibrary, slug } from '../schema';
 import { validateCustom } from '../validate';
-import type { Compound, CustomDrugs, Library, Product } from '../types';
-import { compoundSection, halfLifeInputs, type SectionName } from './compoundForm';
-import { badge, field, h, modal, numberInput, select, textInput, toast } from './dom';
+import { DOSE_BASES, DOSE_UNITS, FORMULATIONS, INPUT_TYPES, type Compound, type CustomDrugs, type Formulation, type InputType, type Library, type Product, type Range } from '../types';
+import { compoundSection, kineticsInputs, nullableNumber, rangeInputs, type SectionName } from './compoundForm';
+import { badge, field, h, modal, select, textInput, toast } from './dom';
 
 interface MetNode {
   uid: number;
   kind: 'new' | 'link';
   compound: Compound; // for 'link', the library compound (read-only)
-  fraction: number;
+  /** null = unknown (the curve is then shown as timing only). */
+  fraction: number | null;
   children: MetNode[];
 }
 
+const newCompound = (name: string, isMetabolite: boolean): Compound => {
+  const c = { ...emptyCompound('', name), isMetabolite, userEntered: true };
+  c.kinetics = { mode: 'intrinsic', halfLifeHours: emptyRange(), earlyPhase: null, steadyState: null };
+  return c;
+};
+
 const MAX_DEPTH = 3;
-const STEPS = ['Basics', 'Half-life', 'Metabolites', 'CYP2D6', 'QT', 'Receptors', 'Lingering & nonlinear', 'Source'];
+const STEPS = ['Basics', 'Kinetics & release', 'Metabolites', 'CYP2D6', 'QT', 'Receptors', 'Lingering & nonlinear', 'Source'];
 
 export interface WizardCtx {
   library: Library;
@@ -28,8 +36,9 @@ export interface WizardCtx {
 let uidSeq = 1;
 
 export function openWizard(ctx: WizardCtx) {
-  const parent: Compound = { ...emptyCompound('', ctx.prefillName ?? ''), userEntered: true };
+  const parent: Compound = newCompound(ctx.prefillName ?? '', false);
   const product: Product = { ...emptyProduct('', '', '', 'Oral', ctx.library.categories[0]?.id ?? 'other_interactors'), userEntered: true };
+  product.input = { type: 'bolus', releaseHalfLifeHours: null, defaultDurationHours: null };
   const roots: MetNode[] = [];
   let step = 0;
 
@@ -74,7 +83,7 @@ export function openWizard(ctx: WizardCtx) {
           ...structuredClone(n.compound),
           id,
           isMetabolite: true,
-          formedFrom: [{ compound: fromId, fraction: n.fraction }],
+          formedFrom: [{ compound: fromId, fraction: n.fraction, cyp2d6Multiplier: null }],
           source: parent.source,
           sourceUrl: parent.sourceUrl,
           userEntered: true,
@@ -89,12 +98,15 @@ export function openWizard(ctx: WizardCtx) {
     const prod: Product = {
       ...structuredClone(product),
       id: prodId,
-      parentCompound: pId,
+      candidateId: pId,
+      components: product.components.map((c, i) => (i === 0 ? { ...c, compound: pId } : c)),
       name: `${parent.name.trim()} (${product.route.trim()})`,
       aliases: [...parent.aliases],
       source: parent.source,
       userEntered: true,
     };
+    if (prod.input.type !== 'first-order-release') prod.input.releaseHalfLifeHours = null;
+    if (prod.input.type !== 'zero-order') prod.input.defaultDurationHours = null;
     return { compounds, products: [prod], links };
   };
 
@@ -103,24 +115,36 @@ export function openWizard(ctx: WizardCtx) {
     if (s === 0) {
       if (!parent.name.trim()) errs.push('Name is required.');
       if (!product.route.trim()) errs.push('Route is required.');
-      if (!(product.typicalDoseMg >= 0)) errs.push('Typical dose must be ≥ 0.');
+      if (product.typicalDose.amount !== null && !(product.typicalDose.amount > 0)) errs.push('Typical dose must be positive (or unknown).');
     }
-    const hlErr = (c: Compound) => {
-      const { typical, min, max } = c.halfLifeHours;
-      const n = c.name || 'compound';
-      if (!(typical > 0)) errs.push(`${n}: typical half-life must be positive.`);
-      if (min && !(min > 0)) errs.push(`${n}: min half-life must be positive.`);
-      if (min && max && !(min <= typical && typical <= max)) errs.push(`${n}: need min ≤ typical ≤ max.`);
-      if (!min && max && typical > max) errs.push(`${n}: typical > max.`);
-      if (min && !max && min > typical) errs.push(`${n}: min > typical.`);
+    const rangeErr = (r: Range | null, what: string) => {
+      if (!r) return errs.push(`${what}: required.`);
+      const { typical, min, max } = r;
+      if (!(typical !== null && typical > 0)) errs.push(`${what}: typical value must be positive.`);
+      if (min !== null && !(min > 0)) errs.push(`${what}: min must be positive (or unknown).`);
+      if (max !== null && !(max > 0)) errs.push(`${what}: max must be positive (or unknown).`);
+      if (typical !== null && min !== null && min > typical) errs.push(`${what}: min > typical.`);
+      if (typical !== null && max !== null && typical > max) errs.push(`${what}: typical > max.`);
     };
-    if (s === 1) hlErr(parent);
+    const hlErr = (c: Compound) => {
+      const n = c.name || 'compound';
+      if (c.kinetics.mode !== 'intrinsic') return;
+      rangeErr(c.kinetics.halfLifeHours, `${n} half-life`);
+      if (c.kinetics.earlyPhase) rangeErr(c.kinetics.earlyPhase.halfLifeHours, `${n} early-phase half-life`);
+      if (c.kinetics.steadyState) rangeErr(c.kinetics.steadyState.halfLifeHours, `${n} steady-state half-life`);
+    };
+    if (s === 1) {
+      if (parent.kinetics.mode !== 'intrinsic') errs.push('The dosed compound needs its own half-life (mode "intrinsic").');
+      hlErr(parent);
+      if (product.input.type === 'first-order-release' && product.input.releaseHalfLifeHours) rangeErr(product.input.releaseHalfLifeHours, 'Release half-life');
+      if (product.input.type === 'zero-order' && !(product.doseUnit === 'µg/h' || product.doseUnit === 'mg/h')) errs.push('Patch / infusion products need a rate unit (µg/h or mg/h).');
+    }
     if (s === 2) {
       const check = (nodes: MetNode[], owner: string) => {
-        const sum = nodes.reduce((a, n) => a + (n.fraction || 0), 0);
+        const sum = nodes.reduce((a, n) => a + (n.fraction ?? 0), 0);
         if (sum > 1 + 1e-9) errs.push(`Fractions formed from ${owner || 'the parent'} sum to ${sum.toFixed(2)} (must be ≤ 1).`);
         for (const n of nodes) {
-          if (!(n.fraction >= 0 && n.fraction <= 1)) errs.push(`${n.compound.name || 'metabolite'}: fraction must be between 0 and 1.`);
+          if (n.fraction !== null && !(n.fraction > 0 && n.fraction <= 1)) errs.push(`${n.compound.name || 'metabolite'}: fraction must be above 0 and at most 1 (or unknown).`);
           if (n.kind === 'new') {
             if (!n.compound.name.trim()) errs.push('Every metabolite needs a name.');
             hlErr(n.compound);
@@ -158,12 +182,12 @@ export function openWizard(ctx: WizardCtx) {
               n.kind === 'link'
                 ? h('span', { class: 'met-link' }, '🔗 ', n.compound.name, ' ', badge('library', 'muted'))
                 : textInput(n.compound.name, (v) => { n.compound.name = v; }, { placeholder: 'Metabolite name' }),
-              field('Fraction formed', numberInput(n.fraction, (v) => { n.fraction = v; }, { min: '0', max: '1', step: '0.01' })),
+              field('Fraction formed', nullableNumber(n.fraction, (v) => { n.fraction = v; }, { min: '0', max: '1', step: '0.01' })),
               h('button', { class: 'icon-btn', type: 'button', title: 'Remove', onclick: () => { nodes.splice(i, 1); rerender(); } }, '✕')),
             n.kind === 'new'
               ? h('div', { class: 'met-body' },
-                  halfLifeInputs(n.compound.halfLifeHours, () => {}),
-                  field('Molecular weight (optional)', numberInput(n.compound.molecularWeight, (v) => { n.compound.molecularWeight = v; })),
+                  kineticsInputs(n.compound, () => {}),
+                  field('Molecular weight', nullableNumber(n.compound.molecularWeight, (v) => { n.compound.molecularWeight = v; }, { min: '0' })),
                   depth < MAX_DEPTH ? renderNodes(n.children, depth + 1, n.compound.name) : h('div', { class: 'field-hint' }, 'Maximum depth (3 levels) reached.'))
               : h('div', { class: 'field-hint' }, 'Its own downstream metabolites come from the library.'))),
         addControls(nodes, depth, ownerName, lib));
@@ -179,14 +203,14 @@ export function openWizard(ctx: WizardCtx) {
       linkSel.addEventListener('change', () => {
         const c = lib.find((x) => x.id === linkSel.value);
         if (!c) return;
-        nodes.push({ uid: uidSeq++, kind: 'link', compound: c, fraction: 0, children: [] });
+        nodes.push({ uid: uidSeq++, kind: 'link', compound: c, fraction: null, children: [] });
         rerender();
       });
       return h('div', { class: 'met-add', style: `margin-left:${(depth - 1) * 18}px` },
         h('button', {
           class: 'btn btn-ghost btn-sm', type: 'button',
           onclick: () => {
-            nodes.push({ uid: uidSeq++, kind: 'new', compound: { ...emptyCompound('', ''), isMetabolite: true, userEntered: true }, fraction: 0, children: [] });
+            nodes.push({ uid: uidSeq++, kind: 'new', compound: newCompound('', true), fraction: null, children: [] });
             rerender();
           },
         }, `+ Add metabolite of ${ownerName || 'parent'}`),
@@ -203,17 +227,46 @@ export function openWizard(ctx: WizardCtx) {
           field('Name', textInput(parent.name, (v) => { parent.name = v; }, { autofocus: true })),
           field('Aliases', textInput(parent.aliases.join(', '), (v) => { parent.aliases = v.split(',').map((x) => x.trim()).filter(Boolean); }), 'Brand, abbreviation and street names, comma-separated'),
           h('div', { class: 'row' },
-            field('Route', textInput(product.route, (v) => { product.route = v; }, { placeholder: 'Oral, IV, SC depot…' })),
+            field('Route', textInput(product.route, (v) => {
+              product.route = v;
+              const inf = applyInputRule(product);
+              Object.assign(product, { input: inf.input, doseUnit: inf.doseUnit, formulation: inf.formulation });
+              product.typicalDose.unit = inf.doseUnit;
+            }, { placeholder: 'Oral, IV, Transdermal patch, IM depot…' }), 'Patch, depot and “Oral ER” routes preset the release model (step 2).'),
             field('Category', select(product.category, ctx.library.categories.map((c) => [c.id, c.name] as [string, string]), (v) => { product.category = v; }))),
           h('div', { class: 'row' },
             field('Class', textInput(product.class, (v) => { product.class = v; }, { placeholder: 'e.g. opioid agonist' })),
-            field('Typical dose (mg)', numberInput(product.typicalDoseMg, (v) => { product.typicalDoseMg = v; }, { min: '0' }))),
-          field('Molecular weight (optional)', numberInput(parent.molecularWeight, (v) => { parent.molecularWeight = v; })));
+            field('Typical dose', nullableNumber(product.typicalDose.amount, (v) => { product.typicalDose.amount = v; }, { min: '0' }), 'In the dose unit chosen in step 2.')),
+          field('Molecular weight (g/mol)', nullableNumber(parent.molecularWeight, (v) => { parent.molecularWeight = v; }, { min: '0' })));
       case 1: {
-        const depot = h('div', { class: 'sub' },
-          h('p', { class: 'field-hint' }, 'Depot or extended-release? Enter the release-limited apparent half-life here instead; it overrides the compound value for this product.'),
-          halfLifeInputs((product.apparentHalfLifeHours ??= { typical: 0, min: 0, max: 0 }), () => {}, 'Apparent half-life (optional)'));
-        return h('div', { class: 'form-section' }, halfLifeInputs(parent.halfLifeHours, () => {}, `${parent.name || 'Parent'} half-life`), depot);
+        const inp = product.input;
+        const release = h('div', { class: 'sub' });
+        const renderRelease = () => {
+          release.replaceChildren();
+          if (inp.type === 'first-order-release')
+            release.append(rangeInputs(() => inp.releaseHalfLifeHours, (r) => (inp.releaseHalfLifeHours = r), () => {}, 'Release half-life (depot / extended release)'),
+              h('p', { class: 'field-hint' }, 'Absorption from the depot or tablet. Unknown → simulated as immediate release and labelled.'));
+          else if (inp.type === 'zero-order')
+            release.append(
+              field('Default wear / infusion time (hours)', nullableNumber(inp.defaultDurationHours, (v) => { inp.defaultDurationHours = v; }, { min: '0' })),
+              rangeInputs(() => inp.releaseHalfLifeHours, (r) => (inp.releaseHalfLifeHours = r), () => {}, 'Skin-depot half-life after removal (optional)'));
+        };
+        renderRelease();
+        const comp = product.components[0];
+        return h('div', { class: 'form-section' },
+          h('h4', null, `${parent.name || 'Parent'} kinetics`),
+          kineticsInputs(parent, () => {}),
+          h('h4', null, 'Product'),
+          h('div', { class: 'row' },
+            field('Input', select(inp.type, INPUT_TYPES.map((t) => [t, t === 'bolus' ? 'bolus (immediate)' : t === 'first-order-release' ? 'first-order release (depot / ER)' : 'zero-order (patch / infusion)'] as [string, string]),
+              (v) => { inp.type = v as InputType; renderRelease(); })),
+            field('Dose unit', select(product.doseUnit, DOSE_UNITS, (v) => { product.doseUnit = v; product.typicalDose.unit = v; })),
+            field('Formulation', select(product.formulation ?? '', [['', '—'], ...FORMULATIONS.map((f) => [f, f] as [string, string])], (v) => { product.formulation = (v || null) as Formulation | null; })),
+            field('Typical dose basis', select(product.typicalDose.basis, DOSE_BASES, (v) => { product.typicalDose.basis = v; }))),
+          release,
+          h('div', { class: 'row' },
+            field('Salt factor (salt → free base)', nullableNumber(comp.saltFactor, (v) => { comp.saltFactor = v; }, { min: '0', max: '1', step: '0.01' }), 'e.g. 0.89. Unknown = label dose is free base.'),
+            field('Bioavailability (0–1)', nullableNumber(comp.bioavailability, (v) => { comp.bioavailability = v; }, { min: '0', max: '1', step: '0.05' }), 'Unknown = amounts shown as administered.')));
       }
       case 2:
         return h('div', null,
@@ -230,7 +283,6 @@ export function openWizard(ctx: WizardCtx) {
   };
 
   const finish = () => {
-    if (product.apparentHalfLifeHours && !(product.apparentHalfLifeHours.typical > 0)) delete product.apparentHalfLifeHours;
     const errs = errorsFor(-1);
     if (errs.length) return showErrors(errs);
     const add = assemble();
@@ -272,10 +324,11 @@ export function libraryEntryJson(add: CustomDrugs, library: Library): string {
   // Linked library metabolites gain a formedFrom entry; include their updated full entry.
   for (const l of add.links ?? []) {
     const base = library.compounds.find((c) => c.id === l.compound);
-    if (base) compounds.push({ ...base, isMetabolite: true, formedFrom: [...base.formedFrom, { compound: l.from, fraction: l.fraction }] });
+    if (base) compounds.push({ ...base, isMetabolite: true, formedFrom: [...base.formedFrom, { compound: l.from, fraction: l.fraction, cyp2d6Multiplier: null }] });
   }
-  const lib = JSON.parse(serializeLibrary({ categories: [], compounds, products: add.products }));
+  const lib = JSON.parse(serializeLibrary({ schemaVersion: SCHEMA_VERSION, categories: [], compounds, products: add.products }));
   delete lib.categories;
+  delete lib.schemaVersion;
   return JSON.stringify(lib, null, 2);
 }
 

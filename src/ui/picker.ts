@@ -1,8 +1,20 @@
 // Type-ahead product picker.
 
+import type { DataStatus } from '../model';
+import { isDraft } from '../schema';
 import type { ProductSearch, SearchHit } from '../search';
 import type { Category, Product } from '../types';
 import { badge, h, highlight } from './dom';
+
+/** Status badges shared by the picker, dose form and dose list. */
+export function productBadges(p: Product, status: DataStatus, compoundsVerified = true): (HTMLElement | null)[] {
+  return [
+    status === 'no-data' ? badge('no data yet', 'muted') : status === 'incomplete' ? badge('incomplete', 'warn') : null,
+    p.userEntered ? badge('user-entered', 'user') : isDraft(p) ? badge('draft', 'warn') : !p.verified || !compoundsVerified ? badge('unverified', 'warn') : null,
+  ];
+}
+
+const inCategory = (p: Product, cat: string) => p.category === cat || (p.secondaryCategories ?? []).includes(cat);
 
 export const CATEGORY_COLORS: Record<string, string> = {
   opioids: '#ff8a65',
@@ -28,7 +40,8 @@ export interface PickerCtx {
   search: () => ProductSearch;
   products: () => Product[];
   categories: () => Category[];
-  hasData: (p: Product) => boolean;
+  /** "no-data" products are listed but not selectable. */
+  status: (p: Product) => DataStatus;
   recents: () => string[];
   onSelect: (productId: string) => void;
   onCustom: (name: string) => void;
@@ -51,13 +64,9 @@ export function createPicker(ctx: PickerCtx) {
   const productById = () => new Map(ctx.products().map((p) => [p.id, p]));
   const catById = () => new Map(ctx.categories().map((c) => [c.id, c]));
 
-  const badges = (p: Product) => [
-    !ctx.hasData(p) ? badge('no data yet', 'muted') : null,
-    p.userEntered ? badge('user-entered', 'user') : !p.verified ? badge('unverified', 'warn') : null,
-  ];
-
   const row = (p: Product, hit?: SearchHit) => {
-    const enabled = ctx.hasData(p);
+    const status = ctx.status(p);
+    const enabled = status !== 'no-data';
     const rec = ctx.search().record(p.id);
     const name = rec?.name ?? p.name;
     const cat = catById().get(p.category);
@@ -66,7 +75,7 @@ export function createPicker(ctx: PickerCtx) {
         h('span', { class: 'pi-name' }, hit ? highlight(name, hit.nameRanges) : name),
         h('span', { class: 'pi-route' }, ' · ', p.route),
         categoryTag(cat, true),
-        ...badges(p)),
+        ...productBadges(p, status)),
       hit?.matchedAlias ? h('div', { class: 'pi-alias' }, 'matched ‘', highlight(hit.matchedAlias, hit.aliasRanges), '’') : null,
       p.class ? h('div', { class: 'pi-class' }, p.class) : null);
     el.addEventListener('mousedown', (e) => {
@@ -102,7 +111,7 @@ export function createPicker(ctx: PickerCtx) {
     renderChips();
     const q = input.value.trim();
     const byId = productById();
-    const inCats = (p: Product) => activeCats.size === 0 || activeCats.has(p.category);
+    const inCats = (p: Product) => activeCats.size === 0 || [...activeCats].some((c) => inCategory(p, c));
     items = [];
     list.replaceChildren();
     if (q) {
@@ -123,8 +132,8 @@ export function createPicker(ctx: PickerCtx) {
         }
       }
       for (const cat of ctx.categories()) {
-        if (!inCats({ category: cat.id } as Product)) continue;
-        const ps = [...byId.values()].filter((p) => p.category === cat.id).sort((a, b) => a.name.localeCompare(b.name));
+        if (activeCats.size && !activeCats.has(cat.id)) continue;
+        const ps = [...byId.values()].filter((p) => inCategory(p, cat.id)).sort((a, b) => a.name.localeCompare(b.name));
         if (!ps.length) continue;
         const isCollapsed = collapsed.has(cat.id) && activeCats.size === 0;
         list.append(h('div', {

@@ -7,23 +7,26 @@ import { buildChartOption } from './chart';
 import { exportPdf, exportPng, download, DISCLAIMER } from './export';
 import { ageFrom, fmtDate, fmtDateTime } from './format';
 import {
-  buildIndex, computeScenario, displayName, expandDose, IBOGAINE_KEY, mergeLibraries, parseLocal, productColors,
-  productHasData, toLocalInput, withCustom, DAY, HOUR, type LibraryIndex, type Scenario,
+  buildIndex, clearStatusText, combinationText, componentIds, computeScenario, convertUnit, displayName, expandDose, findIbogaineProduct,
+  IBOGAINE_KEY, isRateUnit, mergeLibraries, missingKinetics, parseLocal, productColors, productDataStatus, productHasData, toLocalInput, toMg, withCustom,
+  DAY, HOUR, type LibraryIndex, type ProductResult, type Scenario,
 } from './model';
+import { primaryCompound, SCHEMA_VERSION } from './schema';
 import { buildRecords, ProductSearch } from './search';
 import {
   clearStoredSession, emptySession, loadSession, normaliseSession, patientFileName, resolveCustomClashes, saveSession,
 } from './state';
 import type { CustomDrugs, DoseEntry, IbogaineTreatment, Library, Product, Session } from './types';
 import { validateLibrary } from './validate';
+import { replacementsFor } from '../tools/product-rules';
 import { $, append, badge, field, h, modal, numberInput, select, textInput, toast } from './ui/dom';
-import { categoryColor, categoryTag, createPicker } from './ui/picker';
+import { categoryColor, categoryTag, createPicker, productBadges } from './ui/picker';
 import { copyLibraryEntry, openWizard } from './ui/wizard';
 
 // ---------- app state ----------
 
 const app = {
-  base: { categories: [], compounds: [], products: [] } as Library,
+  base: { schemaVersion: SCHEMA_VERSION, categories: [], compounds: [], products: [] } as Library,
   demo: null as Library | null,
   session: loadSession(),
   idx: null as unknown as LibraryIndex,
@@ -105,6 +108,7 @@ fileInput.addEventListener('change', async () => {
     rebuildLibrary();
     commit('library');
     setTab(app.tab);
+    resolveOrphanDoses();
     toast(renamed.length ? `Loaded. Renamed custom IDs that clash with the library: ${renamed.map((r) => `${r[0]} → ${r[1]}`).join(', ')}` : 'Patient file loaded', 5000);
   } catch (e) {
     toast(`Could not read that file: ${(e as Error).message}`, 5000);
@@ -188,20 +192,33 @@ function initChart() {
 
 // ---------- legend ----------
 
-function entryBadges(p: Product, compoundsVerified = true) {
-  return p.userEntered ? badge('user-entered', 'user') : !p.verified || !compoundsVerified ? badge('unverified', 'warn') : null;
+const dataStatus = (p: Product) => productDataStatus(app.idx, p, S().unknownAsFormationLimited);
+const entryBadges = (p: Product, compoundsVerified = true) => productBadges(p, dataStatus(p), compoundsVerified);
+
+/** Short legend form of the clear status. */
+function legendClear(r: ProductResult, s: Session['settings']): string {
+  if (r.status === 'incomplete') return r.clearAt === null ? 'incomplete' : `≥ ${fmtDate(r.clearAt, s)} (incomplete)`;
+  const base = r.clearAt === null ? 'clear: beyond window' : `clear ${fmtDate(r.clearAt, s)}`;
+  return r.status === 'assumptions' ? `${base}*` : base;
+}
+
+function statusTitle(r: ProductResult): string {
+  const lines = [clearStatusText(r, (t) => fmtDateTime(t, S()))];
+  if (r.assumptions.length) lines.push('', 'Assumptions:', ...r.assumptions.map((a) => `• ${a}`));
+  if (r.administered) lines.push('', 'Amounts are on an administered basis (bioavailability not applied).');
+  return lines.join('\n');
 }
 
 function renderLegend() {
   const scn = app.scn;
   const cats = app.idx.lib.categories;
   const s = S();
-  const item = (key: string, name: string, color: string, sub: string, extra: (Node | null)[] = []) =>
+  const item = (key: string, name: string, color: string, sub: string, extra: (Node | null)[] = [], title = '') =>
     h('button', {
       type: 'button',
       class: `legend-item ${app.focusKey === key ? 'focused' : ''} ${app.focusKey && app.focusKey !== key ? 'dimmed' : ''}`,
       onclick: () => setFocus(key),
-      title: 'Click to highlight this product and its metabolites',
+      title: `${title ? title + '\n\n' : ''}Click to highlight this product and its metabolites`,
     },
       h('span', { class: 'swatch', style: `--c:${color}` }),
       h('span', { class: 'legend-name' }, name),
@@ -212,26 +229,30 @@ function renderLegend() {
   if (ib)
     groups.push(h('div', { class: 'legend-group' },
       h('span', { class: 'legend-cat', style: '--c:#e8c36a' }, 'Treatment'),
-      item(IBOGAINE_KEY, ib.name, ib.color, ib.pmAdjusted ? 'CYP2D6 inhibited' : '', [entryBadges(ib.product, ib.curves.every((c) => c.compound.verified))])));
+      item(IBOGAINE_KEY, ib.name, ib.color, ib.pmAdjusted ? 'CYP2D6 inhibited' : '', [...entryBadges(ib.product, ib.curves.every((c) => c.compound.verified))], statusTitle(ib))));
   for (const cat of cats) {
     const rs = scn.products.filter((r) => !r.isIbogaine && r.product.category === cat.id);
     if (!rs.length) continue;
     groups.push(h('div', { class: 'legend-group' },
       h('span', { class: 'legend-cat', style: `--c:${categoryColor(cat.id)}` }, cat.name),
       ...rs.map((r) => {
-        const nonlinear = r.curves.some((c) => c.compound.nonlinearKinetics.flag);
-        return item(r.key, r.name, r.color,
-          r.clearAt === null ? 'clear: beyond window' : `clear ${fmtDate(r.clearAt, s)}`,
+        const nonlinear = r.curves.some((c) => c.compound.nonlinearKinetics.flag === 'yes');
+        return item(r.key, r.name, r.color, legendClear(r, s),
           [
-            nonlinear ? h('span', { class: 'warn-icon', title: r.curves.filter((c) => c.compound.nonlinearKinetics.flag).map((c) => `${c.compound.name}: nonlinear kinetics — not modelled. ${c.compound.nonlinearKinetics.note}`).join('\n') }, '⚠') : null,
-            entryBadges(r.product, r.curves.every((c) => c.compound.verified || c.compound.userEntered)),
-          ]);
+            nonlinear ? h('span', { class: 'warn-icon', title: r.curves.filter((c) => c.compound.nonlinearKinetics.flag === 'yes').map((c) => `${c.compound.name}: nonlinear kinetics — not modelled. ${c.compound.nonlinearKinetics.note}`).join('\n') }, '⚠') : null,
+            ...entryBadges(r.product, r.curves.every((c) => c.compound.verified || c.compound.userEntered)),
+          ], statusTitle(r));
       })));
   }
   const hasMetabolites = scn.products.some((r) => r.curves.some((c) => c.depth > 0));
-  if (groups.length && hasMetabolites && s.showMetabolites)
-    groups.push(h('span', { class: 'legend-key' }, h('span', { class: 'k-solid' }), 'parent', h('span', { class: 'k-dash' }), 'metabolites',
-      s.showBands ? [h('span', { class: 'k-band' }), 'min–max range'] : null));
+  const hasNormalized = scn.products.some((r) => r.curves.some((c) => c.normalized));
+  const hasAssumptions = scn.products.some((r) => r.status !== 'clear');
+  if (groups.length && ((hasMetabolites && s.showMetabolites) || hasAssumptions))
+    groups.push(h('span', { class: 'legend-key' },
+      hasMetabolites && s.showMetabolites ? [h('span', { class: 'k-solid' }), 'parent', h('span', { class: 'k-dash' }), 'metabolites'] : null,
+      s.showBands ? [h('span', { class: 'k-band' }), 'min–max range'] : null,
+      hasNormalized ? [h('span', { class: 'k-dot' }), '% of own peak — amount unknown'] : null,
+      hasAssumptions ? h('span', null, '* with assumptions · ≥ incomplete (hover for details)') : null));
   legendEl.replaceChildren(...groups);
 }
 
@@ -276,7 +297,7 @@ const picker = createPicker({
   search: () => app.search,
   products: () => app.idx.lib.products,
   categories: () => app.idx.lib.categories,
-  hasData: (p) => productHasData(app.idx, p),
+  status: dataStatus,
   recents: () => app.session.recents,
   onSelect: (id) => {
     formProduct = id;
@@ -302,23 +323,52 @@ function renderDoseForm() {
   }
   const p = app.idx.products.get(formProduct);
   if (!p) return;
+  const unit = p.doseUnit;
+  const rate = isRateUnit(unit);
+  const depot = p.input.type === 'first-order-release' && p.formulation === 'depot';
+  const typical = p.typicalDose.amount !== null ? convertUnit(p.typicalDose.amount, p.typicalDose.unit, unit) : null;
   const d: DoseEntry = editing
     ? structuredClone(editing)
-    : { id: uid(), productId: p.id, amountMg: p.typicalDoseMg || 0, kind: 'single', time: defaultTime() };
-  d.regimen ??= { every: 24, unit: 'hours', start: d.time ?? defaultTime(), end: toLocalInput(Date.now()) };
+    : { id: uid(), productId: p.id, amount: typical ?? 0, unit, kind: 'single', time: defaultTime() };
+  if (d.unit !== unit) {
+    const v = convertUnit(d.amount, d.unit, unit);
+    d.amount = v ?? 0;
+    d.unit = unit;
+  }
+  const defaultDur = p.input.defaultDurationHours ?? 24;
+  if (rate) d.durationHours ??= defaultDur;
+  else delete d.durationHours;
+  d.regimen ??= { every: rate ? defaultDur : 24, unit: 'hours', start: d.time ?? defaultTime(), end: toLocalInput(Date.now()) };
 
-  const mgkg = h('span', { class: 'mgkg' });
-  const updMgkg = () => {
+  const hint = h('span', { class: 'mgkg' });
+  const updHint = () => {
     const w = app.session.patient.weightKg;
-    mgkg.textContent = w > 0 && d.amountMg > 0 ? `${(d.amountMg / w).toFixed(2)} mg/kg` : '';
+    const combo = combinationText(app.idx, p, d.amount, unit);
+    const perKg = !rate && w > 0 && d.amount > 0 ? `${(toMg(d.amount, unit) / w).toFixed(2)} mg/kg` : '';
+    hint.textContent = [combo, perKg].filter(Boolean).join(' · ');
   };
-  updMgkg();
-  const amount = numberInput(d.amountMg, (v) => { d.amountMg = v; updMgkg(); }, { name: 'amount', min: '0', placeholder: 'mg' });
+  updHint();
+  const amount = numberInput(d.amount, (v) => { d.amount = v; updHint(); updRemoved(); }, {
+    name: 'amount', min: '0', step: 'any',
+    placeholder: typical !== null ? `typical ${+typical.toPrecision(3)} ${unit}${p.typicalDose.basis ? ` (${p.typicalDose.basis})` : ''}` : unit,
+  });
   const single = h('div', { class: 'single' });
   const regimen = h('div', { class: 'regimen' });
   const time = h('input', { type: 'datetime-local', value: d.time ?? '' });
-  time.addEventListener('input', () => (d.time = time.value));
-  single.append(field('Date & time', time));
+  const removed = h('input', { type: 'datetime-local' });
+  const updRemoved = () => {
+    const t = parseLocal(d.time);
+    removed.value = rate && Number.isFinite(t) ? toLocalInput(t + (d.durationHours ?? defaultDur) * HOUR) : '';
+  };
+  time.addEventListener('input', () => { d.time = time.value; updRemoved(); });
+  removed.addEventListener('input', () => {
+    const hrs = (parseLocal(removed.value) - parseLocal(d.time)) / HOUR;
+    if (hrs > 0) d.durationHours = hrs;
+  });
+  updRemoved();
+  single.append(rate
+    ? h('div', { class: 'row' }, field('Applied at', time), field('Removed at', removed))
+    : field(depot ? 'Injection date & time' : 'Date & time', time));
   const r = d.regimen!;
   const start = h('input', { type: 'datetime-local', value: r.start });
   start.addEventListener('input', () => (r.start = start.value));
@@ -327,14 +377,15 @@ function renderDoseForm() {
   const count = h('span', { class: 'field-hint' });
   const updCount = () => {
     const n = expandDose({ ...d, kind: 'regimen' }).length;
-    count.textContent = n ? `${n} doses` : '';
+    count.textContent = n ? `${n} ${rate ? 'applications' : depot ? 'injections' : 'doses'}` : '';
   };
   for (const el of [start, end]) el.addEventListener('input', updCount);
-  regimen.append(
+  append(regimen, [
     h('div', { class: 'row' },
-      field('Every', numberInput(r.every, (v) => { r.every = v; updCount(); }, { min: '0' })),
+      field(rate ? 'Change every' : 'Every', numberInput(r.every, (v) => { r.every = v; updCount(); }, { min: '0' })),
       field('Unit', select(r.unit, ['hours', 'days'] as const, (v) => { r.unit = v; updCount(); }))),
-    h('div', { class: 'row' }, field('Start', start), field('End', end)), count);
+    rate ? field('Each patch worn for (hours)', numberInput(d.durationHours ?? defaultDur, (v) => { if (v > 0) d.durationHours = v; }, { min: '0' })) : null,
+    h('div', { class: 'row' }, field('Start', start), field('End', end)), count]);
   updCount();
   const setKind = (k: DoseEntry['kind']) => {
     d.kind = k;
@@ -342,13 +393,14 @@ function renderDoseForm() {
     regimen.hidden = k !== 'regimen';
     kindBtns.forEach((b) => b.classList.toggle('on', b.dataset.k === k));
   };
-  const kindBtns = (['single', 'regimen'] as const).map((k) =>
-    h('button', { type: 'button', class: 'seg', dataset: { k }, onclick: () => setKind(k) }, k === 'single' ? 'Single dose' : 'Regimen'));
+  const kindLabels = rate ? ['Single patch', 'Patch changes'] : depot ? ['Single injection', 'Repeated injections'] : ['Single dose', 'Regimen'];
+  const kindBtns = (['single', 'regimen'] as const).map((k, i) =>
+    h('button', { type: 'button', class: 'seg', dataset: { k }, onclick: () => setKind(k) }, kindLabels[i]));
 
   const submit = () => {
-    if (!(d.amountMg > 0)) return toast('Enter an amount in mg.');
+    if (!(d.amount > 0)) return toast(`Enter ${rate ? 'the rate' : 'an amount'} in ${unit}.`);
     if (d.kind === 'single') {
-      if (!Number.isFinite(parseLocal(d.time))) return toast('Enter the date and time of the dose.');
+      if (!Number.isFinite(parseLocal(d.time))) return toast(rate ? 'Enter when the patch was applied.' : 'Enter the date and time of the dose.');
       delete d.regimen;
     } else {
       if (!expandDose(d).length) return toast('Check the regimen: interval > 0 and end after start.');
@@ -367,27 +419,47 @@ function renderDoseForm() {
   amount.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); (d.kind === 'single' ? time : start).focus(); } });
   time.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); submit(); } });
 
-  const compound = app.idx.compounds.get(p.parentCompound);
+  const compound = app.idx.compounds.get(primaryCompound(p));
+  const status = dataStatus(p);
+  const missing = status === 'incomplete' ? productTreeMissing(p) : [];
+  const notes: (HTMLElement | null)[] = [
+    status === 'incomplete' ? h('div', { class: 'warning info' }, `ℹ Missing kinetics for ${missing.join(', ')} — the clear date will be a lower bound.`) : null,
+    p.input.type === 'first-order-release' && p.input.releaseHalfLifeHours === null
+      ? h('div', { class: 'warning info' }, 'ℹ Release half-life not in the library yet — simulated as immediate release.') : null,
+  ];
+  const amountLabel = rate ? `Rate (${unit})` : depot ? `Amount per injection (${unit})` : p.components.length > 1 ? `Amount of ${compound?.name.toLowerCase() ?? 'primary component'} (${unit})` : `Amount (${unit})`;
   doseFormEl.replaceChildren(
     h('div', { class: 'dose-form-head' },
       h('div', null,
         h('div', { class: 'df-name' }, displayName(p), h('span', { class: 'pi-route' }, ' · ', p.route)),
         h('div', { class: 'df-meta' }, categoryTag(app.idx.lib.categories.find((c) => c.id === p.category), true), p.class ? ` ${p.class}` : '', ' ',
-          entryBadges(p, compound?.verified ?? false))),
+          ...entryBadges(p, compound?.verified ?? false))),
       h('button', { class: 'icon-btn', type: 'button', title: 'Cancel', onclick: () => { formProduct = null; editing = null; renderDoseForm(); } }, '✕')),
+    ...notes.filter((n): n is HTMLElement => n !== null),
     h('div', { class: 'segmented' }, ...kindBtns),
-    h('div', { class: 'row' }, field('Amount (mg)', amount, mgkg)),
+    h('div', { class: 'row' }, field(amountLabel, amount, hint)),
     single, regimen,
     h('button', { class: 'btn btn-primary wide', type: 'button', onclick: submit }, editing ? 'Save changes' : 'Add dose'),
   );
   setKind(d.kind);
 }
 
-function doseSummary(d: DoseEntry) {
+function productTreeMissing(p: Product): string[] {
+  return missingKinetics(app.idx, p, S().unknownAsFormationLimited);
+}
+
+function doseSummary(d: DoseEntry, p: Product | undefined) {
   const s = S();
-  if (d.kind === 'single') return d.time ? fmtDateTime(parseLocal(d.time), s) : '—';
+  const events = expandDose(d, p?.input.defaultDurationHours);
+  const combo = p ? combinationText(app.idx, p, d.amount, d.unit) : null;
+  const amount = combo ?? `${d.amount} ${d.unit}`;
+  if (d.kind === 'single') {
+    if (!d.time) return `${amount} · —`;
+    const e = events[0];
+    return e?.end ? `${amount} · ${fmtDateTime(e.time, s)} → ${fmtDateTime(e.end, s)}` : `${amount} · ${fmtDateTime(parseLocal(d.time), s)}`;
+  }
   const r = d.regimen!;
-  return `every ${r.every} ${r.unit} · ${fmtDate(parseLocal(r.start), s)} → ${fmtDate(parseLocal(r.end), s)} (${expandDose(d).length}×)`;
+  return `${amount} · every ${r.every} ${r.unit} · ${fmtDate(parseLocal(r.start), s)} → ${fmtDate(parseLocal(r.end), s)} (${events.length}×)`;
 }
 
 function renderDoseList() {
@@ -412,9 +484,9 @@ function renderDoseList() {
           h('span', { class: 'swatch', style: `--c:${colors.get(d.productId) ?? '#888'}` }),
           h('div', { class: 'dose-main' },
             h('div', { class: 'dose-name' }, p ? displayName(p) : d.productId, h('span', { class: 'pi-route' }, p ? ` · ${p.route}` : ''), ' ',
-              p && !productHasData(app.idx, p) ? badge('no data yet', 'muted') : null, p ? entryBadges(p) : null),
-            h('div', { class: 'dose-sub' }, `${d.amountMg} mg · ${doseSummary(d)}`),
-            res ? h('div', { class: 'dose-clear' }, res.clearAt === null ? 'Clear: beyond window' : `Clear ≈ ${fmtDateTime(res.clearAt, S())}`) : null),
+              ...(p ? entryBadges(p) : [badge('not in library', 'warn')])),
+            h('div', { class: 'dose-sub' }, doseSummary(d, p)),
+            res ? h('div', { class: `dose-clear ${res.status}`, title: statusTitle(res) }, clearStatusText(res, (t) => fmtDateTime(t, S()))) : null),
           h('div', { class: 'dose-actions' },
             h('button', { class: 'icon-btn', type: 'button', title: 'Edit', onclick: () => { editing = d; formProduct = d.productId; renderDoseForm(); } }, '✎'),
             h('button', { class: 'icon-btn', type: 'button', title: 'Delete', onclick: () => {
@@ -522,7 +594,11 @@ function renderSettingsTab() {
       h('h3', null, 'Clearance'),
       field('Clear threshold (half-lives)', numberInput(s.clearHalfLives, (v) => { if (v > 0) { s.clearHalfLives = v; updPct(); view(); } }, { min: '1', step: '0.5' }), pct),
       field('CYP2D6 recovery half-life (h)', numberInput(s.cypRecoveryHalfLifeHours, (v) => { if (v > 0) { s.cypRecoveryHalfLifeHours = v; view(); } }, { min: '1' }),
-        h('span', null, badge('verify', 'warn'), ' Enzyme resynthesis after mechanism-based inhibition. Default 51 h — check the literature.'))),
+        h('span', null, badge('verify', 'warn'), ' Enzyme resynthesis after mechanism-based inhibition. Default 51 h — check the literature.')),
+      field('Assumed spread when only one value is known (CV %)', numberInput(Math.round(s.assumedCv * 100), (v) => { if (v > 0 && v < 200) { s.assumedCv = v / 100; view(); } }, { min: '1', max: '199' }),
+        'Used for half-lives entered as a single value or with a missing bound. Labelled “assumed spread” wherever it applies.'),
+      toggle('Treat unknown metabolites as formation-limited', s.unknownAsFormationLimited, (v) => { s.unknownAsFormationLimited = v; view(); renderDoseForm(); }),
+      h('p', { class: 'field-hint' }, 'Off: products with a metabolite of unknown kinetics are marked “Incomplete” and their clear date is a lower bound. On: those metabolites track their parent and the clear date is labelled “with assumptions”.')),
     h('div', { class: 'section form-section' },
       h('h3', null, 'Display'),
       h('div', { class: 'row' },
@@ -531,7 +607,8 @@ function renderSettingsTab() {
       toggle('Show metabolites', s.showMetabolites, (v) => { s.showMetabolites = v; view(); }),
       toggle('Show range bands (min–max half-life)', s.showBands, (v) => { s.showBands = v; view(); }),
       toggle('CYP2D6 inhibition track', s.showCypTrack, (v) => { s.showCypTrack = v; view(); }),
-      toggle('QT load track', s.showQtTrack, (v) => { s.showQtTrack = v; view(); }),
+      toggle('QT liability track', s.showQtTrack, (v) => { s.showQtTrack = v; view(); renderSettingsTab(); }),
+      qtLoadToggle(),
       toggle('Lingering effects track', s.showLingeringTrack, (v) => { s.showLingeringTrack = v; view(); }),
       h('div', { class: 'row' },
         field('Date format', select(s.dateOrder, [['dmy', 'Day first (31/12)'], ['mdy', 'Month first (12/31)']] as const, (v) => { s.dateOrder = v; view(); renderSettingsTab(); })),
@@ -569,10 +646,24 @@ function renderSettingsTab() {
   ]);
 }
 
+/** Summed QT load overlay: disabled (with the reason as a tooltip) unless every QT lane is calibrated. */
+function qtLoadToggle() {
+  const s = S();
+  const qt = app.scn?.qt;
+  const available = !!qt?.loadAvailable;
+  const reason = qt?.loadUnavailableReason || 'Add doses to check availability.';
+  const el = toggle('Summed relative QT load overlay', s.showQtLoad && available, (v) => { s.showQtLoad = v; commit('view'); });
+  const input = el.querySelector('input')!;
+  input.disabled = !available || !s.showQtTrack;
+  el.title = available ? 'Qualitative sum of weight × amount / reference amount across QT-relevant compounds. Not a predicted ms change.' : `Unavailable: ${reason}`;
+  el.classList.toggle('disabled', input.disabled);
+  return el;
+}
+
 /** A custom product plus every custom compound in its tree. */
 function customBundle(p: Product): CustomDrugs {
   const c = app.session.custom;
-  const ids = new Set([p.parentCompound]);
+  const ids = new Set(componentIds(p));
   let grew = true;
   while (grew) {
     grew = false;
@@ -590,10 +681,10 @@ function deleteCustom(p: Product) {
   if (!confirm(`Delete custom drug “${p.name}”?${inUse ? ' Its doses will be removed too.' : ''}`)) return;
   const b = customBundle(p);
   const c = app.session.custom;
-  const otherParents = new Set(c.products.filter((x) => x.id !== p.id).map((x) => x.parentCompound));
+  const otherParents = new Set(c.products.filter((x) => x.id !== p.id).flatMap(componentIds));
   const drop = new Set(b.compounds.map((x) => x.id).filter((id) => !otherParents.has(id)));
   c.products = c.products.filter((x) => x.id !== p.id);
-  if (!c.products.some((x) => x.parentCompound === p.parentCompound)) {
+  if (!c.products.some((x) => primaryCompound(x) === primaryCompound(p))) {
     c.compounds = c.compounds.filter((x) => !drop.has(x.id));
     c.links = (c.links ?? []).filter((l) => !drop.has(l.from));
   }
@@ -610,8 +701,7 @@ function openIbogaineForm() {
     boosters: [],
   };
   const w = () => app.session.patient.weightKg;
-  const ibProduct = app.idx.lib.products.find((p) => p.parentCompound === 'ibogaine');
-  const noData = !ibProduct || !productHasData(app.idx, ibProduct);
+  const noData = !productHasData(app.idx, findIbogaineProduct(app.idx));
   const doseRow = (d: { mg: number; time: string }, label: string, onRemove?: () => void) => {
     const mgkg = h('span', { class: 'mgkg' });
     const upd = () => (mgkg.textContent = w() > 0 && d.mg > 0 ? `${(d.mg / w()).toFixed(1)} mg/kg` : w() > 0 ? '' : 'set weight in Patient tab for mg/kg');
@@ -650,6 +740,49 @@ function openIbogaineForm() {
       } }, 'Save'))));
 }
 
+// ---------- doses whose product was split or renamed in v2 ----------
+
+function resolveOrphanDoses() {
+  const lib = app.idx.lib;
+  const oldIds = [...new Set(app.session.doses.filter((d) => !app.idx.products.has(d.productId)).map((d) => d.productId))];
+  if (!oldIds.length || !lib.products.length) return;
+  const choice = new Map<string, string>();
+  const rows = oldIds.map((old) => {
+    const options = replacementsFor(old, lib);
+    const n = app.session.doses.filter((d) => d.productId === old).length;
+    const first = options[0] ?? '__keep';
+    choice.set(old, first);
+    const opts: [string, string][] = [
+      ...options.map((id) => [id, app.idx.products.get(id)?.name ?? id] as [string, string]),
+      ['__keep', 'Keep as is (not plotted)'],
+      ['__remove', `Remove ${n === 1 ? 'this dose' : `these ${n} doses`}`],
+    ];
+    return h('div', { class: 'form-section' },
+      field(`${old} (${n} dose${n === 1 ? '' : 's'})`, select(first, opts.map((o) => o) as [string, string][], (v) => choice.set(old, v)),
+        options.length ? 'This product was split or renamed. Pick the formulation that was taken.' : 'No direct replacement found in the library.'));
+  });
+  const m = modal('Update doses for changed products', h('div', { class: 'form-section' },
+    h('p', { class: 'field-hint' }, 'The drug library was updated: some products were split by formulation (e.g. IR / ER, monthly / 3-monthly depot) or renamed. Choose what each saved dose refers to. Amounts are kept; check the unit afterwards.'),
+    ...rows,
+    h('div', { class: 'wizard-foot' },
+      h('span', { class: 'spacer' }),
+      h('button', { class: 'btn btn-primary', type: 'button', onclick: () => {
+        const doses: DoseEntry[] = [];
+        for (const d of app.session.doses) {
+          const c = choice.get(d.productId);
+          if (c === '__remove') continue;
+          if (c && c !== '__keep') {
+            const p = app.idx.products.get(c)!;
+            const amount = convertUnit(d.amount, d.unit, p.doseUnit);
+            doses.push({ ...d, productId: c, ...(amount !== null ? { amount, unit: p.doseUnit } : {}) });
+          } else doses.push(d);
+        }
+        app.session.doses = doses;
+        m.close();
+        commit('doses');
+      } }, 'Apply'))));
+}
+
 // ---------- boot ----------
 
 async function applyDemoSetting() {
@@ -678,6 +811,7 @@ async function boot() {
   initChart();
   commit('library');
   setTab('doses');
+  resolveOrphanDoses();
 }
 
 const showError = (e: unknown) => toast(`Unexpected error: ${(e as Error)?.message ?? String(e)}`, 6000);

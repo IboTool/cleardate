@@ -225,6 +225,17 @@ mark { background: rgba(124, 156, 255, 0.28); color: #fff; border-radius: 3px; p
 .met-add { display: flex; gap: 8px; flex-wrap: wrap; }
 .met-add select { flex: 1; min-width: 200px; }
 .hl-row { display: grid; gap: 4px; }
+.hl-head { display: flex; align-items: center; gap: 10px; }
+.range-body { display: grid; gap: 4px; }
+.nullable { display: flex; align-items: center; gap: 6px; }
+.nullable > input[type='number'] { flex: 1; min-width: 0; }
+.nullable > input:disabled { opacity: 0.4; }
+.unk { display: inline-flex; align-items: center; gap: 3px; font-size: 10.5px; color: var(--dim); white-space: nowrap; cursor: pointer; }
+.unk input { margin: 0; }
+.check.disabled { opacity: 0.45; cursor: not-allowed; }
+.dose-clear.assumptions { color: #e6c46a; }
+.dose-clear.incomplete { color: #ffb74d; }
+.k-dot { display: inline-block; width: 18px; height: 0; border-top: 2px dotted var(--muted); margin-left: 6px; }
 .receptor-list { display: grid; gap: 6px; }
 .receptor-row > input { flex: 2; }
 .ib-row { align-items: flex-end; }

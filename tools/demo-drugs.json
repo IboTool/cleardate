@@ -1,6 +1,121 @@
 {
+  "schemaVersion": 2,
   "categories": [],
   "compounds": [
+    {
+      "id": "biphasol",
+      "name": "Biphasol",
+      "aliases": [],
+      "isMetabolite": false,
+      "formedFrom": [],
+      "molecularWeight": 300,
+      "kinetics": {
+        "mode": "intrinsic",
+        "halfLifeHours": {
+          "typical": 40,
+          "min": 30,
+          "max": 55,
+          "rangeType": "observed-range",
+          "cv": null
+        },
+        "earlyPhase": {
+          "fraction": 0.6,
+          "halfLifeHours": {
+            "typical": 3,
+            "min": 2,
+            "max": 4,
+            "rangeType": "observed-range",
+            "cv": null
+          }
+        },
+        "steadyState": {
+          "afterDays": 5,
+          "halfLifeHours": {
+            "typical": 60,
+            "min": 45,
+            "max": 80,
+            "rangeType": "observed-range",
+            "cv": null
+          }
+        }
+      },
+      "cyp2d6": {
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
+      },
+      "qt": {
+        "tier": "possible",
+        "weight": 1,
+        "referenceAmountMg": 100
+      },
+      "receptors": [],
+      "receptorsAssessed": true,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {
+        "halfLife": "estimate"
+      },
+      "sourceNotes": {},
+      "source": "DEMO — fictional",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "blockazone",
+      "name": "Blockazone",
+      "aliases": [],
+      "isMetabolite": false,
+      "formedFrom": [],
+      "molecularWeight": 327,
+      "kinetics": {
+        "mode": "intrinsic",
+        "halfLifeHours": {
+          "typical": 1.5,
+          "min": 1,
+          "max": 2,
+          "rangeType": "observed-range",
+          "cv": null
+        },
+        "earlyPhase": null,
+        "steadyState": null
+      },
+      "cyp2d6": {
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
+      },
+      "qt": {
+        "tier": "none",
+        "weight": null,
+        "referenceAmountMg": null
+      },
+      "receptors": [],
+      "receptorsAssessed": true,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {
+        "halfLife": "estimate"
+      },
+      "sourceNotes": {},
+      "source": "DEMO — fictional",
+      "verified": false,
+      "verifiedDate": ""
+    },
     {
       "id": "demozepam",
       "name": "Demozepam",
@@ -10,25 +125,28 @@
       "isMetabolite": false,
       "formedFrom": [],
       "molecularWeight": 300,
-      "halfLifeHours": {
-        "typical": 30,
-        "min": 20,
-        "max": 40
+      "kinetics": {
+        "mode": "intrinsic",
+        "halfLifeHours": {
+          "typical": 30,
+          "min": 20,
+          "max": 40,
+          "rangeType": "observed-range",
+          "cv": null
+        },
+        "earlyPhase": null,
+        "steadyState": null
       },
       "cyp2d6": {
-        "substrate": false,
-        "halfLifeMultiplier": {
-          "poor": 1,
-          "intermediate": 1,
-          "normal": 1,
-          "ultrarapid": 1
-        },
-        "inhibitor": "none",
-        "inhibitionType": "none"
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
       },
       "qt": {
-        "tier": "none",
-        "weight": 0
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
       },
       "receptors": [
         {
@@ -36,22 +154,132 @@
           "action": "positive allosteric modulator"
         }
       ],
+      "receptorsAssessed": true,
       "lingeringEffects": {
         "durationDays": 30,
         "note": "Demo: protracted withdrawal-type symptoms may persist after clearance."
       },
       "nonlinearKinetics": {
-        "flag": false,
+        "flag": "unassessed",
         "note": ""
       },
-      "source": "FICTIONAL DEMO DATA — not a real drug. Round numbers for UI testing only.",
+      "provenance": {
+        "halfLife": null,
+        "metabolism": null,
+        "molecularWeight": null,
+        "cyp2d6": null,
+        "qt": null,
+        "receptors": null,
+        "lingeringEffects": null,
+        "nonlinearKinetics": null
+      },
       "sourceNotes": {
         "halfLife": "",
         "metabolism": "",
+        "molecularWeight": "",
         "cyp2d6": "",
         "qt": "",
-        "receptors": ""
+        "receptors": "",
+        "lingeringEffects": "",
+        "nonlinearKinetics": ""
       },
+      "source": "FICTIONAL DEMO DATA — not a real drug. Round numbers for UI testing only.",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "fentaplex",
+      "name": "Fentaplex",
+      "aliases": [],
+      "isMetabolite": false,
+      "formedFrom": [],
+      "molecularWeight": 336,
+      "kinetics": {
+        "mode": "intrinsic",
+        "halfLifeHours": {
+          "typical": 8,
+          "min": null,
+          "max": null,
+          "rangeType": "single-value",
+          "cv": null
+        },
+        "earlyPhase": null,
+        "steadyState": null
+      },
+      "cyp2d6": {
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
+      },
+      "qt": {
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
+      },
+      "receptors": [],
+      "receptorsAssessed": true,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {
+        "halfLife": "estimate"
+      },
+      "sourceNotes": {},
+      "source": "DEMO — fictional",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "mysterine",
+      "name": "Mysterine",
+      "aliases": [],
+      "isMetabolite": true,
+      "formedFrom": [
+        {
+          "compound": "testoline",
+          "fraction": 0.2,
+          "cyp2d6Multiplier": null
+        }
+      ],
+      "molecularWeight": null,
+      "kinetics": {
+        "mode": "unknown",
+        "halfLifeHours": null,
+        "earlyPhase": null,
+        "steadyState": null
+      },
+      "cyp2d6": {
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
+      },
+      "qt": {
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
+      },
+      "receptors": [],
+      "receptorsAssessed": true,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {
+        "halfLife": "estimate"
+      },
+      "sourceNotes": {},
+      "source": "DEMO — fictional",
       "verified": false,
       "verifiedDate": ""
     },
@@ -63,29 +291,33 @@
       "formedFrom": [
         {
           "compound": "demozepam",
-          "fraction": 0.6
+          "fraction": 0.6,
+          "cyp2d6Multiplier": null
         }
       ],
       "molecularWeight": 286,
-      "halfLifeHours": {
-        "typical": 80,
-        "min": 50,
-        "max": 120
+      "kinetics": {
+        "mode": "intrinsic",
+        "halfLifeHours": {
+          "typical": 80,
+          "min": 50,
+          "max": 120,
+          "rangeType": "observed-range",
+          "cv": null
+        },
+        "earlyPhase": null,
+        "steadyState": null
       },
       "cyp2d6": {
-        "substrate": false,
-        "halfLifeMultiplier": {
-          "poor": 1,
-          "intermediate": 1,
-          "normal": 1,
-          "ultrarapid": 1
-        },
-        "inhibitor": "none",
-        "inhibitionType": "none"
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
       },
       "qt": {
-        "tier": "none",
-        "weight": 0
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
       },
       "receptors": [
         {
@@ -93,22 +325,95 @@
           "action": "positive allosteric modulator"
         }
       ],
+      "receptorsAssessed": true,
       "lingeringEffects": {
-        "durationDays": 0,
+        "durationDays": null,
         "note": ""
       },
       "nonlinearKinetics": {
-        "flag": false,
+        "flag": "unassessed",
         "note": ""
       },
-      "source": "FICTIONAL DEMO DATA — not a real drug. Round numbers for UI testing only.",
+      "provenance": {
+        "halfLife": null,
+        "metabolism": null,
+        "molecularWeight": null,
+        "cyp2d6": null,
+        "qt": null,
+        "receptors": null,
+        "lingeringEffects": null,
+        "nonlinearKinetics": null
+      },
       "sourceNotes": {
         "halfLife": "",
         "metabolism": "",
+        "molecularWeight": "",
         "cyp2d6": "",
         "qt": "",
-        "receptors": ""
+        "receptors": "",
+        "lingeringEffects": "",
+        "nonlinearKinetics": ""
       },
+      "source": "FICTIONAL DEMO DATA — not a real drug. Round numbers for UI testing only.",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "norsampladone",
+      "name": "Norsampladone",
+      "aliases": [],
+      "isMetabolite": true,
+      "formedFrom": [
+        {
+          "compound": "sampladone",
+          "fraction": null,
+          "cyp2d6Multiplier": {
+            "poor": 0.2,
+            "intermediate": 0.6,
+            "normal": 1,
+            "ultrarapid": 1.4
+          }
+        }
+      ],
+      "molecularWeight": 296,
+      "kinetics": {
+        "mode": "intrinsic",
+        "halfLifeHours": {
+          "typical": 30,
+          "min": 20,
+          "max": 45,
+          "rangeType": "observed-range",
+          "cv": null
+        },
+        "earlyPhase": null,
+        "steadyState": null
+      },
+      "cyp2d6": {
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
+      },
+      "qt": {
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
+      },
+      "receptors": [],
+      "receptorsAssessed": true,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {
+        "halfLife": "estimate"
+      },
+      "sourceNotes": {},
+      "source": "DEMO — fictional",
       "verified": false,
       "verifiedDate": ""
     },
@@ -120,29 +425,33 @@
       "formedFrom": [
         {
           "compound": "nordemozepam",
-          "fraction": 0.7
+          "fraction": 0.7,
+          "cyp2d6Multiplier": null
         }
       ],
       "molecularWeight": 302,
-      "halfLifeHours": {
-        "typical": 10,
-        "min": 5,
-        "max": 15
+      "kinetics": {
+        "mode": "intrinsic",
+        "halfLifeHours": {
+          "typical": 10,
+          "min": 5,
+          "max": 15,
+          "rangeType": "observed-range",
+          "cv": null
+        },
+        "earlyPhase": null,
+        "steadyState": null
       },
       "cyp2d6": {
-        "substrate": false,
-        "halfLifeMultiplier": {
-          "poor": 1,
-          "intermediate": 1,
-          "normal": 1,
-          "ultrarapid": 1
-        },
-        "inhibitor": "none",
-        "inhibitionType": "none"
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
       },
       "qt": {
-        "tier": "none",
-        "weight": 0
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
       },
       "receptors": [
         {
@@ -150,22 +459,84 @@
           "action": "positive allosteric modulator"
         }
       ],
+      "receptorsAssessed": true,
       "lingeringEffects": {
-        "durationDays": 0,
+        "durationDays": null,
         "note": ""
       },
       "nonlinearKinetics": {
-        "flag": false,
+        "flag": "unassessed",
         "note": ""
       },
-      "source": "FICTIONAL DEMO DATA — not a real drug. Round numbers for UI testing only.",
+      "provenance": {
+        "halfLife": null,
+        "metabolism": null,
+        "molecularWeight": null,
+        "cyp2d6": null,
+        "qt": null,
+        "receptors": null,
+        "lingeringEffects": null,
+        "nonlinearKinetics": null
+      },
       "sourceNotes": {
         "halfLife": "",
         "metabolism": "",
+        "molecularWeight": "",
         "cyp2d6": "",
         "qt": "",
-        "receptors": ""
+        "receptors": "",
+        "lingeringEffects": "",
+        "nonlinearKinetics": ""
       },
+      "source": "FICTIONAL DEMO DATA — not a real drug. Round numbers for UI testing only.",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "oxydemozepam_glucuronide",
+      "name": "Oxydemozepam glucuronide",
+      "aliases": [],
+      "isMetabolite": true,
+      "formedFrom": [
+        {
+          "compound": "oxydemozepam",
+          "fraction": 0.9,
+          "cyp2d6Multiplier": null
+        }
+      ],
+      "molecularWeight": null,
+      "kinetics": {
+        "mode": "formation-limited",
+        "halfLifeHours": null,
+        "earlyPhase": null,
+        "steadyState": null
+      },
+      "cyp2d6": {
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
+      },
+      "qt": {
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
+      },
+      "receptors": [],
+      "receptorsAssessed": true,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {
+        "halfLife": "estimate"
+      },
+      "sourceNotes": {},
+      "source": "DEMO — fictional",
       "verified": false,
       "verifiedDate": ""
     },
@@ -178,25 +549,28 @@
       "isMetabolite": false,
       "formedFrom": [],
       "molecularWeight": 310,
-      "halfLifeHours": {
-        "typical": 36,
-        "min": 24,
-        "max": 60
+      "kinetics": {
+        "mode": "intrinsic",
+        "halfLifeHours": {
+          "typical": 36,
+          "min": 24,
+          "max": 60,
+          "rangeType": "observed-range",
+          "cv": null
+        },
+        "earlyPhase": null,
+        "steadyState": null
       },
       "cyp2d6": {
-        "substrate": false,
-        "halfLifeMultiplier": {
-          "poor": 1,
-          "intermediate": 1,
-          "normal": 1,
-          "ultrarapid": 1
-        },
-        "inhibitor": "none",
-        "inhibitionType": "none"
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
       },
       "qt": {
         "tier": "known",
-        "weight": 1
+        "weight": 1,
+        "referenceAmountMg": null
       },
       "receptors": [
         {
@@ -212,22 +586,36 @@
           "action": "inhibitor"
         }
       ],
+      "receptorsAssessed": true,
       "lingeringEffects": {
-        "durationDays": 0,
+        "durationDays": null,
         "note": ""
       },
       "nonlinearKinetics": {
-        "flag": false,
+        "flag": "unassessed",
         "note": ""
       },
-      "source": "FICTIONAL DEMO DATA — not a real drug. Round numbers for UI testing only.",
+      "provenance": {
+        "halfLife": null,
+        "metabolism": null,
+        "molecularWeight": null,
+        "cyp2d6": null,
+        "qt": null,
+        "receptors": null,
+        "lingeringEffects": null,
+        "nonlinearKinetics": null
+      },
       "sourceNotes": {
         "halfLife": "",
         "metabolism": "",
+        "molecularWeight": "",
         "cyp2d6": "",
         "qt": "",
-        "receptors": ""
+        "receptors": "",
+        "lingeringEffects": "",
+        "nonlinearKinetics": ""
       },
+      "source": "FICTIONAL DEMO DATA — not a real drug. Round numbers for UI testing only.",
       "verified": false,
       "verifiedDate": ""
     },
@@ -240,13 +628,20 @@
       "isMetabolite": false,
       "formedFrom": [],
       "molecularWeight": 250,
-      "halfLifeHours": {
-        "typical": 20,
-        "min": 15,
-        "max": 30
+      "kinetics": {
+        "mode": "intrinsic",
+        "halfLifeHours": {
+          "typical": 20,
+          "min": 15,
+          "max": 30,
+          "rangeType": "observed-range",
+          "cv": null
+        },
+        "earlyPhase": null,
+        "steadyState": null
       },
       "cyp2d6": {
-        "substrate": true,
+        "substrate": "yes",
         "halfLifeMultiplier": {
           "poor": 2,
           "intermediate": 1.5,
@@ -257,8 +652,9 @@
         "inhibitionType": "mechanism-based"
       },
       "qt": {
-        "tier": "none",
-        "weight": 0
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
       },
       "receptors": [
         {
@@ -266,88 +662,358 @@
           "action": "inhibitor"
         }
       ],
+      "receptorsAssessed": true,
       "lingeringEffects": {
-        "durationDays": 0,
+        "durationDays": null,
         "note": ""
       },
       "nonlinearKinetics": {
-        "flag": true,
+        "flag": "yes",
         "note": "Demo: saturates its own CYP2D6 metabolism at higher doses."
       },
-      "source": "FICTIONAL DEMO DATA — not a real drug. Round numbers for UI testing only.",
+      "provenance": {
+        "halfLife": null,
+        "metabolism": null,
+        "molecularWeight": null,
+        "cyp2d6": null,
+        "qt": null,
+        "receptors": null,
+        "lingeringEffects": null,
+        "nonlinearKinetics": null
+      },
       "sourceNotes": {
         "halfLife": "",
         "metabolism": "",
+        "molecularWeight": "",
         "cyp2d6": "",
         "qt": "",
-        "receptors": ""
+        "receptors": "",
+        "lingeringEffects": "",
+        "nonlinearKinetics": ""
       },
+      "source": "FICTIONAL DEMO DATA — not a real drug. Round numbers for UI testing only.",
       "verified": false,
       "verifiedDate": ""
     }
   ],
   "products": [
     {
+      "id": "biphasol_oral",
+      "candidateId": "biphasol",
+      "name": "Biphasol (Oral)",
+      "aliases": [],
+      "category": "other_interactors",
+      "secondaryCategories": [],
+      "class": "",
+      "route": "Oral",
+      "formulation": null,
+      "components": [
+        {
+          "compound": "biphasol",
+          "ratio": 1,
+          "saltFactor": null,
+          "bioavailability": null
+        }
+      ],
+      "doseUnit": "mg",
+      "input": {
+        "type": "bolus",
+        "releaseHalfLifeHours": null,
+        "defaultDurationHours": null
+      },
+      "typicalDose": {
+        "amount": 50,
+        "unit": "mg",
+        "basis": "maintenance"
+      },
+      "provenance": {},
+      "sourceNotes": {},
+      "source": "DEMO — fictional",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
       "id": "demozepam_oral",
+      "candidateId": "demozepam",
       "name": "Demozepam (Oral)",
       "aliases": [
         "Demo-Z"
       ],
       "category": "sedatives",
+      "secondaryCategories": [],
       "class": "demo benzodiazepine",
-      "parentCompound": "demozepam",
       "route": "Oral",
-      "typicalDoseMg": 10,
+      "formulation": null,
+      "components": [
+        {
+          "compound": "demozepam",
+          "ratio": 1,
+          "saltFactor": null,
+          "bioavailability": null
+        }
+      ],
+      "doseUnit": "mg",
+      "input": {
+        "type": "bolus",
+        "releaseHalfLifeHours": null,
+        "defaultDurationHours": null
+      },
+      "typicalDose": {
+        "amount": 10,
+        "unit": "mg",
+        "basis": "maintenance"
+      },
+      "provenance": {
+        "class": null,
+        "aliases": null,
+        "components": null,
+        "input": null,
+        "typicalDose": null
+      },
+      "sourceNotes": {
+        "class": "",
+        "aliases": "",
+        "components": "",
+        "input": "",
+        "typicalDose": ""
+      },
       "source": "FICTIONAL DEMO DATA — not a real drug. Round numbers for UI testing only.",
       "verified": false,
       "verifiedDate": ""
     },
     {
+      "id": "fentaplex_transdermal",
+      "candidateId": "fentaplex",
+      "name": "Fentaplex (Transdermal patch)",
+      "aliases": [],
+      "category": "opioids",
+      "secondaryCategories": [],
+      "class": "",
+      "route": "Transdermal patch",
+      "formulation": "patch",
+      "components": [
+        {
+          "compound": "fentaplex",
+          "ratio": 1,
+          "saltFactor": null,
+          "bioavailability": null
+        }
+      ],
+      "doseUnit": "µg/h",
+      "input": {
+        "type": "zero-order",
+        "releaseHalfLifeHours": {
+          "typical": 17,
+          "min": 13,
+          "max": 22,
+          "rangeType": "observed-range",
+          "cv": null
+        },
+        "defaultDurationHours": 72
+      },
+      "typicalDose": {
+        "amount": 25,
+        "unit": "µg/h",
+        "basis": "rate"
+      },
+      "provenance": {},
+      "sourceNotes": {},
+      "source": "DEMO — fictional",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
       "id": "sampladone_im_depot",
+      "candidateId": "sampladone",
       "name": "Sampladone (IM depot)",
       "aliases": [
         "Sample depot"
       ],
       "category": "opioids",
+      "secondaryCategories": [],
       "class": "demo opioid agonist",
-      "parentCompound": "sampladone",
       "route": "IM depot",
-      "apparentHalfLifeHours": {
-        "typical": 400,
-        "min": 300,
-        "max": 600
+      "formulation": "depot",
+      "components": [
+        {
+          "compound": "sampladone",
+          "ratio": 1,
+          "saltFactor": null,
+          "bioavailability": null
+        }
+      ],
+      "doseUnit": "mg",
+      "input": {
+        "type": "first-order-release",
+        "releaseHalfLifeHours": {
+          "typical": 400,
+          "min": 300,
+          "max": 600,
+          "rangeType": "observed-range",
+          "cv": null
+        },
+        "defaultDurationHours": null
       },
-      "typicalDoseMg": 300,
+      "typicalDose": {
+        "amount": 300,
+        "unit": "mg",
+        "basis": "maintenance"
+      },
+      "provenance": {
+        "class": null,
+        "aliases": null,
+        "components": null,
+        "input": "estimate",
+        "typicalDose": null
+      },
+      "sourceNotes": {
+        "class": "",
+        "aliases": "",
+        "components": "",
+        "input": "Migrated from v1 apparent half-life; treated as release half-life (flip-flop approximation). Review.",
+        "typicalDose": ""
+      },
       "source": "FICTIONAL DEMO DATA — not a real drug. Round numbers for UI testing only.",
       "verified": false,
       "verifiedDate": ""
     },
     {
       "id": "sampladone_oral",
+      "candidateId": "sampladone",
       "name": "Sampladone (Oral)",
       "aliases": [
         "Sample"
       ],
       "category": "opioids",
+      "secondaryCategories": [],
       "class": "demo opioid agonist",
-      "parentCompound": "sampladone",
       "route": "Oral",
-      "typicalDoseMg": 60,
+      "formulation": null,
+      "components": [
+        {
+          "compound": "sampladone",
+          "ratio": 1,
+          "saltFactor": null,
+          "bioavailability": null
+        }
+      ],
+      "doseUnit": "mg",
+      "input": {
+        "type": "bolus",
+        "releaseHalfLifeHours": null,
+        "defaultDurationHours": null
+      },
+      "typicalDose": {
+        "amount": 60,
+        "unit": "mg",
+        "basis": "maintenance"
+      },
+      "provenance": {
+        "class": null,
+        "aliases": null,
+        "components": null,
+        "input": null,
+        "typicalDose": null
+      },
+      "sourceNotes": {
+        "class": "",
+        "aliases": "",
+        "components": "",
+        "input": "",
+        "typicalDose": ""
+      },
       "source": "FICTIONAL DEMO DATA — not a real drug. Round numbers for UI testing only.",
       "verified": false,
       "verifiedDate": ""
     },
     {
+      "id": "testoline_blockazone_sublingual",
+      "candidateId": "testoline",
+      "name": "Testoline/blockazone (Sublingual)",
+      "aliases": [
+        "Combodemo"
+      ],
+      "category": "opioids",
+      "secondaryCategories": [],
+      "class": "",
+      "route": "Sublingual",
+      "formulation": null,
+      "components": [
+        {
+          "compound": "testoline",
+          "ratio": 1,
+          "saltFactor": 0.9,
+          "bioavailability": 0.3
+        },
+        {
+          "compound": "blockazone",
+          "ratio": 0.25,
+          "saltFactor": null,
+          "bioavailability": 0.05
+        }
+      ],
+      "doseUnit": "mg",
+      "input": {
+        "type": "bolus",
+        "releaseHalfLifeHours": null,
+        "defaultDurationHours": null
+      },
+      "typicalDose": {
+        "amount": 8,
+        "unit": "mg",
+        "basis": "maintenance"
+      },
+      "provenance": {},
+      "sourceNotes": {},
+      "source": "DEMO — fictional",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
       "id": "testoline_oral",
+      "candidateId": "testoline",
       "name": "Testoline (Oral)",
       "aliases": [
         "Testo"
       ],
       "category": "antidepressants",
+      "secondaryCategories": [],
       "class": "demo SSRI",
-      "parentCompound": "testoline",
       "route": "Oral",
-      "typicalDoseMg": 20,
+      "formulation": null,
+      "components": [
+        {
+          "compound": "testoline",
+          "ratio": 1,
+          "saltFactor": null,
+          "bioavailability": null
+        }
+      ],
+      "doseUnit": "mg",
+      "input": {
+        "type": "bolus",
+        "releaseHalfLifeHours": null,
+        "defaultDurationHours": null
+      },
+      "typicalDose": {
+        "amount": 20,
+        "unit": "mg",
+        "basis": "maintenance"
+      },
+      "provenance": {
+        "class": null,
+        "aliases": null,
+        "components": null,
+        "input": null,
+        "typicalDose": null
+      },
+      "sourceNotes": {
+        "class": "",
+        "aliases": "",
+        "components": "",
+        "input": "",
+        "typicalDose": ""
+      },
       "source": "FICTIONAL DEMO DATA — not a real drug. Round numbers for UI testing only.",
       "verified": false,
       "verifiedDate": ""

@@ -5,7 +5,7 @@ import * as echarts from './echarts';
 import type { EChartsOption, CustomSeriesRenderItemAPI, CustomSeriesRenderItemParams, SeriesOption } from 'echarts';
 import { fmtAmount, fmtAxis, fmtDateTime } from './format';
 import { valueAt } from './pk';
-import { DAY, strongestAt, type CompoundCurve, type ProductResult, type Scenario } from './model';
+import { DAY, isRateUnit, strongestAt, toMg, type CompoundCurve, type ProductResult, type QtLane, type Scenario } from './model';
 import type { QtTier, Session } from './types';
 
 export type Theme = 'dark' | 'light';
@@ -33,9 +33,37 @@ const PALETTE = {
 };
 
 export const CYP_COLORS = { weak: '#f2c46d', moderate: '#ff9a3c', strong: '#ff5a5f' };
-export const QT_COLORS: Record<QtTier, string> = { none: '#6c7a96', conditional: '#d7c34a', possible: '#ff9a3c', known: '#ff4d6d' };
+export const QT_COLORS: Record<QtTier, string> = { none: '#6c7a96', unassessed: '#8a8f9c', conditional: '#d7c34a', possible: '#ff9a3c', known: '#ff4d6d' };
 
-const TRACK_H = { cyp: 22, qt: 64, lingering: 26 };
+const TRACK_H = { cyp: 22, qt: 26, lingering: 26 };
+const QT_LANE = 11;
+const QT_LOAD_H = 40;
+
+let hatchCache: Record<string, HTMLCanvasElement> = {};
+/** Diagonal-stripe fill for "unassessed" QT lanes. */
+function hatch(color: string): HTMLCanvasElement | string {
+  if (typeof document === 'undefined') return color;
+  if (!hatchCache[color]) {
+    const c = document.createElement('canvas');
+    c.width = c.height = 6;
+    const g = c.getContext('2d')!;
+    g.strokeStyle = color;
+    g.lineWidth = 1.2;
+    g.beginPath();
+    g.moveTo(0, 6);
+    g.lineTo(6, 0);
+    g.moveTo(-1, 1);
+    g.lineTo(1, -1);
+    g.moveTo(5, 7);
+    g.lineTo(7, 5);
+    g.stroke();
+    hatchCache[color] = c;
+  }
+  return hatchCache[color];
+}
+export function resetHatchCache() {
+  hatchCache = {};
+}
 const TRACK_GAP = 30;
 
 export function hexToRgba(hex: string, a: number): string {
@@ -57,15 +85,26 @@ export function curveColor(r: ProductResult, c: CompoundCurve) {
   return c.depth === 0 ? r.color : lighten(r.color, Math.min(0.6, c.depth * 0.18));
 }
 
-export function unitLabel(c: CompoundCurve, s: Session): string {
-  if (s.settings.units === 'percent') return '% of dose';
+/** mg of the most recent discrete dose, or 0 for patches / no doses (percent mode then falls back to mg). */
+const latestDoseMg = (r: ProductResult) => (r.latest && !isRateUnit(r.latest.unit) ? toMg(r.latest.amount, r.latest.unit) : 0);
+const percentMode = (r: ProductResult, s: Session) => s.settings.units === 'percent' && latestDoseMg(r) > 0;
+
+export function unitLabel(r: ProductResult, c: CompoundCurve, s: Session): string {
+  if (c.normalized) return '% of own peak';
+  if (percentMode(r, s)) return '% of dose';
   return c.mgFactor === null ? 'parent-mg-eq' : 'mg';
 }
 
-/** Convert parent-mg-equivalents to display units. */
+/** Convert simulated amounts to display units. Normalized curves are % of their own peak. */
 export function toDisplay(r: ProductResult, c: CompoundCurve, eq: number, s: Session): number {
-  if (s.settings.units === 'percent') return r.latestDoseMg > 0 ? (eq / r.latestDoseMg) * 100 : 0;
+  if (c.normalized) return c.peak > 0 ? (eq / c.peak) * 100 : 0;
+  if (percentMode(r, s)) return (eq / latestDoseMg(r)) * 100;
   return eq * (c.mgFactor ?? 1);
+}
+
+/** Tick label next to the clear marker, by status. */
+export function clearLabel(r: ProductResult): string {
+  return r.status === 'incomplete' ? `≥ ${r.name} (incomplete)` : r.status === 'assumptions' ? `✓ ${r.name}*` : `✓ ${r.name}`;
 }
 
 /** Bucketed min/max downsampling for band outlines (keeps the envelope). */
@@ -90,17 +129,24 @@ export function buildChartOption(scn: Scenario, session: Session, o: ChartOpts):
   const log = s.yScale === 'log';
 
   // ---- layout: tracks stacked under the main grid ----
-  const tracks: ('cyp' | 'qt' | 'lingering')[] = [];
+  const tracks: ('cyp' | 'qt' | 'qtload' | 'lingering')[] = [];
   if (s.showCypTrack) tracks.push('cyp');
   if (s.showQtTrack) tracks.push('qt');
+  if (s.showQtTrack && s.showQtLoad && scn.qt.loadAvailable) tracks.push('qtload');
   if (s.showLingeringTrack) tracks.push('lingering');
   const lanes = laneLayout(scn);
-  const trackHeight = (t: (typeof tracks)[number]) => (t === 'lingering' ? Math.max(TRACK_H.lingering, lanes.count * 9 + 6) : TRACK_H[t]);
+  const qtLanes = scn.qt.lanes.filter((l) => l.depth === 0 || s.showMetabolites);
+  const trackHeight = (t: (typeof tracks)[number]) =>
+    t === 'lingering' ? Math.max(TRACK_H.lingering, lanes.count * 9 + 6)
+    : t === 'qt' ? Math.max(TRACK_H.qt, qtLanes.length * QT_LANE + 6)
+    : t === 'qtload' ? QT_LOAD_H
+    : TRACK_H[t];
   const top = 28;
   const bottom = o.forExport ? 34 : 64; // room for the slider
   const tracksTotal = tracks.reduce((acc, t) => acc + trackHeight(t) + TRACK_GAP, 0);
   const mainH = Math.max(140, o.height - top - bottom - tracksTotal - 6);
-  const left = 64, right = 22;
+  const left = 64;
+  const right = scn.products.some((r) => r.curves.some((c) => c.normalized && (c.depth === 0 || s.showMetabolites))) ? 52 : 22;
   const grids: { top: number; height: number }[] = [{ top, height: mainH }];
   let y = top + mainH + TRACK_GAP;
   for (const t of tracks) {
@@ -133,15 +179,19 @@ export function buildChartOption(scn: Scenario, session: Session, o: ChartOpts):
 
   const visibleCurves = (r: ProductResult) => r.curves.filter((c) => c.depth === 0 || s.showMetabolites);
   let maxDisplay = 0;
-  for (const r of scn.products) for (const c of visibleCurves(r)) maxDisplay = Math.max(maxDisplay, toDisplay(r, c, Math.max(...c.runs.max.amounts), session));
+  for (const r of scn.products)
+    for (const c of visibleCurves(r)) if (!c.normalized) maxDisplay = Math.max(maxDisplay, toDisplay(r, c, Math.max(...c.runs.max.amounts), session));
   const logFloor = Math.max(maxDisplay * 1e-4, 1e-6);
+  const anyNormalized = scn.products.some((r) => visibleCurves(r).some((c) => c.normalized));
+  const anyAdministered = scn.products.some((r) => r.administered);
+  const relAxis = tracks.length + 1; // y-axis index of the "% of own peak" axis on the main grid
 
   const yAxes: EChartsOption['yAxis'] = [
     {
       type: log ? 'log' : 'value',
       gridIndex: 0,
       min: log ? logFloor : 0,
-      name: s.units === 'percent' ? '% of most recent dose' : 'Amount remaining (mg)',
+      name: (s.units === 'percent' ? '% of most recent dose' : 'Amount remaining (mg)') + (anyAdministered ? ' · administered basis*' : ''),
       nameLocation: 'middle',
       nameGap: 48,
       nameTextStyle: { color: P.dim, fontSize: 11 },
@@ -153,12 +203,27 @@ export function buildChartOption(scn: Scenario, session: Session, o: ChartOpts):
       type: 'value' as const,
       gridIndex: i + 1,
       min: 0,
-      max: t === 'qt' ? undefined : 1,
-      show: t === 'qt',
+      max: t === 'qtload' ? undefined : 1,
+      show: t === 'qtload',
       splitNumber: 2,
       axisLabel: { color: P.dim, fontSize: 9, formatter: (v: number) => `${+v.toPrecision(2)}` },
       splitLine: { show: false },
     })),
+    {
+      type: 'value',
+      gridIndex: 0,
+      min: 0,
+      max: 105,
+      show: anyNormalized,
+      position: 'right',
+      name: anyNormalized ? '% of own peak (timing only)' : '',
+      nameLocation: 'middle',
+      nameGap: 34,
+      nameTextStyle: { color: P.dim, fontSize: 10 },
+      axisLabel: { color: P.dim, fontSize: 9, formatter: (v: number) => (v <= 100 ? `${v}` : '') },
+      splitLine: { show: false },
+      axisLine: { show: false },
+    },
   ];
 
   const dim = (key: string) => o.focusKey !== null && o.focusKey !== key;
@@ -169,19 +234,21 @@ export function buildChartOption(scn: Scenario, session: Session, o: ChartOpts):
   for (const r of scn.products) {
     for (const c of visibleCurves(r)) {
       const color = curveColor(r, c);
+      const yi = c.normalized ? relAxis : 0;
+      const floor = c.normalized ? 0 : logFloor;
       const conv = (eq: number) => {
         const v = toDisplay(r, c, eq, session);
-        return log && v < logFloor ? null : v;
+        return log && !c.normalized && v < logFloor ? null : v;
       };
       if (s.showBands) {
-        const upper = envelope(c.runs.max.times, c.runs.max.amounts, 1200, 'max').map(([t, v]) => [t, conv(v) ?? logFloor]);
-        const lower = envelope(c.runs.min.times, c.runs.min.amounts, 1200, 'min').map(([t, v]) => [t, conv(v) ?? logFloor]);
+        const upper = envelope(c.runs.max.times, c.runs.max.amounts, 1200, 'max').map(([t, v]) => [t, conv(v) ?? floor]);
+        const lower = envelope(c.runs.min.times, c.runs.min.amounts, 1200, 'min').map(([t, v]) => [t, conv(v) ?? floor]);
         const poly = [...upper, ...lower.reverse()];
         series.push({
           type: 'custom',
           id: `band:${c.key}`,
           xAxisIndex: 0,
-          yAxisIndex: 0,
+          yAxisIndex: yi,
           silent: true,
           clip: true,
           z: 1,
@@ -200,9 +267,9 @@ export function buildChartOption(scn: Scenario, session: Session, o: ChartOpts):
       series.push({
         type: 'line',
         id: `line:${c.key}`,
-        name: `${r.name} · ${c.compound.name}`,
+        name: `${r.name} · ${c.compound.name}${c.normalized ? ' (% of own peak)' : ''}`,
         xAxisIndex: 0,
-        yAxisIndex: 0,
+        yAxisIndex: yi,
         data,
         showSymbol: false,
         symbol: 'none',
@@ -214,12 +281,12 @@ export function buildChartOption(scn: Scenario, session: Session, o: ChartOpts):
         lineStyle: {
           color,
           width: isParent ? 2.2 : 1.5,
-          type: DASHES[Math.min(c.depth, DASHES.length - 1)] as never,
+          type: (c.normalized ? [3, 3] : DASHES[Math.min(c.depth, DASHES.length - 1)]) as never,
           opacity: fade(1, r.key),
           shadowBlur: dark && isParent && !dim(r.key) ? 12 : 0,
           shadowColor: hexToRgba(color, 0.7),
         },
-        areaStyle: isParent && !log
+        areaStyle: isParent && !log && !c.normalized
           ? {
               opacity: fade(1, r.key),
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
@@ -301,12 +368,15 @@ export function buildChartOption(scn: Scenario, session: Session, o: ChartOpts):
         const x = api.coord([t, log ? logFloor : 0])[0];
         const yb = cs.y + cs.height;
         const op = dim(r.key) ? 0.2 : 1;
+        const incomplete = r.status === 'incomplete';
         return {
           type: 'group',
           children: [
-            { type: 'line', shape: { x1: x, y1: yb, x2: x, y2: yb - 16 }, style: { stroke: r.color, lineWidth: 2, opacity: op } },
-            { type: 'circle', shape: { cx: x, cy: yb - 18, r: 3 }, style: { fill: r.color, opacity: op } },
-            { type: 'text', x: x + 4, y: yb - 30 - (p.dataIndex % 3) * 11, style: { text: `✓ ${r.name}`, fill: r.color, font: '10px Inter Variable, Inter, system-ui, sans-serif', opacity: op } },
+            { type: 'line', shape: { x1: x, y1: yb, x2: x, y2: yb - 16 }, style: { stroke: r.color, lineWidth: 2, opacity: op, lineDash: incomplete ? [2, 2] : undefined } },
+            incomplete
+              ? { type: 'circle', shape: { cx: x, cy: yb - 18, r: 3 }, style: { fill: 'transparent', stroke: r.color, lineWidth: 1.4, opacity: op } }
+              : { type: 'circle', shape: { cx: x, cy: yb - 18, r: 3 }, style: { fill: r.color, opacity: op } },
+            { type: 'text', x: x + 4, y: yb - 30 - (p.dataIndex % 3) * 11, style: { text: clearLabel(r), fill: r.color, font: '10px Inter Variable, Inter, system-ui, sans-serif', opacity: op } },
           ],
         } as never;
       },
@@ -317,8 +387,12 @@ export function buildChartOption(scn: Scenario, session: Session, o: ChartOpts):
   tracks.forEach((t, i) => {
     const gi = i + 1;
     const g = grids[gi];
+    const qtNote = s.showQtLoad && !scn.qt.loadAvailable ? ' · summed load unavailable (not calibrated)' : '';
     const label =
-      t === 'cyp' ? 'CYP2D6 inhibition' : t === 'qt' ? 'Relative QT load — qualitative, not predicted ms' : 'Lingering effects after clearance';
+      t === 'cyp' ? 'CYP2D6 inhibition'
+      : t === 'qt' ? `QT liability by compound — qualitative, hatched = unassessed${qtNote}`
+      : t === 'qtload' ? 'Summed relative QT load — qualitative, not predicted ms'
+      : 'Lingering effects after clearance';
     titles.push({ type: 'text', left, top: g.top - 15, style: { text: label, fill: P.dim, font: '10.5px Inter Variable, Inter, system-ui, sans-serif' } });
     if (t === 'qt' && session.patient.qtcMs > 0)
       titles.push({
@@ -359,33 +433,56 @@ export function buildChartOption(scn: Scenario, session: Session, o: ChartOpts):
     }
 
     if (t === 'qt') {
-      const tiers: QtTier[] = ['none', 'conditional', 'possible', 'known'];
-      for (const tier of tiers) {
-        // Points belong to their tier's series; boundary points are duplicated so segments join.
-        const data: (number | null)[][] = scn.qt.map((q, k) => {
-          const mine = q.tier === tier;
-          const nextMine = scn.qt[k + 1]?.tier === tier;
-          const prevMine = scn.qt[k - 1]?.tier === tier;
-          return [q.t, mine || nextMine || prevMine ? q.load : null];
-        });
-        if (!scn.qt.some((q) => q.tier === tier)) continue;
-        const col = QT_COLORS[tier];
-        series.push({
-          type: 'line',
-          id: `qt:${tier}`,
-          name: `QT (${tier})`,
-          xAxisIndex: gi,
-          yAxisIndex: gi,
-          data,
-          showSymbol: false,
-          connectNulls: false,
-          animationDuration: o.animate ? 1400 : 0,
-          lineStyle: { color: col, width: 1.6 },
-          areaStyle: { color: hexToRgba(col, 0.22) },
-          emphasis: { disabled: true },
-          silent: true,
-        } as SeriesOption);
-      }
+      // One lane per QT-relevant compound; opacity follows the compound's fraction of its own peak.
+      const segs = qtLanes.flatMap((l, lane) => l.segments.map((sg) => ({ l, lane, sg })));
+      series.push({
+        type: 'custom',
+        id: 'qt-lanes',
+        xAxisIndex: gi,
+        yAxisIndex: gi,
+        clip: true,
+        silent: true,
+        data: segs.map((x) => [x.sg[0], x.sg[1]]),
+        encode: { x: [0, 1] },
+        renderItem: (p: CustomSeriesRenderItemParams, api: CustomSeriesRenderItemAPI) => {
+          const { l, lane, sg } = segs[p.dataIndex];
+          const cs = p.coordSys as unknown as { y: number };
+          const a = api.coord([sg[0], 0])[0];
+          const z = api.coord([sg[1], 0])[0];
+          const op = (dim(l.productKey) ? 0.25 : 1) * (0.25 + 0.75 * sg[2]);
+          const col = QT_COLORS[l.tier];
+          return {
+            type: 'rect',
+            shape: { x: a, y: cs.y + 3 + lane * QT_LANE, width: Math.max(1, z - a), height: QT_LANE - 3 },
+            style: l.tier === 'unassessed' ? { fill: { image: hatch(col), repeat: 'repeat' } as never, opacity: op } : { fill: hexToRgba(col, 0.85 * op) },
+          } as never;
+        },
+      } as SeriesOption);
+      qtLanes.forEach((l, lane) =>
+        titles.push({
+          type: 'text', left: 2, top: g.top + 3 + lane * QT_LANE,
+          style: { text: shortName(l), fill: QT_COLORS[l.tier], font: '9px Inter Variable, Inter, system-ui, sans-serif', width: left - 6, overflow: 'truncate' },
+        }),
+      );
+      if (!qtLanes.length)
+        titles.push({ type: 'text', left: left + 8, top: g.top + 6, style: { text: 'No QT-relevant compounds in this regimen', fill: P.dim, font: '10px Inter Variable, Inter, system-ui, sans-serif' } });
+    }
+
+    if (t === 'qtload') {
+      series.push({
+        type: 'line',
+        id: 'qt-load',
+        name: 'Summed QT load',
+        xAxisIndex: gi,
+        yAxisIndex: gi,
+        data: scn.qt.load.map((q) => [q.t, q.load]),
+        showSymbol: false,
+        animationDuration: o.animate ? 1400 : 0,
+        lineStyle: { color: QT_COLORS.possible, width: 1.6 },
+        areaStyle: { color: hexToRgba(QT_COLORS.possible, 0.2) },
+        emphasis: { disabled: true },
+        silent: true,
+      } as SeriesOption);
     }
 
     if (t === 'lingering') {
@@ -461,6 +558,8 @@ export function buildChartOption(scn: Scenario, session: Session, o: ChartOpts):
   };
 }
 
+const shortName = (l: QtLane) => (l.compound.length > 11 ? `${l.compound.slice(0, 10)}…` : l.compound);
+
 function laneLayout(scn: Scenario) {
   // Greedy lane assignment so overlapping lingering bands don't sit on top of each other.
   const lane = new Map<number, number>();
@@ -493,14 +592,23 @@ function tooltipHtml(scn: Scenario, session: Session, t: number | undefined): st
       if (v < 1e-6) continue;
       const col = curveColor(r, c);
       const indent = c.depth > 0 ? `padding-left:${c.depth * 10}px;opacity:.85` : 'font-weight:600';
-      const unit = unitLabel(c, session);
+      const unit = unitLabel(r, c, session);
+      const shown = c.normalized ? `${v.toFixed(0)}% of peak` : fmtAmount(v, unit === '% of dose' ? '%' : unit);
+      const tag = c.normalized ? ' <span style="opacity:.6;font-weight:400">· amount unknown — timing only</span>' : c.formationLimited ? ' <span style="opacity:.6;font-weight:400">· formation-limited</span>' : '';
       rows.push(
-        `<div style="display:flex;justify-content:space-between;gap:14px;${indent}"><span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${col};margin-right:6px"></span>${c.depth === 0 ? r.name : c.compound.name}</span><span style="font-variant-numeric:tabular-nums">${fmtAmount(v, unit === '% of dose' ? '%' : unit)}</span></div>`,
+        `<div style="display:flex;justify-content:space-between;gap:14px;${indent}"><span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${col};margin-right:6px"></span>${c.depth === 0 ? r.name : c.compound.name}${tag}</span><span style="font-variant-numeric:tabular-nums">${shown}</span></div>`,
       );
     }
+    if (r.assumptions.length && rows.length) {
+      const list = r.assumptions.slice(0, 3).join('; ') + (r.assumptions.length > 3 ? `; +${r.assumptions.length - 3} more` : '');
+      rows.push(`<div style="opacity:.6;font-size:11px;max-width:340px;white-space:normal;margin:1px 0 4px 14px">Assumptions: ${list}</div>`);
+    }
+    if (r.status === 'incomplete' && rows.length)
+      rows.push(`<div style="opacity:.75;font-size:11px;margin:0 0 4px 14px;color:#ffb74d">Incomplete — no kinetics for ${r.missing.join(', ')}</div>`);
   }
   const cyp = strongestAt(scn.cyp, t);
-  const qt = scn.qt.length ? nearestQt(scn, t) : null;
+  const qtHere = scn.qt.lanes.filter((l) => l.segments.some((sg) => t >= sg[0] && t <= sg[1]));
+  const qt = scn.qt.loadAvailable && s.showQtLoad && scn.qt.load.length ? nearestQt(scn, t) : null;
   const lingering = scn.lingering.filter((b) => t >= b.start && t <= b.end);
   const foot: string[] = [];
   foot.push(
@@ -508,17 +616,20 @@ function tooltipHtml(scn: Scenario, session: Session, t: number | undefined): st
       ? `<div><b style="color:${CYP_COLORS[cyp.strength]}">CYP2D6 inhibited</b> — ${cyp.strength}${cyp.tail ? ', enzyme recovering' : ''} (${cyp.compound})</div>`
       : '<div style="opacity:.7">CYP2D6 not inhibited</div>',
   );
-  if (qt) foot.push(`<div>Relative QT load: <b>${qt.load.toFixed(2)}</b> <span style="opacity:.7">(${qt.tier}, qualitative)</span></div>`);
+  if (qtHere.length)
+    foot.push(`<div>QT liability present: ${qtHere.map((l) => `<b style="color:${QT_COLORS[l.tier]}">${l.compound}</b> <span style="opacity:.7">(${l.tier})</span>`).join(', ')}</div>`);
+  if (qt) foot.push(`<div>Summed relative QT load: <b>${qt.load.toFixed(2)}</b> <span style="opacity:.7">(qualitative)</span></div>`);
   for (const b of lingering) foot.push(`<div style="opacity:.85">Lingering — ${b.compound}: ${b.note || 'effects may persist'}</div>`);
   return `<div style="font-size:12px;min-width:220px"><div style="opacity:.7;margin-bottom:6px">${fmtDateTime(t, s)}</div>${rows.join('') || '<div style="opacity:.6">Nothing above zero</div>'}<div style="margin-top:8px;padding-top:6px;border-top:1px solid rgba(127,127,127,.25);display:grid;gap:3px">${foot.join('')}</div></div>`;
 }
 
 function nearestQt(scn: Scenario, t: number) {
-  let lo = 0, hi = scn.qt.length - 1;
+  const q = scn.qt.load;
+  let lo = 0, hi = q.length - 1;
   while (hi - lo > 1) {
     const m = (lo + hi) >> 1;
-    if (scn.qt[m].t <= t) lo = m;
+    if (q[m].t <= t) lo = m;
     else hi = m;
   }
-  return Math.abs(scn.qt[lo].t - t) < Math.abs(scn.qt[hi].t - t) ? scn.qt[lo] : scn.qt[hi];
+  return Math.abs(q[lo].t - t) < Math.abs(q[hi].t - t) ? q[lo] : q[hi];
 }

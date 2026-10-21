@@ -4,7 +4,8 @@ import * as echarts from './echarts';
 import type { jsPDF as JsPDF } from 'jspdf';
 import { buildChartOption } from './chart';
 import { ageFrom, fmtDate, fmtDateTime } from './format';
-import { expandDose, type LibraryIndex, type Scenario } from './model';
+import { clearStatusText, combinationText, expandDose, isRateUnit, type LibraryIndex, type Scenario } from './model';
+import { isDraft } from './schema';
 import type { Session } from './types';
 
 export const DISCLAIMER =
@@ -44,22 +45,46 @@ function doseRows(session: Session, idx: LibraryIndex): string[][] {
   const s = session.settings;
   return session.doses.map((d) => {
     const p = idx.products.get(d.productId);
-    const flag = p ? (p.userEntered ? ' [user-entered]' : !p.verified ? ' [unverified]' : '') : '';
-    const n = expandDose(d).length;
+    const flag = p ? (p.userEntered ? ' [user-entered]' : isDraft(p) ? ' [draft]' : !p.verified ? ' [unverified]' : '') : '';
+    const events = expandDose(d, p?.input.defaultDurationHours);
+    const patch = isRateUnit(d.unit);
+    const n = events.length;
     const when = d.kind === 'single'
-      ? d.time ? fmtDateTime(new Date(d.time).getTime(), s) : '—'
-      : `every ${d.regimen!.every} ${d.regimen!.unit}, ${fmtDateTime(new Date(d.regimen!.start).getTime(), s)} → ${fmtDateTime(new Date(d.regimen!.end).getTime(), s)} (${n} doses)`;
-    return [`${p?.name ?? d.productId}${flag}`, `${d.amountMg} mg`, when];
+      ? d.time
+        ? patch && events[0]?.end ? `applied ${fmtDateTime(events[0].time, s)}, removed ${fmtDateTime(events[0].end, s)}` : fmtDateTime(new Date(d.time).getTime(), s)
+        : '—'
+      : `every ${d.regimen!.every} ${d.regimen!.unit}, ${fmtDateTime(new Date(d.regimen!.start).getTime(), s)} → ${fmtDateTime(new Date(d.regimen!.end).getTime(), s)} (${n} ${patch ? 'applications' : 'doses'})`;
+    const combo = p ? combinationText(idx, p, d.amount, d.unit) : null;
+    return [`${p?.name ?? d.productId}${flag}`, combo ?? `${d.amount} ${d.unit}`, when];
   });
 }
 
 function clearRows(scn: Scenario, session: Session): string[][] {
   const s = session.settings;
+  const fmt = (t: number) => fmtDateTime(t, s);
   return scn.products.filter((r) => !r.isIbogaine).map((r) => [
     `${r.name}${r.product.userEntered ? ' [user-entered]' : ''}`,
-    r.clearAt === null ? 'beyond window' : fmtDateTime(r.clearAt, s),
-    r.clearAtMax === null ? 'beyond window' : fmtDateTime(r.clearAtMax, s),
+    clearStatusText(r, fmt),
+    r.status === 'incomplete' ? (r.clearAtMax !== null ? `not before ${fmt(r.clearAtMax)}` : '—') : r.clearAtMax === null ? 'beyond window' : fmt(r.clearAtMax),
   ]);
+}
+
+/** Per-product "Assumptions and missing data" lines. */
+export function assumptionLines(scn: Scenario): { product: string; lines: string[] }[] {
+  const out: { product: string; lines: string[] }[] = [];
+  for (const r of scn.products) {
+    const lines: string[] = [];
+    if (r.status === 'incomplete') lines.push(`Incomplete clear date — missing kinetics for: ${r.missing.join(', ')} (date shown is a lower bound).`);
+    for (const a of r.assumptions) lines.push(a.charAt(0).toUpperCase() + a.slice(1) + '.');
+    const conj = r.curves.filter((c) => c.formationLimited).map((c) => c.compound.name);
+    if (conj.length) lines.push(`Formation-limited conjugates (${conj.join(', ')}) can accumulate in renal impairment.`);
+    if (r.administered) lines.push('Amounts are on an administered basis (bioavailability not applied for at least one component).');
+    if (r.unassessed.qt.length) lines.push(`QT liability unassessed: ${r.unassessed.qt.join(', ')}.`);
+    if (r.unassessed.cyp2d6.length) lines.push(`CYP2D6 inhibition unassessed: ${r.unassessed.cyp2d6.join(', ')}.`);
+    if (r.unassessed.receptors.length) lines.push(`Receptor targets unassessed: ${r.unassessed.receptors.join(', ')}.`);
+    if (lines.length) out.push({ product: r.name, lines });
+  }
+  return out;
 }
 
 function warningLines(scn: Scenario): string[] {
@@ -160,7 +185,36 @@ export async function exportPdf(scn: Scenario, session: Session, idx: LibraryInd
     ], [tw * 0.38, tw * 0.12, tw * 0.5]);
   }
   table(`Clear dates (below ${s.clearHalfLives} half-lives ≈ ${(100 * Math.pow(2, -s.clearHalfLives)).toFixed(1)}% of peak, parent and all metabolites)`,
-    ['Product', 'Clear (typical)', 'Clear (slowest in range)'], clearRows(scn, session), [tw * 0.4, tw * 0.3, tw * 0.3]);
+    ['Product', 'Clear (typical)', 'Clear (slowest in range)'], clearRows(scn, session), [tw * 0.3, tw * 0.45, tw * 0.25]);
+
+  ensure(40);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(11);
+  doc.setTextColor(20);
+  doc.text('Assumptions and missing data', M, y);
+  y += 14;
+  doc.setFontSize(8.5);
+  const groups = assumptionLines(scn);
+  if (!groups.length) {
+    doc.setFont('helvetica', 'normal');
+    doc.text('None — every value used came from the library without assumptions.', M, y);
+    y += 14;
+  }
+  for (const g of groups) {
+    ensure(24);
+    doc.setFont('helvetica', 'bold');
+    doc.text(latin1(g.product), M, y);
+    y += 11;
+    doc.setFont('helvetica', 'normal');
+    for (const l of g.lines) {
+      const lines = doc.splitTextToSize(latin1(`- ${l}`), tw - 10);
+      ensure(lines.length * 10 + 2);
+      doc.text(lines, M + 8, y);
+      y += lines.length * 10 + 1;
+    }
+    y += 4;
+  }
+  y += 6;
 
   ensure(40);
   doc.setFont('helvetica', 'bold');

@@ -791,6 +791,23 @@ export function computeScenario(idx: LibraryIndex, session: Session, now: number
   };
 }
 
+/** "8 mg buprenorphine → 2 mg naloxone" for combination products, null for single-component ones. */
+export function combinationText(idx: LibraryIndex, p: Product, amount: number, unit: DoseUnit): string | null {
+  if (p.components.length < 2 || !(amount > 0)) return null;
+  const part = (c: Product['components'][number]) => `${+(amount * c.ratio).toPrecision(3)} ${unit} ${(idx.compounds.get(c.compound)?.name ?? c.compound).toLowerCase()}`;
+  const [first, ...rest] = p.components;
+  return `${part(first)} → ${rest.map(part).join(', ')}`;
+}
+
+/** "Clear by …", "Clear by … — with assumptions", or "Incomplete — missing kinetics for: X · not before …". */
+export function clearStatusText(r: ProductResult, fmt: (t: number) => string, which: 'typical' | 'max' = 'typical'): string {
+  const at = which === 'max' ? r.clearAtMax : r.clearAt;
+  if (r.status === 'incomplete')
+    return `Incomplete — missing kinetics for: ${r.missing.join(', ')}${at !== null ? ` · not before ${fmt(at)}` : ''}`;
+  const base = at === null ? 'Not clear within the simulated window' : `Clear by ${fmt(at)}`;
+  return r.status === 'assumptions' ? `${base} — with assumptions` : base;
+}
+
 /** Body amount in mg of the compound itself, or null if not absolute (normalized / no MW). */
 export function absoluteMg(c: CompoundCurve, amount: number): number | null {
   if (c.normalized || c.mgFactor === null) return null;
