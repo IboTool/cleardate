@@ -58,6 +58,30 @@ html, body { overflow-x: hidden; }
 .ed-verify { display: flex; align-items: center; gap: 12px; padding-top: 8px; border-top: 1px solid var(--border); }
 .ed-note { font-size: 12px; color: var(--muted); }
 .ed-addroute { max-width: 520px; }
+.ed-views { margin-left: 8px; }
+.chip.fl { --c: #e6c46a; }
+.ed-cand-products { display: grid; gap: 1px; margin: 0 0 4px 22px; }
+.ed-cand-product { display: flex; align-items: center; gap: 6px; background: transparent; border: 0; color: var(--muted); font-size: 12px; padding: 2px 6px; border-radius: 6px; cursor: pointer; text-align: left; }
+.ed-cand-product:hover { background: rgba(255, 255, 255, 0.05); color: var(--text); }
+.ed-sec summary { display: flex; align-items: center; gap: 8px; }
+.prov-chips { margin-left: auto; display: inline-flex; gap: 4px; }
+.prov-chip { font-size: 10.5px; padding: 1px 4px; border-radius: 99px; border: 1px solid var(--border); background: rgba(0, 0, 0, 0.25); color: var(--muted); text-transform: none; letter-spacing: 0; width: auto; }
+.prov-chip[data-tag='checked'] { color: #7ee0b5; border-color: rgba(126, 224, 181, 0.4); }
+.prov-chip[data-tag='reviewer'] { color: #8fb0ff; border-color: rgba(124, 156, 255, 0.5); }
+.prov-chip[data-tag='recall'], .prov-chip[data-tag='estimate'] { color: var(--warn); border-color: rgba(242, 196, 109, 0.45); }
+.prov-chip[data-tag='gap'] { color: #ff9fa2; border-color: rgba(255, 90, 95, 0.4); }
+.ed-edge { display: grid; gap: 4px; padding: 6px 0; border-bottom: 1px dashed var(--border); }
+.ed-components { display: grid; gap: 6px; }
+.ed-component .field { min-width: 0; }
+.ed-secondary { padding: 0; border: 0; }
+.ed-card.flash { box-shadow: 0 0 0 2px rgba(124, 156, 255, 0.7); transition: box-shadow 0.3s; }
+.ed-priority { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.ed-priority th { text-align: left; color: var(--muted); font-weight: 500; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+.ed-priority th.sortable { cursor: pointer; }
+.ed-priority td { padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.ed-priority tbody tr { cursor: pointer; }
+.ed-priority tbody tr:hover { background: rgba(255, 255, 255, 0.04); }
+.ed-priority code { font-size: 10.5px; color: var(--dim); }
 .ed-empty { padding: 24px; max-width: 520px; }
 .ed-main, .ed-side { min-width: 0; }
 
