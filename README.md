@@ -153,14 +153,16 @@ Half-lives are population values from labels and the literature. Compounds with 
 
 1. Commit or back up your work, and close the data editor.
 2. Run `npm run migrate-v2` (or `npm run migrate-v2 -- path/to/file.json`). It is idempotent: a file that already has `schemaVersion: 2` is left alone.
-3. The original is kept next to it as `drugs.v1-backup.json`, and `docs/migration_v2_report.md` lists every change:
+3. The original is kept as `backups/drugs.v1-backup.json`, and `docs/migration_v2_report.md` lists every change:
    - transform counts;
    - auto-assigned formation-limited conjugates;
    - split, merged and renamed products (old → new ids);
    - safety fields changed to `unassessed`;
    - known review items from the opioid pass.
 4. Run `npm run validate`, then work through the report and the editor's **Priority review** view. Start with the auto-assumptions and the depot, ER and patch release half-lives.
-5. Delete `public/drugs.v1-backup.json` once you no longer need it. Anything in `public/` is copied into `dist/` on build.
+
+
+**Backups** of the library go in `backups/`, which is gitignored and stays on your machine. Never put them in `public/`: everything there is published with the site. `npm run validate`, and therefore the build, fails if `public/` contains any `drugs*.json` other than `drugs.json`.
 
 What the migration does, in short:
 

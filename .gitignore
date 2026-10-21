@@ -3,7 +3,8 @@ dist/
 .DS_Store
 *.log
 .env*
-# editor backups of drugs.json
+# backups of drugs.json (kept out of public/, which is deployed)
+backups/
 public/drugs.json.bak*
 tools/editor/.backups/
 # patient files should never be committed

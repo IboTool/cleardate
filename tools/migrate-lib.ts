@@ -227,7 +227,7 @@ const KNOWN_REVIEW_ITEMS = [
 
 export function renderReport(report: MigrationReport, date = new Date().toISOString().slice(0, 10)): string {
   const L: string[] = [];
-  L.push('# Migration to schema v2', '', `Run on ${date} by \`npm run migrate-v2\`. The v1 file is kept as \`public/drugs.v1-backup.json\`.`, '');
+  L.push('# Migration to schema v2', '', `Run on ${date} by \`npm run migrate-v2\`. The v1 file is kept as \`backups/drugs.v1-backup.json\`.`, '');
   L.push('## Counts', '', '| Transform | Count |', '|---|---|');
   for (const [k, v] of Object.entries(report.counts).sort()) L.push(`| ${k} | ${v} |`);
   L.push('', '## Auto-assigned formation-limited compounds (review each)', '');

@@ -1,7 +1,7 @@
 // npm run validate — checks public/drugs.json. Runs as `prebuild`, so a broken file never deploys.
 // Exit code 1 on errors; warnings and progress are informational.
 
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { validateLibrary, type Issue } from '../src/validate';
@@ -19,6 +19,11 @@ try {
 }
 
 const { errors, warnings, progress } = validateLibrary(lib as never);
+
+// Everything in public/ is deployed, so backups and copies of the library must live elsewhere.
+for (const name of readdirSync(resolve(root, 'public')))
+  if (/^drugs.*\.json$/i.test(name) && name !== 'drugs.json')
+    errors.push({ id: '(public)', message: `public/${name} would be published with the site; move it to backups/ (gitignored)` });
 const color = process.stdout.isTTY;
 const red = (s: string) => (color ? `\x1b[31m${s}\x1b[0m` : s);
 const yellow = (s: string) => (color ? `\x1b[33m${s}\x1b[0m` : s);

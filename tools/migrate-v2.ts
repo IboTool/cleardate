@@ -1,13 +1,13 @@
 // One-off, idempotent migration of public/drugs.json from schema v1 to v2.
 //
 //   npm run migrate-v2                      # migrates public/drugs.json in place
-//   npm run migrate-v2 -- path/to/file.json # another file (backup and report go next to it / docs/)
+//   npm run migrate-v2 -- path/to/file.json # another file
 //   npm run migrate-v2 -- --dry-run         # print the summary without writing anything
 //
-// Skips if schemaVersion is already 2. Backs the v1 file up to drugs.v1-backup.json and writes
-// docs/migration_v2_report.md.
+// Skips if schemaVersion is already 2 or later. Backs the v1 file up to backups/<name>.v1-backup.json
+// (gitignored; never inside public/, which is deployed) and writes docs/migration_v2_report.md.
 
-import { existsSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { basename, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { serializeLibrary } from '../src/schema';
@@ -33,7 +33,8 @@ console.log(`Validation after migration: ${v.errors.length} error(s), ${v.warnin
 for (const e of v.errors.slice(0, 40)) console.log(`  ✗ ${e.id}: ${e.message}`);
 if (dryRun) process.exit(v.errors.length ? 1 : 0);
 
-const backup = resolve(dirname(file), basename(file).replace(/\.json$/, '') + '.v1-backup.json');
+mkdirSync(resolve(root, 'backups'), { recursive: true });
+const backup = resolve(root, 'backups', basename(file).replace(/\.json$/, '') + '.v1-backup.json');
 if (!existsSync(backup)) writeFileSync(backup, raw, 'utf8');
 else console.log(`${backup} already exists; left as is.`);
 
