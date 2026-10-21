@@ -177,7 +177,7 @@ function renderTop() {
     st.lib
       ? h('div', { class: 'segmented ed-views' },
           ...(['queue', 'priority'] as View[]).map((vw) =>
-            h('button', { type: 'button', class: `seg ${st.view === vw ? 'on' : ''}`, onclick: () => { st.view = vw; renderTop(); renderMain(); } },
+            h('button', { type: 'button', class: `seg ${st.view === vw ? 'on' : ''}`, onclick: () => { st.view = vw; renderTop(); renderSide(); renderMain(); } },
               vw === 'queue' ? 'Queue' : 'Priority review')))
       : null,
     h('span', { class: 'spacer' }),
