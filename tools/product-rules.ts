@@ -1,13 +1,13 @@
-// Product rules shared by `npm run migrate-v2`, `npm run migrate-v2.1` and `npm run init-data` (spec v2,
-// "Shared product rules"; v2.1 §5): input-model inference from the route, release-form splits, depot
-// splits, the buprenorphine/naloxone combination product, route clean-ups and the 2.1 removals. The
+// Product rules shared by `npm run migrate-v2`, `migrate-v2.1`, `migrate-v2.2` and `npm run init-data` (spec v2,
+// "Shared product rules"; v2.1 §5; v2.2 §6): input-model inference from the route, release-form splits, depot
+// splits, the buprenorphine/naloxone combination product, route clean-ups, the 2.1 removals and the 2.2 prodrugs. The
 // tools run these on freshly built products, so a fresh init-data yields the same product set as the migrations.
 
 import { clone, primaryCompound } from '../src/schema';
 import type { Formulation, Library, Product, ProductInput } from '../src/types';
 
 export interface ProductChange {
-  kind: 'release-split' | 'depot-split' | 'rename' | 'combination' | 'removed';
+  kind: 'release-split' | 'depot-split' | 'rename' | 'combination' | 'removed' | 'prodrug';
   oldId: string;
   newIds: string[];
 }
@@ -228,6 +228,62 @@ export function applyV21ProductRules(lib: Library, opts: RuleOptions): ProductCh
     if (repl && opts.annotate && !(repl.sourceNotes.input ?? '').includes(r.note))
       repl.sourceNotes = { ...repl.sourceNotes, input: repl.sourceNotes.input ? `${repl.sourceNotes.input} ${r.note}` : r.note };
     changes.push({ kind: 'removed', oldId: id, newIds: repl ? [repl.id] : [] });
+  }
+  return changes;
+}
+
+export interface ProdrugRule {
+  /** Compound the product is modelled as. */
+  compound: string;
+  administeredAs: string;
+  massFactor: number;
+  /** Shown in the conversion note: "<modelled MW> / <administered MW>" and any caveat. */
+  basis: string;
+  doseUnit?: Product['doseUnit'];
+}
+
+/** Prodrug products modelled as their active compound (spec v2.2 §1, §6; Supplement B Part 4). */
+export const PRODRUG_RULES: Record<string, ProdrugRule> = {
+  psilocybin_oral: { compound: 'psilocin', administeredAs: 'psilocybin', massFactor: 0.7186, basis: '204.27 / 284.25 g/mol (psilocin / psilocybin); rapid, near-complete dephosphorylation.' },
+  '1p_lsd_oral': { compound: 'lsd', administeredAs: '1p_lsd', massFactor: 0.8522, basis: '323.43 / 379.5 g/mol (LSD / 1P-LSD); rapid conversion, unchanged 1P-LSD not detected.', doseUnit: 'µg' },
+  clorazepate_oral: {
+    compound: 'nordiazepam', administeredAs: 'clorazepate', massFactor: 0.6620,
+    basis: '270.71 / 408.92 g/mol (nordiazepam / clorazepate dipotassium); assumes label strengths are stated as clorazepate dipotassium — reviewer to confirm.',
+  },
+  gbl_oral: {
+    compound: 'ghb', administeredAs: 'gbl', massFactor: 1.2092,
+    basis: '104.10 / 86.09 g/mol (GHB / GBL); assumes complete hydrolysis (adds water, so the factor is above 1). GHB’s own kinetics are nonlinear (capacity-limited), which the model does not represent.',
+  },
+};
+
+/**
+ * Schema 2.2 prodrug rules: the product's single component becomes the modelled compound with
+ * administeredAs / massFactor. With `annotate`, the components and conversion sections are tagged
+ * `estimate` with a Supplement B Part 4 note. Products already converted (or missing) are skipped.
+ */
+export function applyV22ProductRules(lib: Library, opts: RuleOptions): ProductChange[] {
+  const changes: ProductChange[] = [];
+  for (const p of lib.products) {
+    const r = PRODRUG_RULES[p.id];
+    if (!r || p.components.length !== 1 || p.components[0].compound !== r.administeredAs) continue;
+    const c = p.components[0];
+    p.components = [{ ...c, compound: r.compound, administeredAs: r.administeredAs, massFactor: r.massFactor }];
+    if (r.doseUnit && p.doseUnit !== r.doseUnit) {
+      const scale = p.doseUnit === 'mg' && r.doseUnit === 'µg' ? 1000 : 1;
+      p.doseUnit = r.doseUnit;
+      p.typicalDose = { ...p.typicalDose, unit: r.doseUnit, amount: p.typicalDose.amount === null ? null : p.typicalDose.amount * scale };
+    }
+    if (opts.annotate) {
+      const add = (s: 'components' | 'conversion' | 'input', text: string) => {
+        const prev = p.sourceNotes[s] ?? '';
+        p.sourceNotes = { ...p.sourceNotes, [s]: prev ? `${prev} ${text}` : text };
+        p.provenance = { ...p.provenance, [s]: 'estimate' };
+      };
+      add('components', `[estimate] Supplement B Part 4: component changed from ${r.administeredAs} to ${r.compound} (prodrug modelled as its active compound) by migration v2.2.`);
+      add('conversion', `[estimate] Supplement B Part 4: administered as ${r.administeredAs}, modelled as ${r.compound}; massFactor ${r.massFactor} = ${r.basis}`);
+      if (r.doseUnit) add('input', `[estimate] Supplement B Part 4: dose unit set to ${r.doseUnit} by migration v2.2.`);
+    }
+    changes.push({ kind: 'prodrug', oldId: p.id, newIds: [p.id] });
   }
   return changes;
 }

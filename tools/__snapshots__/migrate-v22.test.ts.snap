@@ -1,0 +1,1375 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`migrate-v2.2 > matches the expected snapshot 1`] = `
+"{
+  "schemaVersion": 2.2,
+  "categories": [
+    {
+      "id": "x",
+      "name": "X",
+      "order": 1
+    }
+  ],
+  "compounds": [
+    {
+      "id": "1p_lsd",
+      "name": "1p_lsd",
+      "aliases": [],
+      "isMetabolite": false,
+      "formedFrom": [],
+      "clinicalRelevance": "active",
+      "molecularWeight": null,
+      "kinetics": {
+        "mode": "unknown",
+        "halfLifeHours": null,
+        "earlyPhase": null,
+        "steadyState": null
+      },
+      "cyp2d6": {
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
+      },
+      "qt": {
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
+      },
+      "receptors": [],
+      "receptorsAssessed": false,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {},
+      "sourceNotes": {},
+      "reviewedDates": {},
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "5_htp",
+      "name": "5_htp",
+      "aliases": [],
+      "isMetabolite": false,
+      "formedFrom": [],
+      "clinicalRelevance": "active",
+      "molecularWeight": null,
+      "kinetics": {
+        "mode": "not-modelled",
+        "halfLifeHours": null,
+        "notModelledReason": "Endogenous serotonin precursor; relevance is serotonergic interaction, not washout",
+        "earlyPhase": null,
+        "steadyState": null
+      },
+      "cyp2d6": {
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
+      },
+      "qt": {
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
+      },
+      "receptors": [],
+      "receptorsAssessed": false,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {
+        "halfLife": "estimate"
+      },
+      "sourceNotes": {
+        "halfLife": "[estimate] Supplement B Part 4: kinetics mode set to not-modelled by migration v2.2 — Endogenous serotonin precursor; relevance is serotonergic interaction, not washout."
+      },
+      "reviewedDates": {},
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "acetaldehyde",
+      "name": "acetaldehyde",
+      "aliases": [],
+      "isMetabolite": true,
+      "formedFrom": [
+        {
+          "compound": "ethanol",
+          "fraction": null,
+          "cyp2d6Multiplier": null
+        }
+      ],
+      "clinicalRelevance": "unknown",
+      "molecularWeight": null,
+      "kinetics": {
+        "mode": "unknown",
+        "halfLifeHours": null,
+        "earlyPhase": null,
+        "steadyState": null
+      },
+      "cyp2d6": {
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
+      },
+      "qt": {
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
+      },
+      "receptors": [],
+      "receptorsAssessed": false,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {},
+      "sourceNotes": {},
+      "reviewedDates": {},
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "clorazepate",
+      "name": "clorazepate",
+      "aliases": [],
+      "isMetabolite": false,
+      "formedFrom": [],
+      "clinicalRelevance": "active",
+      "molecularWeight": null,
+      "kinetics": {
+        "mode": "unknown",
+        "halfLifeHours": null,
+        "earlyPhase": null,
+        "steadyState": null
+      },
+      "cyp2d6": {
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
+      },
+      "qt": {
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
+      },
+      "receptors": [],
+      "receptorsAssessed": false,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {},
+      "sourceNotes": {},
+      "reviewedDates": {},
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "cocaethylene",
+      "name": "cocaethylene",
+      "aliases": [],
+      "isMetabolite": true,
+      "formedFrom": [
+        {
+          "compound": "cocaine",
+          "fraction": null,
+          "cyp2d6Multiplier": null,
+          "condition": {
+            "requiresCompound": "ethanol"
+          }
+        }
+      ],
+      "clinicalRelevance": "unknown",
+      "molecularWeight": null,
+      "kinetics": {
+        "mode": "unknown",
+        "halfLifeHours": null,
+        "earlyPhase": null,
+        "steadyState": null
+      },
+      "cyp2d6": {
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
+      },
+      "qt": {
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
+      },
+      "receptors": [],
+      "receptorsAssessed": false,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {
+        "metabolism": "estimate"
+      },
+      "sourceNotes": {
+        "metabolism": "[estimate] Supplement B Part 4: formed from cocaine only while ethanol is also present (conditional link added by migration v2.2)."
+      },
+      "reviewedDates": {},
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "cocaine",
+      "name": "cocaine",
+      "aliases": [],
+      "isMetabolite": false,
+      "formedFrom": [],
+      "clinicalRelevance": "active",
+      "molecularWeight": null,
+      "kinetics": {
+        "mode": "unknown",
+        "halfLifeHours": null,
+        "earlyPhase": null,
+        "steadyState": null
+      },
+      "cyp2d6": {
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
+      },
+      "qt": {
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
+      },
+      "receptors": [],
+      "receptorsAssessed": false,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {},
+      "sourceNotes": {},
+      "reviewedDates": {},
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "dmt",
+      "name": "dmt",
+      "aliases": [],
+      "isMetabolite": false,
+      "formedFrom": [],
+      "clinicalRelevance": "active",
+      "molecularWeight": null,
+      "kinetics": {
+        "mode": "unknown",
+        "halfLifeHours": null,
+        "earlyPhase": null,
+        "steadyState": null
+      },
+      "cyp2d6": {
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
+      },
+      "qt": {
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
+      },
+      "receptors": [],
+      "receptorsAssessed": false,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {},
+      "sourceNotes": {},
+      "reviewedDates": {},
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "ethanol",
+      "name": "ethanol",
+      "aliases": [],
+      "isMetabolite": false,
+      "formedFrom": [],
+      "clinicalRelevance": "active",
+      "molecularWeight": null,
+      "kinetics": {
+        "mode": "zero-order",
+        "halfLifeHours": null,
+        "zeroOrderRateMgPerKgPerHour": {
+          "typical": null,
+          "min": null,
+          "max": null,
+          "rangeType": null,
+          "cv": null
+        },
+        "earlyPhase": null,
+        "steadyState": null
+      },
+      "cyp2d6": {
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
+      },
+      "qt": {
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
+      },
+      "receptors": [],
+      "receptorsAssessed": false,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {
+        "halfLife": "estimate"
+      },
+      "sourceNotes": {
+        "halfLife": "[estimate] Elimination near 9 mg/dL/h. [estimate] Supplement B Part 4: kinetics mode set to zero-order (constant elimination rate, mg/kg/h) by migration v2.2; rate left unknown for the reviewer to fill from the rate context above."
+      },
+      "reviewedDates": {},
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "ethylphenidate",
+      "name": "ethylphenidate",
+      "aliases": [],
+      "isMetabolite": true,
+      "formedFrom": [
+        {
+          "compound": "methylphenidate",
+          "fraction": null,
+          "cyp2d6Multiplier": null,
+          "condition": {
+            "requiresCompound": "ethanol"
+          }
+        }
+      ],
+      "clinicalRelevance": "unknown",
+      "molecularWeight": null,
+      "kinetics": {
+        "mode": "unknown",
+        "halfLifeHours": null,
+        "earlyPhase": null,
+        "steadyState": null
+      },
+      "cyp2d6": {
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
+      },
+      "qt": {
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
+      },
+      "receptors": [],
+      "receptorsAssessed": false,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {
+        "metabolism": "estimate"
+      },
+      "sourceNotes": {
+        "metabolism": "[estimate] Supplement B Part 4: formed from methylphenidate only while ethanol is also present (conditional link added by migration v2.2)."
+      },
+      "reviewedDates": {},
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "gbl",
+      "name": "gbl",
+      "aliases": [],
+      "isMetabolite": false,
+      "formedFrom": [],
+      "clinicalRelevance": "active",
+      "molecularWeight": null,
+      "kinetics": {
+        "mode": "unknown",
+        "halfLifeHours": null,
+        "earlyPhase": null,
+        "steadyState": null
+      },
+      "cyp2d6": {
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
+      },
+      "qt": {
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
+      },
+      "receptors": [],
+      "receptorsAssessed": false,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {},
+      "sourceNotes": {},
+      "reviewedDates": {},
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "ghb",
+      "name": "ghb",
+      "aliases": [],
+      "isMetabolite": true,
+      "formedFrom": [
+        {
+          "compound": "gbl",
+          "fraction": null,
+          "cyp2d6Multiplier": null
+        }
+      ],
+      "clinicalRelevance": "unknown",
+      "molecularWeight": null,
+      "kinetics": {
+        "mode": "unknown",
+        "halfLifeHours": null,
+        "earlyPhase": null,
+        "steadyState": null
+      },
+      "cyp2d6": {
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
+      },
+      "qt": {
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
+      },
+      "receptors": [],
+      "receptorsAssessed": false,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {},
+      "sourceNotes": {},
+      "reviewedDates": {},
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "indole_3_acetic_acid",
+      "name": "indole_3_acetic_acid",
+      "aliases": [],
+      "isMetabolite": true,
+      "formedFrom": [
+        {
+          "compound": "dmt",
+          "fraction": null,
+          "cyp2d6Multiplier": null
+        }
+      ],
+      "clinicalRelevance": "unknown",
+      "endogenous": true,
+      "molecularWeight": null,
+      "kinetics": {
+        "mode": "unknown",
+        "halfLifeHours": null,
+        "earlyPhase": null,
+        "steadyState": null
+      },
+      "cyp2d6": {
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
+      },
+      "qt": {
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
+      },
+      "receptors": [],
+      "receptorsAssessed": false,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {
+        "halfLife": "estimate",
+        "relevance": "checked"
+      },
+      "sourceNotes": {
+        "halfLife": "[estimate] Supplement B Part 4: marked endogenous by migration v2.2 — also produced by the body; excess over baseline not modelled. Unknown kinetics stop blocking clear dates once relevance is reviewed."
+      },
+      "reviewedDates": {},
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "l_tryptophan",
+      "name": "l_tryptophan",
+      "aliases": [],
+      "isMetabolite": false,
+      "formedFrom": [],
+      "clinicalRelevance": "active",
+      "molecularWeight": null,
+      "kinetics": {
+        "mode": "not-modelled",
+        "halfLifeHours": null,
+        "notModelledReason": "Endogenous serotonin precursor; relevance is serotonergic interaction, not washout",
+        "earlyPhase": null,
+        "steadyState": null
+      },
+      "cyp2d6": {
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
+      },
+      "qt": {
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
+      },
+      "receptors": [],
+      "receptorsAssessed": false,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {
+        "halfLife": "estimate"
+      },
+      "sourceNotes": {
+        "halfLife": "[estimate] Supplement B Part 4: kinetics mode set to not-modelled by migration v2.2 — Endogenous serotonin precursor; relevance is serotonergic interaction, not washout."
+      },
+      "reviewedDates": {},
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "lsd",
+      "name": "lsd",
+      "aliases": [],
+      "isMetabolite": true,
+      "formedFrom": [
+        {
+          "compound": "1p_lsd",
+          "fraction": null,
+          "cyp2d6Multiplier": null
+        }
+      ],
+      "clinicalRelevance": "unknown",
+      "molecularWeight": null,
+      "kinetics": {
+        "mode": "unknown",
+        "halfLifeHours": null,
+        "earlyPhase": null,
+        "steadyState": null
+      },
+      "cyp2d6": {
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
+      },
+      "qt": {
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
+      },
+      "receptors": [],
+      "receptorsAssessed": false,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {},
+      "sourceNotes": {},
+      "reviewedDates": {},
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "methylphenidate",
+      "name": "methylphenidate",
+      "aliases": [],
+      "isMetabolite": false,
+      "formedFrom": [],
+      "clinicalRelevance": "active",
+      "molecularWeight": null,
+      "kinetics": {
+        "mode": "unknown",
+        "halfLifeHours": null,
+        "earlyPhase": null,
+        "steadyState": null
+      },
+      "cyp2d6": {
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
+      },
+      "qt": {
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
+      },
+      "receptors": [],
+      "receptorsAssessed": false,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {},
+      "sourceNotes": {},
+      "reviewedDates": {},
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "nitrous_oxide",
+      "name": "nitrous_oxide",
+      "aliases": [],
+      "isMetabolite": false,
+      "formedFrom": [],
+      "clinicalRelevance": "active",
+      "molecularWeight": null,
+      "kinetics": {
+        "mode": "not-modelled",
+        "halfLifeHours": null,
+        "notModelledReason": "Exhaled within minutes; clinically relevant effect is prolonged vitamin B12 inactivation — see lingering effects",
+        "earlyPhase": null,
+        "steadyState": null
+      },
+      "cyp2d6": {
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
+      },
+      "qt": {
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
+      },
+      "receptors": [],
+      "receptorsAssessed": false,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {
+        "halfLife": "estimate"
+      },
+      "sourceNotes": {
+        "halfLife": "[estimate] Supplement B Part 4: kinetics mode set to not-modelled by migration v2.2 — Exhaled within minutes; clinically relevant effect is prolonged vitamin B12 inactivation — see lingering effects."
+      },
+      "reviewedDates": {},
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "nordiazepam",
+      "name": "nordiazepam",
+      "aliases": [],
+      "isMetabolite": true,
+      "formedFrom": [
+        {
+          "compound": "clorazepate",
+          "fraction": null,
+          "cyp2d6Multiplier": null
+        }
+      ],
+      "clinicalRelevance": "unknown",
+      "molecularWeight": null,
+      "kinetics": {
+        "mode": "unknown",
+        "halfLifeHours": null,
+        "earlyPhase": null,
+        "steadyState": null
+      },
+      "cyp2d6": {
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
+      },
+      "qt": {
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
+      },
+      "receptors": [],
+      "receptorsAssessed": false,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {},
+      "sourceNotes": {},
+      "reviewedDates": {},
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "psilocin",
+      "name": "psilocin",
+      "aliases": [],
+      "isMetabolite": true,
+      "formedFrom": [
+        {
+          "compound": "psilocybin",
+          "fraction": null,
+          "cyp2d6Multiplier": null
+        }
+      ],
+      "clinicalRelevance": "unknown",
+      "molecularWeight": null,
+      "kinetics": {
+        "mode": "unknown",
+        "halfLifeHours": null,
+        "earlyPhase": null,
+        "steadyState": null
+      },
+      "cyp2d6": {
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
+      },
+      "qt": {
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
+      },
+      "receptors": [],
+      "receptorsAssessed": false,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {},
+      "sourceNotes": {},
+      "reviewedDates": {},
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "psilocybin",
+      "name": "psilocybin",
+      "aliases": [],
+      "isMetabolite": false,
+      "formedFrom": [],
+      "clinicalRelevance": "active",
+      "molecularWeight": null,
+      "kinetics": {
+        "mode": "unknown",
+        "halfLifeHours": null,
+        "earlyPhase": null,
+        "steadyState": null
+      },
+      "cyp2d6": {
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
+      },
+      "qt": {
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
+      },
+      "receptors": [],
+      "receptorsAssessed": false,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {},
+      "sourceNotes": {},
+      "reviewedDates": {},
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    }
+  ],
+  "products": [
+    {
+      "id": "1p_lsd_oral",
+      "candidateId": "1p_lsd",
+      "name": "1p_lsd (Oral)",
+      "aliases": [],
+      "category": "x",
+      "secondaryCategories": [],
+      "class": "",
+      "route": "Oral",
+      "formulation": null,
+      "components": [
+        {
+          "compound": "lsd",
+          "ratio": 1,
+          "saltFactor": null,
+          "bioavailability": null,
+          "administeredAs": "1p_lsd",
+          "massFactor": 0.8522
+        }
+      ],
+      "doseUnit": "µg",
+      "input": {
+        "type": "bolus",
+        "releaseHalfLifeHours": null,
+        "defaultDurationHours": null
+      },
+      "typicalDose": {
+        "amount": null,
+        "unit": "µg",
+        "basis": "maintenance"
+      },
+      "provenance": {
+        "components": "estimate",
+        "conversion": "estimate",
+        "input": "estimate"
+      },
+      "sourceNotes": {
+        "components": "[estimate] Supplement B Part 4: component changed from 1p_lsd to lsd (prodrug modelled as its active compound) by migration v2.2.",
+        "conversion": "[estimate] Supplement B Part 4: administered as 1p_lsd, modelled as lsd; massFactor 0.8522 = 323.43 / 379.5 g/mol (LSD / 1P-LSD); rapid conversion, unchanged 1P-LSD not detected.",
+        "input": "[gap] Generic route. [estimate] Supplement B Part 4: dose unit set to µg by migration v2.2."
+      },
+      "reviewedDates": {},
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "5_htp_oral",
+      "candidateId": "5_htp",
+      "name": "5_htp (Oral)",
+      "aliases": [],
+      "category": "x",
+      "secondaryCategories": [],
+      "class": "",
+      "route": "Oral",
+      "formulation": null,
+      "components": [
+        {
+          "compound": "5_htp",
+          "ratio": 1,
+          "saltFactor": null,
+          "bioavailability": null
+        }
+      ],
+      "doseUnit": "mg",
+      "input": {
+        "type": "bolus",
+        "releaseHalfLifeHours": null,
+        "defaultDurationHours": null
+      },
+      "typicalDose": {
+        "amount": null,
+        "unit": "mg",
+        "basis": "maintenance"
+      },
+      "provenance": {
+        "input": "gap"
+      },
+      "sourceNotes": {
+        "input": "[gap] Generic route."
+      },
+      "reviewedDates": {},
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "clorazepate_oral",
+      "candidateId": "clorazepate",
+      "name": "clorazepate (Oral)",
+      "aliases": [],
+      "category": "x",
+      "secondaryCategories": [],
+      "class": "",
+      "route": "Oral",
+      "formulation": null,
+      "components": [
+        {
+          "compound": "nordiazepam",
+          "ratio": 1,
+          "saltFactor": null,
+          "bioavailability": null,
+          "administeredAs": "clorazepate",
+          "massFactor": 0.662
+        }
+      ],
+      "doseUnit": "mg",
+      "input": {
+        "type": "bolus",
+        "releaseHalfLifeHours": null,
+        "defaultDurationHours": null
+      },
+      "typicalDose": {
+        "amount": null,
+        "unit": "mg",
+        "basis": "maintenance"
+      },
+      "provenance": {
+        "components": "estimate",
+        "conversion": "estimate",
+        "input": "gap"
+      },
+      "sourceNotes": {
+        "components": "[estimate] Supplement B Part 4: component changed from clorazepate to nordiazepam (prodrug modelled as its active compound) by migration v2.2.",
+        "conversion": "[estimate] Supplement B Part 4: administered as clorazepate, modelled as nordiazepam; massFactor 0.662 = 270.71 / 408.92 g/mol (nordiazepam / clorazepate dipotassium); assumes label strengths are stated as clorazepate dipotassium — reviewer to confirm.",
+        "input": "[gap] Generic route."
+      },
+      "reviewedDates": {},
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "cocaine_intranasal",
+      "candidateId": "cocaine",
+      "name": "cocaine (Intranasal)",
+      "aliases": [],
+      "category": "x",
+      "secondaryCategories": [],
+      "class": "",
+      "route": "Intranasal",
+      "formulation": null,
+      "components": [
+        {
+          "compound": "cocaine",
+          "ratio": 1,
+          "saltFactor": null,
+          "bioavailability": null
+        }
+      ],
+      "doseUnit": "mg",
+      "input": {
+        "type": "bolus",
+        "releaseHalfLifeHours": null,
+        "defaultDurationHours": null
+      },
+      "typicalDose": {
+        "amount": null,
+        "unit": "mg",
+        "basis": "maintenance"
+      },
+      "provenance": {
+        "input": "gap"
+      },
+      "sourceNotes": {
+        "input": "[gap] Generic route."
+      },
+      "reviewedDates": {},
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "dmt_inhaled",
+      "candidateId": "dmt",
+      "name": "dmt (Inhaled)",
+      "aliases": [],
+      "category": "x",
+      "secondaryCategories": [],
+      "class": "",
+      "route": "Inhaled",
+      "formulation": null,
+      "components": [
+        {
+          "compound": "dmt",
+          "ratio": 1,
+          "saltFactor": null,
+          "bioavailability": null
+        }
+      ],
+      "doseUnit": "mg",
+      "input": {
+        "type": "bolus",
+        "releaseHalfLifeHours": null,
+        "defaultDurationHours": null
+      },
+      "typicalDose": {
+        "amount": null,
+        "unit": "mg",
+        "basis": "maintenance"
+      },
+      "provenance": {
+        "input": "gap"
+      },
+      "sourceNotes": {
+        "input": "[gap] Generic route."
+      },
+      "reviewedDates": {},
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "ethanol_oral",
+      "candidateId": "ethanol",
+      "name": "ethanol (Oral)",
+      "aliases": [],
+      "category": "x",
+      "secondaryCategories": [],
+      "class": "",
+      "route": "Oral",
+      "formulation": null,
+      "components": [
+        {
+          "compound": "ethanol",
+          "ratio": 1,
+          "saltFactor": null,
+          "bioavailability": null
+        }
+      ],
+      "doseUnit": "standard drinks",
+      "input": {
+        "type": "bolus",
+        "releaseHalfLifeHours": null,
+        "defaultDurationHours": null
+      },
+      "typicalDose": {
+        "amount": null,
+        "unit": "standard drinks",
+        "basis": "maintenance"
+      },
+      "provenance": {
+        "input": "estimate"
+      },
+      "sourceNotes": {
+        "input": "[gap] Generic route. [estimate] Supplement B Part 4: dose unit set to standard drinks (size set in Settings) by migration v2.2."
+      },
+      "reviewedDates": {},
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "gbl_oral",
+      "candidateId": "gbl",
+      "name": "gbl (Oral)",
+      "aliases": [],
+      "category": "x",
+      "secondaryCategories": [],
+      "class": "",
+      "route": "Oral",
+      "formulation": null,
+      "components": [
+        {
+          "compound": "ghb",
+          "ratio": 1,
+          "saltFactor": null,
+          "bioavailability": null,
+          "administeredAs": "gbl",
+          "massFactor": 1.2092
+        }
+      ],
+      "doseUnit": "mg",
+      "input": {
+        "type": "bolus",
+        "releaseHalfLifeHours": null,
+        "defaultDurationHours": null
+      },
+      "typicalDose": {
+        "amount": null,
+        "unit": "mg",
+        "basis": "maintenance"
+      },
+      "provenance": {
+        "components": "estimate",
+        "conversion": "estimate",
+        "input": "gap"
+      },
+      "sourceNotes": {
+        "components": "[estimate] Supplement B Part 4: component changed from gbl to ghb (prodrug modelled as its active compound) by migration v2.2.",
+        "conversion": "[estimate] Supplement B Part 4: administered as gbl, modelled as ghb; massFactor 1.2092 = 104.10 / 86.09 g/mol (GHB / GBL); assumes complete hydrolysis (adds water, so the factor is above 1). GHB’s own kinetics are nonlinear (capacity-limited), which the model does not represent.",
+        "input": "[gap] Generic route."
+      },
+      "reviewedDates": {},
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "l_tryptophan_oral",
+      "candidateId": "l_tryptophan",
+      "name": "l_tryptophan (Oral)",
+      "aliases": [],
+      "category": "x",
+      "secondaryCategories": [],
+      "class": "",
+      "route": "Oral",
+      "formulation": null,
+      "components": [
+        {
+          "compound": "l_tryptophan",
+          "ratio": 1,
+          "saltFactor": null,
+          "bioavailability": null
+        }
+      ],
+      "doseUnit": "mg",
+      "input": {
+        "type": "bolus",
+        "releaseHalfLifeHours": null,
+        "defaultDurationHours": null
+      },
+      "typicalDose": {
+        "amount": null,
+        "unit": "mg",
+        "basis": "maintenance"
+      },
+      "provenance": {
+        "input": "gap"
+      },
+      "sourceNotes": {
+        "input": "[gap] Generic route."
+      },
+      "reviewedDates": {},
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "methylphenidate_oral_ir",
+      "candidateId": "methylphenidate",
+      "name": "methylphenidate (Oral)",
+      "aliases": [],
+      "category": "x",
+      "secondaryCategories": [],
+      "class": "",
+      "route": "Oral",
+      "formulation": null,
+      "components": [
+        {
+          "compound": "methylphenidate",
+          "ratio": 1,
+          "saltFactor": null,
+          "bioavailability": null
+        }
+      ],
+      "doseUnit": "mg",
+      "input": {
+        "type": "bolus",
+        "releaseHalfLifeHours": null,
+        "defaultDurationHours": null
+      },
+      "typicalDose": {
+        "amount": null,
+        "unit": "mg",
+        "basis": "maintenance"
+      },
+      "provenance": {
+        "input": "gap"
+      },
+      "sourceNotes": {
+        "input": "[gap] Generic route."
+      },
+      "reviewedDates": {},
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "nitrous_oxide_inhaled",
+      "candidateId": "nitrous_oxide",
+      "name": "nitrous_oxide (Inhaled)",
+      "aliases": [],
+      "category": "x",
+      "secondaryCategories": [],
+      "class": "",
+      "route": "Inhaled",
+      "formulation": null,
+      "components": [
+        {
+          "compound": "nitrous_oxide",
+          "ratio": 1,
+          "saltFactor": null,
+          "bioavailability": null
+        }
+      ],
+      "doseUnit": "session",
+      "input": {
+        "type": "zero-order",
+        "releaseHalfLifeHours": null,
+        "defaultDurationHours": null
+      },
+      "typicalDose": {
+        "amount": null,
+        "unit": "session",
+        "basis": "maintenance"
+      },
+      "provenance": {
+        "input": "estimate"
+      },
+      "sourceNotes": {
+        "input": "[gap] Generic route. [estimate] Supplement B Part 4: entered as exposure sessions with a duration (no mass dose) by migration v2.2."
+      },
+      "reviewedDates": {},
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "psilocybin_oral",
+      "candidateId": "psilocybin",
+      "name": "psilocybin (Oral)",
+      "aliases": [],
+      "category": "x",
+      "secondaryCategories": [],
+      "class": "",
+      "route": "Oral",
+      "formulation": null,
+      "components": [
+        {
+          "compound": "psilocin",
+          "ratio": 1,
+          "saltFactor": null,
+          "bioavailability": null,
+          "administeredAs": "psilocybin",
+          "massFactor": 0.7186
+        }
+      ],
+      "doseUnit": "mg",
+      "input": {
+        "type": "bolus",
+        "releaseHalfLifeHours": null,
+        "defaultDurationHours": null
+      },
+      "typicalDose": {
+        "amount": null,
+        "unit": "mg",
+        "basis": "maintenance"
+      },
+      "provenance": {
+        "components": "estimate",
+        "conversion": "estimate",
+        "input": "gap"
+      },
+      "sourceNotes": {
+        "components": "[estimate] Supplement B Part 4: component changed from psilocybin to psilocin (prodrug modelled as its active compound) by migration v2.2.",
+        "conversion": "[estimate] Supplement B Part 4: administered as psilocybin, modelled as psilocin; massFactor 0.7186 = 204.27 / 284.25 g/mol (psilocin / psilocybin); rapid, near-complete dephosphorylation.",
+        "input": "[gap] Generic route."
+      },
+      "reviewedDates": {},
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    }
+  ]
+}
+"
+`;
