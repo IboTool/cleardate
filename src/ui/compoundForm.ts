@@ -2,10 +2,10 @@
 // Sections mutate the compound in place and call onChange with the provenance section that was edited.
 // Unknown numbers are null: every numeric field has an "unknown" checkbox.
 
-import { emptyRange, isRangeOnly, rangeTypical, RANGE_TYPE_LABEL } from '../schema';
+import { emptyRange, emptyStrengthEvidence, isRangeOnly, rangeTypical, RANGE_TYPE_LABEL, STRENGTH_BASIS_LABEL } from '../schema';
 import {
-  CLINICAL_RELEVANCE, INHIBITION_TYPES, INHIBITOR_STRENGTHS, KINETIC_MODES, PHENOTYPES, QT_TIERS, RANGE_TYPES, RECEPTOR_ACTIONS, TRI_STATES,
-  type ClinicalRelevance, type Compound, type CompoundSection, type KineticMode, type PhenotypeMap, type Range, type RangeType,
+  CLINICAL_RELEVANCE, INHIBITION_TYPES, INHIBITOR_STRENGTHS, KINETIC_MODES, PHENOTYPES, QT_TIERS, RANGE_TYPES, RECEPTOR_ACTIONS, STRENGTH_BASES, TRI_STATES,
+  type ClinicalRelevance, type Compound, type CompoundSection, type KineticMode, type PhenotypeMap, type Range, type RangeType, type StrengthBasis,
 } from '../types';
 import { field, h, select, textInput } from './dom';
 
@@ -21,6 +21,22 @@ export interface SectionOpts {
 const NOTE_KEY: Partial<Record<SectionName, CompoundSection>> = {
   kinetics: 'halfLife', relevance: 'relevance', cyp2d6: 'cyp2d6', qt: 'qt', receptors: 'receptors', lingering: 'lingeringEffects',
 };
+
+/** Basis, probe, regimen, AUC ratio and citation behind an inhibitor strength (schema 2.4). */
+function strengthEvidenceFields(cy: Compound['cyp2d6'], ch: () => void): HTMLElement {
+  const ev = (cy.strengthEvidence ??= emptyStrengthEvidence());
+  const text = (v: string) => (v.trim() ? v : null);
+  const ratio = nullableNumber(ev.aucRatio, (v) => { ev.aucRatio = v; ch(); }, { min: '0', step: '0.01' });
+  return h('div', null,
+    h('div', { class: 'row' },
+      field('Strength basis', select<StrengthBasis | ''>(ev.basis ?? '', [['', 'not recorded'], ...STRENGTH_BASES.map((b) => [b, STRENGTH_BASIS_LABEL[b]] as [StrengthBasis, string])],
+        (v) => { ev.basis = v || null; ch(); }), 'Model predictions are shown as “predicted moderate” / “predicted strong”.'),
+      field('Probe substrate', textInput(ev.probe ?? '', (v) => { ev.probe = text(v); ch(); }, { placeholder: 'e.g. desipramine' })),
+      field('Probe AUC ratio', ratio, 'Weak 1.25–<2, moderate 2–<5, strong ≥5')),
+    h('div', { class: 'row' },
+      field('Inhibitor regimen studied', textInput(ev.regimen ?? '', (v) => { ev.regimen = text(v); ch(); }, { placeholder: 'e.g. 20 mg/day for 21 days' })),
+      field('Citation', textInput(ev.citation ?? '', (v) => { ev.citation = text(v); ch(); }, { placeholder: 'URL or reference' }))));
+}
 
 const RELEVANCE_LABEL: Record<ClinicalRelevance, string> = {
   active: 'active — counts toward the clear date',
@@ -265,6 +281,7 @@ export function compoundSection(c: Compound, section: SectionName, o: SectionOpt
         h('div', { class: 'row' },
           field('Inhibitor strength', select(cy.inhibitor, INHIBITOR_STRENGTHS, (v) => { cy.inhibitor = v; ch('cyp2d6'); })),
           field('Inhibition type', select(cy.inhibitionType, INHIBITION_TYPES, (v) => { cy.inhibitionType = v; ch('cyp2d6'); }))),
+        strengthEvidenceFields(cy, () => ch('cyp2d6')),
         sourceNote(c, section, o));
     }
     case 'qt':
@@ -302,7 +319,10 @@ export function compoundSection(c: Compound, section: SectionName, o: SectionOpt
     case 'lingering':
       return h('div', { class: 'form-section' },
         h('div', { class: 'row' },
-          field('Lingering effects (days after clearance)', nullableNumber(c.lingeringEffects.durationDays, (v) => { c.lingeringEffects.durationDays = v; ch('lingeringEffects'); }, { min: '0' })),
+          field('Lingering effects: duration (days)', nullableNumber(c.lingeringEffects.durationDays, (v) => { c.lingeringEffects.durationDays = v; ch('lingeringEffects'); }, { min: '0' })),
+          field('Counted from', select(c.lingeringEffects.origin ?? 'clearance', [['clearance', 'clearance (effect outlasts the drug)'], ['last-dose', 'last dose (label washout)']],
+            (v) => { c.lingeringEffects.origin = v; ch('lingeringEffects'); }),
+          'A “last dose” washout never adds days after clearance: the band ends at last dose + duration.'),
           field('Note', textInput(c.lingeringEffects.note, (v) => { c.lingeringEffects.note = v; ch('lingeringEffects'); }, { placeholder: 'e.g. protracted withdrawal' }))),
         h('div', { class: 'row' },
           field('Nonlinear kinetics (warning only — not modelled)', select(c.nonlinearKinetics.flag, TRI_STATES, (v) => { c.nonlinearKinetics.flag = v; ch('nonlinearKinetics'); })),

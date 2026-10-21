@@ -6,10 +6,12 @@ import { validateLibrary } from '../src/validate';
 import { buildInitialLibrary } from './init-lib';
 import { MigrationStop, migrateLibraryV22, NITROUS_REASON, renderV22Report } from './migrate-v22-lib';
 import { migrateLibraryV23 } from './migrate-v23-lib';
+import { migrateLibraryV24 } from './migrate-v24-lib';
 
 const compound = (id: string, extra: Partial<Compound> = {}): Compound => {
   const { identity: _i, ...c } = { ...emptyCompound(id, id), clinicalRelevance: extra.isMetabolite ? 'unknown' : 'active', ...extra } as Compound;
-  return c;
+  const { strengthEvidence: _s, ...cyp } = c.cyp2d6;
+  return { ...c, cyp2d6: cyp, lingeringEffects: { durationDays: c.lingeringEffects.durationDays, note: c.lingeringEffects.note } } as Compound;
 };
 const metabolite = (id: string, from: string, extra: Partial<Compound> = {}) =>
   compound(id, { isMetabolite: true, formedFrom: [{ compound: from, fraction: null, cyp2d6Multiplier: null }], ...extra });
@@ -46,10 +48,10 @@ describe('migrate-v2.2', () => {
   const c = (id: string) => lib.compounds.find((x) => x.id === id)!;
   const p = (id: string) => lib.products.find((x) => x.id === id)!;
 
-  it('produces a 2.2 library that is valid once migrate-v2.3 has run', () => {
+  it('produces a 2.2 library that is valid once migrate-v2.3 and v2.4 have run', () => {
     expect(skipped).toBe(false);
     expect(lib.schemaVersion).toBe(2.2);
-    expect(validateLibrary(migrateLibraryV23(lib).lib).errors).toEqual([]);
+    expect(validateLibrary(migrateLibraryV24(migrateLibraryV23(lib).lib).lib).errors).toEqual([]);
   });
 
   it('matches the expected snapshot', () => {

@@ -707,7 +707,7 @@ function tooltipHtml(scn: Scenario, session: Session, t: number | undefined): st
     }
   }
   const cyp = strongestAt(scn.cyp, t);
-  const cypStrength = (iv: CypInterval) => (iv.strengthUnassessed ? `${CYP_UNASSESSED_LABEL} (counted as at least weak)` : iv.strength);
+  const cypStrength = (iv: CypInterval) => (iv.strengthUnassessed ? `${CYP_UNASSESSED_LABEL} (counted as at least weak)` : iv.label);
   const otherUnassessed = [...new Set(scn.cyp
     .filter((iv) => iv.strengthUnassessed && iv !== cyp && iv.compound !== cyp?.compound && t >= iv.start && t <= iv.end)
     .map((iv) => iv.compound))];
@@ -724,7 +724,8 @@ function tooltipHtml(scn: Scenario, session: Session, t: number | undefined): st
   if (qtHere.length)
     foot.push(`<div>QT liability present: ${qtHere.map((l) => `<b style="color:${QT_COLORS[l.tier]}">${l.compound}</b> <span style="opacity:.7">(${l.tier})</span>`).join(', ')}</div>`);
   if (qt) foot.push(`<div>Summed relative QT load: <b>${qt.load.toFixed(2)}</b> <span style="opacity:.7">(qualitative)</span></div>`);
-  for (const b of lingering) foot.push(`<div style="opacity:.85">Lingering — ${b.compound}: ${b.note || 'effects may persist'}</div>`);
+  for (const b of lingering)
+    foot.push(`<div style="opacity:.85">Lingering — ${b.compound}${b.origin === 'last-dose' ? ` (${b.days} days after last dose, label washout)` : ''}: ${b.note || 'effects may persist'}</div>`);
   return `<div style="font-size:12px;min-width:220px"><div style="opacity:.7;margin-bottom:6px">${fmtDateTime(t, s)}</div>${rows.join('') || '<div style="opacity:.6">Nothing above zero</div>'}<div style="margin-top:8px;padding-top:6px;border-top:1px solid rgba(127,127,127,.25);display:grid;gap:3px">${foot.join('')}</div></div>`;
 }
 

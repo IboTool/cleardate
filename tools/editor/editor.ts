@@ -6,6 +6,7 @@ import '../../src/styles.css';
 import './editor.css';
 import {
   compoundHasData, emptyCompound, emptyProduct, emptyRange, formatRange, isConfirmedUnknown, isDraft, isFlagged, isReviewed, NA_NOTE, SCHEMA_VERSION, slug,
+  strengthEvidenceText, strengthLabel,
 } from '../../src/schema';
 import {
   confirmSection, flagSection, isCompound, markNotApplicable, markReviewed, NA_SECTIONS, nextIncomplete, SECTION_LABEL, sectionIssues, sectionsOf,
@@ -1059,7 +1060,8 @@ function reviewContext(it: ReviewItem): (Node | null)[] {
   if (s === 'qt' || s === 'cyp2d6')
     out.push(
       h('div', null, h('b', null, 'Half-life: '), hl(e), e.molecularWeight ? ` · MW ${e.molecularWeight}` : ''),
-      h('div', null, h('b', null, 'CYP2D6: '), `substrate ${e.cyp2d6.substrate}, inhibitor ${e.cyp2d6.inhibitor}`),
+      h('div', null, h('b', null, 'CYP2D6: '), `substrate ${e.cyp2d6.substrate}, inhibitor ${strengthLabel(e.cyp2d6)}`,
+        strengthEvidenceText(e.cyp2d6.strengthEvidence) ? ` (${strengthEvidenceText(e.cyp2d6.strengthEvidence)})` : ''),
       e.receptors.length ? h('div', null, h('b', null, 'Receptors: '), e.receptors.map((r) => `${r.target} (${r.action})`).join(', ')) : null);
   return out;
 }
@@ -1337,12 +1339,13 @@ async function boot() {
   const body = await res.json();
   const version = body.library?.schemaVersion;
   if (version !== SCHEMA_VERSION) {
-    const v2 = version === 2;
+    const steps = [['migrate-v2', undefined], ['migrate-v2.1', 2], ['migrate-v2.2', 2.1], ['migrate-v2.3', 2.2], ['migrate-v2.4', 2.3]] as const;
+    const from = steps.findIndex(([, v]) => v === version);
+    const todo = steps.slice(from < 0 ? 0 : from).map(([cmd]) => h('code', null, `npm run ${cmd}`));
     main.replaceChildren(h('div', { class: 'ed-empty glass' },
       h('h2', null, `drugs.json is in an older format (schema ${version ?? 1})`),
-      h('p', null, 'Stop the editor and run ',
-        ...(v2 ? [h('code', null, 'npm run migrate-v2.1')] : [h('code', null, 'npm run migrate-v2'), ', then ', h('code', null, 'npm run migrate-v2.1')]),
-        '. Each step backs up the file to backups/ and writes a report in docs/. Then start the editor again.')));
+      h('p', null, 'Stop the editor and run ', ...todo.flatMap((c, i) => (i ? [', then ', c] : [c])),
+        '. Each step backs up the file to backups/. Then start the editor again.')));
     renderTop();
     return;
   }

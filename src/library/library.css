@@ -186,3 +186,4 @@ body.lib-open { overflow: hidden; }
   .lib-kv, .lib-src-row { grid-template-columns: 110px 1fr; }
   .lib-src-row > .lib-prov, .lib-src-row > span:nth-child(2):empty { display: none; }
 }
+.lib-basis { color: var(--muted); font-size: 12.5px; }

@@ -2,7 +2,7 @@
 // (MAOI washout, benzodiazepine protracted withdrawal, enzyme recovery). Not part of the clear date.
 
 import type { LibraryIndex } from '../model';
-import type { Compound } from '../types';
+import type { Compound, LingeringOrigin } from '../types';
 import { h } from '../ui/dom';
 import { libraryHash } from './route';
 
@@ -13,9 +13,14 @@ export interface LingeringItem {
   name: string;
   note: string;
   durationDays: number | null;
+  origin: LingeringOrigin;
   /** Names of the compounds it is formed from, when it is a metabolite. */
   metaboliteOf: { id: string; name: string }[] | null;
 }
+
+/** "~14 days after last dose" / "~3 days after clearance". */
+export const lingeringDurationText = (days: number, origin: LingeringOrigin = 'clearance') =>
+  `~${days} day${days === 1 ? '' : 's'} after ${origin === 'last-dose' ? 'last dose' : 'clearance'}`;
 
 export const hasLingering = (c: Compound) => !!c.lingeringEffects.note.trim() || c.lingeringEffects.durationDays !== null;
 
@@ -26,6 +31,7 @@ export function lingeringItems(idx: LibraryIndex, compounds: Compound[]): Linger
     name: c.name,
     note: c.lingeringEffects.note.trim(),
     durationDays: c.lingeringEffects.durationDays,
+    origin: c.lingeringEffects.origin ?? 'clearance',
     metaboliteOf: c.isMetabolite
       ? c.formedFrom.map((f) => ({ id: f.compound, name: idx.compounds.get(f.compound)?.name ?? f.compound }))
       : null,
@@ -47,7 +53,7 @@ export function lingeringPanel(items: LingeringItem[], selfId?: string): HTMLEle
             : ['an unknown parent']))
           : null,
         h('span', { class: `lib-linger-days${it.durationDays === null ? ' unq' : ''}` },
-          it.durationDays === null ? 'duration not quantified' : `~${it.durationDays} day${it.durationDays === 1 ? '' : 's'}`)),
+          it.durationDays === null ? 'duration not quantified' : lingeringDurationText(it.durationDays, it.origin))),
       it.note ? h('p', { class: 'lib-linger-note' }, it.note) : null)),
     h('p', { class: 'lib-muted lib-small' }, LINGERING_CAVEAT));
 }
