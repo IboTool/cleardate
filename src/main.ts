@@ -3,9 +3,9 @@
 import '@fontsource-variable/inter';
 import './styles.css';
 import * as echarts from './echarts';
-import { buildChartOption } from './chart';
+import { buildChartOption, minChartHeight } from './chart';
 import { exportPdf, exportPng, download, DISCLAIMER } from './export';
-import { ageFrom, fmtDate, fmtDateTime } from './format';
+import { ageFrom, fmtDate, fmtDateTime, fmtEvery } from './format';
 import {
   buildIndex, clearStatusText, combinationText, componentIds, computeScenario, convertUnit, displayName, expandDose, findIbogaineProduct,
   IBOGAINE_KEY, isRateUnit, mergeLibraries, missingKinetics, parseLocal, productColors, productDataStatus, productHasData, toLocalInput, toMg, withCustom,
@@ -72,6 +72,7 @@ const chartEl = h('div', { id: 'chart' });
 const emptyHint = h('div', { class: 'chart-empty' },
   h('div', { class: 'chart-empty-title' }, 'No doses yet'),
   h('div', null, 'Search for a drug in the Doses panel, enter the amount and time, and its clearance curve appears here.'));
+const chartWrap = h('div', { class: 'chart-wrap glass' }, chartEl, emptyHint);
 const legendEl = h('div', { class: 'legend' });
 const warningsEl = h('div', { class: 'warnings' });
 const bannerEl = h('div', { class: 'banners' });
@@ -128,13 +129,14 @@ root.append(
     h('div', { class: 'btn-group' },
       h('button', { class: 'btn btn-ghost', type: 'button', onclick: savePatientFile }, 'Save file'),
       h('button', { class: 'btn btn-ghost', type: 'button', onclick: () => fileInput.click() }, 'Load file')),
+    h('a', { class: 'btn btn-ghost', href: 'help.html', title: 'How to use ClearDate' }, h('span', { class: 'help-q', 'aria-hidden': 'true' }, '?'), 'Help'),
     fileInput),
   bannerEl,
   h('main', { class: 'layout' },
     h('aside', { class: 'side glass' }, h('nav', { class: 'tabs' }, ...tabs), sideBody),
     h('section', { class: 'stage' },
       legendEl,
-      h('div', { class: 'chart-wrap glass' }, chartEl, emptyHint),
+      chartWrap,
       warningsEl)),
   h('footer', { class: 'footer' }, DISCLAIMER, ' ClearDate is not a medical device.'),
 );
@@ -153,6 +155,7 @@ function currentZoom(): { start: number; end: number } | null {
 }
 
 function renderChart(animate: boolean) {
+  chartWrap.style.setProperty('--chart-min', `${minChartHeight(app.scn, app.session) + 6}px`);
   const height = chartEl.clientHeight || 600;
   app.chart.setOption(
     buildChartOption(app.scn, app.session, { theme: 'dark', height, focusKey: app.focusKey, animate, zoom: app.zoom }),
@@ -294,6 +297,15 @@ function renderSide() {
 const doseListEl = h('div', { class: 'dose-list' });
 let editing: DoseEntry | null = null;
 let formProduct: string | null = null;
+/** The dose being entered in the open form, kept across re-renders and page visits until it is added or cancelled. */
+let formDraft: DoseEntry | null = null;
+
+function openDoseForm(productId: string | null, dose: DoseEntry | null = null) {
+  formProduct = productId;
+  editing = dose;
+  formDraft = null;
+  renderDoseForm();
+}
 
 const picker = createPicker({
   search: () => app.search,
@@ -302,9 +314,7 @@ const picker = createPicker({
   status: dataStatus,
   recents: () => app.session.recents,
   onSelect: (id) => {
-    formProduct = id;
-    editing = null;
-    renderDoseForm();
+    openDoseForm(id);
     requestAnimationFrame(() => (doseFormEl.querySelector('input[name=amount]') as HTMLInputElement | null)?.focus());
   },
   onCustom: (name) => launchWizard(name),
@@ -329,9 +339,12 @@ function renderDoseForm() {
   const rate = isRateUnit(unit);
   const depot = p.input.type === 'first-order-release' && p.formulation === 'depot';
   const typical = p.typicalDose.amount !== null ? convertUnit(p.typicalDose.amount, p.typicalDose.unit, unit) : null;
-  const d: DoseEntry = editing
-    ? structuredClone(editing)
-    : { id: uid(), productId: p.id, amount: typical ?? 0, unit, kind: 'single', time: defaultTime() };
+  const d: DoseEntry = formDraft?.productId === p.id
+    ? formDraft
+    : editing
+      ? structuredClone(editing)
+      : { id: uid(), productId: p.id, amount: typical ?? 0, unit, kind: 'single', time: defaultTime() };
+  formDraft = d;
   if (d.unit !== unit) {
     const v = convertUnit(d.amount, d.unit, unit);
     d.amount = v ?? 0;
@@ -411,9 +424,7 @@ function renderDoseForm() {
     if (editing) app.session.doses = app.session.doses.map((x) => (x.id === editing!.id ? d : x));
     else app.session.doses.push(d);
     app.session.recents = [p.id, ...app.session.recents.filter((x) => x !== p.id)].slice(0, 8);
-    editing = null;
-    formProduct = null;
-    renderDoseForm();
+    openDoseForm(null);
     commit('doses');
     picker.input.focus();
   };
@@ -436,7 +447,7 @@ function renderDoseForm() {
         h('div', { class: 'df-name' }, displayName(p), h('span', { class: 'pi-route' }, ' · ', p.route)),
         h('div', { class: 'df-meta' }, categoryTag(app.idx.lib.categories.find((c) => c.id === p.category), true), p.class ? ` ${p.class}` : '', ' ',
           ...entryBadges(p, compound?.verified ?? false))),
-      h('button', { class: 'icon-btn', type: 'button', title: 'Cancel', onclick: () => { formProduct = null; editing = null; renderDoseForm(); } }, '✕')),
+      h('button', { class: 'icon-btn', type: 'button', title: 'Cancel', onclick: () => openDoseForm(null) }, '✕')),
     ...notes.filter((n): n is HTMLElement => n !== null),
     h('div', { class: 'segmented' }, ...kindBtns),
     h('div', { class: 'row' }, field(amountLabel, amount, hint)),
@@ -461,7 +472,7 @@ function doseSummary(d: DoseEntry, p: Product | undefined) {
     return e?.end ? `${amount} · ${fmtDateTime(e.time, s)} → ${fmtDateTime(e.end, s)}` : `${amount} · ${fmtDateTime(parseLocal(d.time), s)}`;
   }
   const r = d.regimen!;
-  return `${amount} · every ${r.every} ${r.unit} · ${fmtDate(parseLocal(r.start), s)} → ${fmtDate(parseLocal(r.end), s)} (${events.length}×)`;
+  return `${amount} · ${fmtEvery(r.every, r.unit)} · ${fmtDate(parseLocal(r.start), s)} → ${fmtDate(parseLocal(r.end), s)} (${events.length}×)`;
 }
 
 function renderDoseList() {
@@ -490,7 +501,7 @@ function renderDoseList() {
             h('div', { class: 'dose-sub' }, doseSummary(d, p)),
             res ? h('div', { class: `dose-clear ${res.status}`, title: statusTitle(res) }, clearStatusText(res, (t) => fmtDateTime(t, S()))) : null),
           h('div', { class: 'dose-actions' },
-            h('button', { class: 'icon-btn', type: 'button', title: 'Edit', onclick: () => { editing = d; formProduct = d.productId; renderDoseForm(); } }, '✎'),
+            h('button', { class: 'icon-btn', type: 'button', title: 'Edit', onclick: () => openDoseForm(d.productId, d) }, '✎'),
             h('button', { class: 'icon-btn', type: 'button', title: 'Delete', onclick: () => {
               app.session.doses = app.session.doses.filter((x) => x.id !== d.id);
               commit('doses');
@@ -535,6 +546,7 @@ function launchWizard(name: string) {
       commit('library');
       formProduct = productId;
       editing = null;
+      formDraft = null;
       if (app.tab === 'doses') renderDosesTab();
     },
   });
@@ -631,7 +643,7 @@ function renderSettingsTab() {
               h('button', { class: 'icon-btn', type: 'button', title: 'Delete', onclick: () => deleteCustom(p) }, '🗑')))
         : h('div', { class: 'empty' }, 'None. Use “Add custom drug” in the Doses tab.')),
     import.meta.env.DEV
-      ? h('div', { class: 'section' },
+      ? h('div', { class: 'section dev-section' },
           h('h3', null, 'Developer'),
           h('button', { class: 'btn btn-ghost', type: 'button', onclick: async () => { s.demoData = !s.demoData; await applyDemoSetting(); commit('library'); renderSettingsTab(); } },
             s.demoData ? 'Unload demo data' : 'Load demo data'),
@@ -641,6 +653,10 @@ function renderSettingsTab() {
       h('button', { class: 'btn btn-danger', type: 'button', onclick: () => {
         if (!confirm('Clear all data in this browser? Patient details, doses, custom drugs and settings will be deleted. This cannot be undone.')) return;
         clearStoredSession();
+        sessionStorage.removeItem(UI_KEY);
+        formProduct = null;
+        editing = null;
+        formDraft = null;
         app.session = emptySession();
         app.demo = null;
         rebuildLibrary();
@@ -789,6 +805,54 @@ function resolveOrphanDoses() {
       } }, 'Apply'))));
 }
 
+// ---------- view state across page visits (e.g. to the help page and back) ----------
+
+const UI_KEY = 'cleardate.ui';
+
+interface UiState {
+  tab: typeof app.tab;
+  zoom: typeof app.zoom;
+  focusKey: string | null;
+  formProduct: string | null;
+  editingId: string | null;
+  draft: DoseEntry | null;
+  sideScroll: number;
+}
+
+function saveUiState() {
+  const ui: UiState = {
+    tab: app.tab, zoom: app.zoom, focusKey: app.focusKey,
+    formProduct, editingId: editing?.id ?? null, draft: formDraft, sideScroll: sideBody.scrollTop,
+  };
+  try {
+    sessionStorage.setItem(UI_KEY, JSON.stringify(ui));
+  } catch {
+    /* storage disabled: the session itself is still in localStorage */
+  }
+}
+
+function restoreUiState() {
+  let ui: Partial<UiState>;
+  try {
+    ui = JSON.parse(sessionStorage.getItem(UI_KEY) ?? '{}');
+  } catch {
+    return;
+  }
+  if (ui.formProduct && app.idx.products.has(ui.formProduct)) {
+    formProduct = ui.formProduct;
+    editing = app.session.doses.find((d) => d.id === ui.editingId) ?? null;
+    formDraft = ui.draft ?? null;
+  }
+  app.zoom = ui.zoom ?? null;
+  app.focusKey = ui.focusKey && app.scn.products.some((r) => r.key === ui.focusKey) ? ui.focusKey : null;
+  setTab(ui.tab ?? 'doses');
+  renderChart(false);
+  renderLegend();
+  if (ui.sideScroll) requestAnimationFrame(() => (sideBody.scrollTop = ui.sideScroll!));
+}
+
+window.addEventListener('pagehide', saveUiState);
+
 // ---------- boot ----------
 
 async function applyDemoSetting() {
@@ -816,7 +880,7 @@ async function boot() {
   rebuildLibrary();
   initChart();
   commit('library');
-  setTab('doses');
+  restoreUiState();
   resolveOrphanDoses();
 }
 

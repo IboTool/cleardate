@@ -127,13 +127,12 @@ function envelope(times: number[], vals: number[], buckets: number, pick: 'min' 
   return out;
 }
 
-export function buildChartOption(scn: Scenario, session: Session, o: ChartOpts): EChartsOption {
-  const s = session.settings;
-  const P = PALETTE[o.theme];
-  const dark = o.theme === 'dark';
-  const log = s.yScale === 'log';
+const MAIN_MIN_H = 140;
+const GRID_TOP = 28;
+const gridBottom = (forExport?: boolean) => (forExport ? 34 : 64); // room for the slider
 
-  // ---- layout: tracks stacked under the main grid ----
+/** Tracks stacked under the main grid, with their heights. */
+function trackLayout(scn: Scenario, s: Settings) {
   const tracks: ('cyp' | 'qt' | 'qtload' | 'lingering')[] = [];
   if (s.showCypTrack) tracks.push('cyp');
   if (s.showQtTrack) tracks.push('qt');
@@ -146,10 +145,26 @@ export function buildChartOption(scn: Scenario, session: Session, o: ChartOpts):
     : t === 'qt' ? Math.max(TRACK_H.qt, qtLanes.length * QT_LANE + 6)
     : t === 'qtload' ? QT_LOAD_H
     : TRACK_H[t];
-  const top = 28;
-  const bottom = o.forExport ? 34 : 64; // room for the slider
   const tracksTotal = tracks.reduce((acc, t) => acc + trackHeight(t) + TRACK_GAP, 0);
-  const mainH = Math.max(140, o.height - top - bottom - tracksTotal - 6);
+  return { tracks, lanes, qtLanes, trackHeight, tracksTotal };
+}
+
+/** Chart height that fits a readable main grid and every enabled track without overlapping the slider. */
+export function minChartHeight(scn: Scenario, session: Session, forExport = false): number {
+  return GRID_TOP + gridBottom(forExport) + trackLayout(scn, session.settings).tracksTotal + 6 + 220;
+}
+
+export function buildChartOption(scn: Scenario, session: Session, o: ChartOpts): EChartsOption {
+  const s = session.settings;
+  const P = PALETTE[o.theme];
+  const dark = o.theme === 'dark';
+  const log = s.yScale === 'log';
+
+  // ---- layout: tracks stacked under the main grid ----
+  const { tracks, lanes, qtLanes, trackHeight, tracksTotal } = trackLayout(scn, s);
+  const top = GRID_TOP;
+  const bottom = gridBottom(o.forExport);
+  const mainH = Math.max(MAIN_MIN_H, o.height - top - bottom - tracksTotal - 6);
   const left = 64;
   const right = scn.products.some((r) => r.curves.some((c) => c.normalized && curveVisible(c, s))) ? 52 : 22;
   const grids: { top: number; height: number }[] = [{ top, height: mainH }];
@@ -589,6 +604,7 @@ function tooltipHtml(scn: Scenario, session: Session, t: number | undefined): st
   const s = session.settings;
   const rows: string[] = [];
   for (const r of scn.products) {
+    const start = rows.length;
     for (const c of r.curves) {
       if (!curveVisible(c, s)) continue;
       const eq = valueAt(c.runs.typical.times, c.runs.typical.amounts, t);
@@ -608,13 +624,14 @@ function tooltipHtml(scn: Scenario, session: Session, t: number | undefined): st
         `<div style="display:flex;justify-content:space-between;gap:14px;${indent}"><span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${col};margin-right:6px"></span>${c.depth === 0 ? r.name : c.compound.name}${tag}</span><span style="font-variant-numeric:tabular-nums">${shown}</span></div>`,
       );
     }
-    if (r.assumptions.length && rows.length) {
+    const present = rows.length > start;
+    if (r.assumptions.length && present) {
       const list = r.assumptions.slice(0, 3).join('; ') + (r.assumptions.length > 3 ? `; +${r.assumptions.length - 3} more` : '');
       rows.push(`<div style="opacity:.6;font-size:11px;max-width:340px;white-space:normal;margin:1px 0 4px 14px">Assumptions: ${list}</div>`);
     }
-    if ((r.excluded.length || r.notes.length) && rows.length)
+    if ((r.excluded.length || r.notes.length) && present)
       rows.push(`<div style="opacity:.6;font-size:11px;max-width:340px;white-space:normal;margin:1px 0 4px 14px">${[...r.excluded, ...r.notes].join('; ')}</div>`);
-    if (r.status === 'incomplete' && rows.length)
+    if (r.status === 'incomplete' && present)
       rows.push(`<div style="opacity:.75;font-size:11px;margin:0 0 4px 14px;color:#ffb74d">Incomplete — no kinetics for ${r.missing.join(', ')}</div>`);
   }
   const cyp = strongestAt(scn.cyp, t);

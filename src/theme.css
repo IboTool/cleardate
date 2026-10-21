@@ -1,0 +1,77 @@
+/* Shared by the app (styles.css) and the help page (help/help.css): tokens, base, panels, buttons, badges. */
+
+:root {
+  --bg: #0a0b10;
+  --bg2: #0f1118;
+  --panel: rgba(22, 25, 35, 0.62);
+  --panel-solid: #151821;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
+  --text: #e6e8ee;
+  --muted: #8b92a5;
+  --dim: #5d6476;
+  --accent: #7c9cff;
+  --accent-soft: rgba(124, 156, 255, 0.14);
+  --gold: #e8c36a;
+  --danger: #ff5a5f;
+  --warn: #f2c46d;
+  --radius: 14px;
+  --font: 'Inter Variable', Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  font-family: var(--font);
+  font-size: 13.5px;
+  color: var(--text);
+  background:
+    radial-gradient(1200px 600px at 85% -10%, rgba(124, 156, 255, 0.10), transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, rgba(232, 195, 106, 0.05), transparent 60%),
+    var(--bg);
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: 'cv11', 'ss01';
+}
+button, input, select, textarea { font: inherit; color: inherit; }
+[hidden] { display: none !important; }
+
+.glass {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.wordmark {
+  font-weight: 700; font-size: 21px; letter-spacing: -0.02em; color: #f2f4fa;
+  text-shadow: 0 0 18px rgba(124, 156, 255, 0.55), 0 0 2px rgba(124, 156, 255, 0.6);
+}
+.wordmark span { color: var(--accent); }
+
+.btn {
+  border: 1px solid var(--border-strong); background: rgba(255, 255, 255, 0.04); color: var(--text);
+  padding: 7px 13px; border-radius: 10px; cursor: pointer; transition: background .15s, border-color .15s, box-shadow .15s;
+  white-space: nowrap; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+}
+.btn:hover { background: rgba(255, 255, 255, 0.08); }
+.btn:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.btn:disabled { opacity: .4; cursor: default; }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: #0b0d14; font-weight: 600; box-shadow: 0 0 20px rgba(124, 156, 255, 0.35); }
+.btn-primary:hover { background: #93adff; }
+.btn-ghost { background: transparent; }
+.btn-gold { border-color: rgba(232, 195, 106, 0.5); color: var(--gold); background: rgba(232, 195, 106, 0.06); }
+.btn-gold:hover { background: rgba(232, 195, 106, 0.14); box-shadow: 0 0 18px rgba(232, 195, 106, 0.25); }
+.btn-danger { border-color: rgba(255, 90, 95, 0.5); color: #ff8a8d; background: rgba(255, 90, 95, 0.06); }
+.btn-sm { padding: 5px 10px; font-size: 12.5px; }
+.help-q {
+  display: inline-grid; place-items: center; width: 17px; height: 17px; border-radius: 50%;
+  border: 1.5px solid currentColor; font-size: 11px; font-weight: 700; line-height: 1;
+}
+
+.badge { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 99px; margin-left: 4px; vertical-align: 1px; font-weight: 600; letter-spacing: .02em; white-space: nowrap; }
+.badge-warn { color: var(--warn); background: rgba(242, 196, 109, 0.12); border: 1px solid rgba(242, 196, 109, 0.3); }
+.badge-user { color: #c3a6ff; background: rgba(195, 166, 255, 0.12); border: 1px solid rgba(195, 166, 255, 0.35); }
+.badge-muted { color: var(--muted); background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); }
+.badge-ok { color: #7fd8a6; background: rgba(127, 216, 166, 0.1); border: 1px solid rgba(127, 216, 166, 0.35); }

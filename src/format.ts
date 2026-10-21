@@ -37,6 +37,11 @@ export function fmtDuration(hours: number): string {
   return `${+(hours / 24).toFixed(1)} d`;
 }
 
+/** "every 12 hours", "every day", "every 3 days". */
+export function fmtEvery(every: number, unit: 'hours' | 'days'): string {
+  return every === 1 ? `every ${unit === 'days' ? 'day' : 'hour'}` : `every ${every} ${unit}`;
+}
+
 export function ageFrom(dob: string, now = Date.now()): number | null {
   if (!dob) return null;
   const b = new Date(dob);

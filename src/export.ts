@@ -3,7 +3,7 @@
 import * as echarts from './echarts';
 import type { jsPDF as JsPDF } from 'jspdf';
 import { buildChartOption } from './chart';
-import { ageFrom, fmtDate, fmtDateTime } from './format';
+import { ageFrom, fmtDate, fmtDateTime, fmtEvery } from './format';
 import { clearStatusText, combinationText, expandDose, isRateUnit, type LibraryIndex, type ProductResult, type Scenario } from './model';
 import { isDraft } from './schema';
 import type { Session } from './types';
@@ -53,7 +53,7 @@ function doseRows(session: Session, idx: LibraryIndex): string[][] {
       ? d.time
         ? patch && events[0]?.end ? `applied ${fmtDateTime(events[0].time, s)}, removed ${fmtDateTime(events[0].end, s)}` : fmtDateTime(new Date(d.time).getTime(), s)
         : '—'
-      : `every ${d.regimen!.every} ${d.regimen!.unit}, ${fmtDateTime(new Date(d.regimen!.start).getTime(), s)} → ${fmtDateTime(new Date(d.regimen!.end).getTime(), s)} (${n} ${patch ? 'applications' : 'doses'})`;
+      : `${fmtEvery(d.regimen!.every, d.regimen!.unit)}, ${fmtDateTime(new Date(d.regimen!.start).getTime(), s)} → ${fmtDateTime(new Date(d.regimen!.end).getTime(), s)} (${n} ${patch ? 'applications' : 'doses'})`;
     const combo = p ? combinationText(idx, p, d.amount, d.unit) : null;
     return [`${p?.name ?? d.productId}${flag}`, combo ?? `${d.amount} ${d.unit}`, when];
   });
