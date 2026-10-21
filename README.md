@@ -2,6 +2,8 @@
 
 Client-side drug clearance visualiser for ibogaine-clinic intake. Reference use only — not a medical device.
 
+**Using ClearDate:** see the [help page](help.html) (`/help.html` on the deployed site, or the *Help* button in the app). This README is for developers.
+
 ## What's in this starter
 
 | Path | Purpose |
@@ -61,6 +63,7 @@ Double-click **`stop-cleardate.bat`** to stop the app and the editor. It kills w
 | `npm run migrate-v2.1` | One-off migration of a v2 `drugs.json` to schema 2.1 (see below). `--dry-run` reports without writing. Does nothing if the file is already 2.1. |
 | `npm run validate` | Checks `public/drugs.json` (or a path given as an argument) and prints errors, warnings and per-category progress. Exits non-zero on errors. |
 | `npm run editor` | Local data editor at http://127.0.0.1:5174. |
+| `npm run screenshots` | Regenerates the help page screenshots in `public/help/img/` (and the callout positions in `callouts.json`) with Playwright, from the fictional patient and fixed date in `tools/help-scenario.json`. Run it after UI or library changes, then check the callout lists in `help.html`. First time only: `npx playwright install chromium`. |
 
 ## Deploying to Cloudflare Pages
 
@@ -221,5 +224,5 @@ What the migration does, in short:
 ## Implementation notes
 
 - Vite + TypeScript, no framework. ECharts (modular import) for the timeline, Fuse.js for fuzzy search, jsPDF for the PDF (loaded only when exporting). Chart images use ECharts' own renderer.
-- Code map: `src/pk.ts` (simulation, tested in `pk.test.ts`), `src/model.ts` (library index, scenario: clear dates, tracks, warnings), `src/chart.ts` (chart option), `src/search.ts` (ranked search: exact → prefix → fuzzy), `src/validate.ts` (shared by the app, the CLI and the editor), `src/tree.ts` (which compounds of a product are simulated, excluded or missing), `src/review.ts` (section review logic for the editor, tested in `review.test.ts`), `src/state.ts` (sessions, including v1 → v2 migration), `src/ui/` (picker, wizard, form pieces), `tools/` (data tooling and editor; `tools/migrate-v2.ts` and `tools/product-rules.ts` for the v2 migration, `tools/migrate-v2.1.ts` and `tools/migrate-v21-lib.ts` for 2.1).
+- Code map: `src/pk.ts` (simulation, tested in `pk.test.ts`), `src/model.ts` (library index, scenario: clear dates, tracks, warnings), `src/chart.ts` (chart option), `src/search.ts` (ranked search: exact → prefix → fuzzy), `src/validate.ts` (shared by the app, the CLI and the editor), `src/tree.ts` (which compounds of a product are simulated, excluded or missing), `src/review.ts` (section review logic for the editor, tested in `review.test.ts`), `src/state.ts` (sessions, including v1 → v2 migration), `src/ui/` (picker, wizard, form pieces), `src/theme.css` (colour tokens and buttons shared by the app and the help page), `help.html` + `src/help/` (the help page, a second Vite entry), `tools/screenshots.ts` + `tools/help-scenario.json` (help screenshots), `tools/` (data tooling and editor; `tools/migrate-v2.ts` and `tools/product-rules.ts` for the v2 migration, `tools/migrate-v2.1.ts` and `tools/migrate-v21-lib.ts` for 2.1).
 - A full scenario computes in tens of milliseconds, so it runs on the main thread (no Web Worker).
