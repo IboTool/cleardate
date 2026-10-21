@@ -15,7 +15,7 @@ describe('canonical serialisation', () => {
     } as unknown as Library;
 
     const out = canonicalLibrary(lib) as unknown as Record<string, any>;
-    expect(Object.keys(out)).toEqual(['categories', 'compounds', 'products', 'schemaVersion']);
+    expect(Object.keys(out)).toEqual(['schemaVersion', 'categories', 'compounds', 'products']);
     expect(out.compounds.map((c: { id: string }) => c.id)).toEqual(['a_drug', 'b_drug']);
     expect(out.compounds[1].provenance).toEqual({ halfLife: 'recall' });
     expect(Object.keys(out.compounds[1].qt)).toEqual(['tier', 'weight', 'referenceAmountMg']);

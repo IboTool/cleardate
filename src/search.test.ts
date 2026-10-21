@@ -27,17 +27,17 @@ describe('search ranking', () => {
 
   it('resolves brand and street aliases to the right product', () => {
     const xanax = search.search('Xanax')[0];
-    expect(search.record(xanax.productId)!.name).toBe('Alprazolam');
+    expect(search.record(xanax.productId)!.name).toBe('Alprazolam (Oral IR)');
     expect(xanax.matchedAlias).toBe('Xanax');
     expect(top('molly')[0]).toBe('MDMA');
     expect(top('subs')[0]).toBe('Buprenorphine');
-    expect(top('Suboxone')[0]).toBe('Buprenorphine');
+    expect(top('Suboxone')[0]).toBe('Buprenorphine/naloxone');
   });
 
   it('still finds a misspelled drug', () => {
     expect(top('dextromorphan').slice(0, 3)).toContain('Dextromethorphan');
-    expect(top('alprazolom').slice(0, 3)).toContain('Alprazolam');
-    expect(top('quetiapene').slice(0, 3)).toContain('Quetiapine');
+    expect(top('alprazolom').slice(0, 3)).toContain('Alprazolam (Oral IR)');
+    expect(top('quetiapene').slice(0, 3)).toContain('Quetiapine (Oral IR)');
   });
 
   it('records highlight ranges for prefix matches', () => {

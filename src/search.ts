@@ -2,6 +2,7 @@
 // alias (including word prefixes, e.g. "xan" → "Xanax"), then Fuse.js fuzzy matches.
 
 import Fuse, { type FuseResultMatch } from 'fuse.js';
+import { primaryCompound } from './schema';
 import type { Category, Compound, Product } from './types';
 
 export interface SearchRecord {
@@ -11,7 +12,13 @@ export interface SearchRecord {
   className: string;
   category: string;
   categoryName: string;
-  aliases: string[]; // product + parent compound aliases
+  /** Primary and secondary category ids. */
+  categories: string[];
+  aliases: string[]; // product aliases first, then primary-compound aliases
+  /** How many leading entries of `aliases` belong to the product itself. */
+  ownAliases: number;
+  /** Tie-break: immediate-release / unspecified forms before modified-release splits. */
+  modified: boolean;
 }
 
 export interface SearchHit {
@@ -28,8 +35,9 @@ export interface SearchHit {
 export function buildRecords(products: Product[], compounds: Map<string, Compound>, categories: Category[], nameOf: (p: Product) => string): SearchRecord[] {
   const catName = new Map(categories.map((c) => [c.id, c.name]));
   return products.map((p) => {
-    const parent = compounds.get(p.parentCompound);
-    const aliases = [...new Set([...(p.aliases ?? []), ...(parent?.aliases ?? [])])].filter(Boolean);
+    const parent = compounds.get(primaryCompound(p));
+    const own = [...new Set(p.aliases ?? [])].filter(Boolean);
+    const aliases = [...new Set([...own, ...(parent?.aliases ?? [])])].filter(Boolean);
     return {
       productId: p.id,
       name: nameOf(p),
@@ -37,7 +45,10 @@ export function buildRecords(products: Product[], compounds: Map<string, Compoun
       className: p.class,
       category: p.category,
       categoryName: catName.get(p.category) ?? p.category,
+      categories: [p.category, ...(p.secondaryCategories ?? [])],
       aliases,
+      ownAliases: own.length,
+      modified: !!p.formulation && p.formulation !== 'IR',
     };
   });
 }
@@ -94,8 +105,9 @@ export class ProductSearch {
 
     for (const r of this.records) {
       if (norm(r.name) === q) put({ productId: r.productId, tier: 0, score: 0, nameRanges: [[0, r.name.length - 1]], aliasRanges: [] });
-      for (const a of r.aliases)
-        if (norm(a) === q) put({ productId: r.productId, tier: 0, score: 0.01, matchedAlias: a, nameRanges: [], aliasRanges: [[0, a.length - 1]] });
+      r.aliases.forEach((a, i) => {
+        if (norm(a) === q) put({ productId: r.productId, tier: 0, score: i < r.ownAliases ? 0.01 : 0.02, matchedAlias: a, nameRanges: [], aliasRanges: [[0, a.length - 1]] });
+      });
       const pi = prefixAt(r.name, q);
       // Shorter names first among prefix matches ("dex" → shortest completions on top), start-of-name before word-start.
       if (pi >= 0) put({ productId: r.productId, tier: 1, score: (pi > 0 ? 0.5 : 0) + r.name.length / 1000, nameRanges: [[pi, pi + q.length - 1]], aliasRanges: [] });
@@ -123,7 +135,11 @@ export class ProductSearch {
     }
 
     return [...hits.values()]
-      .sort((a, b) => a.tier - b.tier || a.score - b.score || this.byId.get(a.productId)!.name.localeCompare(this.byId.get(b.productId)!.name))
+      .sort((a, b) => {
+        const ra = this.byId.get(a.productId)!;
+        const rb = this.byId.get(b.productId)!;
+        return a.tier - b.tier || a.score - b.score || Number(ra.modified) - Number(rb.modified) || ra.name.localeCompare(rb.name);
+      })
       .slice(0, limit);
   }
 }

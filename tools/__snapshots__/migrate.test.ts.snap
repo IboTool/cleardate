@@ -1,0 +1,1035 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`migrate-v2 > matches the expected v2 snapshot 1`] = `
+"{
+  "schemaVersion": 2,
+  "categories": [
+    {
+      "id": "opioids",
+      "name": "Opioids",
+      "order": 1
+    },
+    {
+      "id": "antidepressants",
+      "name": "Antidepressants",
+      "order": 2
+    },
+    {
+      "id": "psychedelics_dissociatives",
+      "name": "Psychedelics",
+      "order": 3
+    }
+  ],
+  "compounds": [
+    {
+      "id": "buprenorphine",
+      "name": "Buprenorphine",
+      "aliases": [
+        "Subutex"
+      ],
+      "isMetabolite": false,
+      "formedFrom": [],
+      "molecularWeight": null,
+      "kinetics": {
+        "mode": "intrinsic",
+        "halfLifeHours": {
+          "typical": 37,
+          "min": 24,
+          "max": 69,
+          "rangeType": "observed-range",
+          "cv": null
+        },
+        "earlyPhase": null,
+        "steadyState": null
+      },
+      "cyp2d6": {
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
+      },
+      "qt": {
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
+      },
+      "receptors": [],
+      "receptorsAssessed": false,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {
+        "halfLife": null,
+        "metabolism": null,
+        "molecularWeight": null,
+        "cyp2d6": null,
+        "qt": null,
+        "receptors": null,
+        "lingeringEffects": null,
+        "nonlinearKinetics": null
+      },
+      "sourceNotes": {
+        "halfLife": "",
+        "metabolism": "",
+        "molecularWeight": "",
+        "cyp2d6": "",
+        "qt": "",
+        "receptors": "",
+        "lingeringEffects": "",
+        "nonlinearKinetics": ""
+      },
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "codeine",
+      "name": "Codeine",
+      "aliases": [],
+      "isMetabolite": false,
+      "formedFrom": [],
+      "molecularWeight": null,
+      "kinetics": {
+        "mode": "intrinsic",
+        "halfLifeHours": {
+          "typical": 3,
+          "min": 3,
+          "max": 3,
+          "rangeType": "single-value",
+          "cv": null
+        },
+        "earlyPhase": null,
+        "steadyState": null
+      },
+      "cyp2d6": {
+        "substrate": "yes",
+        "halfLifeMultiplier": null,
+        "inhibitor": "none",
+        "inhibitionType": "none"
+      },
+      "qt": {
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
+      },
+      "receptors": [],
+      "receptorsAssessed": false,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {
+        "halfLife": null,
+        "metabolism": null,
+        "molecularWeight": null,
+        "cyp2d6": "checked",
+        "qt": null,
+        "receptors": null,
+        "lingeringEffects": null,
+        "nonlinearKinetics": null
+      },
+      "sourceNotes": {
+        "halfLife": "",
+        "metabolism": "",
+        "molecularWeight": "",
+        "cyp2d6": "[checked] CPIC.",
+        "qt": "",
+        "receptors": "",
+        "lingeringEffects": "",
+        "nonlinearKinetics": ""
+      },
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "dextromethorphan",
+      "name": "Dextromethorphan",
+      "aliases": [],
+      "isMetabolite": false,
+      "formedFrom": [],
+      "molecularWeight": null,
+      "kinetics": {
+        "mode": "intrinsic",
+        "halfLifeHours": {
+          "typical": 3,
+          "min": 3,
+          "max": 3,
+          "rangeType": "single-value",
+          "cv": null
+        },
+        "earlyPhase": null,
+        "steadyState": null
+      },
+      "cyp2d6": {
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
+      },
+      "qt": {
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
+      },
+      "receptors": [],
+      "receptorsAssessed": false,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {
+        "halfLife": null,
+        "metabolism": null,
+        "molecularWeight": null,
+        "cyp2d6": null,
+        "qt": null,
+        "receptors": null,
+        "lingeringEffects": null,
+        "nonlinearKinetics": null
+      },
+      "sourceNotes": {
+        "halfLife": "",
+        "metabolism": "",
+        "molecularWeight": "",
+        "cyp2d6": "",
+        "qt": "",
+        "receptors": "",
+        "lingeringEffects": "",
+        "nonlinearKinetics": ""
+      },
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "fentanyl",
+      "name": "Fentanyl",
+      "aliases": [],
+      "isMetabolite": false,
+      "formedFrom": [],
+      "molecularWeight": null,
+      "kinetics": {
+        "mode": "intrinsic",
+        "halfLifeHours": {
+          "typical": 7,
+          "min": 7,
+          "max": 7,
+          "rangeType": "single-value",
+          "cv": null
+        },
+        "earlyPhase": null,
+        "steadyState": null
+      },
+      "cyp2d6": {
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
+      },
+      "qt": {
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
+      },
+      "receptors": [],
+      "receptorsAssessed": false,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {
+        "halfLife": null,
+        "metabolism": null,
+        "molecularWeight": null,
+        "cyp2d6": null,
+        "qt": null,
+        "receptors": null,
+        "lingeringEffects": null,
+        "nonlinearKinetics": null
+      },
+      "sourceNotes": {
+        "halfLife": "",
+        "metabolism": "",
+        "molecularWeight": "",
+        "cyp2d6": "",
+        "qt": "",
+        "receptors": "",
+        "lingeringEffects": "",
+        "nonlinearKinetics": ""
+      },
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "morphine",
+      "name": "Morphine",
+      "aliases": [],
+      "isMetabolite": false,
+      "formedFrom": [],
+      "molecularWeight": 285.34,
+      "kinetics": {
+        "mode": "intrinsic",
+        "halfLifeHours": {
+          "typical": 2,
+          "min": 2,
+          "max": 15,
+          "rangeType": "observed-range",
+          "cv": null
+        },
+        "earlyPhase": null,
+        "steadyState": null
+      },
+      "cyp2d6": {
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
+      },
+      "qt": {
+        "tier": "none",
+        "weight": null,
+        "referenceAmountMg": null
+      },
+      "receptors": [
+        {
+          "target": "mu-opioid receptor",
+          "action": "agonist"
+        }
+      ],
+      "receptorsAssessed": true,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {
+        "halfLife": "checked",
+        "metabolism": null,
+        "molecularWeight": null,
+        "cyp2d6": "gap",
+        "qt": "recall",
+        "receptors": "recall",
+        "lingeringEffects": null,
+        "nonlinearKinetics": null
+      },
+      "sourceNotes": {
+        "halfLife": "[checked] DailyMed 12.3.",
+        "metabolism": "",
+        "molecularWeight": "",
+        "cyp2d6": "[gap] not established.",
+        "qt": "[recall — check CredibleMeds] none listed.",
+        "receptors": "[recall] IUPHAR.",
+        "lingeringEffects": "",
+        "nonlinearKinetics": ""
+      },
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "morphine_3_glucuronide",
+      "name": "Morphine-3-glucuronide",
+      "aliases": [],
+      "isMetabolite": true,
+      "formedFrom": [
+        {
+          "compound": "morphine",
+          "fraction": 0.5,
+          "cyp2d6Multiplier": null
+        }
+      ],
+      "molecularWeight": null,
+      "kinetics": {
+        "mode": "formation-limited",
+        "halfLifeHours": null,
+        "earlyPhase": null,
+        "steadyState": null
+      },
+      "cyp2d6": {
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
+      },
+      "qt": {
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
+      },
+      "receptors": [],
+      "receptorsAssessed": false,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {
+        "halfLife": "estimate",
+        "metabolism": null,
+        "molecularWeight": null,
+        "cyp2d6": null,
+        "qt": null,
+        "receptors": null,
+        "lingeringEffects": null,
+        "nonlinearKinetics": null
+      },
+      "sourceNotes": {
+        "halfLife": "[gap] none. Auto-assigned by migration: conjugate assumed formation-limited. Review.",
+        "metabolism": "",
+        "molecularWeight": "",
+        "cyp2d6": "",
+        "qt": "",
+        "receptors": "",
+        "lingeringEffects": "",
+        "nonlinearKinetics": ""
+      },
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "naloxone",
+      "name": "Naloxone",
+      "aliases": [],
+      "isMetabolite": false,
+      "formedFrom": [],
+      "molecularWeight": null,
+      "kinetics": {
+        "mode": "intrinsic",
+        "halfLifeHours": {
+          "typical": 1.5,
+          "min": 1.5,
+          "max": 1.5,
+          "rangeType": "single-value",
+          "cv": null
+        },
+        "earlyPhase": null,
+        "steadyState": null
+      },
+      "cyp2d6": {
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
+      },
+      "qt": {
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
+      },
+      "receptors": [],
+      "receptorsAssessed": false,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {
+        "halfLife": null,
+        "metabolism": null,
+        "molecularWeight": null,
+        "cyp2d6": null,
+        "qt": null,
+        "receptors": null,
+        "lingeringEffects": null,
+        "nonlinearKinetics": null
+      },
+      "sourceNotes": {
+        "halfLife": "",
+        "metabolism": "",
+        "molecularWeight": "",
+        "cyp2d6": "",
+        "qt": "",
+        "receptors": "",
+        "lingeringEffects": "",
+        "nonlinearKinetics": ""
+      },
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "normorphine",
+      "name": "Normorphine",
+      "aliases": [],
+      "isMetabolite": true,
+      "formedFrom": [
+        {
+          "compound": "morphine",
+          "fraction": null,
+          "cyp2d6Multiplier": null
+        }
+      ],
+      "molecularWeight": null,
+      "kinetics": {
+        "mode": "unknown",
+        "halfLifeHours": null,
+        "earlyPhase": null,
+        "steadyState": null
+      },
+      "cyp2d6": {
+        "substrate": "unassessed",
+        "halfLifeMultiplier": null,
+        "inhibitor": "unassessed",
+        "inhibitionType": "unassessed"
+      },
+      "qt": {
+        "tier": "unassessed",
+        "weight": null,
+        "referenceAmountMg": null
+      },
+      "receptors": [],
+      "receptorsAssessed": false,
+      "lingeringEffects": {
+        "durationDays": null,
+        "note": ""
+      },
+      "nonlinearKinetics": {
+        "flag": "unassessed",
+        "note": ""
+      },
+      "provenance": {
+        "halfLife": null,
+        "metabolism": null,
+        "molecularWeight": null,
+        "cyp2d6": null,
+        "qt": null,
+        "receptors": null,
+        "lingeringEffects": null,
+        "nonlinearKinetics": null
+      },
+      "sourceNotes": {
+        "halfLife": "",
+        "metabolism": "",
+        "molecularWeight": "",
+        "cyp2d6": "",
+        "qt": "",
+        "receptors": "",
+        "lingeringEffects": "",
+        "nonlinearKinetics": ""
+      },
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    }
+  ],
+  "products": [
+    {
+      "id": "buprenorphine_naloxone_sublingual",
+      "candidateId": "buprenorphine",
+      "name": "Buprenorphine/naloxone (Sublingual)",
+      "aliases": [
+        "Suboxone",
+        "Zubsolv"
+      ],
+      "category": "opioids",
+      "secondaryCategories": [],
+      "class": "opioid partial agonist + opioid antagonist",
+      "route": "Sublingual",
+      "formulation": "IR",
+      "components": [
+        {
+          "compound": "buprenorphine",
+          "ratio": 1,
+          "saltFactor": null,
+          "bioavailability": null
+        },
+        {
+          "compound": "naloxone",
+          "ratio": 0.25,
+          "saltFactor": null,
+          "bioavailability": null
+        }
+      ],
+      "doseUnit": "mg",
+      "input": {
+        "type": "bolus",
+        "releaseHalfLifeHours": null,
+        "defaultDurationHours": null
+      },
+      "typicalDose": {
+        "amount": null,
+        "unit": "mg",
+        "basis": "maintenance"
+      },
+      "provenance": {
+        "components": "recall"
+      },
+      "sourceNotes": {
+        "components": "[recall] Fixed-ratio 4:1 buprenorphine:naloxone (Suboxone, Zubsolv). Bioavailability of sublingual naloxone is very low; reviewer to set."
+      },
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "buprenorphine_sc_depot_brixadi_monthly",
+      "candidateId": "buprenorphine",
+      "name": "Buprenorphine (SC depot (Brixadi monthly))",
+      "aliases": [
+        "Brixadi"
+      ],
+      "category": "opioids",
+      "secondaryCategories": [],
+      "class": "",
+      "route": "SC depot (Brixadi monthly)",
+      "formulation": "depot",
+      "components": [
+        {
+          "compound": "buprenorphine",
+          "ratio": 1,
+          "saltFactor": null,
+          "bioavailability": null
+        }
+      ],
+      "doseUnit": "mg",
+      "input": {
+        "type": "first-order-release",
+        "releaseHalfLifeHours": null,
+        "defaultDurationHours": null
+      },
+      "typicalDose": {
+        "amount": null,
+        "unit": "mg",
+        "basis": "maintenance"
+      },
+      "provenance": {
+        "class": null,
+        "aliases": null,
+        "components": null,
+        "input": "gap",
+        "typicalDose": null
+      },
+      "sourceNotes": {
+        "class": "",
+        "aliases": "",
+        "components": "",
+        "input": "[gap] Sublocade 43-60 days; Brixadi weekly 3-5 days. Split from buprenorphine_sc_depot_sublocade_brixadi by migration; release half-life is product-specific.",
+        "typicalDose": ""
+      },
+      "source": "DRAFT — x",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "buprenorphine_sc_depot_brixadi_weekly",
+      "candidateId": "buprenorphine",
+      "name": "Buprenorphine (SC depot (Brixadi weekly))",
+      "aliases": [
+        "Brixadi"
+      ],
+      "category": "opioids",
+      "secondaryCategories": [],
+      "class": "",
+      "route": "SC depot (Brixadi weekly)",
+      "formulation": "depot",
+      "components": [
+        {
+          "compound": "buprenorphine",
+          "ratio": 1,
+          "saltFactor": null,
+          "bioavailability": null
+        }
+      ],
+      "doseUnit": "mg",
+      "input": {
+        "type": "first-order-release",
+        "releaseHalfLifeHours": null,
+        "defaultDurationHours": null
+      },
+      "typicalDose": {
+        "amount": null,
+        "unit": "mg",
+        "basis": "maintenance"
+      },
+      "provenance": {
+        "class": null,
+        "aliases": null,
+        "components": null,
+        "input": "gap",
+        "typicalDose": null
+      },
+      "sourceNotes": {
+        "class": "",
+        "aliases": "",
+        "components": "",
+        "input": "[gap] Sublocade 43-60 days; Brixadi weekly 3-5 days. Split from buprenorphine_sc_depot_sublocade_brixadi by migration; release half-life is product-specific.",
+        "typicalDose": ""
+      },
+      "source": "DRAFT — x",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "buprenorphine_sc_depot_sublocade",
+      "candidateId": "buprenorphine",
+      "name": "Buprenorphine (SC depot (Sublocade))",
+      "aliases": [
+        "Sublocade"
+      ],
+      "category": "opioids",
+      "secondaryCategories": [],
+      "class": "",
+      "route": "SC depot (Sublocade)",
+      "formulation": "depot",
+      "components": [
+        {
+          "compound": "buprenorphine",
+          "ratio": 1,
+          "saltFactor": null,
+          "bioavailability": null
+        }
+      ],
+      "doseUnit": "mg",
+      "input": {
+        "type": "first-order-release",
+        "releaseHalfLifeHours": null,
+        "defaultDurationHours": null
+      },
+      "typicalDose": {
+        "amount": null,
+        "unit": "mg",
+        "basis": "maintenance"
+      },
+      "provenance": {
+        "class": null,
+        "aliases": null,
+        "components": null,
+        "input": "gap",
+        "typicalDose": null
+      },
+      "sourceNotes": {
+        "class": "",
+        "aliases": "",
+        "components": "",
+        "input": "[gap] Sublocade 43-60 days; Brixadi weekly 3-5 days. Split from buprenorphine_sc_depot_sublocade_brixadi by migration; release half-life is product-specific.",
+        "typicalDose": ""
+      },
+      "source": "DRAFT — x",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "buprenorphine_sublingual",
+      "candidateId": "buprenorphine",
+      "name": "Buprenorphine (Sublingual)",
+      "aliases": [
+        "Subutex"
+      ],
+      "category": "opioids",
+      "secondaryCategories": [],
+      "class": "",
+      "route": "Sublingual",
+      "formulation": null,
+      "components": [
+        {
+          "compound": "buprenorphine",
+          "ratio": 1,
+          "saltFactor": null,
+          "bioavailability": null
+        }
+      ],
+      "doseUnit": "mg",
+      "input": {
+        "type": "bolus",
+        "releaseHalfLifeHours": null,
+        "defaultDurationHours": null
+      },
+      "typicalDose": {
+        "amount": 16,
+        "unit": "mg",
+        "basis": "maintenance"
+      },
+      "provenance": {
+        "class": null,
+        "aliases": null,
+        "components": null,
+        "input": null,
+        "typicalDose": null
+      },
+      "sourceNotes": {
+        "class": "",
+        "aliases": "",
+        "components": "",
+        "input": "",
+        "typicalDose": ""
+      },
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "buprenorphine_transdermal",
+      "candidateId": "buprenorphine",
+      "name": "Buprenorphine (Transdermal)",
+      "aliases": [],
+      "category": "opioids",
+      "secondaryCategories": [],
+      "class": "",
+      "route": "Transdermal",
+      "formulation": "patch",
+      "components": [
+        {
+          "compound": "buprenorphine",
+          "ratio": 1,
+          "saltFactor": null,
+          "bioavailability": null
+        }
+      ],
+      "doseUnit": "µg/h",
+      "input": {
+        "type": "zero-order",
+        "releaseHalfLifeHours": null,
+        "defaultDurationHours": 72
+      },
+      "typicalDose": {
+        "amount": null,
+        "unit": "mg",
+        "basis": "maintenance"
+      },
+      "provenance": {
+        "class": null,
+        "aliases": null,
+        "components": null,
+        "input": "gap",
+        "typicalDose": null
+      },
+      "sourceNotes": {
+        "class": "",
+        "aliases": "",
+        "components": "",
+        "input": "v1 apparent half-life 26 h (26–26 h) ≈ intrinsic half-life; not converted to a release half-life to avoid double-counting. Review.",
+        "typicalDose": ""
+      },
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "dextromethorphan_oral",
+      "candidateId": "dextromethorphan",
+      "name": "Dextromethorphan (Oral)",
+      "aliases": [],
+      "category": "opioids",
+      "secondaryCategories": [
+        "psychedelics_dissociatives"
+      ],
+      "class": "",
+      "route": "Oral",
+      "formulation": null,
+      "components": [
+        {
+          "compound": "dextromethorphan",
+          "ratio": 1,
+          "saltFactor": null,
+          "bioavailability": null
+        }
+      ],
+      "doseUnit": "mg",
+      "input": {
+        "type": "bolus",
+        "releaseHalfLifeHours": null,
+        "defaultDurationHours": null
+      },
+      "typicalDose": {
+        "amount": null,
+        "unit": "mg",
+        "basis": "maintenance"
+      },
+      "provenance": {
+        "class": null,
+        "aliases": null,
+        "components": null,
+        "input": null,
+        "typicalDose": null
+      },
+      "sourceNotes": {
+        "class": "",
+        "aliases": "",
+        "components": "",
+        "input": "",
+        "typicalDose": ""
+      },
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "fentanyl_transdermal",
+      "candidateId": "fentanyl",
+      "name": "Fentanyl (Transdermal)",
+      "aliases": [],
+      "category": "opioids",
+      "secondaryCategories": [],
+      "class": "",
+      "route": "Transdermal",
+      "formulation": "patch",
+      "components": [
+        {
+          "compound": "fentanyl",
+          "ratio": 1,
+          "saltFactor": null,
+          "bioavailability": null
+        }
+      ],
+      "doseUnit": "µg/h",
+      "input": {
+        "type": "zero-order",
+        "releaseHalfLifeHours": {
+          "typical": 23.5,
+          "min": 23.5,
+          "max": 23.5,
+          "rangeType": "single-value",
+          "cv": null
+        },
+        "defaultDurationHours": 72
+      },
+      "typicalDose": {
+        "amount": null,
+        "unit": "mg",
+        "basis": "maintenance"
+      },
+      "provenance": {
+        "class": null,
+        "aliases": null,
+        "components": null,
+        "input": "estimate",
+        "typicalDose": null
+      },
+      "sourceNotes": {
+        "class": "",
+        "aliases": "",
+        "components": "",
+        "input": "Migrated from v1 apparent half-life; treated as release half-life (flip-flop approximation). Review.",
+        "typicalDose": ""
+      },
+      "source": "",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "morphine_oral_er",
+      "candidateId": "morphine",
+      "name": "Morphine (Oral ER)",
+      "aliases": [],
+      "category": "opioids",
+      "secondaryCategories": [],
+      "class": "opioid agonist",
+      "route": "Oral",
+      "formulation": "ER",
+      "components": [
+        {
+          "compound": "morphine",
+          "ratio": 1,
+          "saltFactor": null,
+          "bioavailability": null
+        }
+      ],
+      "doseUnit": "mg",
+      "input": {
+        "type": "first-order-release",
+        "releaseHalfLifeHours": null,
+        "defaultDurationHours": null
+      },
+      "typicalDose": {
+        "amount": null,
+        "unit": "mg",
+        "basis": "maintenance"
+      },
+      "provenance": {
+        "class": "recall",
+        "aliases": "checked",
+        "components": null,
+        "input": "gap",
+        "typicalDose": "gap"
+      },
+      "sourceNotes": {
+        "class": "[recall] opioid agonist.",
+        "aliases": "[checked] copied.",
+        "components": "",
+        "input": "[gap] combined route. Split from morphine_oral_ir_er by migration.",
+        "typicalDose": "[gap] Reviewer to set."
+      },
+      "source": "DRAFT — AI-prepopulated, unverified. https://example.org/label",
+      "verified": false,
+      "verifiedDate": ""
+    },
+    {
+      "id": "morphine_oral_ir",
+      "candidateId": "morphine",
+      "name": "Morphine (Oral IR)",
+      "aliases": [],
+      "category": "opioids",
+      "secondaryCategories": [],
+      "class": "opioid agonist",
+      "route": "Oral",
+      "formulation": "IR",
+      "components": [
+        {
+          "compound": "morphine",
+          "ratio": 1,
+          "saltFactor": null,
+          "bioavailability": null
+        }
+      ],
+      "doseUnit": "mg",
+      "input": {
+        "type": "bolus",
+        "releaseHalfLifeHours": null,
+        "defaultDurationHours": null
+      },
+      "typicalDose": {
+        "amount": null,
+        "unit": "mg",
+        "basis": "maintenance"
+      },
+      "provenance": {
+        "class": "recall",
+        "aliases": "checked",
+        "components": null,
+        "input": "gap",
+        "typicalDose": "gap"
+      },
+      "sourceNotes": {
+        "class": "[recall] opioid agonist.",
+        "aliases": "[checked] copied.",
+        "components": "",
+        "input": "[gap] combined route. Split from morphine_oral_ir_er by migration.",
+        "typicalDose": "[gap] Reviewer to set."
+      },
+      "source": "DRAFT — AI-prepopulated, unverified. https://example.org/label",
+      "verified": false,
+      "verifiedDate": ""
+    }
+  ]
+}
+"
+`;

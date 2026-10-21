@@ -39,12 +39,18 @@ console.log(
   `  Compounds: ${progress.compoundsVerified} / ${progress.compounds} verified · ${progress.compoundsStarted} with data · ` +
     `Products: ${progress.productsVerified} / ${progress.products} verified`,
 );
-const w = Math.max(...progress.categories.map((c) => c.name.length));
+const w = Math.max(0, ...progress.categories.map((c) => c.name.length));
 for (const c of progress.categories)
   console.log(
     `  ${c.name.padEnd(w)}  ${String(c.productsVerified).padStart(3)} / ${String(c.products).padEnd(3)} verified` +
       `  (${c.productsStarted} started, ${c.products - c.productsStarted} not started)`,
   );
+const fmt = (o: Record<string, number>) => Object.entries(o).map(([k, v]) => `${k} ${v}`).join(' · ');
+console.log(`\n  Section provenance: ${fmt(progress.provenance)}`);
+console.log(`  Compounds by kinetics mode: ${fmt(progress.modes)}`);
+console.log('  Unassessed safety fields (compounds used by each category):');
+for (const c of progress.categories)
+  console.log(`    ${c.name.padEnd(w)}  QT ${c.unassessed.qt} · CYP2D6 ${c.unassessed.cyp2d6} · receptors ${c.unassessed.receptors} · nonlinear ${c.unassessed.nonlinear}`);
 
 if (errors.length) {
   console.log(red(`\n✗ ${errors.length} error(s). Fix these before building.`));

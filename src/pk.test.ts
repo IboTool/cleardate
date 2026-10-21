@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { clearFraction, clearTime, CycleError, expandRegimen, simulate, topoOrder, valueAt, type SimCompound } from './pk';
-import { emptyCompound } from './schema';
+import { emptyCompound, SCHEMA_VERSION } from './schema';
 import { findCycle, fractionSums, validateLibrary } from './validate';
 import type { Library } from './types';
 
@@ -38,8 +38,85 @@ describe('parent → metabolite', () => {
     let maxErr = 0;
     for (let t = 1; t < 200; t += 3) maxErr = Math.max(maxErr, Math.abs(valueAt(r.times, r.amounts.m, t) - bateman(t)));
     const peak = Math.max(...r.amounts.m);
-    // Explicit stepping is first-order accurate; at dt = 0.05 h the error is well under 1% of peak.
     expect(maxErr / peak).toBeLessThan(0.01);
+  });
+});
+
+describe('two-pool compound (early phase)', () => {
+  it('matches D[f·e^(−k₁t) + (1−f)·e^(−k₂t)]', () => {
+    const D = 100, f = 0.8, h1 = 2, h2 = 15;
+    const r = simulate([{ id: 'a', halfLifeHours: h2, earlyPhase: { fraction: f, halfLifeHours: h1 }, children: [] }],
+      [{ time: 0, compoundId: 'a', amount: D }], { start: 0, minEnd: 120, maxEnd: 120 });
+    for (const t of [0.5, 2, 5, 10, 24, 60, 110]) {
+      const exact = D * (f * Math.exp((-ln2 / h1) * t) + (1 - f) * Math.exp((-ln2 / h2) * t));
+      expect(valueAt(r.times, r.amounts.a, t) / exact).toBeCloseTo(1, 3);
+    }
+  });
+
+  it('feeds metabolites from both pools', () => {
+    const r = simulate([
+      { id: 'a', halfLifeHours: 15, earlyPhase: { fraction: 0.5, halfLifeHours: 1 }, children: [{ id: 'm', fraction: 1 }] },
+      { id: 'm', halfLifeHours: 1000, children: [] },
+    ], [{ time: 0, compoundId: 'a', amount: 100 }], { start: 0, minEnd: 400, maxEnd: 400 });
+    // After ~26 slow half-lives nearly everything has moved into the long-lived metabolite.
+    expect(r.amounts.m[r.amounts.m.length - 1] + r.amounts.a[r.amounts.a.length - 1]).toBeGreaterThan(75);
+  });
+});
+
+describe('formation-limited metabolite', () => {
+  it('tracks its parent: same curve shape (within 5%) once past the peak', () => {
+    const hp = 8;
+    const r = simulate([
+      { id: 'p', halfLifeHours: hp, children: [{ id: 'g', fraction: 0.5 }] },
+      { id: 'g', halfLifeHours: hp / 10, children: [], quasiSteady: true },
+    ], [{ time: 0, compoundId: 'p', amount: 100 }], { start: 0, minEnd: 80, maxEnd: 80 });
+    // Normalise both curves at a reference time after the conjugate's short rise.
+    const ref = 6;
+    const p0 = valueAt(r.times, r.amounts.p, ref), g0 = valueAt(r.times, r.amounts.g, ref);
+    for (const t of [10, 20, 40, 70]) {
+      const a = valueAt(r.times, r.amounts.p, t) / p0;
+      const b = valueAt(r.times, r.amounts.g, t) / g0;
+      expect(Math.abs(a - b) / a).toBeLessThan(0.05);
+    }
+    // Analytic post-peak ratio: g = f·kp·p / (kg − kp).
+    const t = 30, kp = Math.LN2 / hp, kg = Math.LN2 / (hp / 10);
+    const expected = (0.5 * kp * valueAt(r.times, r.amounts.p, t)) / (kg - kp);
+    expect(valueAt(r.times, r.amounts.g, t) / expected).toBeCloseTo(1, 2);
+  });
+});
+
+describe('zero-order input (patch)', () => {
+  it('reaches rate / k at steady state and decays at the release half-life after removal', () => {
+    const rate = 2, hl = 10, skin = 25;
+    const k = ln2 / hl;
+    // Without skin depot: steady state = rate / k.
+    const a = simulate([{ id: 'a', halfLifeHours: hl, children: [] }], [], {
+      start: 0, minEnd: 400, maxEnd: 400, infusions: [{ start: 0, end: 300, target: 'a', rate }],
+    });
+    expect(valueAt(a.times, a.amounts.a, 299) / (rate / k)).toBeCloseTo(1, 3);
+    expect(a.totalDosed).toBeCloseTo(600, 6);
+
+    // With a skin depot, the terminal decline after removal follows the slower (release) half-life.
+    const b = simulate([{ id: 'a', halfLifeHours: hl, children: [] }], [], {
+      start: 0, minEnd: 700, maxEnd: 700,
+      releases: [{ id: 'rel:a', halfLifeHours: skin, target: 'a' }],
+      infusions: [{ start: 0, end: 300, target: 'rel:a', rate }],
+    });
+    expect(valueAt(b.times, b.amounts.a, 299) / (rate / k)).toBeCloseTo(1, 2);
+    const slope = (Math.log(valueAt(b.times, b.amounts.a, 500)) - Math.log(valueAt(b.times, b.amounts.a, 600))) / 100;
+    expect(slope / (ln2 / skin)).toBeCloseTo(1, 2);
+  });
+});
+
+describe('first-order release (depot)', () => {
+  it('flip-flop: terminal slope equals the release rate when release is slower than elimination', () => {
+    const r = simulate([{ id: 'a', halfLifeHours: 5, children: [] }], [{ time: 0, compoundId: 'rel:a', amount: 100 }], {
+      start: 0, minEnd: 600, maxEnd: 600, releases: [{ id: 'rel:a', halfLifeHours: 50, target: 'a' }],
+    });
+    const slope = (Math.log(valueAt(r.times, r.amounts.a, 300)) - Math.log(valueAt(r.times, r.amounts.a, 400))) / 100;
+    expect(slope / (ln2 / 50)).toBeCloseTo(1, 2);
+    const last = r.times.length - 1;
+    expect(r.amounts.a[last] + r.inRelease[last] + r.eliminated[last]).toBeCloseTo(100, 6);
   });
 });
 
@@ -112,16 +189,17 @@ describe('clearance threshold', () => {
 });
 
 describe('validation', () => {
+  const intrinsic = (h: number) => ({ mode: 'intrinsic' as const, halfLifeHours: { typical: h, min: null, max: null, rangeType: 'single-value' as const, cv: null }, earlyPhase: null, steadyState: null });
   const lib = (): Library => {
     const a = emptyCompound('a', 'A');
-    const b = { ...emptyCompound('b', 'B'), isMetabolite: true, formedFrom: [{ compound: 'a', fraction: 0.6 }] };
-    const c = { ...emptyCompound('c', 'C'), isMetabolite: true, formedFrom: [{ compound: 'b', fraction: 0.5 }] };
-    return { categories: [{ id: 'opioids', name: 'Opioids', order: 1 }], compounds: [a, b, c], products: [] };
+    const b = { ...emptyCompound('b', 'B'), isMetabolite: true, formedFrom: [{ compound: 'a', fraction: 0.6, cyp2d6Multiplier: null }] };
+    const c = { ...emptyCompound('c', 'C'), isMetabolite: true, formedFrom: [{ compound: 'b', fraction: 0.5, cyp2d6Multiplier: null }] };
+    return { schemaVersion: SCHEMA_VERSION, categories: [{ id: 'opioids', name: 'Opioids', order: 1 }], compounds: [a, b, c], products: [] };
   };
 
   it('detects cycles', () => {
     const l = lib();
-    l.compounds[0] = { ...l.compounds[0], isMetabolite: true, formedFrom: [{ compound: 'c', fraction: 0.1 }] };
+    l.compounds[0] = { ...l.compounds[0], isMetabolite: true, formedFrom: [{ compound: 'c', fraction: 0.1, cyp2d6Multiplier: null }] };
     expect(findCycle(l.compounds)).not.toBeNull();
     expect(validateLibrary(l).errors.some((e) => /cycle/.test(e.message))).toBe(true);
     expect(() =>
@@ -137,27 +215,60 @@ describe('validation', () => {
     expect(validateLibrary(lib()).errors).toEqual([]);
   });
 
-  it('rejects fractions out of one compound summing to more than 1', () => {
+  it('rejects known fractions out of one compound summing to more than 1', () => {
     const l = lib();
-    l.compounds.push({ ...emptyCompound('d', 'D'), isMetabolite: true, formedFrom: [{ compound: 'a', fraction: 0.5 }] });
+    l.compounds.push({ ...emptyCompound('d', 'D'), isMetabolite: true, formedFrom: [{ compound: 'a', fraction: 0.5, cyp2d6Multiplier: null }] });
     expect(fractionSums(l.compounds).get('a')).toBeCloseTo(1.1);
     const errs = validateLibrary(l).errors;
     expect(errs.some((e) => e.id === 'a' && /sum to/.test(e.message))).toBe(true);
   });
 
-  it('treats all-zero unverified entries as not started, not errors', () => {
+  it('treats all-unknown unverified entries as not started, not errors', () => {
     const l = lib();
-    for (const c of l.compounds) c.formedFrom = c.formedFrom.map((f) => ({ ...f, fraction: 0 }));
+    for (const c of l.compounds) c.formedFrom = c.formedFrom.map((f) => ({ ...f, fraction: null }));
     const r = validateLibrary(l);
     expect(r.errors).toEqual([]);
     expect(r.progress.compoundsStarted).toBe(0);
+    expect(r.progress.modes.unknown).toBe(3);
   });
 
-  it('requires source and date for verified entries', () => {
+  it('rejects 0 where null means unknown', () => {
     const l = lib();
-    l.compounds[0] = { ...l.compounds[0], verified: true, halfLifeHours: { typical: 5, min: 4, max: 6 } };
+    (l.compounds[0] as { molecularWeight: number | null }).molecularWeight = 0;
+    l.compounds[1].formedFrom[0].fraction = 0;
+    const msgs = validateLibrary(l).errors.map((e) => e.message).join('\n');
+    expect(msgs).toMatch(/molecularWeight is 0/);
+    expect(msgs).toMatch(/fraction is 0/);
+  });
+
+  it('checks ranges and requires a half-life for intrinsic mode', () => {
+    const l = lib();
+    l.compounds[0].kinetics = { mode: 'intrinsic', halfLifeHours: null, earlyPhase: null, steadyState: null };
+    l.compounds[1].kinetics = { mode: 'intrinsic', halfLifeHours: { typical: 5, min: 6, max: null, rangeType: 'observed-range', cv: null }, earlyPhase: null, steadyState: null };
+    l.compounds[2].kinetics = { mode: 'intrinsic', halfLifeHours: { typical: 5, min: null, max: null, rangeType: 'cv', cv: null }, earlyPhase: null, steadyState: null };
+    const msgs = validateLibrary(l).errors.map((e) => `${e.id}: ${e.message}`).join('\n');
+    expect(msgs).toMatch(/a: kinetics.halfLifeHours is required/);
+    expect(msgs).toMatch(/b: .*min \(6\) > typical/);
+    expect(msgs).toMatch(/c: .*needs cv/);
+  });
+
+  it('requires source, date and non-gap kinetics for verified entries', () => {
+    const l = lib();
+    l.compounds[0] = { ...l.compounds[0], verified: true, provenance: { halfLife: 'gap' } };
     const msgs = validateLibrary(l).errors.map((e) => e.message).join('\n');
     expect(msgs).toMatch(/source/);
     expect(msgs).toMatch(/verifiedDate/);
+    expect(msgs).toMatch(/mode "unknown"/);
+    expect(msgs).toMatch(/halfLife provenance/);
+    l.compounds[0] = { ...l.compounds[0], kinetics: intrinsic(5), provenance: { halfLife: 'recall' }, source: 'x', verifiedDate: '2026-01-01' };
+    const r = validateLibrary(l);
+    expect(r.errors).toEqual([]);
+    expect(r.warnings.some((w) => /recall\/estimate/.test(w.message))).toBe(true);
+  });
+
+  it('requires schemaVersion 2', () => {
+    const l = lib() as unknown as Record<string, unknown>;
+    delete l.schemaVersion;
+    expect(validateLibrary(l as never).errors.some((e) => /migrate-v2/.test(e.message))).toBe(true);
   });
 });

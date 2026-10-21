@@ -1,8 +1,10 @@
-// Session state: defaults, localStorage autosave, patient files.
+// Session state: defaults, localStorage autosave, patient files, v1 → v2 session migration.
 
-import type { CustomDrugs, Library, Patient, Session, Settings } from './types';
+import { migrateLibrary } from '../tools/migrate-lib';
+import type { CustomDrugs, DoseEntry, DoseUnit, Library, Patient, Session, Settings } from './types';
 
-const KEY = 'cleardate.session.v1';
+const KEY = 'cleardate.session.v2';
+const KEY_V1 = 'cleardate.session.v1';
 
 export const defaultPatient = (): Patient => ({
   name: '', dob: '', sex: '', weightKg: 0, weightUnit: 'kg', phenotype: 'unknown', qtcMs: 0, qtcFormula: 'Fridericia', notes: '',
@@ -16,31 +18,51 @@ export const defaultSettings = (): Settings => ({
   showBands: true,
   showCypTrack: true,
   showQtTrack: true,
+  showQtLoad: false,
   showLingeringTrack: true,
   dateOrder: 'dmy',
   hour12: false,
   cypRecoveryHalfLifeHours: 51,
+  assumedCv: 0.3,
+  unknownAsFormationLimited: false,
   clinicName: '',
   demoData: false,
 });
 
 export const emptySession = (): Session => ({
-  version: 1,
+  version: 2,
   patient: defaultPatient(),
   doses: [],
   ibogaine: null,
-  custom: { compounds: [], products: [] },
+  custom: { compounds: [], products: [], links: [] },
   settings: defaultSettings(),
   recents: [],
 });
 
-/** Fill in any fields missing from an older or hand-edited session. */
-export function normaliseSession(raw: Partial<Session>): Session {
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/** Migrate a v1 session (amountMg doses, v1 custom drugs) to v2. */
+export function migrateSessionV1(raw: any): any {
+  const doses: DoseEntry[] = (Array.isArray(raw.doses) ? raw.doses : []).map((d: any) => {
+    const { amountMg, ...rest } = d;
+    return { ...rest, amount: typeof d.amount === 'number' ? d.amount : Number(amountMg) || 0, unit: (d.unit as DoseUnit) ?? 'mg' };
+  });
+  let custom = raw.custom ?? { compounds: [], products: [] };
+  if ((custom.compounds?.length || custom.products?.length) && custom.compounds?.some((c: any) => 'halfLifeHours' in c)) {
+    const { lib } = migrateLibrary({ categories: [], compounds: custom.compounds ?? [], products: custom.products ?? [] });
+    custom = { compounds: lib.compounds, products: lib.products, links: custom.links };
+  }
+  const links = (custom.links ?? []).map((l: any) => ({ ...l, fraction: l.fraction > 0 ? l.fraction : null }));
+  return { ...raw, version: 2, doses, custom: { ...custom, links } };
+}
+
+/** Fill in any fields missing from an older or hand-edited session; migrates v1 sessions. */
+export function normaliseSession(input: Partial<Session> | Record<string, unknown>): Session {
+  const raw = ((input as { version?: number }).version === 2 ? input : migrateSessionV1(input)) as Partial<Session>;
   const d = emptySession();
   return {
-    version: 1,
+    version: 2,
     patient: { ...d.patient, ...(raw.patient ?? {}) },
-    doses: Array.isArray(raw.doses) ? raw.doses : [],
+    doses: Array.isArray(raw.doses) ? raw.doses.map((x) => ({ ...x, unit: x.unit ?? 'mg' })) : [],
     ibogaine: raw.ibogaine ?? null,
     custom: {
       compounds: (raw.custom?.compounds ?? []).map((c) => ({ ...c, userEntered: true })),
@@ -54,7 +76,7 @@ export function normaliseSession(raw: Partial<Session>): Session {
 
 export function loadSession(): Session {
   try {
-    const s = localStorage.getItem(KEY);
+    const s = localStorage.getItem(KEY) ?? localStorage.getItem(KEY_V1);
     if (s) return normaliseSession(JSON.parse(s));
   } catch {
     /* corrupted storage: start fresh */
@@ -72,6 +94,7 @@ export function saveSession(s: Session) {
 
 export function clearStoredSession() {
   localStorage.removeItem(KEY);
+  localStorage.removeItem(KEY_V1);
 }
 
 export function patientFileName(s: Session): string {
@@ -111,7 +134,8 @@ export function resolveCustomClashes(session: Session, library: Library): { sess
   const pMap = new Map<string, string>();
   const takenP = new Set([...productIds, ...custom.products.map((p) => p.id)]);
   for (const p of custom.products) {
-    p.parentCompound = cMap.get(p.parentCompound) ?? p.parentCompound;
+    p.components = p.components.map((c) => ({ ...c, compound: cMap.get(c.compound) ?? c.compound }));
+    if (cMap.has(p.candidateId)) p.candidateId = cMap.get(p.candidateId)!;
     if (productIds.has(p.id)) {
       const next = unique(p.id, takenP);
       takenP.add(next);
