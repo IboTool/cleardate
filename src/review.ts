@@ -143,7 +143,7 @@ export function confirmSection(e: Entry, s: Section, date: string, asUnknown = f
   if (unknown.length && !asUnknown) return `Unknown: ${unknown.join(', ')} — use “Confirm as unknown”, or fill them in.`;
   if (!unknown.length && asUnknown) return 'Nothing in this section is unknown — use Confirm.';
   markReviewed(e, s, date);
-  if (s === 'identity' && isCompound(e) && e.identity?.confidence === 'probable') e.identity.confidence = 'confirmed';
+  if (s === 'identity' && isCompound(e) && e.identity?.confidence === 'probable') e.identity = { ...e.identity, confidence: 'confirmed', note: '' };
   if (asUnknown) appendNote(e, s, CONFIRMED_UNKNOWN_NOTE);
   else if (notes(e)[s]?.includes(CONFIRMED_UNKNOWN_NOTE)) notes(e)[s] = notes(e)[s].replace(CONFIRMED_UNKNOWN_NOTE, '').replace(/\s{2,}/g, ' ').trim();
   return null;

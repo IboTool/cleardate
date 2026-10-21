@@ -49,6 +49,18 @@ body.lib-open { overflow: hidden; }
 .lib-detail { min-height: 0; overflow-y: auto; padding: 18px 26px 40px; outline: none; }
 .lib-detail > * { max-width: 980px; }
 .lib-entry-head { margin-bottom: 6px; }
+.lib-entry-head.has-struct { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 12px 20px; }
+.lib-entry-head-text { flex: 1 1 260px; min-width: 0; }
+.lib-struct { margin: 0; flex: 0 1 300px; max-width: 300px; display: flex; flex-direction: column; gap: 6px; font-size: 12.5px; }
+.lib-struct img { display: block; max-width: 100%; max-height: 220px; height: auto; align-self: center; object-fit: contain; }
+.lib-struct.probable img { opacity: .85; }
+.lib-struct figcaption { display: flex; flex-direction: column; gap: 2px; text-align: center; }
+.lib-struct-probable { align-self: center; font-size: 11.5px; color: var(--warn); padding: 1px 8px; border-radius: 999px; border: 1px dashed rgba(242, 196, 109, .45); margin-bottom: 2px; }
+.lib-struct-empty .lib-struct-ph { display: grid; place-items: center; min-height: 96px; padding: 10px; border: 1px dashed var(--border-strong); border-radius: 11px; color: var(--muted); text-align: center; }
+.lib-formula sub, .lib-formula sup { font-size: .75em; line-height: 0; }
+.lib-inchikey { display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
+.lib-inchikey code { font-size: 11px; color: var(--muted); word-break: break-all; }
+.lib-copy { font-size: 13px; padding: 2px 5px; }
 .lib-entry-title { margin: 0 0 4px; font-size: 22px; font-weight: 650; letter-spacing: -0.01em; outline: none; }
 .lib-back { display: none; margin-bottom: 8px; }
 .lib-aliases { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
