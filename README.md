@@ -6,7 +6,10 @@ Client-side drug clearance visualiser for ibogaine-clinic intake. Reference use 
 
 | Path | Purpose |
 |---|---|
-| `docs/ClearDate_Cursor_Prompt.md` | The full build spec. Give this to Cursor. |
+| `docs/ClearDate_Cursor_Prompt.md` | The full build spec (v1). Give this to Cursor. |
+| `docs/ClearDate_Spec_v2.md` | Delta spec for the v2 data model and kinetics (implemented). |
+| `docs/migration_v2_report.md` | What `npm run migrate-v2` changed in `public/drugs.json`, and what to review. |
+| `start-cleardate.bat` / `stop-cleardate.bat` | Windows launchers: start the app and open the browser / stop it. |
 | `docs/ClearDate_Candidate_Drug_List.md` | Human-readable candidate list (213 rows, by category). |
 | `docs/ClearDate_Data_Sources.pdf` | Where to find each value, with links. |
 | `tools/candidates.json` | Machine-readable work queue: 9 categories, 227 drugs, 443 compounds with metabolite links. Structure only — no PK values. |
@@ -37,6 +40,12 @@ python3 tools/build_candidates.py docs/ClearDate_Candidate_Drug_List.md tools/ca
 
 Rows that combine several drugs or contain metabolite chains are handled by the `OVR` table in the script; add an entry there for any new row of that kind. Brand and street names live in the `ALIASES` table.
 
+## Launching on Windows
+
+Double-click **`start-cleardate.bat`**. It runs `npm install` the first time, starts the dev server in a window titled *ClearDate server* (port 5173), waits until it answers and opens http://localhost:5173/ in the default browser. If the server is already running it just opens the browser.
+
+Double-click **`stop-cleardate.bat`** to stop it. It kills whatever is listening on ports 5173 (app), 5174 (data editor) and 4173 (`npm run preview`). Closing the *ClearDate server* window works too.
+
 ## Commands
 
 | Command | What it does |
@@ -44,8 +53,9 @@ Rows that combine several drugs or contain metabolite chains are handled by the 
 | `npm run dev` | App at http://localhost:5173. In dev, Settings → *Load demo data* adds the fictional compounds in `tools/demo-drugs.json`. |
 | `npm run build` | Runs the validator (`prebuild`), type-checks and writes the static site to `dist/`. The build fails if `drugs.json` has errors. Demo data is never bundled. |
 | `npm run preview` | Serves `dist/` locally. |
-| `npm test` | Unit tests (PK simulation, search, serialisation). |
-| `npm run init-data` | Creates `public/drugs.json` from `tools/candidates.json` with every value empty. Refuses to overwrite an existing file; `--force` overwrites, `--out <path>` writes elsewhere. |
+| `npm test` | Unit tests (PK simulation, model and clear status, migration, search, serialisation, sessions). |
+| `npm run init-data` | Creates a v2 `public/drugs.json` from `tools/candidates.json` with every value unknown (`null` / `unassessed`). Uses the same product rules as the migration, so it yields the same product set. Refuses to overwrite an existing file; `--force` overwrites, `--out <path>` writes elsewhere. |
+| `npm run migrate-v2` | One-off migration of a v1 `drugs.json` to schema v2 (see below). Does nothing if the file is already v2. |
 | `npm run validate` | Checks `public/drugs.json` (or a path given as an argument) and prints errors, warnings and per-category progress. Exits non-zero on errors. |
 | `npm run editor` | Local data editor at http://127.0.0.1:5174. |
 
@@ -60,15 +70,32 @@ The site is fully static: no backend, no analytics, no external requests at runt
 
 ## Editing `drugs.json`
 
+The file is schema v2 (`"schemaVersion": 2`); the full field rules are in `docs/ClearDate_Spec_v2.md`. Two principles run through it:
+
+- **Unknown is `null`, never `0`.** Every number without data is `null`. Safety enums (QT tier, CYP2D6 substrate / inhibitor / inhibition type, nonlinear kinetics) have an explicit `unassessed` value, and `receptorsAssessed: false` means an empty receptor list hasn't been researched. The app and the export always show these as "unassessed", never as "none".
+- **Provenance per section.** Each compound section (`halfLife`, `metabolism`, `molecularWeight`, `cyp2d6`, `qt`, `receptors`, `lingeringEffects`, `nonlinearKinetics`) and each product section (`class`, `aliases`, `components`, `input`, `typicalDose`) has a tag: `checked`, `recall`, `estimate`, `gap` or `reviewer`, with a free-text note in `sourceNotes`. Anything `recall` or `estimate` shows a *draft* badge.
+
 The library has three lists.
 
-- **`compounds`**: every parent drug and every metabolite, each defined once. A metabolite lists what it is formed from in `formedFrom`, as `{ "compound": "<parent id>", "fraction": 0.6 }`. `fraction` is the share of the parent that becomes this metabolite. A compound can be formed from several parents (oxazepam comes from temazepam and nordiazepam), and chains can be any depth. For each parent, the fractions of its metabolites must add up to 1 or less, and links must not form a cycle.
-- **`products`**: what a patient actually takes, meaning a parent compound plus a route (`"id": "<parent>_<route>"`). Products carry the category, class, aliases and typical dose. A depot or extended-release product can set `apparentHalfLifeHours`, which replaces the compound's half-life for that product only.
+- **`compounds`**: every parent drug and every metabolite, each defined once.
+  - Half-lives are **ranges**: `{ typical, min, max, rangeType, cv }`. `rangeType` says what the bounds mean (`observed-range`, `mean-2sd`, `cohort-means`, `cv`, `single-value`). With `cv` the app derives a lognormal 95 % band. With `single-value` it applies the *assumed spread* from Settings (default CV 30 %) and labels it as such.
+  - `kinetics.mode` is `intrinsic` (uses `halfLifeHours`, the terminal phase), `formation-limited` (the compound tracks its parent: typical for glucuronide and sulfate conjugates, no half-life needed) or `unknown` (can't be simulated).
+  - Optional `kinetics.earlyPhase` (`{ fraction, halfLifeHours }`) models a fast first phase, such as morphine's. Optional `kinetics.steadyState` (`{ afterDays, halfLifeHours }`) switches to a different half-life once a regimen has run long enough, such as methadone's.
+  - A metabolite lists its parents in `formedFrom`: `{ compound, fraction, cyp2d6Multiplier }`. `fraction` is the share of the parent that becomes this metabolite, or `null` if unknown. `cyp2d6Multiplier` scales the fraction per phenotype (codeine → morphine). A compound can have several parents, chains can be any depth, known fractions out of one parent must sum to 1 or less, and links must not form a cycle.
+  - `cyp2d6.halfLifeMultiplier` scales the compound's own half-life per phenotype.
+  - QT weight and its calibration amount (`qt.weight`, `qt.referenceAmountMg`) are set only by a reviewer.
+- **`products`**: what a patient actually takes.
+  - `candidateId` ties the product to its entry in `tools/candidates.json`.
+  - `components` lists what one dose delivers: `{ compound, ratio, saltFactor, bioavailability }`. Most products have one component. Buprenorphine/naloxone has two (ratio 1 and 0.25), and the first component is the one the dose is labelled by.
+  - `doseUnit` is `mg`, `µg`, `µg/h` or `mg/h`. `formulation` is `IR`, `ER`, `SR`, `XL`, `XR`, `CR`, `depot` or `patch`.
+  - `input` says how a dose enters the body: `bolus` (instant), `first-order-release` (a release compartment with `releaseHalfLifeHours`, for depots and ER forms), or `zero-order` (a constant rate for a wear time, for patches and infusions, optionally through a skin depot). `defaultDurationHours` prefills patch wear time.
+  - `typicalDose` (`{ amount, unit, basis }`) is only a placeholder in the dose form.
+  - `secondaryCategories` puts a product under more than one picker group.
 - **`categories`**: the picker groups, in display order.
 
-Empty values are `0` for numbers, `"none"` or `false` for enums and flags, and empty strings or lists. A product whose parent half-life is `0` shows in the picker as *no data yet* and can't be dosed. A compound only counts as `verified` when it has a source, a verification date and a non-zero half-life.
+A product shows as *no data yet* and can't be dosed when its primary component has no usable kinetics (mode `unknown` with the formation-limited setting off, or no half-life). A compound can only be `verified` when its `halfLife` and `metabolism` sections aren't `gap`, its mode isn't `unknown`, and it has a source and a verification date. The validator warns about verified entries that still have `recall` or `estimate` sections.
 
-**With the local editor** (recommended): run `npm run editor`. It walks through `tools/candidates.json` in order. For each drug you see the parent, its metabolite tree and its products, with a form section for each part of the schema (half-life, metabolism, CYP2D6, QT, receptors, lingering effects, source). It also links to the data sources and validates live. *Mark verified* stamps today's date. Save with the button or Ctrl+S. Saves are atomic, keep a rolling backup in `tools/editor/.backups/`, and are refused if the file changed on disk since the editor loaded it (for example, edited by hand or by another tool), so concurrent edits are never overwritten. To work on a copy, set `CLEARDATE_DRUGS=path/to/copy.json` before starting the editor.
+**With the local editor** (recommended): run `npm run editor`. It walks through `tools/candidates.json` in order. For each drug you see the parent, its metabolite tree and the candidate's products, with a form section for each part of the schema. Every numeric field has an *unknown* checkbox. Half-lives use a range editor (typical / min / max, range type, CV). Kinetics have mode, early-phase and steady-state sub-forms, and metabolite links have per-edge fractions and CYP2D6 multipliers. Products have components, dose unit, formulation, input model, typical dose and secondary categories. Each section has a provenance chip, and editing a section sets its chip to `reviewer`. The **Priority review** view is a sortable list of the entries where an error matters most: QT known/possible, strong or mechanism-based CYP2D6 inhibitors, terminal half-life over 48 h, depots and patches, estimated values, and migration auto-assumptions. Queue filters pick out entries with draft values, unknown kinetics or auto-assumptions. The editor also links to the data sources and validates live. *Mark verified* stamps today's date. Save with the button or Ctrl+S. Saves are atomic, keep a rolling backup in `tools/editor/.backups/`, and are refused if the file changed on disk since the editor loaded it (for example, edited by hand or by another tool), so concurrent edits are never overwritten. To work on a copy, set `CLEARDATE_DRUGS=path/to/copy.json` before starting the editor.
 
 **By hand**: edit the JSON in any editor and run `npm run validate`. The editor and `init-data` write a canonical form (keys in schema order, entries sorted by `id`, 2-space indent) so git diffs stay small. Fields the schema doesn't know about are kept as-is.
 
@@ -76,21 +103,66 @@ Empty values are `0` for numbers, `"none"` or `false` for enums and flags, and e
 
 ## The model and its limitations
 
-**What it computes.** Each product is simulated separately with linear, first-order kinetics. Every dose enters the parent compound instantly, each compound eliminates with `k = ln 2 / t½`, and the `fraction` of each eliminated parent appears in its metabolites. Each step removes `A · (1 − e^(−k·dt))` from every compound, parents first, and passes the fractions on to metabolites. The step `dt` is the shortest half-life currently holding drug ÷ 20, at most 1 h. Against the analytic Bateman solution the error is under 1 %. Doses are step boundaries. Amounts are shown in mg of parent-equivalent, or in mg of the metabolite when both molecular weights are known.
+**What it computes.** Each dosed product's compound tree is simulated separately with linear, first-order kinetics, and absolute amounts are summed across products (superposition holds because everything is linear).
 
-- **Range band.** Three runs, with min, typical and max half-lives. If the patient's CYP2D6 phenotype is set, substrate half-lives are multiplied by that phenotype's factor. If it is unknown, the band widens from the smallest to the largest multiplier.
-- **Clear date.** A compound is considered cleared when it falls below its peak × 2^−X (default X = 5.5 half-lives, about 2 %; set in Settings). A product is clear when its whole metabolite tree is. The slowest-case date comes from the max run.
-- **CYP2D6 track.** Intervals where an inhibitor is above its clear threshold. Mechanism-based inhibitors add a recovery tail of X × enzyme recovery half-life (default 51 h). If inhibition overlaps the ibogaine time, the ibogaine projection uses the poor-metaboliser multiplier.
-- **QT track.** A relative load: Σ tier weight × amount ÷ reference dose (the product's typical dose, or else the largest entered dose). Coloured by the highest tier active. It is qualitative and does **not** predict QTc in ms.
+- **Pools.** Each compound has a slow pool for the terminal half-life, plus a fast pool if it has an early phase; a dose is split between them by `earlyPhase.fraction`. Each pool eliminates with `k = ln 2 / t½`, and both feed the metabolites by their `fraction`.
+- **Dose input.** Bolus doses enter instantly. Depots and ER forms pass through a release pool with their release half-life, so flip-flop kinetics emerge. Patches and infusions add a constant rate between applied and removed times, optionally through a skin depot.
+- **Combination products.** Each component receives `dose × ratio × saltFactor × bioavailability`, where a `null` factor counts as 1.
+- **Steps.** Pools are updated upstream-first with the exact solution for constant inflow over the step. The step is the shortest active half-life ÷ 20, at most 1 h, and never crosses a dose time or a patch start or stop. Against analytic solutions (Bateman, biexponential, infusion steady state) the error is under 1 %.
+- **Units.** Amounts are shown in the product's mass unit (parent-equivalent, or the metabolite's own mass when both molecular weights are known).
+- **Formation-limited compounds** are simulated with an elimination half-life of one-tenth of their fastest parent's effective half-life, so they track the parent. They're labelled "tracks parent (formation-limited)". The export notes that conjugates can accumulate in renal impairment.
+- **Unknown fractions.** A metabolite link with a `null` fraction is simulated with fraction 1. Everything downstream of it is **normalized**: drawn dashed on the secondary "% of own peak" axis and labelled "amount unknown — timing only". Its clear time is still valid, because clearing is measured against the compound's own peak.
+- **Range band.** Three runs: all-min, typical and all-max. Each range uses its own `rangeType` (a lognormal band for `cv`, the assumed spread for `single-value`), and early phases and release half-lives use their own ranges in the same run. The patient's CYP2D6 phenotype scales substrate half-lives (`halfLifeMultiplier`) and metabolite formation (`cyp2d6Multiplier`). An unknown phenotype runs poor and ultrarapid as the band edges.
+- **Steady state.** If a regimen has run continuously for at least a compound's `steadyState.afterDays`, that product's run uses the steady-state half-life (and no early phase), and the tooltip and export say so.
+- **Clear status.** A compound is cleared when it falls below its peak × 2^−X (default X = 5.5 half-lives, about 2 %; set in Settings). A product is clear when every compound reachable from its components is. The slowest-case date comes from the max run. Each product's status is one of:
+  - **Clear by \<date\>**.
+  - **Clear by \<date\> — with assumptions**: formation-limited tracking, assumed spread, a steady-state switch or normalized curves were used. They're listed on hover and in the export.
+  - **Incomplete — missing kinetics for: …**: some compound in the tree has `unknown` kinetics. The date shown is a lower bound ("not before \<date\>"), and an incomplete product near the ibogaine date gives an amber warning, never green. Settings → *Treat unknown metabolites as formation-limited* (off by default) simulates such compounds as formation-limited instead, which turns the status into "with assumptions".
+  - **No data yet**: the primary component can't be simulated, so the product can't be dosed.
+- **CYP2D6 track.** Shows the intervals where an inhibitor is above its clear threshold. Mechanism-based inhibitors add a recovery tail of X × the enzyme recovery half-life (default 51 h). If inhibition overlaps the ibogaine time, the ibogaine projection uses the poor-metaboliser multiplier.
+- **QT lanes.** There is one thin lane per compound whose QT tier isn't `none`, visible while that compound is above its clear threshold. The colour is the tier and the opacity is the fraction of the compound's own peak. Unassessed compounds get a grey hatched "QT unassessed" lane. The optional **summed relative QT load** (`Σ qt.weight × amount ÷ qt.referenceAmountMg`) works only when every active lane has a reviewer-set weight and reference amount and an absolute amount. Otherwise its toggle is disabled, and the tooltip names the compounds that lack calibration. None of this predicts QTc in ms.
 - **Receptor overlap.** At the flood-dose time, any target hit by compounds from two or more different products is listed.
 - **Lingering effects.** Shown after a compound clears, for its documented duration.
+- **Export.** The PDF has an **Assumptions and missing data** section per product, covering formation-limited compounds, normalized curves, assumed spreads, steady-state switches, unassessed QT and CYP2D6, and incomplete clear dates.
 
-**What it does not model.** Absorption (every dose is instant, so early peaks are overstated and depots rely on `apparentHalfLifeHours`), distribution phases, saturable or nonlinear kinetics (these are flagged, not modelled), enzyme induction, interactions other than CYP2D6 inhibition, renal or hepatic impairment, age, pregnancy, active transport, enterohepatic recirculation, and individual variation beyond the min–max range. Half-lives are population values from labels and the literature. Metabolites with no half-life, and everything downstream of them, are skipped with a warning. The tool does not know what the patient actually took, or when.
+**What it does not model.** It doesn't model oral absorption: bolus doses are instant, so early peaks of IR forms are overstated. Release half-lives for ER forms and depots are mostly still `null` and need a reviewer. It also leaves out:
+
+- distribution phases other than the optional early phase, and saturable or nonlinear kinetics (flagged, not modelled);
+- enzyme induction, and interactions other than CYP2D6;
+- renal or hepatic impairment, age and pregnancy;
+- active transport and enterohepatic recirculation;
+- individual variation beyond the range band.
+
+Half-lives are population values from labels and the literature. Compounds with `unknown` kinetics are not simulated; the product is marked *incomplete* rather than silently ignoring them. The tool does not know what the patient actually took, or when.
 
 **Use.** Reference only, to support a clinician's own judgement during intake. It is not a medical device and is not for dosing decisions. Every value in `drugs.json` should be reviewed by a pharmacologist before the app is relied on. Unverified entries are flagged throughout the app and in exports.
+
+## Migrating from v1
+
+`public/drugs.json` in this repo has already been migrated: 443 compounds; products went from 312 to 341 after the splits; 21 conjugates were auto-assigned as formation-limited. To migrate another v1 file:
+
+1. Commit or back up your work, and close the data editor.
+2. Run `npm run migrate-v2` (or `npm run migrate-v2 -- path/to/file.json`). It is idempotent: a file that already has `schemaVersion: 2` is left alone.
+3. The original is kept next to it as `drugs.v1-backup.json`, and `docs/migration_v2_report.md` lists every change:
+   - transform counts;
+   - auto-assigned formation-limited conjugates;
+   - split, merged and renamed products (old → new ids);
+   - safety fields changed to `unassessed`;
+   - known review items from the opioid pass.
+4. Run `npm run validate`, then work through the report and the editor's **Priority review** view. Start with the auto-assumptions and the depot, ER and patch release half-lives.
+5. Delete `public/drugs.v1-backup.json` once you no longer need it. Anything in `public/` is copied into `dist/` on build.
+
+What the migration does, in short:
+
+- **Unknowns.** Zeros become `null`. Untagged or `gap` safety sections become `unassessed`. The `[checked]` / `[recall]` / `[estimate]` / `[gap]` tags in source notes become provenance.
+- **Half-lives** become ranges (`single-value` when min = typical = max).
+- **Products** get `components` from `parentCompound` and an input model inferred from the route. A v1 `apparentHalfLifeHours` becomes a release half-life only when it is more than twice the intrinsic half-life; otherwise it's kept in a note for review.
+- **Splits.** Combined release forms (`Oral IR/ER`, …) and combined depot brands are split into separate products. `buprenorphine_naloxone_sublingual` becomes a two-component product. The product rules live in `tools/product-rules.ts`, shared with `init-data`.
+
+**Patient sessions** migrate on their own. The app reads the old `cleardate.session.v1` localStorage key and v1 `.cleardate.json` files and converts each `amountMg` to `amount` + `unit`. If a dose refers to a product that was split or removed (for example `morphine_oral_ir_er`), the app asks which replacement to use (`morphine_oral_ir` or `morphine_oral_er`). Doses that can't be converted, such as a fentanyl patch stored in mg that now needs µg/h, are kept but skipped with a warning until you edit them.
 
 ## Implementation notes
 
 - Vite + TypeScript, no framework. ECharts (modular import) for the timeline, Fuse.js for fuzzy search, jsPDF for the PDF (loaded only when exporting). Chart images use ECharts' own renderer.
-- Code map: `src/pk.ts` (simulation, tested in `pk.test.ts`), `src/model.ts` (library index, scenario: clear dates, tracks, warnings), `src/chart.ts` (chart option), `src/search.ts` (ranked search: exact → prefix → fuzzy), `src/validate.ts` (shared by the app, the CLI and the editor), `src/ui/` (picker, wizard, form pieces), `tools/` (data tooling and editor).
+- Code map: `src/pk.ts` (simulation, tested in `pk.test.ts`), `src/model.ts` (library index, scenario: clear dates, tracks, warnings), `src/chart.ts` (chart option), `src/search.ts` (ranked search: exact → prefix → fuzzy), `src/validate.ts` (shared by the app, the CLI and the editor), `src/state.ts` (sessions, including v1 → v2 migration), `src/ui/` (picker, wizard, form pieces), `tools/` (data tooling and editor; `tools/migrate-v2.ts` and `tools/product-rules.ts` for the v2 migration).
 - A full scenario computes in tens of milliseconds, so it runs on the main thread (no Web Worker).
